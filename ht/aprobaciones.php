@@ -201,7 +201,10 @@
                                                 <div class="form-1-2">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
                                                     <input type="radio" name="opcion" value="justificar" onclick="oculta(0)" checked>Justificar retardo
-                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(1)">Omision
+                                                </div>
+                                                <div class="form-1-2">
+                                                    <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
+                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(1)">Justificar omision
                                                 </div>
                                             </div>
                                         </div>
