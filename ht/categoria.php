@@ -1,8 +1,7 @@
 <!doctype html>
-<form method="post" action="./../ht/categoria" id="form1">
 
-    <!--[if gt IE 8]><!-->
-    <html class="no-js" lang="">
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
     <!--<![endif]-->
 
     <head>
@@ -46,7 +45,7 @@
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                    <a class="navbar-brand" href="#">Control de Asistecia</a>
+                    <a class="navbar-brand" href="#">Control de Asistencia</a>
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
 
@@ -59,9 +58,9 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-crosshairs"></i><a href="../ht/categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="../ht/departamentos.html">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="../ht/tipoempleado.html">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="../ht/trabajadores.html">Personal</a></li>
+                                <li><i class="fa fa-sitemap"></i><a href="../ht/departamentos.php">Departamentos</a></li>
+                                <li><i class="fa fa-male"></i><a href="../ht/tipoempleado.php">Tipo Empleado</a></li>
+                                <li><i class="fa fa-users"></i><a href="../ht/trabajadores.php">Personal</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
@@ -73,17 +72,17 @@
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-calendar"></i><a href="../ht/turnos.html">Turnos</a></li>
-                                <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.html">Aprobaciones</a></li>
+                                <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
+                                <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="reportes.html">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
                                 <li><i class="fa fa-chain"></i><a href="especiales.php" title="comisiones, lactancia, estancia">Especiales</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.html">Usuarios</a></li>
+                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.php">Usuarios</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -159,24 +158,17 @@
                                 <div class="card-header">
                                     <span id="MainContent_lbtitulo">Nueva Categoría</span>
                                 </div>
-
-                                <div class="card-body card-block">
-                                    <div class="form-group col-lg-6">
-                                        <span id="MainContent_lbCategoria">Categoria</span><input name="ctl00$MainContent$txtCategoria" type="text" id="MainContent_txtCategoria" class="form-control"/>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <span id="MainContent_lbNombre">Nombre</span><input name="ctl00$MainContent$txtNombre" type="text" id="MainContent_txtNombre" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <input type="submit" name="ctl00$MainContent$btnAgregar" value="Agregar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
-
-                                </div>
-
+                                 <form method="post" action="./../ht/inserta-cat.php" id="form2">
+                                 Categoría: <input type="text" name="cat" class="form-control" required><br>
+                                 Nombre: <input type="text" name="nom" class="form-control" required><br>
+                                <input type="submit" value="Guardar">                        
+                                </form>
+                               
                             </div>
                         </div>
                     </div>
-
+                   
+ 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -210,7 +202,7 @@
                                                             echo "<tr>";
                                                             echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                             echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar.php'>Eliminar</a> </button> ";
+                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
                                                             echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                             echo "</tr>";
                                                           }
@@ -287,6 +279,5 @@
             });
         </script>
     </body>
-
-    </html>
-</form>
+  
+ </html>

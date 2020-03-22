@@ -8,7 +8,7 @@ function buscar_datos(consulta) {
             data: { consulta: consulta },
         })
         .done(function(respuesta) {
-            //div con id datos, agregamos su htm con la respuesta del servidor
+            //div con id datos, agregamos su html con la respuesta del servidor
             $("#datos").html(respuesta);
         })
         .fail(function() {

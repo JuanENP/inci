@@ -8,8 +8,7 @@
         }
 
         function __doPostBack(eventTarget, eventArgument) {
-            if (!theForm.onsubmit || (theForm.onsubmit() != false)) 
-            {
+            if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
                 theForm.__EVENTTARGET.value = eventTarget;
                 theForm.__EVENTARGUMENT.value = eventArgument;
                 theForm.submit();
@@ -50,20 +49,6 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
-
-        <script>
-                function oculta(x)
-            {
-                if(x==0)
-                {
-                    document.getElementById('caja_busqueda').style.display="block";
-                }
-                else
-                {
-                    //document.getElementById('caja_busqueda').style.display="none";
-                }
-            }
-        </script>
     </head>
 
     <body>
@@ -84,7 +69,7 @@
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="default.aspx"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control</a>
+                            <a href="default.aspx"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
                         </li>
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
@@ -184,34 +169,14 @@
                 </div>
             </div>
 
-            <form method="POST" action="../php/insert/justificacion.php">
+            <form action="">
                 <div class="content mt-3">
                     <div class="animated fadeIn">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <span id="MainContent_lbtitulo">
-                                            Opciones
-                                        </span>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <div class="row col-md-12">
-                                            <div class="form-group col-lg-3">
-                                                <div class="form-1-2">
-                                                    <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="radio" name="opcion" value="justificar" onclick="oculta(0)" checked>Justificar retardo
-                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(1)">Omision
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="row">
                             <div class="col-lg-12">
+
+
                             </div>
                             <div class="col-md-12">
                                 <div class="card">
@@ -234,48 +199,48 @@
                                             </div>
 
                                             <div class="form-group col-lg-3">
-                                                <span id="MainContent_lbfcinicial">Fecha Inicial</span>
-                                                <input name="fec" type="date" id="MainContent_txtFechaInicial" class="form-control" required/>
+                                                <span id="MainContent_lbConcepto">Clave</span>
+                                                <select name="ctl00$MainContent$DropDownListConceptos" id="MainContent_DropDownListConceptos" class="form-control select2" required>
+                                                    <!--Clave de incidencias-->
+                                                </select>
                                             </div>
 
-                                            <!--
+                                            <div class="form-group col-lg-3">
+                                                <span id="MainContent_lbConcepto">Justificar con: </span>
+                                                <select name="ctl00$MainContent$DropDownListConceptos" id="MainContent_DropDownListConceptos" class="form-control select2" required>
+                                                    <!--Clave de justificacion-->
+                                                </select>
+                                            </div>
+
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbfcinicial">Fecha Inicial</span>
                                                 <input name="ctl00$MainContent$txtFechaInicial" type="date" id="MainContent_txtFechaInicial" class="form-control" required/>
                                             </div>
-                                            -->
-                                            <!--
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lblfcfinal">Fecha Final</span>
                                                 <input name="ctl00$MainContent$txtFechaFinal" type="date" id="MainContent_txtFechaFinal" class="form-control" required/>
                                             </div>
-                                            -->
                                         </div>
                                         <div class="row col-md-12">
-                                            <!--
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbComentarioReporte">Comentario - Corto</span>
                                                 <input name="ctl00$MainContent$txtComentarioCorto" type="text" id="MainContent_txtComentarioCorto" class="form-control" maxlength="13" />
                                             </div>
-                                            -->
-                                            <!--
                                             <div class="form-group col-lg-9">
                                                 <span id="MainContent_Label1">Comentario - Largo</span>
                                                 <input name="ctl00$MainContent$txtComentarioLargo" type="text" id="MainContent_txtComentarioLargo" class="form-control" maxlength="250" />
                                             </div>
-                                            -->
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <div class="dropdown">
-                                            <input type="submit" name="Aceptar" value="Guardar" class="btn btn-primary btn-sm" />
+                                            <input type="submit" name="ctl00$MainContent$btnAceptar" value="Aceptar" id="MainContent_btnAceptar" class="btn btn-primary btn-sm" />
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-            </form>  <!-- FIN DEL FORM -->
 
                         <div class="row">
                             <div class="col-md-12">
@@ -291,8 +256,7 @@
                                         <select name="ctl00$MainContent$ddlanio" onchange="" id="MainContent_ddlanio">
                                             <!--Años 2018, 20191 y 2020-->
                                         </select>
-                                        <span id="MainContent_DataTable">      
-                                        </span>
+                                        <span id="MainContent_DataTable"></span>
                                     </div>
                                 </div>
                             </div>
@@ -302,6 +266,7 @@
                     </div>
                     <!-- .animated -->
                 </div>
+            </form>  <!-- FIN DEL FORM -->
             <!-- .content -->
 
             <script type="text/javascript">
@@ -372,11 +337,7 @@
                     $('body').toggleClass('open');
                 });
             });
- 
         </script>
-            
-        
-        
     </body>
 
 </html>

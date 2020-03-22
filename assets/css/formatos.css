@@ -1,0 +1,29 @@
+html 
+{
+    margin: 0;
+}
+body
+{
+    font-family: "Times New Roman", serif;
+    margin: 45mm 8mm 2mm 8mm;
+}
+
+.contenedor
+{
+    width: auto;
+    border: solid black;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
+   
+}
+div.borde_superior {
+    display:flex;
+ }
+ div #p1{
+border: blue;
+padding-left: 20px;
+padding-top: 20px;
+
+ }
