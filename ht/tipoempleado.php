@@ -1,15 +1,14 @@
 ﻿<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-    <!--[if gt IE 8]><!-->
-    <html class="no-js" lang="">
+
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
     <!--<![endif]-->
+
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Departamentos
+            Catalogo de Empleados
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,9 +38,8 @@
 
     <body>
 
-       
-<!-- Left Panel -->
-<aside id="left-panel" class="left-panel">
+        <!-- Left Panel -->
+        <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
                 <div class="navbar-header">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,175 +106,178 @@
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
-
                     <div class="col-sm-5">
                         <div class="user-area dropdown float-right">
 
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
+                                <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.aspx"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.aspx"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="updatePassword.html"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="Logout.html"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
             </header>
             <!-- /header -->
-            <!-- Header-->
 
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Catálogo Tipo Empleado</h1>
+            <div class="breadcrumbs">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Catálogo de Empleados</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="#">Catálogos</a></li>
+                                <li class="active">Empleados</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="#">Catálogos</a></li>
-                            <li class="active">Tipo Empleado</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="content mt-3">
-            <div class="animated fadeIn">
 
-                <div class="row">  
-                    <div class="col-lg-12">
-                                                
-                        
-                    </div>               
-                  <div class="col-lg-6">                        
-                    <div class="card">
-                      <div class="card-header">
-                        <span id="MainContent_lbtitulo">Nuevo Tipo Empleado</span>
-                      </div>
-                     <!-- Formulario para insertar datos -->
-                           <form method="post" action="./../ht/inserta-tipo-emp.php" id="form2">
+            <div class="content mt-3">
+                <div class="animated fadeIn">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span id="MainContent_lbtitulo">Nueva Categoría</span>
+                                </div>
+                                 <form method="post" action="./../ht/inserta-cat.php" id="form2">
+                                 Categoría: <input type="text" name="cat" class="form-control" required><br>
                                  Nombre: <input type="text" name="nom" class="form-control" required><br>
-                                 <input type="submit" value="Guardar">                        
-                            </form>
-                      
+                                <input type="submit" value="Guardar">                        
+                                </form>
+                               
+                            </div>
+                        </div>
                     </div>
-                  </div>                
-                </div>          
-
-                <div class="row">
+                   
+ 
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
-                                        </div>
-                                            <div class="card-body">
-                                                <table id='' class='table table-striped table-bordered display'>
-                                                    <thead>
-                                                        <th></th>
-                                                        <th>Nombre</th>
-                                                        <th>Acciones</th>
-                                                    </thead>
-                                                            <?php
-                                                                require("../Acceso/global.php");  
-                                    
-                                                                $sql="select * from tipoempleado";
-                                                                $query= mysqli_query($con, $sql);
-                                                                if(!$query)
-                                                                    {
-                                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                                    }
-                                                                else
-                                                                    {
-                                                                        while($resul=mysqli_fetch_array($query))
-                                                                        {
-                                                                            echo "<tr>";
-                                                                            echo "<td>" . "  ". "</td>";
-                                                                            echo "<td>" . $resul[1] . "</td>";
-                                                                            echo "<td> <button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
-                                                                            echo "</tr>";
-                                                                        }
-                                                                    }
-                                                                ?> <!--FIN PHP -->
-                                                            </tbody>
-                                                        </table>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </div>
+                                    <div class="card-body">
+                                        <span id="MainContent_DataTable">
+                                            <table id='' class="table table-striped table-bordered display">
+                                                <thead>
+                                                    <th>Categoria</th>
+                                                    <th>Nombre</th>
+                                                    <th>Acciones</th>
+                                                </thead>
+                
+                                                <tbody>
+                                                    <!--PONER AQUÍ EL contenido LA TABLA-->
+                                                    <?php
+                                                        require("../Acceso/global.php");  
+      
+                                                        $sql="select * from categoria";
+                                                        $query= mysqli_query($con, $sql);
+                                                        if(!$query)
+                                                        {
+                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        }
+                                                        else
+                                                        {
+                                                          while($resul=mysqli_fetch_array($query))
+                                                          {
+                                                            echo "<tr>";
+                                                            echo utf8_encode("<td>" . $resul[0] . "</td>");
+                                                            echo utf8_encode("<td>" . $resul[1] . "</td>");
+                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                            echo "</tr>";
+                                                          }
+                                                        }
+                                                    ?> <!--FIN PHP -->
+                                                </tbody>
+                                            </table>
+                                        </span>
                                     </div>
-                                </div><!-- .animated -->
-                            </div><!-- .content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- .animated -->
+            </div>
+            <!-- .content -->
 
-   <script type="text/javascript">
-       $(document).ready(function () {
-           setTimeout(function () {
-               $(".alert").fadeOut(1500);
-           }, 4000);
-           $('table.display').DataTable({
-               "language": {
-                   "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
-                   "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
-                   "infoEmpty": "Mostrando 0 registros de un total de 0",
-                   "infoFiltered": "(filtrados de un total de _MAX_ registros)",
-                   "loadingRecords": "Cargando...",
-                   "processing": "Procesando...",
-                   "search": "<span style='font-size:15px;'>Buscar:</span>",
-                   "searchPlaceholder": "Dato para buscar",
-                   "zeroRecords": "No se han encontrado coincidencias.",
-                   "paginate": {
-                       "first": "Primera",
-                       "last": "Última",
-                       "next": "Siguiente",
-                       "previous": "Anterior"
-                   },
-                   "aria": {
-                       "sortAscending": "Ordenación ascendente",
-                       "sortDescending": "Ordenación descendente"
-                   }
-               },
-               responsive: true,
-               dom: 'Bfrtip',
-               buttons: [
-                  { extend: 'copy', text: 'Copiar' },
-                  //'csv',
-                  'excel',
-                  //'pdf',
-                  //{ extend: 'print', text: 'Imprimir' },
-               ]
-           });
-       });
-    </script>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    setTimeout(function() {
+                        $(".alert").fadeOut(1500);
+                    }, 4000);
+                    $('table.display').DataTable({
+                        "language": {
+                            "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
+                            "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
+                            "infoEmpty": "Mostrando 0 registros de un total de 0",
+                            "infoFiltered": "(filtrados de un total de _MAX_ registros)",
+                            "loadingRecords": "Cargando...",
+                            "processing": "Procesando...",
+                            "search": "<span style='font-size:15px;'>Buscar:</span>",
+                            "searchPlaceholder": "Dato para buscar",
+                            "zeroRecords": "No se han encontrado coincidencias.",
+                            "paginate": {
+                                "first": "Primera",
+                                "last": "Última",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "aria": {
+                                "sortAscending": "Ordenación ascendente",
+                                "sortDescending": "Ordenación descendente"
+                            }
+                        },
+                        responsive: true,
+                        dom: 'Bfrtip',
+                        buttons: [{
+                                extend: 'copy',
+                                text: 'Copiar'
+                            },
+                            //'csv',
+                            'excel',
+                            'pdf',
+                            //{ extend: 'print', text: 'Imprimir' },
+                        ]
+                    });
+                });
+            </script>
+        </div>
+        <!-- /#right-panel -->
 
- 
-        
-    </div><!-- /#right-panel -->
+        <!-- Right Panel -->
 
-    <!-- Right Panel -->  
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-    <script src="assets/js/plugins.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function () {
-                $(".alert").fadeOut(1500);
-            }, 4000);
-            $('#menuToggle').on('click', function(event) {
-		        $('body').toggleClass('open');
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="../assets/js/plugins.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $(".alert").fadeOut(1500);
+                }, 4000);
+                $('#menuToggle').on('click', function(event) {
+                    $('body').toggleClass('open');
+                });
             });
-        });
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+  
+ </html>

@@ -1,3 +1,14 @@
+<?php
+session_start();
+$user=$_SESSION['name'];
+//si la variable de sesión no existe, entonces no es posible entrar al panel. 
+//Lo redirigimos al index.html para que inicie sesión
+if($user==null || $user=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+?>
 <!doctype html>
 <form method="post" action="./panel_control.html" id="form1">
 
@@ -54,7 +65,7 @@
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="panel_control.html" title="Volver al panel principal"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                            <a href="panel_control.php" title="Volver al panel principal"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
                         </li>
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
@@ -123,7 +134,7 @@
                             </a>
                             <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="updatePassword.aspx"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.aspx"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
 

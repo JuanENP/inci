@@ -21,12 +21,12 @@ $resul=mysqli_num_rows($ejecu);
         {
           $_SESSION['name']=$nombre;
           mysqli_close($con);
-          header("Location: ../panel_control.html"); 
+          header("Location: ../panel_control.php"); 
         }
     }
     else 
     {
-      if ($resul1==false) //si no encontró algo en la tabla usuarios_alumnos ni administrador significa que el usuario no existe
+      if ($resul1==false) //si no encontró algo en la tablan significa que el usuario no existe
       {
         mysqli_close($con);
         header("Location: ../index.html");

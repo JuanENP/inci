@@ -65,7 +65,7 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="default.aspx"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                        <a href="../panel_control"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
                     </li>
                     <li id="Menu_Personal" class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
