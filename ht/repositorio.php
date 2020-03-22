@@ -3,7 +3,6 @@ session_start();
 #ESTA FUNCIÓN SIRVE PARA CONSULTAR LA INFORMACIÓN DEl TRABAJADOR
 require("../Acceso/global.php");  
  $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
-
 ?>
 <!doctype html>
 

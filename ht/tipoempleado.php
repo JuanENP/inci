@@ -2,19 +2,9 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<div class="aspNetHidden">
-       
-    </div>
-
-    <div class="aspNetHidden">
-
-        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F1105A88" />
-        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="2IWzTZy++tA+YCARSF54Pj1Tmz8eeBCB4RtDBuAhn5UMzzeaXHoULbefce1DplPqXpsYZ58TJMnvmkn9y0fSumdFA6NEmOoAVWHaCyXtnHG22/w4kT2Guw2bU1hOiXQ2cjw36/OTtowhqakxT83HnTW3jahR+9cMOFVzpXunO+8=" />
-    </div>
     <!--[if gt IE 8]><!-->
     <html class="no-js" lang="">
     <!--<![endif]-->
-
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -50,8 +40,8 @@
     <body>
 
        
-        <!-- Left Panel -->
-        <aside id="left-panel" class="left-panel">
+<!-- Left Panel -->
+<aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
                 <div class="navbar-header">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
