@@ -33,7 +33,7 @@
 <script type="text/javascript">
     function no()
     {
-        alert("Ya posee 2 justificaciones.");
+        alert("Ya posee 2 justificaciones. Sustento: Art. 46 CGT");
         location.href="../../ht/aprobaciones.php";
         //window.close();
         //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
@@ -44,10 +44,16 @@
 session_start();
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
-
     require("../../Acceso/global.php");
-    $operacion=$_POST['opcion'];
 
+    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
+    $sql5="SELECT id from quincena where validez=1";
+    $query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+    $resul5=mysqli_fetch_array($query5);
+    $quincena=$resul5[0];
+    /*FIN DE OBTENER QUINCENA ACTUAL*/
+        
+    $operacion=$_POST['opcion'];
     if($operacion=="justificar")
     {
         $num = $_POST['num'];
@@ -139,6 +145,53 @@ session_start();
 
     if($operacion=="omision")
     {
+        $num = $_POST['num'];
+        $fecha=$_POST['fec'];
         echo "OMISIÓN";
+        echo "$quincena";
+        /*2 omisiones por quincena o 
+        una omisión + 1 retardo o 
+        2 retardos (Art. 46 CGT)
+
+        just omisi=2
+        just retar=0
+        
+        total=2
+        */
+        //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificaciones
+        $sql6="SELECT count(d.clave_justificacion_id)
+        FROM trabajador a
+        INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_Numero_trabajador and a.numero_trabajador = '$num' 
+        INNER JOIN incidencia c on  b.id = c.asistencia_id and b.quincena_id = 5
+        INNER JOIN justificacion d on c.id = d.incidencia_id and d.clave_justificacion_id= 09
+        INNER JOIN acceso e on a.acceso_idacceso = e.idacceso
+        INNER JOIN turno f on e.turno_turno = f.turno";
+        $query6= mysqli_query($con, $sql6) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resul6=mysqli_fetch_array($query6);
+        $totalRetardos=$resul6[0];
+
+        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones
+        
     }//FIN DEL IF OMISIÓN
+
+    if($operacion=="comision")
+    {
+        echo "comisiones";
+        /*numero
+            fecha inicio
+            fecha de fin
+
+            validez
+        */
+        $num = $_POST['num'];//el número del trabajador
+        $fecha=$_POST['fec'];//la fecha de inicio
+        $fechaf=$_POST['fecf'];//la fecha de fin
+        $hora_e=$_POST['he'];
+        $hora_s=$_POST['hs'];
+        $clave_especial=45;
+        /*la validez siempre se debe de buscar si es 0 o 1 dependiendo de las fechas de inicio y fin*/
+        $validez=0;
+        //echo $num . ". feini: " . $fecha . ". fechafin: " . $fechaf . ". hora en: " . $hora_e . ". hora sal: " . $hora_s;
+        
+    }
 ?>

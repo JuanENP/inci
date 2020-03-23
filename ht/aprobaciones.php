@@ -50,21 +50,32 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
 
         <script>
-                function oculta(x)
+            function oculta(x)
             {
                 if(x==0)
                 {
-                    document.getElementById('caja_busqueda').style.display="block";
+                    document.getElementById('fecf').style.display="none";
+                    document.getElementById('he').style.display="none";
+                    document.getElementById('hs').style.display="none";
                 }
                 else
                 {
-                    //document.getElementById('caja_busqueda').style.display="none";
+                    document.getElementById('fecf').style.display="block";
+                    document.getElementById('he').style.display="block";
+                    document.getElementById('hs').style.display="block";
                 }
+            }
+
+            function inicio()
+            {
+                document.getElementById('fecf').style.display="none";
+                document.getElementById('he').style.display="none";
+                document.getElementById('hs').style.display="none";
             }
         </script>
     </head>
 
-    <body>
+    <body onload="inicio()">
     <script src="../assets/js/jquery.min.js"></script>
         <script src="../assets/js/main.js"></script>
         <!-- Left Panel -->
@@ -197,12 +208,14 @@
                                         <div class="row col-md-12">
                                             <div class="form-group col-lg-3">
                                                 <div class="form-1-2">
-                                                    <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
                                                     <input type="radio" name="opcion" value="justificar" onclick="oculta(0)" checked>Justificar retardo
                                                 </div>
                                                 <div class="form-1-2">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(1)">Justificar omision
+                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(0)">Justificar omisión
+                                                </div>
+                                                <div class="form-1-2">
+                                                    <input type="radio" name="opcion" value="comision" onclick="oculta(1)">Comisiones
                                                 </div>
                                             </div>
                                         </div>
@@ -236,7 +249,25 @@
 
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbfcinicial">Fecha Inicial</span>
-                                                <input name="fec" type="date" id="MainContent_txtFechaInicial" class="form-control" required/>
+                                                <input name="fec" type="date" id="" class="form-control" required/>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="fecf">
+                                                <span id="MainContent_lbfcinicial">Fecha Final</span>
+                                                <input name="fecf" type="date" id="" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-lg-3">
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="he">
+                                                <span id="MainContent_lbfcinicial">Hora Entrada</span>
+                                                <input name="he" type="time" id="" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="hs">
+                                                <span id="MainContent_lbfcinicial">Hora Salida</span>
+                                                <input name="hs" type="time" id="" class="form-control"/>
                                             </div>
 
                                             <!--
@@ -374,10 +405,6 @@
                 });
             });
  
-        </script>
-            
-        
-        
+        </script>        
     </body>
-
 </html>
