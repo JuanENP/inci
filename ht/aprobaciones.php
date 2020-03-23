@@ -1,7 +1,6 @@
 <!doctype html>
 
     <script type="text/javascript">
-        //<![CDATA[
         var theForm = document.forms['form1'];
         if (!theForm) {
             theForm = document.form1;
@@ -15,7 +14,6 @@
                 theForm.submit();
             }
         }
-        //]]>
     </script>
     <!--[if gt IE 8]><!-->
     <html class="no-js" lang="">
