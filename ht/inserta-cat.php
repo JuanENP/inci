@@ -1,5 +1,4 @@
 <?php 
-
 session_start();
 $categoria=$_POST['cat'];
 $nombre=$_POST['nom'];
@@ -30,7 +29,4 @@ $nombre=$_POST['nom'];
          mysqli_close($con);   
 
      }
-
-
-
 ?>
