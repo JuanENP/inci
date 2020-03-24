@@ -4,50 +4,66 @@
         alert("No hay una incidencia en la fecha "+fecha+" para el número de trabajador "+numero);
         location.href="../../ht/aprobaciones.php";
     }
-</script>
 
-<script type="text/javascript">
     function Ya(numero,fecha)
     {
         alert("Esta incidencia ya fue justificada antes");
         location.href="../../ht/aprobaciones.php";
     }
-</script>
 
-<script type="text/javascript">
     function Correcto()
     {
         alert("Correcto");
         location.href="../../ht/aprobaciones.php";
     }
-</script>
 
-<script type="text/javascript">
     function Error()
     {
         alert("Algo salió mal");
         location.href="../../ht/aprobaciones.php";
     }
-</script>
 
-<script type="text/javascript">
     function no()
     {
-        alert("Ya posee 2 justificaciones.");
+        alert("Ya posee 2 justificaciones. Sustento: Art. 46 CGT");
         location.href="../../ht/aprobaciones.php";
         //window.close();
-        //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
     }
+
+    function noMaxComision(fecha1, fecha2)
+    {
+        alert("El periodo entre las fechas "+fecha1+" y "+fecha2+" es superior a 5 meses y medio. NO ES POSIBLE TENER UNA COMISIÓN QUE DURE ESE TIEMPO.");
+        location.href="../../ht/aprobaciones.php";
+    }
+
+    function noComision(numero)
+    {
+        alert("El trabajador con número "+numero+ " Ya posee una comisión activa. NO ES POSIBLE TENER 2 COMISIONES A LA VEZ");
+        location.href="../../ht/aprobaciones.php";
+    }
+
+    function siComision()
+    {
+        alert("la comisión se agregó correctamente");
+        location.href="../../ht/aprobaciones.php";
+    }
+
 </script>
 
 <?php
 session_start();
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
-
     require("../../Acceso/global.php");
-    $operacion=$_POST['opcion'];
 
+    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
+    $sql5="SELECT id from quincena where validez=1";
+    $query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+    $resul5=mysqli_fetch_array($query5);
+    $quincena=$resul5[0];
+    /*FIN DE OBTENER QUINCENA ACTUAL*/
+        
+    $operacion=$_POST['opcion'];
     if($operacion=="justificar")
     {
         $num = $_POST['num'];
@@ -139,6 +155,92 @@ session_start();
 
     if($operacion=="omision")
     {
+        $num = $_POST['num'];
+        $fecha=$_POST['fec'];
         echo "OMISIÓN";
+        echo "$quincena";
+        /*2 omisiones por quincena o 
+        una omisión + 1 retardo o 
+        2 retardos (Art. 46 CGT)
+
+        just omisi=2
+        just retar=0
+        
+        total=2
+        */
+        //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificaciones
+        $sql6="SELECT count(d.clave_justificacion_id)
+        FROM trabajador a
+        INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_Numero_trabajador and a.numero_trabajador = '$num' 
+        INNER JOIN incidencia c on  b.id = c.asistencia_id and b.quincena_id = 5
+        INNER JOIN justificacion d on c.id = d.incidencia_id and d.clave_justificacion_id= 09
+        INNER JOIN acceso e on a.acceso_idacceso = e.idacceso
+        INNER JOIN turno f on e.turno_turno = f.turno";
+        $query6= mysqli_query($con, $sql6) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resul6=mysqli_fetch_array($query6);
+        $totalRetardos=$resul6[0];
+
+        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones
+        
     }//FIN DEL IF OMISIÓN
+
+    if($operacion=="comision")
+    {//comisión es la clave 17
+        echo "comisiones";
+        /*numero
+            fecha inicio
+            fecha de fin
+            validez
+        */
+        $num = $_POST['num'];//el número del trabajador
+        $fecha=$_POST['fec'];//la fecha de inicio
+        $fechaf=$_POST['fecf'];//la fecha de fin
+        $hora_e=$_POST['he'];
+        $hora_s=$_POST['hs'];
+        $clave_especial=45;
+        /*la validez siempre se debe de buscar si es 0 o 1 dependiendo de las fechas de inicio y fin*/
+        $validez=0;
+
+        $date1= new DateTime($fecha);
+        $date2= new DateTime($fechaf);
+        //echo $num . ". feini: " . $fecha . ". fechafin: " . $fechaf . ". hora en: " . $hora_e . ". hora sal: " . $hora_s;
+        /*Ver si ese empleado ya posee una comisión*/
+        $sql7="SELECT * from especial where trabajador_numero_trabajador=$num and validez=1 and clave_especial_id=89";
+        $query7=mysqli_query($con, $sql7) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resul7=mysqli_fetch_array($query7);
+        $filas7= mysqli_num_rows($query7);
+        /*Si el total de filas es 0 significa que el empleado no posee una comisión activa*/
+        if($filas7==0)
+        {
+            //antes se debe verificar si se tuvo una comisión en en los últimos 6 meses
+
+            //insertar la comisión
+            $interval = $date1->diff($date2);
+            $totDias=$interval->format('%a');//los días que durará la comisión
+            //si el periodo de comisión es superior a 165 días (5 meses y medio)
+            if($totDias>165)
+            {
+                echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
+            }
+            else
+            {
+                //Insertar la comisión
+                $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89')";
+                if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                {
+                    echo "<script> siComision(); </script>";
+                }
+                else
+                {
+                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                }
+            }
+        }
+        else
+        {
+            //El empleado ya posee una comisión activa y no puede tener 2 comisiones a la vez
+            echo "<script> noComision($num); </script>";
+        }
+
+    }//FIN DEL IF COMISIÓN
 ?>
