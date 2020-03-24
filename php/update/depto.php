@@ -2,7 +2,7 @@
     function Alerta()
     {
         alert("Correcto");
-        location.href="../../ht/categoria.php";
+        location.href="../../ht/departamentos.php";
         //window.close();
         //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
     }
@@ -21,7 +21,7 @@ actualizar($idcat, $nomcat,$old_id);
         //update categoria SET categoria = 'CCCC1', nombre = 'ASISTENTE ADMINISTRATVO EN SALUD - A8' WHERE (categoria = 'CCCC');
         require("../../Acceso/global.php");
         //$sql="select * from categoria where categoria = '".$myid."'";
-        $sql="update depto SET depto = '".$id."', nombre = '".$nom."' WHERE (depto = '".$id_viejo."');";
+        $sql="update depto SET iddepto = '".$id."', nombre = '".$nom."' WHERE (iddepto = '".$id_viejo."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

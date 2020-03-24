@@ -8,9 +8,9 @@ if($operacion=="1")
 {
      require("../Acceso/global.php");  
     
-     $sql="select a.nombre,a.apellido_paterno,a.apellido_materno,a.categoria_Categoria,b.nombre,d.entrada,d.salida from trabajador a inner join categoria b on b.categoria = a.categoria_Categoria and a.numero_trabajador = '$numero'
-     inner join acceso c on acceso_idacceso = c.idacceso
-     inner join turno d on c.turno_turno = d.turno "; 
+     $sql="select a.nombre,a.apellido_paterno,a.apellido_materno,a.categoria_categoria,b.nombre,d.entrada,d.salida from trabajador a inner join categoria b on b.categoria = a.categoria_categoria and a.numero_trabajador = '$numero'
+     inner join acceso c on acceso_acceso = c.idacceso
+     inner join turno d on c.turno_turno = d.idturno "; 
      $query= mysqli_query($con, $sql);
      if(!$query)
      {

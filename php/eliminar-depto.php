@@ -5,7 +5,7 @@
         $id=$_GET['id'];
         
         require("../Acceso/global.php");
-        $sql="DELETE FROM depto WHERE depto = '".$id."'";
+        $sql="DELETE FROM depto WHERE iddepto = '".$id."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

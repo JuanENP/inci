@@ -21,7 +21,7 @@ actualizar($idcat, $nomcat,$old_id);
         //update categoria SET categoria = 'CCCC1', nombre = 'ASISTENTE ADMINISTRATVO EN SALUD - A8' WHERE (categoria = 'CCCC');
         require("../../Acceso/global.php");
         //$sql="select * from categoria where categoria = '".$myid."'";
-        $sql="update tipoempleado SET  nombre = '".$nom."' WHERE (nombre = '".$id_viejo."');";
+        $sql="update tipo SET  nombre = '".$nom."' WHERE (nombre = '".$id_viejo."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

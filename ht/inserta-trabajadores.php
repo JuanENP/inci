@@ -55,7 +55,7 @@ for($i=0; $i<7; $i++)
 //-------------------------AQUI INSERTO PRIMERO A LA TABLA ACCESO Y LUEGO  AL TRABAJADOR------------------------------------//
      //Aqui consulto los datos 
      require("../Acceso/global.php");  
-        if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$turno)")))
+        if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$turno,$num)")))
         {
          //Ocurrió algún error
          echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
@@ -76,7 +76,7 @@ for($i=0; $i<7; $i++)
             }
             elseif ($consultar<=0) 
             {
-                if(!(mysqli_query($con,"Insert into trabajador values ('$nom','$nombre','$a_pat','$a_mat','$cat','$dep',$tipo,$acceso)")))
+                if(!(mysqli_query($con,"Insert into trabajador values ('$nom','$nombre','$a_pat','$a_mat','$emp','$dep','$cat',$tipo)")))
                 {
                 //Ocurrió algún error
                 echo "<script type=\"text/javascript\">alert(\"Error\");</script>";

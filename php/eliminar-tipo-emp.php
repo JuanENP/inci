@@ -5,7 +5,7 @@
         $id=$_GET['id'];
         
         require("../Acceso/global.php");
-        $sql="DELETE FROM tipoempleado WHERE nombre = '".$id."'";
+        $sql="DELETE FROM tipo WHERE nombre = '".$id."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

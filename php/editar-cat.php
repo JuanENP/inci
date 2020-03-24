@@ -6,7 +6,7 @@ session_start();
     function consulta($myid)
     {
         require("../Acceso/global.php");
-        $sql="select * from categoria where categoria = '".$myid."'";
+        $sql="select * from categoria where idcategoria = '".$myid."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

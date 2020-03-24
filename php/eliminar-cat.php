@@ -1,3 +1,10 @@
+<script type="text/javascript">
+    function Correcto()
+    {
+        alert("Correcto");
+        location.href="./../ht/categoria.php";
+    }
+</script>
 <?php
 
     session_start();
@@ -5,7 +12,7 @@
         $id=$_GET['id'];
         
         require("../Acceso/global.php");
-        $sql="DELETE FROM categoria WHERE categoria = '".$id."'";
+        $sql="DELETE FROM categoria WHERE idcategoria = '".$id."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
@@ -13,7 +20,7 @@
         }
         else
         {
-          echo"<script>alert('Eliminado correctamente')</script>";
+          echo"<script>Correcto();</script>";
         }
         mysqli_close($con);   
     
