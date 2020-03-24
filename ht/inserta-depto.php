@@ -6,7 +6,7 @@ $nombre=$_POST['nom'];
 
      //Aqui consulto si existe un departamento igual a la que se va a guardar
      require("../Acceso/global.php");  
-     $ejecu="select * from depto where depto = '$categoria'";
+     $ejecu="select * from depto where iddepto = '$categoria'";
      $codigo=mysqli_query($con,$ejecu);
      $consultar=mysqli_num_rows($codigo);
      echo $consultar;

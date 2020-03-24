@@ -1,3 +1,19 @@
+<script type="text/javascript">
+    function Ya_Existe()
+    {
+        alert("Esta categoría ya existe");
+        location.href="../../ht/categoria.php";
+    }
+</script>
+
+<script type="text/javascript">
+    function Correcto()
+    {
+        alert("Correcto");
+        location.href="./../ht/categoria.php";
+    }
+</script>
+
 <?php 
 
 session_start();
@@ -6,13 +22,13 @@ $nombre=$_POST['nom'];
 
      //Aqui consulto si existe una categoria igual a la que se va a guardar
      require("../Acceso/global.php");  
-     $ejecu="select * from categoria where categoria = '$categoria'";
+     $ejecu="select * from categoria where idcategoria = '$categoria'";
      $codigo=mysqli_query($con,$ejecu);
      $consultar=mysqli_num_rows($codigo);
-     echo $consultar;
+    
      if($consultar>0)
      {
-             echo"<script>alert('Datos ya registrados')</script>";
+        echo "<script> Ya_Existe(); </script>";
      }
      elseif ($consultar<=0) 
      {
@@ -25,7 +41,7 @@ $nombre=$_POST['nom'];
          else
          {
          //Guardado correcto
-         echo "<script type=\"text/javascript\">alert(\"Categoría guardada correctamente\");</script>";
+         echo "<script> Correcto(); </script>";
          }
          mysqli_close($con);   
 

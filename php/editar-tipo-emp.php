@@ -6,7 +6,7 @@ session_start();
     function consulta($myid)
     {
         require("../Acceso/global.php");
-        $sql="select * from tipoemp where nombre = '".$myid."'";
+        $sql="select * from tipo where nombre = '".$myid."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

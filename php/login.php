@@ -5,7 +5,7 @@ require("../Acceso/global.php");
  $nombre= $_POST['txtusuario'];
  $contra= $_POST['txtpassword'];
 
-$ejecu=mysqli_query($con,"select * from usuario where Usuario= '$nombre' and Password=$contra");
+$ejecu=mysqli_query($con,"select * from usuario where usuario= '$nombre' and pass=$contra");
 $resul=mysqli_num_rows($ejecu);
 
  if($resul==true) //si encontró algún dato en la tabla

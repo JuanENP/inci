@@ -8,7 +8,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Empleados
+            Catalogo de Categor&#237;as
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -129,7 +129,7 @@
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Catálogo de Empleados</h1>
+                            <h1>Catálogo de Categorías</h1>
                         </div>
                     </div>
                 </div>
@@ -138,36 +138,37 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a href="#">Catálogos</a></li>
-                                <li class="active">Empleados</li>
+                                <li class="active">Tipos de empleados</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
-
+        
             <div class="content mt-3">
                 <div class="animated fadeIn">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-
-
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Nueva Categoría</span>
-                                </div>
-                                 <form method="post" action="./../ht/inserta-cat.php" id="form2">
-                                 Categoría: <input type="text" name="cat" class="form-control" required><br>
-                                 Nombre: <input type="text" name="nom" class="form-control" required><br>
-                                <input type="submit" value="Guardar">                        
-                                </form>
-                               
-                            </div>
-                        </div>
-                    </div>
-                   
+                   <div class="row"> 
+                       <form method="post" action="./../ht/inserta-tipo-emp.php" id="form2">   
+                            <div class="col-lg-12">                        
+                              <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo">Tipo de empleado </span>
+                                    </div>
+                                    <div class="card-body card-block">                          
+                                        <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" required="" />
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
+                                    </div>
+                               </div>
+                           </div> 
+                     </form>
+                   </div>  
+                         
+                      
+              
  
                     <div class="row">
                         <div class="col-md-12">
@@ -179,7 +180,7 @@
                                         <span id="MainContent_DataTable">
                                             <table id='' class="table table-striped table-bordered display">
                                                 <thead>
-                                                    <th>Categoria</th>
+                                                    <th></th>
                                                     <th>Nombre</th>
                                                     <th>Acciones</th>
                                                 </thead>
@@ -189,7 +190,7 @@
                                                     <?php
                                                         require("../Acceso/global.php");  
       
-                                                        $sql="select * from categoria";
+                                                        $sql="select * from tipo";
                                                         $query= mysqli_query($con, $sql);
                                                         if(!$query)
                                                         {
@@ -200,10 +201,10 @@
                                                           while($resul=mysqli_fetch_array($query))
                                                           {
                                                             echo "<tr>";
-                                                            echo utf8_encode("<td>" . $resul[0] . "</td>");
+                                                            echo utf8_encode("<td> </td>");
                                                             echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo_emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                            echo "<button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                             echo "</tr>";
                                                           }
                                                         }

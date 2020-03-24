@@ -6,7 +6,7 @@ session_start();
     function consulta($myid)
     {
         require("../Acceso/global.php");
-        $sql="select * from depto where depto = '".$myid."'";
+        $sql="select * from depto where iddepto = '".$myid."'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

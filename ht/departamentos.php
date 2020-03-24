@@ -166,26 +166,28 @@
 
             <div class="content mt-3">
                 <div class="animated fadeIn">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-
-
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Nuevo Departamento</span>
-                                        </div>
-                                            <form method="post" action="./../ht/inserta-depto.php" id="form2">
-                                                Departamento: <input type="text" name="cat" class="form-control" required><br>
-                                                Nombre: <input type="text" name="nom" class="form-control" required><br>
-                                                <input type="submit" value="Guardar">                        
-                                            </form>
+                   <div class="row"> 
+                       <form method="post" action="./../ht/inserta-cat.php" id="form2">   
+                            <div class="col-lg-12">                        
+                              <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo">Nueva departamento</span>
+                                    </div>
+                                    <div class="card-body card-block">                          
+                                       <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbCategoria">Departamento</span><input name="cat" type="text" id="MainContent_txtCategoria" class="form-control" required="" />
                                        </div>
-                              </div>
-                         </div>  
-                     </div>
+                                        <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" required="" />
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
+                                    </div>
+                               </div>
+                           </div> 
+                     </form>
+                   </div>  
 
                     <div class="row">
                         <div class="col-md-12">
