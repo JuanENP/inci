@@ -2,7 +2,7 @@
 $local="localhost";
 $user="root";
 $pws="";
-$db="checada5";
+$db="checada6";
 
 $con=mysqli_connect($local,$user,$pws,$db);
 if (!$con) 

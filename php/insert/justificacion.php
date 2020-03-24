@@ -30,9 +30,21 @@
         //window.close();
     }
 
+    function noMaxComision(fecha1, fecha2)
+    {
+        alert("El periodo entre las fechas "+fecha1+" y "+fecha2+" es superior a 5 meses y medio. NO ES POSIBLE TENER UNA COMISIÓN QUE DURE ESE TIEMPO.");
+        location.href="../../ht/aprobaciones.php";
+    }
+
     function noComision(numero)
     {
         alert("El trabajador con número "+numero+ " Ya posee una comisión activa. NO ES POSIBLE TENER 2 COMISIONES A LA VEZ");
+        location.href="../../ht/aprobaciones.php";
+    }
+
+    function siComision()
+    {
+        alert("la comisión se agregó correctamente");
         location.href="../../ht/aprobaciones.php";
     }
 
@@ -188,6 +200,9 @@ session_start();
         $clave_especial=45;
         /*la validez siempre se debe de buscar si es 0 o 1 dependiendo de las fechas de inicio y fin*/
         $validez=0;
+
+        $date1= new DateTime($fecha);
+        $date2= new DateTime($fechaf);
         //echo $num . ". feini: " . $fecha . ". fechafin: " . $fechaf . ". hora en: " . $hora_e . ". hora sal: " . $hora_s;
         /*Ver si ese empleado ya posee una comisión*/
         $sql7="SELECT * from especial where trabajador_numero_trabajador=$num and validez=1 and clave_especial_id=89";
@@ -197,15 +212,35 @@ session_start();
         /*Si el total de filas es 0 significa que el empleado no posee una comisión activa*/
         if($filas7==0)
         {
-            
+            //antes se debe verificar si se tuvo una comisión en en los últimos 6 meses
+
+            //insertar la comisión
+            $interval = $date1->diff($date2);
+            $totDias=$interval->format('%a');//los días que durará la comisión
+            //si el periodo de comisión es superior a 165 días (5 meses y medio)
+            if($totDias>165)
+            {
+                echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
+            }
+            else
+            {
+                //Insertar la comisión
+                $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89')";
+                if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                {
+                    echo "<script> siComision(); </script>";
+                }
+                else
+                {
+                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                }
+            }
         }
         else
         {
             //El empleado ya posee una comisión activa y no puede tener 2 comisiones a la vez
             echo "<script> noComision($num); </script>";
         }
-        
-
 
     }//FIN DEL IF COMISIÓN
 ?>

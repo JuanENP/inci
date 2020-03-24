@@ -23,7 +23,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Aprobaciones
+        Aprobaciones
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -161,17 +161,12 @@
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
             </header>
             <!-- /header -->
             <!-- Header-->
-
-
 
             <div class="breadcrumbs">
                 <div class="col-sm-4">
@@ -216,6 +211,10 @@
                                                 </div>
                                                 <div class="form-1-2">
                                                     <input type="radio" name="opcion" value="comision" onclick="oculta(1)">Comisiones
+                                                </div>
+
+                                                <div class="form-1-2">
+                                                    <input type="radio" name="opcion" value="licencia" onclick="oculta(2)">Licencias
                                                 </div>
                                             </div>
                                         </div>

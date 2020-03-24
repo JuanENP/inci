@@ -2,7 +2,7 @@ $(buscar_datos());
 
 function buscar_datos(consulta) {
     $.ajax({
-            url: '../../php/buscar-trabajador.php',
+            url: "../../php/buscar-trabajador.php",
             type: 'POST',
             dataType: 'html',
             data: { consulta: consulta },
@@ -15,7 +15,6 @@ function buscar_datos(consulta) {
             console.log("error");
         });
 }
-
 
 $(document).on('keyup', '#caja_busqueda', function() {
     var valor = $(this).val();
