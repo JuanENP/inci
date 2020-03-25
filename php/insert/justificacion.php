@@ -48,6 +48,12 @@
         location.href="../../ht/aprobaciones.php";
     }
 
+    function noOmision()
+    {
+        alert("Ya posee 2 omisiones o 2 faltas o 1 omisión + 1 justifiación");
+        location.href="../../ht/aprobaciones.php";
+    }
+
 </script>
 
 <?php
@@ -155,6 +161,9 @@ session_start();
 
     if($operacion=="omision")
     {
+        /*primero revisar si tiene una omisión en la tabla incidencias; SI NO LA TIENE...
+        Ahora revisar si tiene una omisión en la tabla omisión*/
+
         $num = $_POST['num'];
         $fecha=$_POST['fec'];
         echo "OMISIÓN";
@@ -182,6 +191,25 @@ session_start();
 
         //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia y justificaciones de omisión
         
+        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
+        $sql10="SELECT count(a.numero_trabajador) FROM trabajador a
+        INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
+        $query10= mysqli_query($con, $sql10) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resul10=mysqli_fetch_array($query10);
+        $totalOmisiones2=$resul9[0]; 
+
+        //hacer la suma total de omisiones y justificaciones de retardos
+        $totalOm=$totalRetardos+$totalOmisionesIncidencia+$totalOmisiones2;
+
+        //si totalOm es menor que 2 significa que aún puede justificar su omisión
+        if($totalOm<2)
+        {
+            //insertar la justificacion de omisión
+        }
+        else
+        {
+
+        }
     }//FIN DEL IF OMISIÓN
 
     if($operacion=="comision")
