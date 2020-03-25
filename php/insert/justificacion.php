@@ -13,7 +13,7 @@
 
     function Correcto()
     {
-        alert("Correcto");
+        alert("Justificacion agregada Correctamente");
         location.href="../../ht/aprobaciones.php";
     }
 
@@ -25,7 +25,7 @@
 
     function no()
     {
-        alert("Ya posee 2 justificaciones. Sustento: Art. 46 CGT");
+        alert("Ya posee 2 justificaciones o  2 omisiones o 1 omisión+ 1 justificación. Sustento: Art. 46 CGT");
         location.href="../../ht/aprobaciones.php";
         //window.close();
     }
@@ -54,6 +54,24 @@
         location.href="../../ht/aprobaciones.php";
     }
 
+    function antesOmision()
+    {
+        alert("Esta omisión ya fue justificada antes.");
+        location.href="../../ht/aprobaciones.php";
+    }
+
+    function omisionNoExiste(numero,fecha)
+    {
+        alert("No hay una omisión en la fecha "+fecha+" para el número de trabajador "+numero);
+        location.href="../../ht/aprobaciones.php";
+    }
+
+    function omisionCorrecta()
+    {
+        alert("Omision justificada correctamente.");
+        location.href="../../ht/aprobaciones.php";
+    }
+
 </script>
 
 <?php
@@ -62,6 +80,9 @@ session_start();
     date_default_timezone_set('America/Mexico_City');
     require("../../Acceso/global.php");
 
+    //obtener la fecha de hoy
+    $fec_act=date("Y-m-d H:i:s"); 
+    
     /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
     $sql5="SELECT idquincena from quincena where validez=1";
     $query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -152,8 +173,6 @@ session_start();
                 if($total_just_omis<2)
                 {
                     //Si el sql2 no posee datos significa que esa incidencia no ha sido justificada y la podemos justificar
-                    //obtener la fecha de hoy
-                    $fec_act=date("Y-m-d H:i:s"); 
                     $sql4="INSERT INTO justificacion VALUES (NULL, '$fec_act', $id_incidencia, '09')";
                     if((mysqli_query($con, $sql4) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                     {
@@ -183,21 +202,11 @@ session_start();
 
     if($operacion=="omision")
     {
-        /*primero revisar si tiene una omisión en la tabla incidencias; SI NO LA TIENE...
-        Ahora revisar si tiene una omisión en la tabla omisión*/
-
         $num = $_POST['num'];
         $fecha=$_POST['fec'];
-        echo "OMISIÓN";
-        echo "$quincena";
         /*2 omisiones por quincena o 
         una omisión + 1 retardo o 
         2 retardos (Art. 46 CGT)
-
-        just omisi=2
-        just retar=0
-        
-        total=2
         */
         //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificaciones
         $sql6="SELECT count(d.clave_justificacion_clave_justificacion)
@@ -222,24 +231,65 @@ session_start();
         $resul9=mysqli_fetch_array($query9);
         $totalOmisionesIncidencia=$resul9[0];
 
-        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
-        $sql10="SELECT count(a.numero_trabajador) FROM trabajador a
-        INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
-        $query10= mysqli_query($con, $sql10) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-        $resul10=mysqli_fetch_array($query10);
-        $totalOmisiones2=$resul9[0]; 
-
         //hacer la suma total de omisiones y justificaciones de retardos
-        $totalOm=$totalRetardos+$totalOmisionesIncidencia+$totalOmisiones2;
+        $totalOm=$totalRetardos+$totalOmisionesIncidencia;
 
-        //si totalOm es menor que 2 significa que aún puede justificar su omisión
+        //si totalOm es menor que 2 significa que aún puede justificar su omisión, pero antes se debe buscar la omisión a justificar
         if($totalOm<2)
         {
-            //insertar la justificacion de omisión
+            /*Ahora revisar si existe la omisión en la tabla incidencias; */
+            $sql13="SELECT c.idincidencia  FROM trabajador a
+            INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num and CAST(b.fecha_entrada AS DATE) >= '$fecha'
+            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5 and c.clave_incidencia_clave_incidencia=18 
+            INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
+            INNER JOIN turno f on e.turno_turno = f.idturno";
+            
+            $query13= mysqli_query($con, $sql13) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+            //obtener las filas del query
+            $filas13 = mysqli_num_rows($query13);
+            //Si el query está vacío significa que no existe esa omisión en la tabla incidencias
+            if($filas13==0)
+            {
+                echo "<script> omisionNoExiste($num,'$fecha'); </script>";              
+            }
+            else
+            {
+                $resul13=mysqli_fetch_array($query13);
+                $idomisionEncontrada=$resul13[0];//el id de la omision encontrada en el query13
+                //ver si esa omisión ya está justificada
+                $sql15="SELECT d.clave_justificacion_clave_justificacion FROM trabajador a
+                INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08 and c.idincidencia = $idomisionEncontrada
+                INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador";
+                $query15= mysqli_query($con, $sql15) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                //obtener las filas del query
+                $filas15 = mysqli_num_rows($query15);
+                //Si el query está vacío significa que no se ha justificado la omision, y se puede justificar
+                if($filas15==0)
+                {
+                    //justificar omision
+                    $sql16="INSERT INTO justificacion VALUES (NULL, '$fec_act', '$idomisionEncontrada', '08')";
+                    if((mysqli_query($con, $sql16) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                    {
+                        echo "<script> omisionCorrecta(); </script>";
+                    }
+                    else
+                    {
+                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                }
+                else
+                {
+                    //Esta omision ya fue justificada antes
+                    echo "<script> antesOmision(); </script>";
+                }
+            }
         }
         else
         {
-
+            //ya posee dos justificaciones o dos omisiones o 1 justificacion + 1 omision
+            echo "<script> no(); </script>";
         }
     }//FIN DEL IF OMISIÓN
 
