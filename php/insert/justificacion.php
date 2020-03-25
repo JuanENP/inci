@@ -74,7 +74,7 @@ session_start();
     {
         $num = $_POST['num'];
         $fecha=$_POST['fec'];
-        $id_incidencia;//paara guardar el id de incidencia que me arroja sql
+        $id_incidencia;//para guardar el id de incidencia que me arroja sql
 
         //ver si existe esa incidencia
         $sql="SELECT a.numero_trabajador, a.nombre, a.apellido_paterno, a.apellido_materno,f.entrada,b.fecha_entrada,f.salida,b.fecha_salida , b.quincena_quincena, b.id,c.idincidencia,c.clave_incidencia_clave_incidencia,c.descripcion, f.idturno
@@ -126,8 +126,30 @@ session_start();
                 $query3= mysqli_query($con, $sql3) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
                 $resul3=mysqli_fetch_array($query3);
                 $total=$resul3[0];
-                //si el total de 09 es menor a 2 (significa que aún puede ingresar justificación)
-                if($total<2)
+
+                //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia
+                $sql11="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
+                INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08
+                INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
+                INNER JOIN turno f on e.turno_turno = f.idturno";  
+                $query11= mysqli_query($con, $sql11) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                $resul11=mysqli_fetch_array($query11);
+                $totalOmisionesIn=$resul11[0];
+
+                //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
+                $sql12="SELECT count(a.numero_trabajador) FROM trabajador a
+                INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
+                $query12= mysqli_query($con, $sql12) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                $resul12=mysqli_fetch_array($query12);
+                $totalOmision2=$resul12[0]; 
+
+                //sumar los totales y revisar que sean menores a dos
+                $total_just_omis=$total+$totalOmisionesIn+$totalOmision2;
+
+                //si el total de 09 y justifiaciones de omision es menor a 2 (significa que aún puede ingresar justificación)
+                if($total_just_omis<2)
                 {
                     //Si el sql2 no posee datos significa que esa incidencia no ha sido justificada y la podemos justificar
                     //obtener la fecha de hoy
@@ -189,8 +211,17 @@ session_start();
         $resul6=mysqli_fetch_array($query6);
         $totalRetardos=$resul6[0];
 
-        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia y justificaciones de omisión
-        
+        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia
+        $sql9="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
+        INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
+        INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+        INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08
+        INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
+        INNER JOIN turno f on e.turno_turno = f.idturno";  
+        $query9= mysqli_query($con, $sql9) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resul9=mysqli_fetch_array($query9);
+        $totalOmisionesIncidencia=$resul9[0];
+
         //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
         $sql10="SELECT count(a.numero_trabajador) FROM trabajador a
         INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
