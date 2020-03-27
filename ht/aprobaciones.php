@@ -57,12 +57,28 @@
                     document.getElementById('fecf').style.display="none";
                     document.getElementById('he').style.display="none";
                     document.getElementById('hs').style.display="none";
+                    document.getElementById('empresa').style.display="none";
+                    document.getElementById('clavelicencia').style.display="none";
                 }
                 else
                 {
-                    document.getElementById('fecf').style.display="block";
-                    document.getElementById('he').style.display="block";
-                    document.getElementById('hs').style.display="block";
+                    if(x==2)
+                    {
+                        document.getElementById('fecf').style.display="block";
+                        document.getElementById('he').style.display="none";
+                        document.getElementById('hs').style.display="none";
+                        document.getElementById('empresa').style.display="none";
+                        document.getElementById('clavelicencia').style.display="block";
+                    }
+                    else
+                    {
+                        document.getElementById('fecf').style.display="block";
+                        document.getElementById('he').style.display="block";
+                        document.getElementById('hs').style.display="block";
+                        document.getElementById('empresa').style.display="block";
+                        document.getElementById('clavelicencia').style.display="none";
+                    }
+                    
                 }
             }
 
@@ -71,6 +87,8 @@
                 document.getElementById('fecf').style.display="none";
                 document.getElementById('he').style.display="none";
                 document.getElementById('hs').style.display="none";
+                document.getElementById('empresa').style.display="none";
+                document.getElementById('clavelicencia').style.display="none";
             }
         </script>
     </head>
@@ -238,7 +256,7 @@
                                                 <span id="MainContent_lbTrabajador">Trabajador</span>
                                                 <div class="form-1-2">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="text" name="caja_busqueda" id="caja_busqueda">
+                                                    <input type="text" name="caja_busqueda" id="caja_busqueda" autocomplete="off">
                                                 </div>
 
                                                 <div id="datos">
@@ -256,7 +274,7 @@
                                                 <input name="fecf" type="date" id="" class="form-control"/>
                                             </div>
 
-                                            <div class="form-group col-lg-3">
+                                            <div class="form-group col-lg-3" id="">
                                             </div>
 
                                             <div class="form-group col-lg-3" id="he">
@@ -267,6 +285,35 @@
                                             <div class="form-group col-lg-3" id="hs">
                                                 <span id="MainContent_lbfcinicial">Hora Salida</span>
                                                 <input name="hs" type="time" id="" class="form-control"/>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="empresa">
+                                                <span id="MainContent_lbfcinicial">Empresa Destino</span>
+                                                <input type="text" name="emp" id="" placeholder="Empresa destino">
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="clavelicencia">
+                                                <span id="MainContent_lbfcinicial">Tipo Licencia</span>
+                                                <!--select licencias-->
+                                                <select name="lic" id="">
+                                                    <?php
+                                                        require("../Acceso/global.php");  
+      
+                                                        $sql="select * from clave_especial where descripcion like 'LICENCIA%'";
+                                                        $query= mysqli_query($con, $sql);
+                                                        if(!$query)
+                                                        {
+                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        }
+                                                        else
+                                                        {
+                                                          while($resul2=mysqli_fetch_array($query))
+                                                          {
+                                                            echo "<option value='".$resul2[0]."'>".utf8_encode($resul2[0])."-".utf8_encode($resul2[1])."</option>";   
+                                                          }
+                                                        }
+                                                    ?>
+                                                </select>
                                             </div>
 
                                             <!--

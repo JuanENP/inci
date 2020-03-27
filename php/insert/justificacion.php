@@ -1,14 +1,17 @@
+<?php
+session_start();
+?>
 <script type="text/javascript">
     function No_Existe(numero,fecha)
     {
         alert("No hay una incidencia en la fecha "+fecha+" para el número de trabajador "+numero);
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function Ya(numero,fecha)
     {
         alert("Esta incidencia ya fue justificada antes");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function Correcto()
@@ -20,26 +23,26 @@
     function Error()
     {
         alert("Algo salió mal");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function no()
     {
         alert("Ya posee 2 justificaciones o  2 omisiones o 1 omisión+ 1 justificación. Sustento: Art. 46 CGT");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
         //window.close();
     }
 
     function noMaxComision(fecha1, fecha2)
     {
         alert("El periodo entre las fechas "+fecha1+" y "+fecha2+" es superior a 5 meses y medio. NO ES POSIBLE TENER UNA COMISIÓN QUE DURE ESE TIEMPO.");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function noComision(numero)
     {
         alert("El trabajador con número "+numero+ " Ya posee una comisión activa. NO ES POSIBLE TENER 2 COMISIONES A LA VEZ");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function siComision()
@@ -51,19 +54,19 @@
     function noOmision()
     {
         alert("Ya posee 2 omisiones o 2 faltas o 1 omisión + 1 justifiación");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function antesOmision()
     {
         alert("Esta omisión ya fue justificada antes.");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function omisionNoExiste(numero,fecha)
     {
         alert("No hay una omisión en la fecha "+fecha+" para el número de trabajador "+numero);
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function omisionCorrecta()
@@ -72,10 +75,13 @@
         location.href="../../ht/aprobaciones.php";
     }
 
+    function imprime(texto)
+    {
+        alert(texto);
+        history.back();
+    }
 </script>
-
 <?php
-session_start();
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
     require("../../Acceso/global.php");
@@ -306,13 +312,12 @@ session_start();
         $fechaf=$_POST['fecf'];//la fecha de fin
         $hora_e=$_POST['he'];
         $hora_s=$_POST['hs'];
+        $empresa=$_POST['empresa'];
         $clave_especial=45;
-        /*la validez siempre se debe de buscar si es 0 o 1 dependiendo de las fechas de inicio y fin*/
         $validez=0;
 
         $date1= new DateTime($fecha);
         $date2= new DateTime($fechaf);
-        //echo $num . ". feini: " . $fecha . ". fechafin: " . $fechaf . ". hora en: " . $hora_e . ". hora sal: " . $hora_s;
         /*Ver si ese empleado ya posee una comisión*/
         $sql7="SELECT * from especial where trabajador_trabajador=$num and validez=1 and clave_especial_clave_especial=89";
         $query7=mysqli_query($con, $sql7) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -321,27 +326,47 @@ session_start();
         /*Si el total de filas es 0 significa que el empleado no posee una comisión activa*/
         if($filas7==0)
         {
-            //antes se debe verificar si se tuvo una comisión en en los últimos 6 meses
-
-            //insertar la comisión
-            $interval = $date1->diff($date2);
-            $totDias=$interval->format('%a');//los días que durará la comisión
-            //si el periodo de comisión es superior a 165 días (5 meses y medio)
-            if($totDias>165)
+            /*antes se debe verificar si se tuvo una comisión en en los últimos 6 meses*/
+            //obtener la fecha de hoy
+            $hoy=date("Y-m-d"); 
+            $fecha_ac = strtotime($hoy);
+            $fecha_in = strtotime($fecha);//la fecha de inicio de la comisión
+            if($fecha_ac < $fecha_in)
             {
-                echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
-            }
-            else
-            {
-                //Insertar la comisión
-                $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89')";
-                if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                //La comisión aún no empieza
+                //insertar la comisión
+                $interval = $date1->diff($date2);
+                $totDias=$interval->format('%a');//los días que durará la comisión
+                //si el periodo de comisión es superior a 165 días (5 meses y medio)
+                if($totDias>165)
                 {
-                    echo "<script> siComision(); </script>";
+                    echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
                 }
                 else
                 {
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    //verificar si el día actual es inferior a la fecha de inicio de la comisión
+
+                    //Insertar la comisión
+                    $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89','','$totDias')";
+                    if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                    {
+                        echo "<script> siComision(); </script>";
+                    }
+                    else
+                    {
+                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                }
+            }
+            else
+            {
+                if($fecha_ac==$fecha_in)
+                {
+                    echo "<script> imprime('La comisión empieza hoy y no puede registrarse debido a que SE REQUIERE MÍNIMO UN DÍA DE ANTICIPACIÓN'); </script>";
+                }
+                else
+                {
+                    echo "<script> imprime('La fecha de inicio de la comisión ya pasó, NO ES POSIBLE REGISTRAR UNA COMISIÓN QUE INICIÓ ANTES DE HOY'); </script>";
                 }
             }
         }
@@ -352,4 +377,15 @@ session_start();
         }
 
     }//FIN DEL IF COMISIÓN
+
+    if($operacion=="licencia")
+    {
+        /*con goce o sin goce
+        */
+        $num = $_POST['num'];//el número del trabajador
+        $fecha=$_POST['fec'];//la fecha de inicio
+        $fechaf=$_POST['fecf'];//la fecha de fin
+        $tipoLicencia=$_POST['lic'];//la clave de licencia que se eligió en aprobación
+        
+    }
 ?>
