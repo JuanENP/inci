@@ -1,45 +1,48 @@
+<?php
+session_start();
+?>
 <script type="text/javascript">
     function No_Existe(numero,fecha)
     {
         alert("No hay una incidencia en la fecha "+fecha+" para el número de trabajador "+numero);
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function Ya(numero,fecha)
     {
         alert("Esta incidencia ya fue justificada antes");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function Correcto()
     {
-        alert("Correcto");
+        alert("Justificacion agregada Correctamente");
         location.href="../../ht/aprobaciones.php";
     }
 
     function Error()
     {
         alert("Algo salió mal");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function no()
     {
-        alert("Ya posee 2 justificaciones. Sustento: Art. 46 CGT");
-        location.href="../../ht/aprobaciones.php";
+        alert("Ya posee 2 justificaciones o  2 omisiones o 1 omisión+ 1 justificación. Sustento: Art. 46 CGT");
+        history.back();
         //window.close();
     }
 
     function noMaxComision(fecha1, fecha2)
     {
         alert("El periodo entre las fechas "+fecha1+" y "+fecha2+" es superior a 5 meses y medio. NO ES POSIBLE TENER UNA COMISIÓN QUE DURE ESE TIEMPO.");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function noComision(numero)
     {
         alert("El trabajador con número "+numero+ " Ya posee una comisión activa. NO ES POSIBLE TENER 2 COMISIONES A LA VEZ");
-        location.href="../../ht/aprobaciones.php";
+        history.back();
     }
 
     function siComision()
@@ -51,17 +54,41 @@
     function noOmision()
     {
         alert("Ya posee 2 omisiones o 2 faltas o 1 omisión + 1 justifiación");
+        history.back();
+    }
+
+    function antesOmision()
+    {
+        alert("Esta omisión ya fue justificada antes.");
+        history.back();
+    }
+
+    function omisionNoExiste(numero,fecha)
+    {
+        alert("No hay una omisión en la fecha "+fecha+" para el número de trabajador "+numero);
+        history.back();
+    }
+
+    function omisionCorrecta()
+    {
+        alert("Omision justificada correctamente.");
         location.href="../../ht/aprobaciones.php";
     }
 
+    function imprime(texto)
+    {
+        alert(texto);
+        history.back();
+    }
 </script>
-
 <?php
-session_start();
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
     require("../../Acceso/global.php");
 
+    //obtener la fecha de hoy
+    $fec_act=date("Y-m-d H:i:s"); 
+    
     /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
     $sql5="SELECT idquincena from quincena where validez=1";
     $query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -152,8 +179,6 @@ session_start();
                 if($total_just_omis<2)
                 {
                     //Si el sql2 no posee datos significa que esa incidencia no ha sido justificada y la podemos justificar
-                    //obtener la fecha de hoy
-                    $fec_act=date("Y-m-d H:i:s"); 
                     $sql4="INSERT INTO justificacion VALUES (NULL, '$fec_act', $id_incidencia, '09')";
                     if((mysqli_query($con, $sql4) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                     {
@@ -183,21 +208,11 @@ session_start();
 
     if($operacion=="omision")
     {
-        /*primero revisar si tiene una omisión en la tabla incidencias; SI NO LA TIENE...
-        Ahora revisar si tiene una omisión en la tabla omisión*/
-
         $num = $_POST['num'];
         $fecha=$_POST['fec'];
-        echo "OMISIÓN";
-        echo "$quincena";
         /*2 omisiones por quincena o 
         una omisión + 1 retardo o 
         2 retardos (Art. 46 CGT)
-
-        just omisi=2
-        just retar=0
-        
-        total=2
         */
         //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificaciones
         $sql6="SELECT count(d.clave_justificacion_clave_justificacion)
@@ -222,24 +237,65 @@ session_start();
         $resul9=mysqli_fetch_array($query9);
         $totalOmisionesIncidencia=$resul9[0];
 
-        //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
-        $sql10="SELECT count(a.numero_trabajador) FROM trabajador a
-        INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
-        $query10= mysqli_query($con, $sql10) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-        $resul10=mysqli_fetch_array($query10);
-        $totalOmisiones2=$resul9[0]; 
-
         //hacer la suma total de omisiones y justificaciones de retardos
-        $totalOm=$totalRetardos+$totalOmisionesIncidencia+$totalOmisiones2;
+        $totalOm=$totalRetardos+$totalOmisionesIncidencia;
 
-        //si totalOm es menor que 2 significa que aún puede justificar su omisión
+        //si totalOm es menor que 2 significa que aún puede justificar su omisión, pero antes se debe buscar la omisión a justificar
         if($totalOm<2)
         {
-            //insertar la justificacion de omisión
+            /*Ahora revisar si existe la omisión en la tabla incidencias; */
+            $sql13="SELECT c.idincidencia  FROM trabajador a
+            INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num and CAST(b.fecha_entrada AS DATE) >= '$fecha'
+            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5 and c.clave_incidencia_clave_incidencia=18 
+            INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
+            INNER JOIN turno f on e.turno_turno = f.idturno";
+            
+            $query13= mysqli_query($con, $sql13) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+            //obtener las filas del query
+            $filas13 = mysqli_num_rows($query13);
+            //Si el query está vacío significa que no existe esa omisión en la tabla incidencias
+            if($filas13==0)
+            {
+                echo "<script> omisionNoExiste($num,'$fecha'); </script>";              
+            }
+            else
+            {
+                $resul13=mysqli_fetch_array($query13);
+                $idomisionEncontrada=$resul13[0];//el id de la omision encontrada en el query13
+                //ver si esa omisión ya está justificada
+                $sql15="SELECT d.clave_justificacion_clave_justificacion FROM trabajador a
+                INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08 and c.idincidencia = $idomisionEncontrada
+                INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador";
+                $query15= mysqli_query($con, $sql15) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                //obtener las filas del query
+                $filas15 = mysqli_num_rows($query15);
+                //Si el query está vacío significa que no se ha justificado la omision, y se puede justificar
+                if($filas15==0)
+                {
+                    //justificar omision
+                    $sql16="INSERT INTO justificacion VALUES (NULL, '$fec_act', '$idomisionEncontrada', '08')";
+                    if((mysqli_query($con, $sql16) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                    {
+                        echo "<script> omisionCorrecta(); </script>";
+                    }
+                    else
+                    {
+                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                }
+                else
+                {
+                    //Esta omision ya fue justificada antes
+                    echo "<script> antesOmision(); </script>";
+                }
+            }
         }
         else
         {
-
+            //ya posee dos justificaciones o dos omisiones o 1 justificacion + 1 omision
+            echo "<script> no(); </script>";
         }
     }//FIN DEL IF OMISIÓN
 
@@ -256,13 +312,12 @@ session_start();
         $fechaf=$_POST['fecf'];//la fecha de fin
         $hora_e=$_POST['he'];
         $hora_s=$_POST['hs'];
+        $empresa=$_POST['empresa'];
         $clave_especial=45;
-        /*la validez siempre se debe de buscar si es 0 o 1 dependiendo de las fechas de inicio y fin*/
         $validez=0;
 
         $date1= new DateTime($fecha);
         $date2= new DateTime($fechaf);
-        //echo $num . ". feini: " . $fecha . ". fechafin: " . $fechaf . ". hora en: " . $hora_e . ". hora sal: " . $hora_s;
         /*Ver si ese empleado ya posee una comisión*/
         $sql7="SELECT * from especial where trabajador_trabajador=$num and validez=1 and clave_especial_clave_especial=89";
         $query7=mysqli_query($con, $sql7) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -271,27 +326,47 @@ session_start();
         /*Si el total de filas es 0 significa que el empleado no posee una comisión activa*/
         if($filas7==0)
         {
-            //antes se debe verificar si se tuvo una comisión en en los últimos 6 meses
-
-            //insertar la comisión
-            $interval = $date1->diff($date2);
-            $totDias=$interval->format('%a');//los días que durará la comisión
-            //si el periodo de comisión es superior a 165 días (5 meses y medio)
-            if($totDias>165)
+            /*antes se debe verificar si se tuvo una comisión en en los últimos 6 meses*/
+            //obtener la fecha de hoy
+            $hoy=date("Y-m-d"); 
+            $fecha_ac = strtotime($hoy);
+            $fecha_in = strtotime($fecha);//la fecha de inicio de la comisión
+            if($fecha_ac < $fecha_in)
             {
-                echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
-            }
-            else
-            {
-                //Insertar la comisión
-                $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89')";
-                if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                //La comisión aún no empieza
+                //insertar la comisión
+                $interval = $date1->diff($date2);
+                $totDias=$interval->format('%a');//los días que durará la comisión
+                //si el periodo de comisión es superior a 165 días (5 meses y medio)
+                if($totDias>165)
                 {
-                    echo "<script> siComision(); </script>";
+                    echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
                 }
                 else
                 {
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    //verificar si el día actual es inferior a la fecha de inicio de la comisión
+
+                    //Insertar la comisión
+                    $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89','','$totDias')";
+                    if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
+                    {
+                        echo "<script> siComision(); </script>";
+                    }
+                    else
+                    {
+                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                }
+            }
+            else
+            {
+                if($fecha_ac==$fecha_in)
+                {
+                    echo "<script> imprime('La comisión empieza hoy y no puede registrarse debido a que SE REQUIERE MÍNIMO UN DÍA DE ANTICIPACIÓN'); </script>";
+                }
+                else
+                {
+                    echo "<script> imprime('La fecha de inicio de la comisión ya pasó, NO ES POSIBLE REGISTRAR UNA COMISIÓN QUE INICIÓ ANTES DE HOY'); </script>";
                 }
             }
         }
@@ -302,4 +377,15 @@ session_start();
         }
 
     }//FIN DEL IF COMISIÓN
+
+    if($operacion=="licencia")
+    {
+        /*con goce o sin goce
+        */
+        $num = $_POST['num'];//el número del trabajador
+        $fecha=$_POST['fec'];//la fecha de inicio
+        $fechaf=$_POST['fecf'];//la fecha de fin
+        $tipoLicencia=$_POST['lic'];//la clave de licencia que se eligió en aprobación
+        
+    }
 ?>
