@@ -52,19 +52,11 @@ for($i=0; $i<7; $i++)
 }
 
 
-//-------------------------AQUI INSERTO PRIMERO A LA TABLA ACCESO Y LUEGO  AL TRABAJADOR------------------------------------//
+//-------------------------AQUI INSERTO PRIMERO A LA TABLA TRABAJADOR Y LUEGO SU ACCESO------------------------------------//
      //Aqui consulto los datos 
      require("../Acceso/global.php");  
-        if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$turno,$num)")))
-        {
-         //Ocurrió algún error
-         echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-         die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-        }
-         else
-        {
-
-            //Aqui consulto si existe una categoria igual a la que se va a guardar
+     
+    //Aqui consulto si existe  numero de trabajador
             require("../Acceso/global.php");  
             $ejecu="select * from trabajador where numero_trabajador = '$num'";
             $codigo=mysqli_query($con,$ejecu);
@@ -83,9 +75,16 @@ for($i=0; $i<7; $i++)
                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                 }
                 else
-                {
-                //Guardado correcto
-                echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\");</script>";
+                { if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$turno,$num)")))
+                    {
+                     //Ocurrió algún error
+                     echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                     else
+                    {
+                         echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\");</script>";
+                    }
                 }
                 mysqli_close($con);   
 

@@ -34,9 +34,26 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
 
-
+        <script>
+            function oculta(x)
+            {
+                if(x==0)
+                {
+                    document.getElementById('empresa').style.display="block";//ver
+                }
+                else
+                {
+                    document.getElementById('empresa').style.display="none";//ocultar
+                }
+                
+            }
+            function inicio()
+            {
+                document.getElementById('empresa').style.display="none";//ocultar
+            }
+        </script>
 </head>
-<body>
+<body onload="inicio()"> <!--Ejecuta función onload con el body -->
 <script src="../assets/js/jquery.min.js"></script>
         <script src="../assets/js/main-cat.js"></script>
 
@@ -232,13 +249,13 @@
                                                             mysqli_close($con);
                                                     ?> <!--FIN PHP -->
 												</div>
-
-												<div class="form-group">
+                                                    
+												<div class="form-group col-lg-7">
 											    <label>Tipo de empleado: </label> 
                                                     <?php
                                                         require("../Acceso/global.php");  
       
-                                                        $sql="select * from tipoempleado";
+                                                        $sql="select * from tipo";
                                                         $query= mysqli_query($con, $sql);
                                                         if(!$query)
                                                         {
@@ -246,13 +263,28 @@
                                                         }
                                                         else
                                                         {
-                                                            echo "<select name='tipo' >";
-                                                            while($fila=mysqli_fetch_array($query)){
-                                                                echo "<option value='".$fila[0]."'>". $fila[1] . " ". "</option>";
+
+                                                            while($fila=mysqli_fetch_array($query))
+                                                            {
+                                                                if($fila[1]=="COMISIONADO FORÁNEO")
+                                                                {
+                                                                     echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
+                                                                }
+                                                                else
+                                                                {   if($fila[1]=="EVENTUAL")
+                                                                    {  
+                                                                        echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+                                                                    }
+                                                                    else 
+                                                                    {  
+                                                                     echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
+                                                                    }
+                                                                }
+
                                                             }
-                                                            echo "</select>";
+                                                            echo "<div id='empresa' class='form-group col-lg-7'><br> <label>Empresa de origen: </label> <br> <input type='text'></div>";
+                                                           
                                                         }
-                                                
                                                             mysqli_close($con);
                                                     ?> <!--FIN PHP -->
 												</div>
@@ -292,6 +324,7 @@
                                                             mysqli_close($con);
                                                     ?> <!--FIN PHP -->
 												</div>
+                                                
 												<input type="submit" value="Guardar"  > 
 
 											</form>
