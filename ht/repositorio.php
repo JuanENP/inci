@@ -2,7 +2,8 @@
 session_start();
 #ESTA FUNCIÓN SIRVE PARA CONSULTAR LA INFORMACIÓN DEl TRABAJADOR
 require("../Acceso/global.php");  
- $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
+$numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
+ 
 ?>
 <!doctype html>
 
@@ -40,10 +41,32 @@ require("../Acceso/global.php");
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script>
+        function oculta(x)
+            {
+                if(x==0)
+                {
+                    document.getElementById('causa').style.display="block";//ver
+                    document.getElementById('fecha').style.display="block";//ver
+                }
+                else
+                {
+                    document.getElementById('causa').style.display="none";//ocultar
+                    document.getElementById('fecha').style.display="none";//ocultar
+                }
+   
+            }
+            function inicio()
+            {
+                document.getElementById('causa').style.display="none";//ocultar
+                document.getElementById('fecha').style.display="none";//ocultar   
+            }
+
+        </script>
 
     </head>
 
-    <body>
+    <body onload="inicio()">
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -58,7 +81,7 @@ require("../Acceso/global.php");
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="../panel_control.html"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
                         </li>
                 
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -98,7 +121,7 @@ require("../Acceso/global.php");
                             </a>
                             <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="updatePassword.html"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.html"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>
@@ -130,17 +153,27 @@ require("../Acceso/global.php");
                             <div class="card">
                                 <div class="card-header">
                                     <span id="MainContent_lbtitulo">Seleccione el documento que desee: </span>
-                                </div>
-                                 <form method="post" action="../pdf/crearPdf.php" id="form2">
-                                  <input type="hidden" name="num" value="<?php echo $numero ?>">
-                                  <input type="radio" name="formato" class="form-input" value="1" /> Justificación de omisión de entrada <br>
-                                  <input type="radio" name="formato" class="form-input" value="2" /> Justificación de retardo <br>
-                                  <input type="radio" name="formato" class="form-input" value="3" /> Pase de salida<br>
-                                  <input class="form-btn" name="descargar" type="submit" value="Descargar" />
-                                  
-                                </form>
-                                <!-- <a href="../pdf/crearPdf.php" > CREAR PDF</a> -->
-                            </div>
+                                    </div>
+                                    <form method="post" action="../pdf/crearPdf.php" id="form2">
+                                    <!-- BUSCAR CUANTAS JUSTIFICACIONES DE OMISION TENGO -->
+                                     <!-- BUSCAR CUANTAS JUSTIFICACIONES DE RETARDO TENGO -->
+                                      <!-- BUSCAR CUANTOS PASES DE SALIDA TENGO -->
+                                    <?php
+                                    ?>
+                                    <input type="hidden" name="num" value="<?php echo $numero ?>">
+                                    <input type="radio" name="formato" class="form-input" value="1" onclick='oculta(1)'/> Justificación de omisión de entrada <br>
+                                    <input type="radio" name="formato" class="form-input" value="2" onclick='oculta(1)'/> Justificación de omisión de salida <br>
+                                    <input type="radio" name="formato" class="form-input" value="3" onclick='oculta(1)' /> Justificación de retardo <br>
+                                    <input type="radio" name="formato" class="form-input" value="4" onclick='oculta(0)' /> Pase de salida<br>
+                                    <div id="causa">
+                                    <br><span>Motivo: </span> <br> <input type='text' class='form-control' name='motivo'>
+                                    <span>Fecha : </span> <br> <input type='date' class='form-control' name='fecha'><br>
+                                    </div>
+                                    <input class="form-btn" name="descargar" type="submit" value="Descargar" />
+                                
+                                    </form>
+                               
+                              </div>
                         </div>
                     </div>
                    

@@ -1,0 +1,61 @@
+
+body
+{
+    font-family: Arial;
+    font-size:13px;
+    /* margin: 100mm 8mm 2mm 100mm; */
+}
+
+.contenedor
+{
+   
+    border: solid black;
+    margin:0 auto;
+    
+   
+}
+
+#p1
+{
+    
+    text-align: right;
+    flex-basis: calc(60%-10px);
+
+}
+#p2
+{
+    text-align:right ;
+    flex-basis: calc(60%-10px);
+    border-color: black;
+}
+
+#p3
+{
+    text-align: center;
+    margin-left:15px;
+}
+#p4
+{
+    text-align:center;
+    margin-left:15px;
+    font-size: 10px;
+}
+
+
+.borde_superior
+{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+
+#imagen_superior
+{
+    flex-basis: calc(40%-10px);
+}
+
+#logo_superior
+{
+    width: 400px; height: 100px;
+   
+}

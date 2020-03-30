@@ -103,13 +103,14 @@ else
                                 <li><i class="fa fa-users"></i><a href="ht/usuarios.html">Usuarios</a></li>
                             </ul>
                         </li>
-                        <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ DEL EMPLEADO -->
-                        <li id="Menu_Sistema" class="menu-item-has-children dropdown">
+                        <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ REPOSITORIO DEL EMPLEADO -->
+                        <!--  <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Repositorio</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-users"></i><a href="ht/repositorio.php">Formatos</a></li>
                             </ul>
                         </li>
+                        -->
                         <!-- -------------------------------------------- -->
                     </ul>
                 </div>
