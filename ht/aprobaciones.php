@@ -1,3 +1,19 @@
+<?php
+session_start();
+$user=$_SESSION['name'];
+/*si la variable de sesión no existe, entonces no es posible entrar a aprobaciones. 
+Lo redirigimos al index.html para que inicie sesión*/
+if($user==null || $user=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+else
+{
+    //mandar el nom de usuario
+    $_SESSION['name']=$user;
+}
+?>
 <!doctype html>
 
     <script type="text/javascript">
@@ -234,6 +250,11 @@
                                                 <div class="form-1-2">
                                                     <input type="radio" name="opcion" value="licencia" onclick="oculta(2)">Licencias
                                                 </div>
+
+                                                <div class="form-1-2">
+                                                    <input type="radio" name="opcion" value="permiso" onclick="oculta(2)">Permisos
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -256,7 +277,7 @@
                                                 <span id="MainContent_lbTrabajador">Trabajador</span>
                                                 <div class="form-1-2">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="text" name="caja_busqueda" id="caja_busqueda" autocomplete="off">
+                                                    <input type="text" name="caja_busqueda" id="caja_busqueda" autocomplete="off" required>
                                                 </div>
 
                                                 <div id="datos">

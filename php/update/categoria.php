@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <script type="text/javascript">
     function Alerta()
     {
@@ -9,7 +12,6 @@
 </script>
 
 <?php
-session_start();
 $old_id=$_POST['old_id'];
 $idcat=$_POST['idcat'];
 $nomcat=$_POST['nomcat'];

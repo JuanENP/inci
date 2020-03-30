@@ -380,12 +380,106 @@ session_start();
 
     if($operacion=="licencia")
     {
-        /*con goce o sin goce
+        /*sin goce
+
+        *Arti.52 CGT Si pasa de Base a Confianza se puede pedir una licencia sin goce superior a un año, pero se renueva anualmente
+        Arti.53 CGT. Los trabajadores disfrutarán de licencias sin goce en forma total o fraccionada por una vez al año, el tiempo
+                     depende de su antiguedad. CICA 50
+                    Para los casos, en que la trabajadora o el trabajador haya disfrutado de licencias sin goce de sueldo, durante 
+                    el periodo que corresponda se disminuirá 1 DÍA DE VACACIONES por cada quince días de licencia.
+        Arti.54 CGT trabajadores que deban practicar servicio social o pasantía en alguna otra dependencia o entidad de gobierno 
+                    federal, estatal o municipal se le da licencia sin goce por el tiempo que dure el servicio 
+                    CICA 51
+
+        con goce
+        *Art. 55 CGT los basificados que tengan necesidad de iniciar los trámites para obtener su pensión ya sea por jubilación, 
+                    de retiro por edad y tiempo de servicio, por cesantía en edad avanzada o bien bajo el régimen de cuentas 
+                    individuales, de retiro, cesantía en edad avanzada y vejez, el Instituto le concederá licencia 
+                    con goce de sueldo por un término de tres meses.
+
+                    al que contraiga matrimonio se le concederán diez días hábiles de licencia con goce de sueldo por una sola vez, 
+                    comprometiéndose a entregar, dentro de los sesenta días posteriores a la terminación de la licencia, su acta 
+                    de matrimonio; (ya no otorga: puntualidad (79), asistencia (80), desempeño (83), mérito relevante (84), ni el art. 85)
+                    CICA 48
+
+                    por fallecimiento de un familiar en primer grado, con parentesco por consanguinidad, afinidad o su cónyuge 
+                    se le concederán cinco días hábiles de licencia con goce de sueldo. anexando copia del acta de defunción o
+                    comprometiéndose, en su caso, a entregarla dentro de los quince días posteriores a la terminación de la 
+                    licencia. (ya no otorga: puntualidad (79), asistencia (80), desempeño (83), mérito relevante (84), ni el art. 85)
+                    CICA 49
+
+                    Las trabajadoras en estado de gravidez disfrutarán de licencias con goce de sueldo, treinta días antes de 
+                    la fecha probable de parto y sesenta días después de éste.
+                    CICA 53
+
+                    licencia con goce de sueldo hasta por ocho días, cuando sus hijas o hijos menores de seis años requieran de 
+                    cuidados por enfermedad aguda; así como también para el caso de las hijas y los hijos con discapacidad física o 
+                    psíquica, sin importar la edad que tengan, basta que el médico tratante del Instituto certifique la 
+                    gravedad del caso y los días de cuidado; debiendo presentar el original del documento que acredite este 
+                    supuesto. Empleados varones deberán además comprobar con documento fehaciente, tener la custodia de la 
+                    menor o del menor y que no cuentan con el auxilio de su cónyuge.
+                    (ya no otorga: puntualidad (79), asistencia (80), desempeño (83), mérito relevante (84), ni el art. 85; 
+                    cuando en el término de un mes los días otorgados por uno u otro concepto o por ambos sumen solos o individual
+                    mente 3 días)
+
+                    
+                    CICA 62(Claves de servicio autorizadas para este concepto dentro del Instituto son: 09200 Radiología, 
+                    09210 Medicina Nuclear, 20600 Radio Diagnóstico, 17824 Radiología, 7910 Radio Terapia)
+                    En caso de riesgo de trabajo (radio,), la trabajadora o el trabajador tendrá derecho a disfrutar sus licencias con 
+                    goce de sueldo en los términos de los Artículos 110 de la Ley y el aplicable de la Ley del ISSSTE (además:
+                    art.60 Ley ISSSTE: El Trabajador o sus Familiares Derechohabientes deberán solicitar al Instituto la 
+                    calificación del probable riesgo de trabajo dentro de los treinta días hábiles siguientes a que haya ocurrido, 
+                    en los términos que señale el reglamento respectivo y demás disposiciones aplicables. No procederá la 
+                    solicitud de calificación, ni se reconocerá un riesgo del trabajo, si éste no hubiere sido notificado 
+                    al Instituto en los términos de este artículo.)
+                    ; y
+
+                    En caso de enfermedades no profesionales se aplicará lo previsto en los Artículos 111 de la Ley y el 
+                    aplicable de la Ley del ISSSTE. CLAVE 55 CICA.
+
+            ARTÍCULO 57. El Instituto concederá a su personal licencias con goce de sueldo por motivos de fuerza mayor, 
+                    distintas a las referidas en las fracciones I a IV del Artículo anterior (artículo 56). Dichas licencias 
+                    serán descontadas de los estímulos adicionales referidos en el ARTÍCULO 87, fracción VII de estas Condiciones, 
+                    a partir del primer día.   
+                    
+                    Para los efectos de los Artículos 56 y 57 la trabajadora o el trabajador podrá disfrutar de estas licencias 
+                    hasta por el número de días de sueldo en los términos del Artículo 87 (estímulos por antiguedad), 
+                    fracción VII de estas Condiciones.
+
+            Las licencias y permisos a que se refieren los Artículos anteriores podrán ser solicitadas por las trabajadoras 
+            o los trabajadores o la representación sindical, con la debida anticipación a la fecha que se señale como inicio 
+            de la misma salvo causa de fuerza mayor.
+
         */
         $num = $_POST['num'];//el número del trabajador
         $fecha=$_POST['fec'];//la fecha de inicio
         $fechaf=$_POST['fecf'];//la fecha de fin
         $tipoLicencia=$_POST['lic'];//la clave de licencia que se eligió en aprobación
         
+        /*incapacidad médica
+            revisar la incapacidad registrada en (el sistema que el ISSSTE tiene para licencias médicas, la emite cualquier doctor)
+            cual es el doctor que da más incapacidades en un periodo de tiempo.
+        */
     }
+
+    if($operacion=="permiso")
+    {
+        /*
+        CICA 40
+        Art.56 permisos con goce de sueldo, de entre uno y hasta por tres días cada uno de ellos, por los siguientes motivos:
+            I. Por intervención quirúrgica o internamiento en instituciones hospitalarias, del cónyuge, hijas o hijos, 
+            padres; 
+            II. En caso de siniestro en el hogar de la trabajadora o del trabajador;
+            III. Por privación de la libertad o accidente del cónyuge, hijas o hijos, o padres de la trabajadora 
+            o del trabajador; y
+            IV. Por sustentar examen profesional;
+            Este tipo de permisos se otorgarán a solicitud de la trabajadora o del trabajador, mediante la debida comprobación 
+            del motivo.
+            A la trabajadora o al trabajador que en el término de un semestre, exceda de tres días de permiso con goce 
+            de sueldo, se le descontarán los días excedentes de las prestaciones económicas referidas en el Artículo 87,
+            fracción VII de las presentes Condiciones.
+        */
+    }
+    
+    /*Articulo 60 CGT vacaciones*/
 ?>
