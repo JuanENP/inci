@@ -1,14 +1,14 @@
 <?php 
 
 session_start();
-$turno=$_POST['ctl00$MainContent$txtTurno'];
-$hora_entrada=$_POST['ctl00$MainContent$txtEntrada'];
-$hora_salida=$_POST['ctl00$MainContent$txtSalida'];
+$turno=$_POST['turno'];
+$hora_ent=$_POST['entrada'];
+$hora_sal=$_POST['salida'];
 
 
      //Aqui consulto si existe una categoria igual a la que se va a guardar
      require("../Acceso/global.php");  
-     $ejecu="select * from turno where turno = '$turno'";
+     $ejecu="select * from turno where idturno = '$turno'";
      $codigo=mysqli_query($con,$ejecu);
      $consultar=mysqli_num_rows($codigo);
      echo $consultar;
@@ -16,18 +16,19 @@ $hora_salida=$_POST['ctl00$MainContent$txtSalida'];
      {
              echo"<script>alert('Datos ya registrados')</script>";
      }
-     elseif ($consultar<=0) 
+     else
      {
-         if(!(mysqli_query($con,"Insert into turno values ('$categoria','$nombre')")))
+         //FALTA AGREGAR EL TOTAL DE HORAS EN LUGAR DE 0
+         if(!(mysqli_query($con,"Insert into turno values ('$turno','$hora_ent','$hora_sal',0)")))
          {
-         //Ocurrió algún error
-         echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-         die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            //Ocurrió algún error
+            echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
          }
          else
          {
-         //Guardado correcto
-         echo "<script type=\"text/javascript\">alert(\"Turno guardado correctamente\");</script>";
+            //Guardado correcto
+            echo "<script type=\"text/javascript\">alert(\"Turno guardado correctamente\");</script>";
          }
          mysqli_close($con);   
 

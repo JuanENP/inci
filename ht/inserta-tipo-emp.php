@@ -1,21 +1,38 @@
 <?php 
-
 session_start();
-$nombre=$_POST['nom'];
+?>
+<script type="text/javascript">
+    function Ya_Existe()
+    {
+        alert("Ese tipo ya existe");
+        location.href="./../ht/tipoempleado.php";
+    }
+</script>
+
+<script type="text/javascript">
+    function Correcto()
+    {
+        alert("Guardado correctamente");
+        location.href="./../ht/tipoempleado.php";
+    }
+</script>
+
+<?php 
+$descripcion=$_POST['nom'];
 
      //Aqui consulto si existe un departamento igual a la que se va a guardar
      require("../Acceso/global.php");  
-     $ejecu="select * from tipo where nombre = '$nombre'";
+     $ejecu="select * from tipo where descripcion = '$descripcion'";
      $codigo=mysqli_query($con,$ejecu);
      $consultar=mysqli_num_rows($codigo);
-     echo $consultar;
+    
      if($consultar>0)
      {
-             echo"<script>alert('Datos ya registrados')</script>";
+        echo "<script> Ya_Existe(); </script>";
      }
-     elseif ($consultar<=0) 
+     else
      {
-         if(!(mysqli_query($con,"Insert into tipoempleado values ('$nombre')")))
+         if(!(mysqli_query($con,"Insert into tipo values ('','$descripcion')")))
          {
          //Ocurrió algún error
          echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
@@ -24,7 +41,7 @@ $nombre=$_POST['nom'];
          else
          {
          //Guardado correcto
-         echo "<script type=\"text/javascript\">alert(\"Categoría guardada correctamente\");</script>";
+         echo "<script> Correcto(); </script>";
          }
          mysqli_close($con);   
 

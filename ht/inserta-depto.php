@@ -25,7 +25,7 @@ $nombre=$_POST['nom'];
          else
          {
          //Guardado correcto
-         echo "<script type=\"text/javascript\">alert(\"Categoría guardada correctamente\");</script>";
+         echo "<script type=\"text/javascript\">alert(\"Departamento guardado correctamente\");</script>";
          }
          mysqli_close($con);   
 

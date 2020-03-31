@@ -8,7 +8,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Categor&#237;as
+          Trabajadores
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -328,8 +328,28 @@
                                                             mysqli_close($con);
                                                     ?> <!--FIN PHP -->
                                         </div>
+                                       
+                                    </div>
+                                    <div class="row">  
+                            <div class="col-lg-12">                        
+                              <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo"> </span>
+                                    </div>
+                                    <div class="card-body card-block">
+                                    <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbCategoria">Fecha de inicio de servicio </span>
+                                            <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" required="" />
+                                       </div>    
+                                       <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbCategoria">Fecha de fin de servicio </span>
+                                            <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" required="" />
+                                       </div>   
 
                                     </div>
+                               </div>
+                           </div> 
+                     </div> <!--fin del row datos personales --> 
                                     <div class="card-footer">
                                             <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
                                     </div>

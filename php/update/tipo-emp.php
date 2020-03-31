@@ -1,35 +1,35 @@
+<?php 
+session_start();
+?>
 <script type="text/javascript">
-    function Alerta()
+    function Correcto()
     {
-        alert("Correcto");
-        location.href="../../ht/categoria.php";
+        alert("Actualizado correctamente");
+        location.href="./../ht/tipoempleado.php";
         //window.close();
         //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
     }
 </script>
 
 <?php
-session_start();
-$old_id=$_POST['old_id'];
-$idcat=$_POST['idcat'];
-$nomcat=$_POST['nomcat'];
+   
+    $id_anterior=$_POST['id'];
+    $nuevo_tipo=$_POST['descripcion'];
 
-actualizar($idcat, $nomcat,$old_id);
+    actualizar($nuevo_tipo,$id_anterior);
 
-    function actualizar($nom,$id_viejo)
+    function actualizar($nuevo,$id)
     {
-        //update categoria SET categoria = 'CCCC1', nombre = 'ASISTENTE ADMINISTRATVO EN SALUD - A8' WHERE (categoria = 'CCCC');
         require("../../Acceso/global.php");
-        //$sql="select * from categoria where categoria = '".$myid."'";
-        $sql="update tipo SET  nombre = '".$nom."' WHERE (nombre = '".$id_viejo."');";
+        $sql="update tipo SET  descripcion = '".$nuevo."' WHERE (idtipo = '".$id."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
         }
         else
         {
-            echo "<script> Alerta(); </script>";
+            echo "<script> Correcto(); </script>";
         }
     }
 ?>

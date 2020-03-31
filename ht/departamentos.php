@@ -198,7 +198,7 @@
                                             <div class="card-body">
                                                 <table id='' class='table table-striped table-bordered display'>
                                                     <thead>
-                                                        <th>Categoria</th>
+                                                        <th>Departamento</th>
                                                         <th>Nombre</th>
                                                         <th>Acciones</th>
                                                     </thead>

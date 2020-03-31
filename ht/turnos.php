@@ -8,7 +8,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Categor&#237;as
+            Catalogo de  turnos
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -172,30 +172,12 @@
                       <form method="post" action="./../ht/inserta-cat.php" id="form2">                       
                           <div class="form-group col-lg-6">
                             <span id="MainContent_lbTurno">Turno</span>
-                            <input name="ctl00$MainContent$txtTurno" type="text" id="MainContent_txtTurno" class="form-control" required="" />
+                            <input name="turno" type="text" id="MainContent_txtTurno" class="form-control" required="" />
                           </div>
 
-<script type="text/javascript">
-var timepicker = new TimePicker('time', {
-  lang: 'en',
-  theme: 'blue-grey'
-});
-timepicker.on('change', function(evt) {
-  
-  var value = (evt.hour || '00') + ':' + (evt.minute || '00');
-  evt.element.value = value;
-
-});        
-</script>
-
-
-<div>
-  <input type="text" id="time" placeholder="Horas:Minutos">
-</div>
-
                           <div class="form-group col-lg-6">
-                            <span id="MainContent_lbEntrada">Entrada</span>                              
-                              <input name="ctl00$MainContent$txtEntrada" type="text" id="MainContent_txtEntrada" class="form-control" required="" />
+                            <span id="MainContent_lbEntrada">Hora de entrada</span>                              
+                              <input name="entrada" type="time" id="MainContent_txtEntrada" class="form-control" required="" />
                           </div>
                        
                           <div class="form-group col-lg-6">
@@ -203,13 +185,13 @@ timepicker.on('change', function(evt) {
                             </span>
                           </div>
                           <div class="form-group col-lg-6">
-                            <span id="MainContent_lbSalida">Salida</span>
-                              <input name="ctl00$MainContent$txtSalida" type="time" id="MainContent_txtSalida" class="form-control" required="" />
+                            <span id="MainContent_lbSalida">Hora de salida</span>
+                              <input name="salida" type="time" id="MainContent_txtSalida" class="form-control" required="" />
                           </div>
                           
                       </div>
                       <div class="card-footer">
-                          <input type="submit" name="ctl00$MainContent$btnAgregar" value="Agregar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
+                          <input type="submit" name="ctl00$MainContent$btnAgregar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
                       </div>
                         </form>
                       
@@ -228,7 +210,8 @@ timepicker.on('change', function(evt) {
                                 <table id='' class="table table-striped table-bordered display">
                                     <thead>
                                         <th>Turno</th>
-                                        <th>Horario</th>
+                                        <th>Hora entrada</th>
+                                        <th>Hora salida</th>
                                         <th>Acciones</th>
                                     </thead>
     
@@ -250,8 +233,9 @@ timepicker.on('change', function(evt) {
                                                 echo "<tr>";
                                                 echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                 echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                echo utf8_encode("<td>" . $resul[2] . "</td>");
+                                                echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-turno.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                echo "<button class='btn btn-success'> <a href='../php/editar-turno.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                 echo "</tr>";
                                               }
                                             }

@@ -8,7 +8,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Categor&#237;as
+            Catalogo de tipos de empleado
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -129,7 +129,7 @@
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Catálogo de Categorías</h1>
+                            <h1>Catálogo de tipos de empleados</h1>
                         </div>
                     </div>
                 </div>
@@ -179,8 +179,7 @@
                                     <div class="card-body">
                                         <span id="MainContent_DataTable">
                                             <table id='' class="table table-striped table-bordered display">
-                                                <thead>
-                                                    <th></th>
+                                                <thead>  
                                                     <th>Nombre</th>
                                                     <th>Acciones</th>
                                                 </thead>
@@ -201,10 +200,9 @@
                                                           while($resul=mysqli_fetch_array($query))
                                                           {
                                                             echo "<tr>";
-                                                            echo utf8_encode("<td> </td>");
                                                             echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo_emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                            echo "<button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
                                                             echo "</tr>";
                                                           }
                                                         }
