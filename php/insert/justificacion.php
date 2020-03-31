@@ -301,7 +301,6 @@ session_start();
 
     if($operacion=="comision")
     {//comisión es la clave 17
-        echo "comisiones";
         /*numero
             fecha inicio
             fecha de fin
@@ -383,8 +382,8 @@ session_start();
         /*sin goce
 
         *Arti.52 CGT Si pasa de Base a Confianza se puede pedir una licencia sin goce superior a un año, pero se renueva anualmente
-        Arti.53 CGT. Los trabajadores disfrutarán de licencias sin goce en forma total o fraccionada por una vez al año, el tiempo
-                     depende de su antiguedad. CICA 50
+        *Arti.53 CGT. Los trabajadores disfrutarán de licencias sin goce en forma total o fraccionada por una vez al año, el tiempo
+                     depende de su antiguedad. 
                     Para los casos, en que la trabajadora o el trabajador haya disfrutado de licencias sin goce de sueldo, durante 
                     el periodo que corresponda se disminuirá 1 DÍA DE VACACIONES por cada quince días de licencia.
         Arti.54 CGT trabajadores que deban practicar servicio social o pasantía en alguna otra dependencia o entidad de gobierno 
@@ -412,7 +411,7 @@ session_start();
                     la fecha probable de parto y sesenta días después de éste.
                     CICA 53
 
-                    licencia con goce de sueldo hasta por ocho días, cuando sus hijas o hijos menores de seis años requieran de 
+                    *licencia con goce de sueldo hasta por ocho días, cuando sus hijas o hijos menores de seis años requieran de 
                     cuidados por enfermedad aguda; así como también para el caso de las hijas y los hijos con discapacidad física o 
                     psíquica, sin importar la edad que tengan, basta que el médico tratante del Instituto certifique la 
                     gravedad del caso y los días de cuidado; debiendo presentar el original del documento que acredite este 
@@ -444,7 +443,7 @@ session_start();
                     
                     Para los efectos de los Artículos 56 y 57 la trabajadora o el trabajador podrá disfrutar de estas licencias 
                     hasta por el número de días de sueldo en los términos del Artículo 87 (estímulos por antiguedad), 
-                    fracción VII de estas Condiciones.
+                    fracción VII de estas Condiciones. CICA 50.
 
             Las licencias y permisos a que se refieren los Artículos anteriores podrán ser solicitadas por las trabajadoras 
             o los trabajadores o la representación sindical, con la debida anticipación a la fecha que se señale como inicio 
@@ -464,6 +463,9 @@ session_start();
 
     if($operacion=="permiso")
     {
+        //especial
+        //40 con goce de sueldo hasta por 3 días
+        //41 con goce de sueldo por antiguedad
         /*
         CICA 40
         Art.56 permisos con goce de sueldo, de entre uno y hasta por tres días cada uno de ellos, por los siguientes motivos:
