@@ -8,6 +8,11 @@ if($user==null || $user=='')
     header("Location: ../index.html");
     die();
 }
+else
+{
+    //mandar el nom de usuario
+    $_SESSION['name']=$user;
+}
 ?>
 <!doctype html>
 <form method="post" action="./panel_control.html" id="form1">

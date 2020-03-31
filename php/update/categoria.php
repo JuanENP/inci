@@ -12,7 +12,6 @@ session_start();
 </script>
 
 <?php
-
 $old_id=$_POST['old_id'];
 $idcat=$_POST['idcat'];
 $nomcat=$_POST['nomcat'];
