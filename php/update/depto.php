@@ -1,7 +1,7 @@
 <script type="text/javascript">
     function Alerta()
     {
-        alert("Correcto");
+        alert("Modificado correctamente");
         location.href="../../ht/departamentos.php";
         //window.close();
         //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal

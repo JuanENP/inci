@@ -2,14 +2,14 @@
     function Ya_Existe()
     {
         alert("Esta categoría ya existe");
-        location.href="../../ht/categoria.php";
+        location.href="./../ht/categoria.php";
     }
 </script>
 
 <script type="text/javascript">
     function Correcto()
     {
-        alert("Correcto");
+        alert("Guardado correctamente");
         location.href="./../ht/categoria.php";
     }
 </script>
