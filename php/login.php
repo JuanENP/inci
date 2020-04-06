@@ -1,40 +1,39 @@
 <?php
-session_start();
-require("../Acceso/global.php");  
+session_start();  
 
- $nombre= $_POST['txtusuario'];
- $contra= $_POST['txtpassword'];
+  $nombre= $_POST['txtusuario'];
+  $contra= $_POST['txtpassword'];
+  require("../Acceso/global.php");
 
-$ejecu=mysqli_query($con,"select * from usuario where usuario= '$nombre' and pass=$contra");
-$resul=mysqli_num_rows($ejecu);
+  $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE user = '$nombre' AND password = PASSWORD('$contra')");
+  $resul=mysqli_num_rows($ejecu);
 
- if($resul==true) //si encontró algún dato en la tabla
+ if($resul==1) //si encontró algún dato en la tabla
+  {
+    $resul5=mysqli_fetch_array($ejecu);
+    $us=$resul5[0];
+    if(is_numeric($us))
     {
-      if(is_numeric($nombre))
-      {
-        $_SESSION['num_emp']=$nombre;
-        mysqli_close($con);
-        header("Location: ./../ht/repositorio.php");  
-         
-      }
-      else
-        {
-          $_SESSION['name']=$nombre;
-          mysqli_close($con);
-          header("Location: ../panel_control.php"); 
-        }
+      $_SESSION['num_emp']=$nombre;
+      mysqli_close($con);
+      header("Location: ./../ht/repositorio.php");  
+       
     }
-    else 
+    else
     {
-      if ($resul1==false) //si no encontró algo en la tablan significa que el usuario no existe
-      {
-        mysqli_close($con);
-        header("Location: ../index.html");
-      } 
+      $_SESSION['name']=$nombre;
+      $_SESSION['con']=$contra;
+      mysqli_close($con);
+      header("Location: ../panel_control.php"); 
     }
-  ?>
-</body>
-</html>
+  }
+  else 
+  {
+    //echo $us;
+    mysqli_close($con);
+    header("Location: ../index.html");
+  }
+?>
  
 
 
