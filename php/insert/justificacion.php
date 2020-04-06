@@ -382,19 +382,25 @@ session_start();
         /*sin goce
 
         *Arti.52 CGT Si pasa de Base a Confianza se puede pedir una licencia sin goce superior a un año, pero se renueva anualmente
+        En el sistema actualmente se utiliza la clave 92 pero en CICA esa clave es para tolerancia de lactancia 
+        ¿Que clave se utiliza? (no) 
+
         *Arti.53 CGT. Los trabajadores disfrutarán de licencias sin goce en forma total o fraccionada por una vez al año, el tiempo
                      depende de su antiguedad. 
                     Para los casos, en que la trabajadora o el trabajador haya disfrutado de licencias sin goce de sueldo, durante 
                     el periodo que corresponda se disminuirá 1 DÍA DE VACACIONES por cada quince días de licencia.
+                     ¿Que clave se utiliza?
+
         Arti.54 CGT trabajadores que deban practicar servicio social o pasantía en alguna otra dependencia o entidad de gobierno 
                     federal, estatal o municipal se le da licencia sin goce por el tiempo que dure el servicio 
                     CICA 51
 
-        con goce
+        con goce (permiso con goce 41)
         *Art. 55 CGT los basificados que tengan necesidad de iniciar los trámites para obtener su pensión ya sea por jubilación, 
                     de retiro por edad y tiempo de servicio, por cesantía en edad avanzada o bien bajo el régimen de cuentas 
                     individuales, de retiro, cesantía en edad avanzada y vejez, el Instituto le concederá licencia 
                     con goce de sueldo por un término de tres meses.
+                    ¿Es la clave 85 de CICA?
 
                     al que contraiga matrimonio se le concederán diez días hábiles de licencia con goce de sueldo por una sola vez, 
                     comprometiéndose a entregar, dentro de los sesenta días posteriores a la terminación de la licencia, su acta 
@@ -411,7 +417,7 @@ session_start();
                     la fecha probable de parto y sesenta días después de éste.
                     CICA 53
 
-                    *licencia con goce de sueldo hasta por ocho días, cuando sus hijas o hijos menores de seis años requieran de 
+                    licencia con goce de sueldo hasta por ocho días, cuando sus hijas o hijos menores de seis años requieran de 
                     cuidados por enfermedad aguda; así como también para el caso de las hijas y los hijos con discapacidad física o 
                     psíquica, sin importar la edad que tengan, basta que el médico tratante del Instituto certifique la 
                     gravedad del caso y los días de cuidado; debiendo presentar el original del documento que acredite este 
@@ -420,7 +426,7 @@ session_start();
                     (ya no otorga: puntualidad (79), asistencia (80), desempeño (83), mérito relevante (84), ni el art. 85; 
                     cuando en el término de un mes los días otorgados por uno u otro concepto o por ambos sumen solos o individual
                     mente 3 días)
-
+                    CICA 47
                     
                     CICA 62(Claves de servicio autorizadas para este concepto dentro del Instituto son: 09200 Radiología, 
                     09210 Medicina Nuclear, 20600 Radio Diagnóstico, 17824 Radiología, 7910 Radio Terapia)
@@ -436,10 +442,11 @@ session_start();
                     En caso de enfermedades no profesionales se aplicará lo previsto en los Artículos 111 de la Ley y el 
                     aplicable de la Ley del ISSSTE. CLAVE 55 CICA.
 
-            ARTÍCULO 57. El Instituto concederá a su personal licencias con goce de sueldo por motivos de fuerza mayor, 
+            *ARTÍCULO 57. El Instituto concederá a su personal licencias con goce de sueldo por motivos de fuerza mayor, 
                     distintas a las referidas en las fracciones I a IV del Artículo anterior (artículo 56). Dichas licencias 
                     serán descontadas de los estímulos adicionales referidos en el ARTÍCULO 87, fracción VII de estas Condiciones, 
-                    a partir del primer día.   
+                    a partir del primer día.  
+                    ¿Qué clave se utiliza? cica 41
                     
                     Para los efectos de los Artículos 56 y 57 la trabajadora o el trabajador podrá disfrutar de estas licencias 
                     hasta por el número de días de sueldo en los términos del Artículo 87 (estímulos por antiguedad), 

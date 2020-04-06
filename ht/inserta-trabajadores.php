@@ -22,6 +22,9 @@ date_default_timezone_set('America/Mexico_City');
     $turno=$_POST['turno'];
     $cumple=$_POST['cumple'];
     $valores=explode('-',$cumple);
+    $fecha_alta=$_POST['fecha_alta'];
+    $valores2=explode('-',$fecha_alta);
+   
     $salida="";
     if (empty($_POST['dia']))
     {
@@ -49,6 +52,10 @@ date_default_timezone_set('America/Mexico_City');
         if(strlen($valores[0])>4)
         {
             $salida.="El año de nacimiento es incorrecto.";
+        }
+        if(strlen($valores2[0])>4)
+        {
+            $salida.="El año de la fecha de alta es incorrecto.";
         }
         //Si es foráneo
         if($tipo==4)
@@ -201,7 +208,16 @@ date_default_timezone_set('America/Mexico_City');
                         }
                         else
                         {
-                                echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                            if(!(mysqli_query($con,"Insert into tiempo_servicio values ('','$fecha_alta','$numero')")))
+                            {
+                                //Ocurrió algún error
+                                echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                            }
+                            else
+                            {
+                                    echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                            }
                         }
                     }
                 }

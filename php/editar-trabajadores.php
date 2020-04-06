@@ -1,18 +1,77 @@
+<?php
+session_start();
+    //obtener el id que se mandó acá
+    $id=$_GET['id'];
+    require("../Acceso/global.php");
+        $sql="select tipo_tipo from trabajador where numero_trabajador = '".$id."'";
+        $query= mysqli_query($con, $sql);
+        if(!$query)
+        {
+          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+        }
+        else
+        { 
+             $resul=mysqli_fetch_array($query);
+             //Si el tipo de empleado del que se seleccionó es comisionado foráneo
+            if($resul[0]==4)
+            {
+                //Función que busca la categoría con el ID
+                function consulta($myid)
+                {
+                    require("../Acceso/global.php");
+                    $sql="select * from trabajador where numero_trabajador = '".$myid."'";
+                    $query= mysqli_query($con, $sql);
+                    if(!$query)
+                    {
+                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                    else
+                    { 
+                    $resul=mysqli_fetch_array($query);
+                    //retornar este array
+                    return[
+                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
+                    ];
+                    }
+                }
+                //guardar el array que retornó la función consulta
+                $id2=consulta($id);
+                echo"COMISIONADO FORÁNEO";
+            }
+            else
+            {
+                //Función que busca la categoría con el ID
+                function consulta($myid)
+                {
+                    require("../Acceso/global.php");
+                    $sql="select * from trabajador where numero_trabajador = '".$myid."'";
+                    $query= mysqli_query($con, $sql);
+                    if(!$query)
+                    {
+                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    }
+                    else
+                    { 
+                    $resul=mysqli_fetch_array($query);
+                    //retornar este array
+                    return[
+                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
+                    ];
+                    }
+                }
+                //guardar el array que retornó la función consulta
+                $id2=consulta($id);
+                echo"NORMAL";
+
+            }
+                
+        }
+    
+    
+?>
+
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-
-    <div class="aspNetHidden">
-       
-    </div>
-
-    <div class="aspNetHidden">
-
-        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F1105A88" />
-        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="2IWzTZy++tA+YCARSF54Pj1Tmz8eeBCB4RtDBuAhn5UMzzeaXHoULbefce1DplPqXpsYZ58TJMnvmkn9y0fSumdFA6NEmOoAVWHaCyXtnHG22/w4kT2Guw2bU1hOiXQ2cjw36/OTtowhqakxT83HnTW3jahR+9cMOFVzpXunO+8=" />
-    </div>
-    <!--[if gt IE 8]><!-->
+ 
     <html class="no-js" lang="">
     <!--<![endif]-->
 
@@ -157,7 +216,7 @@
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a href="#">Personal</a></li>
-                                <li class="active">Nuevo trabajador</li>
+                                <li class="active">Trabajador</li>
                             </ol>
                         </div>
                     </div>
@@ -167,7 +226,7 @@
             <div class="content mt-3">
                 <div class="animated fadeIn">
                    <div class="row"> 
-                   <form method="post" action="./../ht/inserta-trabajadores.php" id="form2">  
+                   <form method="POST" action="../php/update/tabajadores.php"> 
                         <div class="row">  
                             <div class="col-lg-12">                        
                               <div class="card">
@@ -175,22 +234,22 @@
                                         <span id="MainContent_lbtitulo"> Datos personales</span>
                                     </div>
                                     <div class="card-body card-block">
-
+                                      
                                        <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbCategoria">Número de empleado</span><input name="num" type="number" id="MainContent_txtCategoria" class="form-control" required="" />
+                                            <span id="MainContent_numero">Número de empleado</span><input name="num" type="number" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id2[0]?>" required/>
                                        </div>
                                         <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}"  title="Ingrese solo letras" required />
+                                            <span id="MainContent_nombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
                                         </div>
                                         <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span id="MainContent_a_pat">Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
                                         </div>
                                         <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span id="MainContent_a_mat">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
                                         </div>
-                                        <!-- PENDIENTE AGREGARLO A  LA TABLA CUMPLE_ONO -->
+                                       
                                         <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
+                                            <span id="MainContent_f_nac">Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
                                         </div>
 
                                     </div>
@@ -218,7 +277,7 @@
                                                     }
                                                     else
                                                     {
-                                                        echo "<select name='depto' class='form-control' >";
+                                                        echo "<select name='depto' class='form-control' value='<?php echo $id2[4];?>' >";
                                                         while($fila=mysqli_fetch_array($query)){
                                                             echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
                                                         }
@@ -241,7 +300,7 @@
                                                     }
                                                     else
                                                     {
-                                                        echo "<select name='cat' class='form-control' >";
+                                                        echo "<select name='cat' class='form-control' value='<?php echo $id2[5];?>' >";
                                                         while($fila=mysqli_fetch_array($query)){
                                                             echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
                                                         }
@@ -397,8 +456,8 @@
 																		echo "<td>" . $resul[4] . "</td>";
                                                                         echo "<td>" . $resul[5] . "</td>";
                                                                         echo "<td>" . $resul[6] . "</td>";
-                                                                        echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                                        echo "<button class='btn btn-success'> <a href='../php/editar-trabajadores.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                                        echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-depto.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                                        echo "<button class='btn btn-success'> <a href='../php/editar-depto.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                                         echo "</tr>";
                                                                     }
                                                                 }
@@ -482,3 +541,5 @@
     </body>
 
     </html>
+
+    
