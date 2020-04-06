@@ -107,7 +107,7 @@ session_start();
         $sql="SELECT a.numero_trabajador, a.nombre, a.apellido_paterno, a.apellido_materno,f.entrada,b.fecha_entrada,f.salida,b.fecha_salida , b.quincena_quincena, b.id,c.idincidencia,c.clave_incidencia_clave_incidencia,c.descripcion, f.idturno
         FROM trabajador a
         INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador='$num' and Cast(fecha_entrada As Date) ='$fecha'
-        INNER JOIN quincena  x on b.quincena_quincena = x.idquincena  and  b.quincena_quincena = 5
+        INNER JOIN quincena  x on b.quincena_quincena = x.idquincena  and  b.quincena_quincena = $quincena
         INNER JOIN incidencia c on  b.id = c.asistencia_asistencia  and (c.clave_incidencia_clave_incidencia = 01 or c.clave_incidencia_clave_incidencia = 02 or c.clave_incidencia_clave_incidencia = 03) 
         INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
         INNER JOIN turno f on e.turno_turno = f.idturno";
@@ -118,6 +118,7 @@ session_start();
         //Si el query está vacío
         if($filas==0)
         {
+            mysqli_close($con);
             echo "<script> No_Existe($num,'$fecha'); </script>";
         }
         else
@@ -133,7 +134,7 @@ session_start();
             $sql2="SELECT a.numero_trabajador, a.nombre, a.apellido_paterno, a.apellido_materno,f.entrada,b.fecha_entrada,f.salida,b.fecha_salida , b.quincena_quincena,c.clave_incidencia_clave_incidencia,d.clave_justificacion_clave_justificacion, f.idturno,b.id,c.asistencia_asistencia, c.idincidencia,d.incidencia_incidencia
             FROM trabajador a
             INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = '$num' and b.id=$id_asistencia
-            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
             INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 09
             INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
             INNER JOIN turno f on e.turno_turno = f.idturno";
@@ -146,7 +147,7 @@ session_start();
                 $sql3="SELECT count(d.clave_justificacion_clave_justificacion)
                 FROM trabajador a
                 INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = '$num' 
-                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
                 INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 09
                 INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
                 INNER JOIN turno f on e.turno_turno = f.idturno";
@@ -157,7 +158,7 @@ session_start();
                 //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia
                 $sql11="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
                 INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
-                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
                 INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08
                 INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
                 INNER JOIN turno f on e.turno_turno = f.idturno";  
@@ -167,7 +168,7 @@ session_start();
 
                 //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
                 $sql12="SELECT count(a.numero_trabajador) FROM trabajador a
-                INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = 5";
+                INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = $quincena";
                 $query12= mysqli_query($con, $sql12) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
                 $resul12=mysqli_fetch_array($query12);
                 $totalOmision2=$resul12[0]; 
@@ -182,6 +183,7 @@ session_start();
                     $sql4="INSERT INTO justificacion VALUES (NULL, '$fec_act', $id_incidencia, '09')";
                     if((mysqli_query($con, $sql4) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                     {
+                        mysqli_close($con);
                         echo "<script> Correcto(); </script>";
                     }
                     else
@@ -192,6 +194,7 @@ session_start();
                 else
                 {
                     //Ya posee dos justificaciones en la quincena
+                    mysqli_close($con);
                     echo "<script> no(); </script>";
                 }     
             }
@@ -200,10 +203,11 @@ session_start();
                 /*Si el sql2 SI posee datos significa que esa incidencia YA ha sido justificada y no se puede justificar
                 dos veces la misma incidencia NUNCA
                 */
+                mysqli_close($con);
                 echo "<script> Ya(); </script>";
             }
         }
-        mysqli_close($con);
+
     }//FIN DEL IF JUSTIFICAR
 
     if($operacion=="omision")
@@ -218,7 +222,7 @@ session_start();
         $sql6="SELECT count(d.clave_justificacion_clave_justificacion)
         FROM trabajador a
         INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = '$num' 
-        INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+        INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
         INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 09
         INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
         INNER JOIN turno f on e.turno_turno = f.idturno";
@@ -229,7 +233,7 @@ session_start();
         //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia
         $sql9="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
         INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
-        INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+        INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
         INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08
         INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
         INNER JOIN turno f on e.turno_turno = f.idturno";  
@@ -246,7 +250,7 @@ session_start();
             /*Ahora revisar si existe la omisión en la tabla incidencias; */
             $sql13="SELECT c.idincidencia  FROM trabajador a
             INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num and CAST(b.fecha_entrada AS DATE) >= '$fecha'
-            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5 and c.clave_incidencia_clave_incidencia=18 
+            INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena and c.clave_incidencia_clave_incidencia=18 
             INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
             INNER JOIN turno f on e.turno_turno = f.idturno";
             
@@ -256,6 +260,7 @@ session_start();
             //Si el query está vacío significa que no existe esa omisión en la tabla incidencias
             if($filas13==0)
             {
+                mysqli_close($con);
                 echo "<script> omisionNoExiste($num,'$fecha'); </script>";              
             }
             else
@@ -265,7 +270,7 @@ session_start();
                 //ver si esa omisión ya está justificada
                 $sql15="SELECT d.clave_justificacion_clave_justificacion FROM trabajador a
                 INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
-                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = 5
+                INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
                 INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08 and c.idincidencia = $idomisionEncontrada
                 INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador";
                 $query15= mysqli_query($con, $sql15) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -278,6 +283,7 @@ session_start();
                     $sql16="INSERT INTO justificacion VALUES (NULL, '$fec_act', '$idomisionEncontrada', '08')";
                     if((mysqli_query($con, $sql16) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                     {
+                        mysqli_close($con);
                         echo "<script> omisionCorrecta(); </script>";
                     }
                     else
@@ -288,6 +294,7 @@ session_start();
                 else
                 {
                     //Esta omision ya fue justificada antes
+                    mysqli_close($con);
                     echo "<script> antesOmision(); </script>";
                 }
             }
@@ -295,6 +302,7 @@ session_start();
         else
         {
             //ya posee dos justificaciones o dos omisiones o 1 justificacion + 1 omision
+            mysqli_close($con);
             echo "<script> no(); </script>";
         }
     }//FIN DEL IF OMISIÓN
@@ -317,7 +325,7 @@ session_start();
 
         $date1= new DateTime($fecha);
         $date2= new DateTime($fechaf);
-        /*Ver si ese empleado ya posee una comisión*/
+        /*Ver si ese empleado ya posee una comisión activa*/
         $sql7="SELECT * from especial where trabajador_trabajador=$num and validez=1 and clave_especial_clave_especial=89";
         $query7=mysqli_query($con, $sql7) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
         $resul7=mysqli_fetch_array($query7);
@@ -339,6 +347,7 @@ session_start();
                 //si el periodo de comisión es superior a 165 días (5 meses y medio)
                 if($totDias>165)
                 {
+                    mysqli_close($con);
                     echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
                 }
                 else
@@ -349,6 +358,7 @@ session_start();
                     $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '1', '$num', '89','','$totDias')";
                     if((mysqli_query($con, $sql8) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                     {
+                        mysqli_close($con);
                         echo "<script> siComision(); </script>";
                     }
                     else
@@ -361,10 +371,12 @@ session_start();
             {
                 if($fecha_ac==$fecha_in)
                 {
+                    mysqli_close($con);
                     echo "<script> imprime('La comisión empieza hoy y no puede registrarse debido a que SE REQUIERE MÍNIMO UN DÍA DE ANTICIPACIÓN'); </script>";
                 }
                 else
                 {
+                    mysqli_close($con);
                     echo "<script> imprime('La fecha de inicio de la comisión ya pasó, NO ES POSIBLE REGISTRAR UNA COMISIÓN QUE INICIÓ ANTES DE HOY'); </script>";
                 }
             }
@@ -372,6 +384,7 @@ session_start();
         else
         {
             //El empleado ya posee una comisión activa y no puede tener 2 comisiones a la vez
+            mysqli_close($con);
             echo "<script> noComision($num); </script>";
         }
 
