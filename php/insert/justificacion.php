@@ -166,15 +166,8 @@ session_start();
                 $resul11=mysqli_fetch_array($query11);
                 $totalOmisionesIn=$resul11[0];
 
-                //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion_omision
-                $sql12="SELECT count(a.numero_trabajador) FROM trabajador a
-                INNER JOIN omision b on a.numero_trabajador = b.trabajador_trabajador where a.numero_trabajador=$num and b.quincena = $quincena";
-                $query12= mysqli_query($con, $sql12) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-                $resul12=mysqli_fetch_array($query12);
-                $totalOmision2=$resul12[0]; 
-
                 //sumar los totales y revisar que sean menores a dos
-                $total_just_omis=$total+$totalOmisionesIn+$totalOmision2;
+                $total_just_omis=$total+$totalOmisionesIn;
 
                 //si el total de 09 y justifiaciones de omision es menor a 2 (significa que aún puede ingresar justificación)
                 if($total_just_omis<2)

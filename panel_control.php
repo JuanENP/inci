@@ -1,6 +1,7 @@
 <?php
 session_start();
 $user=$_SESSION['name'];
+$user=$_SESSION['con'];
 //si la variable de sesión no existe, entonces no es posible entrar al panel. 
 //Lo redirigimos al index.html para que inicie sesión
 if($user==null || $user=='')

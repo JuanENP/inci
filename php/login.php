@@ -3,7 +3,7 @@ session_start();
 
   $nombre= $_POST['txtusuario'];
   $contra= $_POST['txtpassword'];
-  require("../Acceso/global.php");
+  include("../Acceso/global.php");
 
   $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE user = '$nombre' AND password = PASSWORD('$contra')");
   $resul=mysqli_num_rows($ejecu);
