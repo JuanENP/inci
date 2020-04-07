@@ -1,10 +1,29 @@
 <?php
 session_start();
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    
+    //si la variable de sesión no existe, entonces no es posible entrar al panel. 
+    //Lo redirigimos al index.html para que inicie sesión
+    if($nombre==null || $nombre=='')
+    {
+        header("Location: ../index.html");
+        die();
+    }
+    else
+    {
+        //mandar el nom de usuario
+        $_SESSION['name']=$nombre;
+        $_SESSION['con']=$contra; 
+    }
+    
     //obtener el id que se mandó acá
     $id=$_GET['id'];
     //Función que busca la categoría con el ID
     function consulta($myid)
     {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
         require("../Acceso/global.php");
         $sql="select * from categoria where idcategoria = '".$myid."'";
         $query= mysqli_query($con, $sql);

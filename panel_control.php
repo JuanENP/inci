@@ -1,10 +1,10 @@
 <?php
 session_start();
-$user=$_SESSION['name'];
-$user=$_SESSION['con'];
+$nombre=$_SESSION['name'];
+$contra=$_SESSION['con'];
 //si la variable de sesión no existe, entonces no es posible entrar al panel. 
 //Lo redirigimos al index.html para que inicie sesión
-if($user==null || $user=='')
+if($nombre==null || $nombre=='')
 {
     header("Location: ../index.html");
     die();
@@ -12,7 +12,9 @@ if($user==null || $user=='')
 else
 {
     //mandar el nom de usuario
-    $_SESSION['name']=$user;
+    $_SESSION['name']=$nombre;
+    $_SESSION['con']=$contra;
+    
 }
 ?>
 <!doctype html>

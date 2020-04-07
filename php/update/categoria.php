@@ -1,5 +1,21 @@
 <?php
 session_start();
+$nombre=$_SESSION['name'];
+$contra=$_SESSION['con'];
+//si la variable de sesión no existe, entonces no es posible entrar al panel. 
+//Lo redirigimos al index.html para que inicie sesión
+if($nombre==null || $nombre=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+else
+{
+    //mandar el nom de usuario
+    $_SESSION['name']=$nombre;
+    $_SESSION['con']=$contra;
+    
+}
 ?>
 <script type="text/javascript">
     function Alerta()
@@ -20,7 +36,8 @@ actualizar($idcat, $nomcat,$old_id);
 
     function actualizar($id,$nom,$id_viejo)
     {
-        //update categoria SET categoria = 'CCCC1', nombre = 'ASISTENTE ADMINISTRATVO EN SALUD - A8' WHERE (categoria = 'CCCC');
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
         require("../../Acceso/global.php");
         //$sql="select * from categoria where categoria = '".$myid."'";
         $sql="update categoria SET idcategoria = '".$id."', nombre = '".$nom."' WHERE (idcategoria = '".$id_viejo."');";
@@ -35,4 +52,3 @@ actualizar($idcat, $nomcat,$old_id);
         }
     }
 ?>
-

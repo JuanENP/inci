@@ -1,5 +1,24 @@
+<?php
+session_start();
+$nombre=$_SESSION['name'];
+$contra=$_SESSION['con'];
+require("../Acceso/global.php"); 
+//si la variable de sesión no existe, entonces no es posible entrar al panel. 
+//Lo redirigimos al index.html para que inicie sesión
+if($nombre==null || $nombre=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+else
+{
+    //mandar el nom de usuario
+    $_SESSION['name']=$nombre;
+    $_SESSION['con']=$contra;
+    
+}
+?>
 <!doctype html>
-
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="">
     <!--<![endif]-->
@@ -191,8 +210,6 @@
                                                 <tbody>
                                                     <!--PONER AQUÍ EL contenido LA TABLA-->
                                                     <?php
-                                                        require("../Acceso/global.php");  
-      
                                                         $sql="select * from categoria";
                                                         $query= mysqli_query($con, $sql);
                                                         if(!$query)

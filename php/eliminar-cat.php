@@ -1,5 +1,21 @@
 <?php 
 session_start();
+$nombre=$_SESSION['name'];
+$contra=$_SESSION['con'];
+//si la variable de sesión no existe, entonces no es posible entrar al panel. 
+//Lo redirigimos al index.html para que inicie sesión
+if($nombre==null || $nombre=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+else
+{
+    //mandar el nom de usuario
+    $_SESSION['name']=$nombre;
+    $_SESSION['con']=$contra;
+    
+}
 ?>
 <script type="text/javascript">
     function Correcto()
@@ -12,6 +28,8 @@ session_start();
   //obtener el id que se mandó acá
   $id=$_GET['id'];
   
+  $nombre=$_SESSION['name'];
+  $contra=$_SESSION['con'];
   require("../Acceso/global.php");
   $sql="DELETE FROM categoria WHERE idcategoria = '".$id."'";
   $query= mysqli_query($con, $sql);
