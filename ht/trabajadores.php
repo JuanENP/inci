@@ -1,27 +1,24 @@
+<?php
+session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
+?>
+
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-
-    <div class="aspNetHidden">
-       
-    </div>
-
-    <div class="aspNetHidden">
-
-        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F1105A88" />
-        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="2IWzTZy++tA+YCARSF54Pj1Tmz8eeBCB4RtDBuAhn5UMzzeaXHoULbefce1DplPqXpsYZ58TJMnvmkn9y0fSumdFA6NEmOoAVWHaCyXtnHG22/w4kT2Guw2bU1hOiXQ2cjw36/OTtowhqakxT83HnTW3jahR+9cMOFVzpXunO+8=" />
-    </div>
-    <!--[if gt IE 8]><!-->
-    <html class="no-js" lang="">
-    <!--<![endif]-->
-
+    <html class="no-js" lang="es">
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>
-            Personal
-        </title>
+        <title>Personal</title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
@@ -45,12 +42,9 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
-
     </head>
 
     <body>
-
-       
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -132,17 +126,12 @@
                                 <a class="nav-link" href="Logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
             </header>
             <!-- /header -->
             <!-- Header-->
-
-
 
             <div class="breadcrumbs">
                 <div class="col-sm-4">
@@ -167,7 +156,7 @@
             <div class="content mt-3">
                 <div class="animated fadeIn">
                    <div class="row"> 
-                   <form method="post" action="./../ht/inserta-trabajadores.php" id="form2">  
+                   <form method="post" action="inserta-trabajadores.php" id="form2">  
                         <div class="row">  
                             <div class="col-lg-12">                        
                               <div class="card">
@@ -176,20 +165,20 @@
                                     </div>
                                     <div class="card-body card-block">
 
-                                       <div class="form-group col-lg-12">
+                                       <div class="form-group col-lg-3">
                                             <span id="MainContent_lbCategoria">Número de empleado</span><input name="num" type="number" id="MainContent_txtCategoria" class="form-control" required="" />
                                        </div>
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}"  title="Ingrese solo letras" required />
                                         </div>
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
                                         </div>
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
                                         </div>
                                         <!-- PENDIENTE AGREGARLO A  LA TABLA CUMPLE_ONO -->
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
                                         </div>
 
@@ -207,9 +196,7 @@
 
                                        <div class="form-group col-lg-12">
                                             <span id="MainContent_lbCategoria">Departamento</span>
-                                                <?php
-                                                    require("../Acceso/global.php");  
-        
+                                                <?php 
                                                     $sql="select * from depto";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
@@ -220,66 +207,66 @@
                                                     {
                                                         echo "<select name='depto' class='form-control' >";
                                                         while($fila=mysqli_fetch_array($query)){
-                                                            echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
+                                                            echo "<option value='".$fila[0]."'>". $fila[0] . " " .utf8_encode($fila[1])."</option>";
                                                         }
                                                         echo "</select>";
                                                     }
-                                                
-                                                        mysqli_close($con);
+                                                    mysqli_close($con);
                                                 ?> <!--FIN PHP -->
                                        </div>
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Categoría</span>
                                                 <?php
-                                                    require("../Acceso/global.php");  
-        
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
+                                                    require("../Acceso/global.php"); 
                                                     $sql="select * from categoria";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                                                     }
                                                     else
                                                     {
                                                         echo "<select name='cat' class='form-control' >";
-                                                        while($fila=mysqli_fetch_array($query)){
+                                                        while($fila=mysqli_fetch_array($query))
+                                                        {
                                                             echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
                                                         }
                                                         echo "</select>";
                                                     }
-                                                    
-                                                        mysqli_close($con);
+                                                    mysqli_close($con);
                                                 ?> <!--FIN PHP -->
 
                                         </div>
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Tipo de empleado</span>
                                                 <?php
-                                                    require("../Acceso/global.php");  
-        
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
+                                                    require("../Acceso/global.php"); 
                                                     $sql="select * from tipo";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                                                     }
                                                     else
                                                     {
-
                                                         while($fila=mysqli_fetch_array($query))
                                                         {
                                                             if($fila[1]=="COMISIONADO FORÁNEO")
                                                             {
-                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
+                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". utf8_encode($fila[1]) . " ". "</input>";
                                                             }
                                                             else
                                                             {   if($fila[1]=="EVENTUAL")
                                                                 {  
-                                                                    echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+                                                                    echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)' checked>". utf8_encode($fila[1]) . " ". "</input>";
                                                                 }
                                                                 else 
                                                                 {  
-                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
+                                                                    echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". utf8_encode($fila[1]) . " ". "</input>";
                                                                 }
                                                             }
 
@@ -290,7 +277,6 @@
                                                         <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
                                                         <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
                                                         </div>";
-                                                    
                                                     }
                                                         mysqli_close($con);
                                                 ?> <!--FIN PHP -->
@@ -309,26 +295,26 @@
                                             <br>
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Turno</span>
-                                            <?php
-                                                        require("../Acceso/global.php");  
-      
-                                                        $sql="select * from turno";
-                                                        $query= mysqli_query($con, $sql);
-                                                        if(!$query)
-                                                        {
-                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                        }
-                                                        else
-                                                        {
-                                                            echo "<select name='turno' class='form-control' >";
-                                                            while($fila=mysqli_fetch_array($query)){
-                                                                echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
-                                                            }
-                                                            echo "</select>";
-                                                        }
-                                                
-                                                            mysqli_close($con);
-                                                    ?> <!--FIN PHP -->
+                                            <?php  
+                                                $nombre=$_SESSION['name'];
+                                                $contra=$_SESSION['con'];
+                                                require("../Acceso/global.php");
+                                                $sql="select * from turno";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                  die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    echo "<select name='turno' class='form-control' >";
+                                                    while($fila=mysqli_fetch_array($query)){
+                                                        echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
+                                                    }
+                                                    echo "</select>";
+                                                }
+                                                mysqli_close($con);
+                                            ?> <!--FIN PHP -->
                                         </div>
                                        
                                     </div>
@@ -375,35 +361,36 @@
 													<th>Tipo de empleado</th>  
                                                     </thead>
                                                     <tbody>
-                                                            <?php
-                                                                require("../Acceso/global.php");  
-                            
-                                                                $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
-                                                                inner join tipo b on b.idtipo = a.tipo_tipo";
-                                                                $query= mysqli_query($con, $sql);
-                                                                if(!$query)
+                                                        <?php 
+                                                            $nombre=$_SESSION['name'];
+                                                            $contra=$_SESSION['con'];
+                                                            require("../Acceso/global.php");
+                                                            $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
+                                                            inner join tipo b on b.idtipo = a.tipo_tipo";
+                                                            $query= mysqli_query($con, $sql);
+                                                            if(!$query)
+                                                            {
+                                                                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                            }
+                                                            else
+                                                            {
+                                                                while($resul=mysqli_fetch_array($query))
                                                                 {
-                                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                                    echo "<tr>";
+                                                                    echo "<td>" . utf8_encode($resul[0]) . "</td>"; 
+																	echo "<td>" . utf8_encode($resul[1]) . "</td>";
+																	echo "<td>" . utf8_encode($resul[2]) . "</td>";
+																	echo "<td>" . utf8_encode($resul[3]) . "</td>";
+																	echo "<td>" . utf8_encode($resul[4]) . "</td>";
+                                                                    echo "<td>" . utf8_encode($resul[5]) . "</td>";
+                                                                    echo "<td>" . utf8_encode($resul[6]) . "</td>";
+                                                                    echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                                    echo "<button class='btn btn-success'> <a href='../php/editar-trabajadores.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                                    echo "</tr>";
                                                                 }
-                                                                else
-                                                                {
-                                                                    while($resul=mysqli_fetch_array($query))
-                                                                    {
-                                                                        echo "<tr>";
-                                                                        echo "<td>" . $resul[0] . "</td>"; 
-																		echo "<td>" . $resul[1] . "</td>";
-																		echo "<td>" . $resul[2] . "</td>";
-																		echo "<td>" . $resul[3] . "</td>";
-																		echo "<td>" . $resul[4] . "</td>";
-                                                                        echo "<td>" . $resul[5] . "</td>";
-                                                                        echo "<td>" . $resul[6] . "</td>";
-                                                                        echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                                        echo "<button class='btn btn-success'> <a href='../php/editar-trabajadores.php?id=".$resul[0]."'>Editar</a> </button> </td>";
-                                                                        echo "</tr>";
-                                                                    }
-                                                                }
+                                                            }
                                                         
-                                                           ?> <!--FIN PHP -->
+                                                        ?> <!--FIN PHP -->
                                                     </tbody>
                                             </table>
                                         </span>
@@ -480,5 +467,4 @@
             });
         </script>
     </body>
-
     </html>

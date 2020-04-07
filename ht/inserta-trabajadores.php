@@ -1,6 +1,17 @@
 <?php
 session_start(); 
 date_default_timezone_set('America/Mexico_City');
+if (($_SESSION["name"]) && ($_SESSION["con"]))
+{
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    require("../Acceso/global.php"); 
+}
+else
+{
+    header("Location: ../index.html");
+    die();
+}
 ?>
  <script type="text/javascript">
   function error(cadena)
@@ -11,7 +22,6 @@ date_default_timezone_set('America/Mexico_City');
 </script>
 
 <?php
-
     $numero=$_POST['num'];
     $nombre=$_POST['nom'];
     $a_pat=$_POST['a_pat'];
@@ -36,8 +46,7 @@ date_default_timezone_set('America/Mexico_City');
         $dias=$_POST['dia'];
     }
 
-    //Aqui consulto si existe ese numero de trabajador
-    require("../Acceso/global.php");  
+    //Aqui consulto si existe ese numero de trabajador 
     $ejecu="select * from trabajador where numero_trabajador = '$numero'";
     $codigo=mysqli_query($con,$ejecu);
     $consultar=mysqli_num_rows($codigo);
@@ -114,7 +123,7 @@ date_default_timezone_set('America/Mexico_City');
     
           $num=count($dias);
           for($n=0;$n<$num;$n++)
-          {
+            {
                if($dias[$n]=="lunes")
                {  
                     $semana[0]=1;
@@ -147,11 +156,10 @@ date_default_timezone_set('America/Mexico_City');
                {  
                     $semana[7]=1;
                }
-          }
-          if($tipo==4)
-          { 
-              
-            if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo)")))
+            }
+            if($tipo==4)
+            { 
+                if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo)")))
                 {
                     //Ocurrió algún error
                     echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
@@ -161,18 +169,18 @@ date_default_timezone_set('America/Mexico_City');
                 {
                     if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','',1,'$numero')")))
                     {
-                         //Ocurrió algún error
-                         echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                         die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                        //Ocurrió algún error
+                        echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                     }
                     else
                     {
                         $empresa = trim($empresa);
                         if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','17','$empresa',$totDias)")))
                         {
-                             //Ocurrió algún error
-                             echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                             die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                            //Ocurrió algún error
+                            echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                         }
                         else
                         {
@@ -180,7 +188,7 @@ date_default_timezone_set('America/Mexico_City');
                         }
                     }
                 }
-          }//fin-if comisionado foráneo
+            }//fin-if comisionado foráneo
           else
             {
                 //Cualquier otro distinto a comisionado foráneo
@@ -223,13 +231,11 @@ date_default_timezone_set('America/Mexico_City');
                 }
             }
 
-        }
+        }//fin de if (empty(salida))
         else
         {
           echo "<script> error('$salida'); history.back();</script>";
         }
-
     }
-
 ?>
 

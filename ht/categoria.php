@@ -1,21 +1,15 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-require("../Acceso/global.php"); 
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
+if (($_SESSION["name"]) && ($_SESSION["con"]))
 {
-    header("Location: ../index.html");
-    die();
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    require("../Acceso/global.php"); 
 }
 else
 {
-    //mandar el nom de usuario
-    $_SESSION['name']=$nombre;
-    $_SESSION['con']=$contra;
-    
+    header("Location: ../index.html");
+    die();
 }
 ?>
 <!doctype html>
@@ -56,7 +50,6 @@ else
     </head>
 
     <body>
-
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -85,7 +78,7 @@ else
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.html">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.php">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
@@ -134,8 +127,8 @@ else
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.html"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.html"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>

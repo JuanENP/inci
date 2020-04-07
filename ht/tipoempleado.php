@@ -1,11 +1,25 @@
-﻿<!doctype html>
+﻿<?php
+session_start();
+if (($_SESSION["name"]) && ($_SESSION["con"]))
+{
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    require("../Acceso/global.php"); 
+}
+else
+{
+    header("Location: ../index.html");
+    die();
+}
+?>
 
+<!doctype html>
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="">
+<html class="no-js" lang="es">
     <!--<![endif]-->
 
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
             Catalogo de tipos de empleado
@@ -115,8 +129,8 @@
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.html"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.html"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>
@@ -187,8 +201,6 @@
                                                 <tbody>
                                                     <!--PONER AQUÍ EL contenido LA TABLA-->
                                                     <?php
-                                                        require("../Acceso/global.php");  
-      
                                                         $sql="select * from tipo";
                                                         $query= mysqli_query($con, $sql);
                                                         if(!$query)
@@ -200,7 +212,7 @@
                                                           while($resul=mysqli_fetch_array($query))
                                                           {
                                                             echo "<tr>";
-                                                            echo utf8_encode("<td>" . $resul[1] . "</td>");
+                                                            echo "<td>" . utf8_encode($resul[1]) . "</td>";
                                                             echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
                                                             echo "<button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
                                                             echo "</tr>";

@@ -1,5 +1,16 @@
 <?php 
 session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <script type="text/javascript">
     function Ya_Existe()
@@ -7,9 +18,7 @@ session_start();
         alert("Ese tipo ya existe");
         location.href="./../ht/tipoempleado.php";
     }
-</script>
 
-<script type="text/javascript">
     function Correcto()
     {
         alert("Guardado correctamente");
@@ -18,10 +27,9 @@ session_start();
 </script>
 
 <?php 
-$descripcion=$_POST['nom'];
+    $descripcion=$_POST['nom'];
 
-     //Aqui consulto si existe un departamento igual a la que se va a guardar
-     require("../Acceso/global.php");  
+     //Aqui consulto si existe un departamento igual a la que se va a guardar 
      $ejecu="select * from tipo where descripcion = '$descripcion'";
      $codigo=mysqli_query($con,$ejecu);
      $consultar=mysqli_num_rows($codigo);
@@ -44,9 +52,5 @@ $descripcion=$_POST['nom'];
          echo "<script> Correcto(); </script>";
          }
          mysqli_close($con);   
-
      }
-
-
-
 ?>

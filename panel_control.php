@@ -9,16 +9,10 @@ if($nombre==null || $nombre=='')
     header("Location: ../index.html");
     die();
 }
-else
-{
-    //mandar el nom de usuario
-    $_SESSION['name']=$nombre;
-    $_SESSION['con']=$contra;
-    
-}
 ?>
+
 <!doctype html>
-<form method="post" action="./panel_control.html" id="form1">
+<form method="post" action="./panel_control.html" id="form1" autocomplete="off">
 
     <!--[if gt IE 8]><!-->
     <html class="no-js" lang="es">
@@ -142,7 +136,7 @@ else
                                 <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.aspx"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="../php/updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>

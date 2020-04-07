@@ -1,18 +1,26 @@
 <?php 
 session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
+
 <script type="text/javascript">
     function Correcto()
     {
         alert("Actualizado correctamente");
-        location.href="./../ht/tipoempleado.php";
-        //window.close();
-        //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
+        location.href="../../ht/tipoempleado.php";
     }
 </script>
 
 <?php
-   
     $id_anterior=$_POST['id'];
     $nuevo_tipo=$_POST['descripcion'];
 
@@ -20,7 +28,9 @@ session_start();
 
     function actualizar($nuevo,$id)
     {
-        require("../../Acceso/global.php");
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../../Acceso/global.php"); 
         $sql="update tipo SET  descripcion = '".$nuevo."' WHERE (idtipo = '".$id."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
@@ -33,4 +43,3 @@ session_start();
         }
     }
 ?>
-

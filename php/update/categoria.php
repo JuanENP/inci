@@ -6,15 +6,8 @@ $contra=$_SESSION['con'];
 //Lo redirigimos al index.html para que inicie sesión
 if($nombre==null || $nombre=='')
 {
-    header("Location: ../index.html");
+    header("Location: ../../index.html");
     die();
-}
-else
-{
-    //mandar el nom de usuario
-    $_SESSION['name']=$nombre;
-    $_SESSION['con']=$contra;
-    
 }
 ?>
 <script type="text/javascript">

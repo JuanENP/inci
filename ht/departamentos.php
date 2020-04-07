@@ -1,4 +1,18 @@
-﻿<!doctype html>
+﻿<?php
+session_start();
+if (($_SESSION["name"]) && ($_SESSION["con"]))
+{
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    require("../Acceso/global.php"); 
+}
+else
+{
+    header("Location: ../index.html");
+    die();
+}
+?>
+<!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
@@ -125,11 +139,11 @@
                         <div class="user-area dropdown float-right">
 
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
+                                <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.aspx"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.aspx"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
 
@@ -171,7 +185,7 @@
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">Nueva departamento</span>
+                                        <span id="MainContent_lbtitulo">Nuevo departamento</span>
                                     </div>
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
@@ -204,8 +218,6 @@
                                                     </thead>
                                                     <tbody>
                                                             <?php
-                                                                require("../Acceso/global.php");  
-                            
                                                                 $sql="select * from depto";
                                                                 $query= mysqli_query($con, $sql);
                                                                     if(!$query)
@@ -218,7 +230,7 @@
                                                                     {
                                                                         echo "<tr>";
                                                                         echo "<td>" . $resul[0] . "</td>";
-                                                                        echo "<td>" . $resul[1] . "</td>";
+                                                                        echo "<td>" . utf8_encode($resul[1]) . "</td>";
                                                                         echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-depto.php?id=".$resul[0]."'>Eliminar</a> </button> ";
                                                                         echo "<button class='btn btn-success'> <a href='../php/editar-depto.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                                         echo "</tr>";

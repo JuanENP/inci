@@ -10,13 +10,6 @@ session_start();
         header("Location: ../index.html");
         die();
     }
-    else
-    {
-        //mandar el nom de usuario
-        $_SESSION['name']=$nombre;
-        $_SESSION['con']=$contra; 
-    }
-    
     //obtener el id que se mandó acá
     $id=$_GET['id'];
     //Función que busca la categoría con el ID

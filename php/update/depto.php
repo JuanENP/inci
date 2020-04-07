@@ -1,3 +1,18 @@
+<?php
+session_start();
+$nombre=$_SESSION['name'];
+$contra=$_SESSION['con'];
+require("../Acceso/global.php");  
+                            
+//si la variable de sesión no existe, entonces no es posible entrar al panel. 
+//Lo redirigimos al index.html para que inicie sesión
+if($nombre==null || $nombre=='')
+{
+    header("Location: ../index.html");
+    die();
+}
+?>
+
 <script type="text/javascript">
     function Alerta()
     {
@@ -9,7 +24,6 @@
 </script>
 
 <?php
-session_start();
 $old_id=$_POST['old_id'];
 $idcat=$_POST['idcat'];
 $nomcat=$_POST['nomcat'];
@@ -18,9 +32,6 @@ actualizar($idcat, $nomcat,$old_id);
 
     function actualizar($id,$nom,$id_viejo)
     {
-        //update categoria SET categoria = 'CCCC1', nombre = 'ASISTENTE ADMINISTRATVO EN SALUD - A8' WHERE (categoria = 'CCCC');
-        require("../../Acceso/global.php");
-        //$sql="select * from categoria where categoria = '".$myid."'";
         $sql="update depto SET iddepto = '".$id."', nombre = '".$nom."' WHERE (iddepto = '".$id_viejo."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
@@ -33,4 +44,3 @@ actualizar($idcat, $nomcat,$old_id);
         }
     }
 ?>
-
