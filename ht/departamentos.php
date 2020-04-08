@@ -181,7 +181,7 @@ else
             <div class="content mt-3">
                 <div class="animated fadeIn">
                    <div class="row"> 
-                       <form method="post" action="./../ht/inserta-cat.php" id="form2">   
+                       <form method="post" action="./../ht/inserta-depto.php" id="form2">   
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">
@@ -189,7 +189,7 @@ else
                                     </div>
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbCategoria">Departamento</span><input name="cat" type="text" id="MainContent_txtCategoria" class="form-control" required="" />
+                                            <span id="MainContent_lbCategoria">Departamento</span><input name="depto" type="text" id="MainContent_txtCategoria" class="form-control" required="" />
                                        </div>
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" required="" />

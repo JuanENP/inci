@@ -1,11 +1,12 @@
 <?php
 session_start();
-    $nombre=$_SESSION['name'];
-    $contra=$_SESSION['con'];
-    
-    //si la variable de sesión no existe, entonces no es posible entrar al panel. 
-    //Lo redirigimos al index.html para que inicie sesión
-    if($nombre==null || $nombre=='')
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
     {
         header("Location: ../index.html");
         die();

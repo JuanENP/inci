@@ -1,14 +1,16 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
-{
-    header("Location: ../../index.html");
-    die();
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <script type="text/javascript">
     function Alerta()
@@ -32,7 +34,15 @@ actualizar($idcat, $nomcat,$old_id);
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php");
-        //$sql="select * from categoria where categoria = '".$myid."'";
+        //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
+        $sql="select * from categoria where idcategoria='$id'";
+        $query= mysqli_query($con, $sql) or die();
+        while($resul=mysqli_fetch_array($query))
+        {
+            $nombre_cat=$resul[1];
+        }
+
+
         $sql="update categoria SET idcategoria = '".$id."', nombre = '".$nom."' WHERE (idcategoria = '".$id_viejo."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
@@ -41,6 +51,9 @@ actualizar($idcat, $nomcat,$old_id);
         }
         else
         {
+            $nombre_host= gethostname();
+            $sql="call inserta_bitacora_categoria('Actualizado','$id','$nom', '$id_viejo', '$nombre_cat','$nombre_host')";
+            $query= mysqli_query($con, $sql) or die();
             echo "<script> Alerta(); </script>";
         }
     }

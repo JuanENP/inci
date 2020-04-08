@@ -1,16 +1,16 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-require("../Acceso/global.php");  
-                            
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
-{
-    header("Location: ../index.html");
-    die();
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 
 <script type="text/javascript">
@@ -31,7 +31,18 @@ $nomcat=$_POST['nomcat'];
 actualizar($idcat, $nomcat,$old_id);
 
     function actualizar($id,$nom,$id_viejo)
-    {
+    {   
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../../Acceso/global.php");
+        //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
+        $sql="select * from depto where iddepto='$id'";
+        $query= mysqli_query($con, $sql) or die();
+        while($resul=mysqli_fetch_array($query))
+        {
+            $nombre_depto=$resul[1];
+        }
+
         $sql="update depto SET iddepto = '".$id."', nombre = '".$nom."' WHERE (iddepto = '".$id_viejo."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
@@ -40,6 +51,10 @@ actualizar($idcat, $nomcat,$old_id);
         }
         else
         {
+            $nombre_host= gethostname();
+            $sql="call inserta_bitacora_depto('Actualizado','$id','$nom', '$id_viejo', '$nombre_depto','$nombre_host')";
+            $query= mysqli_query($con, $sql) or die();
+         
             echo "<script> Alerta(); </script>";
         }
     }

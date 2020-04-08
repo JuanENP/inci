@@ -32,8 +32,12 @@ session_start();
 <?php 
     $categoria=$_POST['cat'];
     $nom=$_POST['nom'];
+    
+    //Aqui consulto si existe una categoria igual a la que se va a guardar
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
 
-    //Aqui consulto si existe una categoria igual a la que se va a guardar 
+    require("../Acceso/global.php");  
     $ejecu="select * from categoria where idcategoria = '$categoria'";
     $codigo=mysqli_query($con,$ejecu);
     $consultar=mysqli_num_rows($codigo);
@@ -53,8 +57,12 @@ session_start();
         else
         {
         //Guardado correcto
+        $nombre_host= gethostname();
+        $sql="call inserta_bitacora_categoria('Guardado','$categoria','$nom','-', '-','$nombre_host')";
+        $query= mysqli_query($con, $sql) or die();
         echo "<script> Correcto(); </script>";
         }
         mysqli_close($con);   
     }
+  
 ?>
