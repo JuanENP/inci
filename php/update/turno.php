@@ -47,7 +47,7 @@ session_start();
     </head>
 
     <body>
-        <form method="POST" action="turnook.php">
+        <form method="POST" action="_turno.php">
             <input type="hidden" name="old_id" value="<?php echo $id?>">
 
             <label for="">Turno</label>
