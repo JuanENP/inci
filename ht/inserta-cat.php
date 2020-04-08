@@ -1,21 +1,16 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
-{
-    header("Location: ../index.html");
-    die();
-}
-else
-{
-    //mandar el nom de usuario
-    $_SESSION['name']=$nombre;
-    $_SESSION['con']=$contra;
-    
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 
 <script type="text/javascript">
@@ -38,10 +33,7 @@ else
     $categoria=$_POST['cat'];
     $nom=$_POST['nom'];
 
-    //Aqui consulto si existe una categoria igual a la que se va a guardar
-    $nombre=$_SESSION['name'];
-    $contra=$_SESSION['con'];
-    require("../Acceso/global.php");  
+    //Aqui consulto si existe una categoria igual a la que se va a guardar 
     $ejecu="select * from categoria where idcategoria = '$categoria'";
     $codigo=mysqli_query($con,$ejecu);
     $consultar=mysqli_num_rows($codigo);

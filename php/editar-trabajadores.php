@@ -1,73 +1,83 @@
 <?php
 session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con']; 
+        require("../Acceso/global.php");
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
     //obtener el id que se mandó acá
     $id=$_GET['id'];
-    require("../Acceso/global.php");
-        $sql="select tipo_tipo from trabajador where numero_trabajador = '".$id."'";
-        $query= mysqli_query($con, $sql);
-        if(!$query)
+    $sql="select tipo_tipo from trabajador where numero_trabajador = '".$id."'";
+    $query= mysqli_query($con, $sql);
+    if(!$query)
+    {
+      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+    }
+    else
+    { 
+        $resul=mysqli_fetch_array($query);
+        //Si el tipo de empleado del que se seleccionó es comisionado foráneo
+        if($resul[0]==4)
         {
-          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            //Función que busca la categoría con el ID
+            function consulta($myid)
+            {
+                $nombre=$_SESSION['name'];
+                $contra=$_SESSION['con'];
+                require("../Acceso/global.php");
+                $sql="select * from trabajador where numero_trabajador = '".$myid."'";
+                $query= mysqli_query($con, $sql);
+                if(!$query)
+                {
+                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                }
+                else
+                { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return[
+                $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
+                ];
+                }
+            }
+            //guardar el array que retornó la función consulta
+            $id2=consulta($id);
+            echo"COMISIONADO FORÁNEO";
         }
         else
-        { 
-             $resul=mysqli_fetch_array($query);
-             //Si el tipo de empleado del que se seleccionó es comisionado foráneo
-            if($resul[0]==4)
+        {
+            //Función que busca la categoría con el ID
+            function consulta($myid)
             {
-                //Función que busca la categoría con el ID
-                function consulta($myid)
+                $nombre=$_SESSION['name'];
+                $contra=$_SESSION['con'];
+                require("../Acceso/global.php");
+                $sql="select * from trabajador where numero_trabajador = '".$myid."'";
+                $query= mysqli_query($con, $sql);
+                if(!$query)
                 {
-                    require("../Acceso/global.php");
-                    $sql="select * from trabajador where numero_trabajador = '".$myid."'";
-                    $query= mysqli_query($con, $sql);
-                    if(!$query)
-                    {
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                    }
-                    else
-                    { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return[
-                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
-                    ];
-                    }
+                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                 }
-                //guardar el array que retornó la función consulta
-                $id2=consulta($id);
-                echo"COMISIONADO FORÁNEO";
-            }
-            else
-            {
-                //Función que busca la categoría con el ID
-                function consulta($myid)
-                {
-                    require("../Acceso/global.php");
-                    $sql="select * from trabajador where numero_trabajador = '".$myid."'";
-                    $query= mysqli_query($con, $sql);
-                    if(!$query)
-                    {
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                    }
-                    else
-                    { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return[
-                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
-                    ];
-                    }
+                else
+                { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return[
+                $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5]
+                ];
                 }
-                //guardar el array que retornó la función consulta
-                $id2=consulta($id);
-                echo"NORMAL";
-
             }
-                
-        }
-    
-    
+            //guardar el array que retornó la función consulta
+            $id2=consulta($id);
+            //echo"NORMAL";
+        }       
+    }   
 ?>
 
 <!doctype html>
@@ -267,6 +277,8 @@ session_start();
                                        <div class="form-group col-lg-12">
                                             <span id="MainContent_lbCategoria">Departamento</span>
                                                 <?php
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
                                                     require("../Acceso/global.php");  
         
                                                     $sql="select * from depto";
@@ -290,6 +302,8 @@ session_start();
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Categoría</span>
                                                 <?php
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
                                                     require("../Acceso/global.php");  
         
                                                     $sql="select * from categoria";
@@ -314,6 +328,8 @@ session_start();
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Tipo de empleado</span>
                                                 <?php
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
                                                     require("../Acceso/global.php");  
         
                                                     $sql="select * from tipo";
@@ -369,6 +385,8 @@ session_start();
                                         <div class="form-group col-lg-12">
                                             <span id="MainContent_lbNombre">Turno</span>
                                             <?php
+                                                        $nombre=$_SESSION['name'];
+                                                        $contra=$_SESSION['con'];
                                                         require("../Acceso/global.php");  
       
                                                         $sql="select * from turno";
@@ -435,6 +453,8 @@ session_start();
                                                     </thead>
                                                     <tbody>
                                                             <?php
+                                                                $nombre=$_SESSION['name'];
+                                                                $contra=$_SESSION['con'];
                                                                 require("../Acceso/global.php");  
                             
                                                                 $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
@@ -541,5 +561,3 @@ session_start();
     </body>
 
     </html>
-
-    

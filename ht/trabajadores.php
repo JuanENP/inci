@@ -42,9 +42,40 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script>
+            function noCopy()
+            {
+                var myInput = document.getElementById('MainContent_txtNomEmpl');
+                var myInput2 = document.getElementById('MainContent_txtNom');
+                var myInput3 = document.getElementById('MainContent_txtPat');
+                var myInput4 = document.getElementById('MainContent_txtMat');
+                myInput.onpaste = function(e) 
+                {
+                    e.preventDefault();
+                    alert("Evite pegar aquí");
+                }
+                myInput2.onpaste = function(e) 
+                {
+                    e.preventDefault();
+                    alert("Evite pegar aquí");
+                }
+
+                myInput3.onpaste = function(e) 
+                {
+                    e.preventDefault();
+                    alert("Evite pegar aquí");
+                }
+
+                myInput4.onpaste = function(e) 
+                {
+                    e.preventDefault();
+                    alert("Evite pegar aquí");
+                }
+            }
+        </script>
     </head>
 
-    <body>
+    <body onload="noCopy()">
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -166,22 +197,21 @@ session_start();
                                     <div class="card-body card-block">
 
                                        <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbCategoria">Número de empleado</span><input name="num" type="number" id="MainContent_txtCategoria" class="form-control" required="" />
+                                            <span id="MainContent_lbCategoria">Número de empleado</span><input name="num" type="number" id="MainContent_txtNomEmpl" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
                                        </div>
                                         <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}"  title="Ingrese solo letras" required />
+                                            <span id="MainContent_lbNombre">Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}"  title="Ingrese solo letras" required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbNombre">Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span id="MainContent_lbNombre">Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtPat" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbNombre">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span id="MainContent_lbNombre">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
                                         </div>
                                         <!-- PENDIENTE AGREGARLO A  LA TABLA CUMPLE_ONO -->
                                         <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
                                         </div>
-
                                     </div>
                                </div>
                            </div> 

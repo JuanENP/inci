@@ -1,5 +1,19 @@
-<!doctype html>
+<?php
+session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
+?>
 
+<!doctype html>
 <head>
 <html class="no-js" lang="">
     <!--<![endif]-->
@@ -169,15 +183,15 @@
                       </div>
                      
                       <div class="card-body card-block">   
-                      <form method="post" action="./../ht/inserta-cat.php" id="form2">                       
+                      <form method="post" action="../php/insert/turno.php" id="form2">                       
                           <div class="form-group col-lg-6">
                             <span id="MainContent_lbTurno">Turno</span>
-                            <input name="turno" type="text" id="MainContent_txtTurno" class="form-control" required="" />
+                            <input name="turno" type="text" id="MainContent_txtTurno" class="form-control" required/>
                           </div>
 
                           <div class="form-group col-lg-6">
                             <span id="MainContent_lbEntrada">Hora de entrada</span>                              
-                              <input name="entrada" type="time" id="MainContent_txtEntrada" class="form-control" required="" />
+                              <input name="entrada" type="time" id="MainContent_txtEntrada" class="form-control" required/>
                           </div>
                        
                           <div class="form-group col-lg-6">
@@ -234,8 +248,8 @@
                                                 echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                 echo utf8_encode("<td>" . $resul[1] . "</td>");
                                                 echo utf8_encode("<td>" . $resul[2] . "</td>");
-                                                echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-turno.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                echo "<button class='btn btn-success'> <a href='../php/editar-turno.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                echo "<td> <button class='btn btn-danger'> <a href='../php/delete/turno.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                echo "<button class='btn btn-success'> <a href='../php/update/turno.php?id=".$resul[0]."'>Editar</a> </button> </td>";
                                                 echo "</tr>";
                                               }
                                             }
@@ -246,7 +260,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 </div>
             </div><!-- .animated -->

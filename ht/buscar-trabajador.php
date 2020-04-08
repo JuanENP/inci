@@ -1,5 +1,16 @@
 <?php
-    require("../Acceso/global.php");
+session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
     $salida="";
     $query= "select numero_trabajador as Número, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) as Nombre from trabajador";
 

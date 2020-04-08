@@ -1,24 +1,24 @@
 <?php
 session_start(); 
-date_default_timezone_set('America/Mexico_City');
-if (($_SESSION["name"]) && ($_SESSION["con"]))
-{
-    $nombre=$_SESSION['name'];
-    $contra=$_SESSION['con'];
-    require("../Acceso/global.php"); 
-}
-else
-{
-    header("Location: ../index.html");
-    die();
-}
-?>
- <script type="text/javascript">
-  function error(cadena)
-  {
-    alert(cadena);
-    history.back();
-  }
+    date_default_timezone_set('America/Mexico_City');
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
+    ?>
+    <script type="text/javascript">
+    function error(cadena)
+    {
+        alert(cadena);
+        history.back();
+    }
 </script>
 
 <?php
@@ -203,7 +203,8 @@ else
                    if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero')")))
                     {
                         //Ocurrió algún error
-                        echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                        //echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+                        echo "acceso";
                         die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
                     }
                     else
@@ -224,7 +225,7 @@ else
                             }
                             else
                             {
-                                    echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                                echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
                             }
                         }
                     }

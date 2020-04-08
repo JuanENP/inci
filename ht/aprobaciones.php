@@ -1,18 +1,16 @@
 <?php
 session_start();
-$user=$_SESSION['name'];
-/*si la variable de sesión no existe, entonces no es posible entrar a aprobaciones. 
-Lo redirigimos al index.html para que inicie sesión*/
-if($user==null || $user=='')
-{
-    header("Location: ../index.html");
-    die();
-}
-else
-{
-    //mandar el nom de usuario
-    $_SESSION['name']=$user;
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <!doctype html>
 
@@ -317,8 +315,7 @@ else
                                                 <span id="MainContent_lbfcinicial">Tipo Licencia</span>
                                                 <!--select licencias-->
                                                 <select name="lic" id="">
-                                                    <?php
-                                                        require("../Acceso/global.php");  
+                                                    <?php 
       
                                                         $sql="select * from clave_especial where descripcion like 'LICENCIA%'";
                                                         $query= mysqli_query($con, $sql);

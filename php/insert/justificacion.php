@@ -1,5 +1,16 @@
 <?php
 session_start();
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <script type="text/javascript">
     function No_Existe(numero,fecha)
@@ -81,11 +92,10 @@ session_start();
         history.back();
     }
 </script>
+
 <?php
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
-    require("../../Acceso/global.php");
-
     //obtener la fecha de hoy
     $fec_act=date("Y-m-d H:i:s"); 
     
