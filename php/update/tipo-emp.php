@@ -31,6 +31,14 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php"); 
+         //SIRVE PARA SELECCIONAR EL  NOMBRE DEL TIPO DE EMPLEADO QUE SE VA A ACTUALIZAR
+         $sql="select * from tipo where idtipo='$id'";
+         $query= mysqli_query($con, $sql) or die();
+         while($resul=mysqli_fetch_array($query))
+         {
+             $nombre_tipo=$resul[1];
+         }
+
         $sql="update tipo SET  descripcion = '".$nuevo."' WHERE (idtipo = '".$id."');";
         $query= mysqli_query($con, $sql);
         if(!$query)
@@ -39,6 +47,9 @@ session_start();
         }
         else
         {
+            $nombre_host= gethostname();
+            $sql="call inserta_bitacora_tipo('Actualizado','-','$nuevo', '$id', '$nombre_tipo','$nombre_host')";
+            $query= mysqli_query($con, $sql) or die();
             echo "<script> Correcto(); </script>";
         }
     }

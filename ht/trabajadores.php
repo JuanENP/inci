@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('America/Mexico_City');
     if (($_SESSION["name"]) && ($_SESSION["con"]))
     {
         $nombre=$_SESSION['name'];
@@ -12,6 +13,7 @@ session_start();
         die();
     }
 ?>
+
 
 <!doctype html>
     <html class="no-js" lang="es">
@@ -72,10 +74,29 @@ session_start();
                     alert("Evite pegar aquí");
                 }
             }
+
+            function oculta(x)
+            {
+                if(x==0)
+                {
+                    document.getElementById('empresa').style.display="block";//ver
+                }
+                else
+                {
+                    document.getElementById('empresa').style.display="none";//ocultar
+                }
+                
+            }
+            function inicio()
+            {
+                document.getElementById('empresa').style.display="none";//ocultar
+                
+            }
+
         </script>
     </head>
 
-    <body onload="noCopy()">
+    <body onload="noCopy(); inicio()">
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -208,9 +229,12 @@ session_start();
                                         <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]{2,48}" title="Ingrese solo letras" required />
                                         </div>
-                                        <!-- PENDIENTE AGREGARLO A  LA TABLA CUMPLE_ONO -->
+                                       
                                         <div class="form-group col-lg-3">
                                             <span id="MainContent_lbNombre">Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
+                                        </div>
+                                        <div class="form-group col-lg-3">
+                                            <span id="MainContent_lbNombre">Fecha de onomástico</span><input name="ono" type="date" id="MainContent_txtNombre" class="form-control"  min="1930-01-01"/>
                                         </div>
                                     </div>
                                </div>
@@ -223,8 +247,7 @@ session_start();
                                         <span id="MainContent_lbtitulo"> Puesto de trabajo</span>
                                     </div>
                                     <div class="card-body card-block">
-
-                                       <div class="form-group col-lg-12">
+                                       <div class="form-group col-lg-5">
                                             <span id="MainContent_lbCategoria">Departamento</span>
                                                 <?php 
                                                     $sql="select * from depto";
@@ -244,7 +267,7 @@ session_start();
                                                     mysqli_close($con);
                                                 ?> <!--FIN PHP -->
                                        </div>
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-5">
                                             <span id="MainContent_lbNombre">Categoría</span>
                                                 <?php
                                                     $nombre=$_SESSION['name'];
@@ -269,7 +292,7 @@ session_start();
                                                 ?> <!--FIN PHP -->
 
                                         </div>
-                                        <div class="form-group col-lg-12">
+                                        <div class="form-group col-lg-5">
                                             <span id="MainContent_lbNombre">Tipo de empleado</span>
                                                 <?php
                                                     $nombre=$_SESSION['name'];
@@ -311,8 +334,8 @@ session_start();
                                                         mysqli_close($con);
                                                 ?> <!--FIN PHP -->
                                         </div>
-                                        <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Días de trabajo</span>
+                                        <div class="form-group col-lg-5">
+                                            <span id="MainContent_lbNombre"> Días de trabajo</span>
                                             <br>
 												<input type="checkbox" name="dia[]" value="lunes"/>Lunes<br />
 												<input type="checkbox" name="dia[]" value="martes"/>Martes<br />
@@ -323,7 +346,8 @@ session_start();
 												<input type="checkbox" name="dia[]" value="domingo" />Domingo<br />
                                                 <input type="checkbox" name="dia[]" value="dias_festivos" />Días festivos<br />
                                             <br>
-                                        <div class="form-group col-lg-12">
+                                        </div>
+                                        <div class="form-group col-lg-5">
                                             <span id="MainContent_lbNombre">Turno</span>
                                             <?php  
                                                 $nombre=$_SESSION['name'];
@@ -349,14 +373,14 @@ session_start();
                                        
                                     </div>
                                     <div class="row">  
-                            <div class="col-lg-12">                        
+                            <div class="col-lg-5">                        
                               <div class="card">
                                     <div class="card-header">
                                         <span id="MainContent_lbtitulo">Inicio de servicio laboral </span>
                                     </div>
                                     <div class="card-body card-block">
-                                    <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbCategoria">Fecha de alta del trabajador(Según su FM1) </span>
+                                       <div class="form-group col-lg-12">
+                                            <span id="MainContent_lbCategoria">Fecha de alta del trabajador (Según su FM1) </span>
                                             <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" required  min="1930-01-01" />
                                        </div>    
                                      
@@ -427,8 +451,6 @@ session_start();
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
                 <!-- .animated -->

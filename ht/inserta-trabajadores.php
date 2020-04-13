@@ -12,14 +12,14 @@ session_start();
         header("Location: ../index.html");
         die();
     }
-    ?>
+?>
     <script type="text/javascript">
     function error(cadena)
     {
         alert(cadena);
         history.back();
     }
-</script>
+    </script>
 
 <?php
     $numero=$_POST['num'];
@@ -34,7 +34,6 @@ session_start();
     $valores=explode('-',$cumple);
     $fecha_alta=$_POST['fecha_alta'];
     $valores2=explode('-',$fecha_alta);
-   
     $salida="";
     if (empty($_POST['dia']))
     {
@@ -45,6 +44,23 @@ session_start();
     {
         $dias=$_POST['dia'];
     }
+
+   if($_POST['ono'])
+   {
+       $ono=$_POST['ono'];
+       $valores3=explode('-',$ono);
+       if(strlen($valores3[0])>4)
+        {
+            $salida.="El año de la fecha de alta es incorrecto.";
+        }
+
+   }
+   else
+   {
+       $ono="";
+   }
+ 
+    
 
     //Aqui consulto si existe ese numero de trabajador 
     $ejecu="select * from trabajador where numero_trabajador = '$numero'";
@@ -58,6 +74,7 @@ session_start();
     }   
     else
     {
+        
         if(strlen($valores[0])>4)
         {
             $salida.="El año de nacimiento es incorrecto.";
@@ -66,6 +83,7 @@ session_start();
         {
             $salida.="El año de la fecha de alta es incorrecto.";
         }
+       
         //Si es foráneo
         if($tipo==4)
         {
@@ -159,73 +177,200 @@ session_start();
             }
             if($tipo==4)
             { 
+                mysqli_autocommit($con, FALSE);
                 if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo)")))
                 {
-                    //Ocurrió algún error
-                    echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    mysqli_rollback($con);
+                    mysqli_autocommit($con, TRUE); 
+                    echo "alert('Datos incorrectos del trabajador'); history.back();";
                 }
                 else
-                {
-                    if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','',1,'$numero')")))
+                { 
+                    if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero')")))
                     {
-                        //Ocurrió algún error
-                        echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                        mysqli_rollback($con);
+                        mysqli_autocommit($con, TRUE); 
+                        echo "alert('Datos incorrectos en acceso'); history.back();";
                     }
                     else
                     {
-                        $empresa = trim($empresa);
-                        if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','17','$empresa',$totDias)")))
+                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',1,'$numero')")))
                         {
-                            //Ocurrió algún error
-                            echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                            mysqli_rollback($con);
+                            mysqli_autocommit($con, TRUE); 
+                            echo "alert('Datos incorrectos en cumpleaños u onomástico'); history.back();";
                         }
                         else
                         {
-                            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                            if(!(mysqli_query($con,"Insert into tiempo_servicio values ('','$fecha_alta','$numero')")))
+                            {
+                                mysqli_rollback($con);
+                                mysqli_autocommit($con, TRUE); 
+                                echo "alert('Datos incorrectos en tiempo de servicio); history.back();";
+                            }
+                            else
+                            {
+                                $empresa = trim($empresa);
+                                if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','17','$empresa',$totDias)")))
+                                {
+                                    mysqli_rollback($con);
+                                    mysqli_autocommit($con, TRUE); 
+                                    echo "alert('Datos incorrectos en especial'); history.back();";
+                                }
+                                else
+                                {
+                                    mysqli_commit($con);
+                                    // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
+                                    $sql="SELECT descripcion  FROM trabajador inner join tipo on idtipo=tipo_tipo and tipo_tipo=$tipo";
+                                    $query= mysqli_query($con, $sql) or die();
+                                    $fila=mysqli_fetch_array($query);
+                                    $descripcion_tipo=$fila[0];
+    
+                                    $nombre_host= gethostname();
+                                    //GUARDAR EN LA BITACORA DE TRABAJADOR
+                                    if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','-','-','-','-','-','-','-', '$nombre_host')")))
+                                    {
+                                        mysqli_rollback($con);
+                                        mysqli_autocommit($con, TRUE); 
+                                        echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                    }
+                                    else
+                                    {
+                                    
+                                        //GUARDAR EN LA BITACORA DE CUMPLE_ONO
+                                        if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Guardado','$cumple','$ono','-','-','$numero', '$nombre_host')")))
+                                        {
+                                            mysqli_rollback($con);
+                                            mysqli_autocommit($con, TRUE); 
+                                            echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                        }
+                                        else
+                                        {    //GUARDAR EN LA BITACORA DE ACCESO
+                                            if(!(mysqli_query($con,"call inserta_bitacora_acceso('Guardado','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','-','-','-','-','-','-','-','-','-','$numero','$nombre_host')")))
+                                            {
+                                                mysqli_rollback($con);
+                                                mysqli_autocommit($con, TRUE); 
+                                                echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                            }
+                                            else
+                                            {
+                                                //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
+                                                if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
+                                                {
+                                                    mysqli_rollback($con);
+                                                    mysqli_autocommit($con, TRUE); 
+                                                    echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                                }
+                                                else
+                                                {
+                                                                    //GUARDAR EN LA BITACORA DE ESPECIAL
+                                                    if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','17','$empresa',$totDias,'','','','','-','-','','$numero','$nombre_host')")))
+                                                    {
+                                                        mysqli_rollback($con);
+                                                        mysqli_autocommit($con, TRUE); 
+                                                        echo "alert('Datos incorrectos en bitacora especial); history.back();";  
+                                                    }
+                                                    else
+                                                    {   mysqli_commit($con);
+                                                        mysqli_autocommit($con, TRUE);
+                                                        echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                                                    }  
+                                                }                       
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }//fin-if comisionado foráneo
           else
             {
-                //Cualquier otro distinto a comisionado foráneo
+                mysqli_autocommit($con, FALSE);
                 if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo)")))
                 {
-                    //Ocurrió algún error
-                    echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                    mysqli_rollback($con);
+                    mysqli_autocommit($con, TRUE); 
+                    echo "alert('Datos incorrectos en el trabajador'); history.back();";
                 }
                 else
-                {
-                   if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero')")))
+                { 
+                    if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero')")))
                     {
-                        //Ocurrió algún error
-                        //echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                        echo "acceso";
-                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                        mysqli_rollback($con);
+                        mysqli_autocommit($con, TRUE); 
+                        echo "alert('Datos incorrectos en acceso'); history.back();";
                     }
                     else
                     {
-                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','',1,'$numero')")))
+                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',1,'$numero')")))
                         {
-                            //Ocurrió algún error
-                            echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                            mysqli_rollback($con);
+                            mysqli_autocommit($con, TRUE); 
+                            echo "alert('Datos incorrectos en cumpleaños u onomástico'); history.back();";
                         }
                         else
                         {
                             if(!(mysqli_query($con,"Insert into tiempo_servicio values ('','$fecha_alta','$numero')")))
                             {
-                                //Ocurrió algún error
-                                echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-                                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                            }
+                                mysqli_rollback($con);
+                                mysqli_autocommit($con, TRUE); 
+                                echo "alert('Datos incorrectos en tiempo de servicio); history.back();";
+                            }                            
                             else
                             {
-                                echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                                mysqli_commit($con);
+                               
+                                // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
+                                $sql="SELECT descripcion  FROM trabajador inner join tipo on idtipo=tipo_tipo and tipo_tipo=$tipo";
+                                $query= mysqli_query($con, $sql) or die();
+                                $fila=mysqli_fetch_array($query);
+                                $descripcion_tipo=$fila[0];
+
+                                $nombre_host= gethostname();
+                                //GUARDAR EN LA BITACORA DE TRABAJADOR
+                                if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','-','-','-','-','-','-','-', '$nombre_host')")))
+                                {
+                                    mysqli_rollback($con);
+                                    mysqli_autocommit($con, TRUE); 
+                                    echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                }
+                                else
+                                {
+                                
+                                    //GUARDAR EN LA BITACORA DE CUMPLE_ONO
+                                    if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Guardado','$cumple','$ono','-','-','$numero', '$nombre_host')")))
+                                    {
+                                        mysqli_rollback($con);
+                                        mysqli_autocommit($con, TRUE); 
+                                        echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                    }
+                                    else
+                                    {    //GUARDAR EN LA BITACORA DE ACCESO
+                                        if(!(mysqli_query($con,"call inserta_bitacora_acceso('Guardado','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','-','-','-','-','-','-','-','-','-','$numero','$nombre_host')")))
+                                        {
+                                            mysqli_rollback($con);
+                                            mysqli_autocommit($con, TRUE); 
+                                            echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                        }
+                                        else
+                                        {
+                                            //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
+                                            if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
+                                            {
+                                                mysqli_rollback($con);
+                                                mysqli_autocommit($con, TRUE); 
+                                                echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                            }
+                                            else
+                                            {   mysqli_commit($con);
+                                                mysqli_autocommit($con, TRUE);
+                                                echo "<script type=\"text/javascript\">alert(\"Empleado guardado correctamente\"); location.href='../ht/trabajadores.php';</script>";
+                                            }
+                                        }        
+                                    }            
+                                }
                             }
                         }
                     }

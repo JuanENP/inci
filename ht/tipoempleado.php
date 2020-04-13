@@ -1,16 +1,16 @@
 ﻿<?php
 session_start();
-if (($_SESSION["name"]) && ($_SESSION["con"]))
-{
-    $nombre=$_SESSION['name'];
-    $contra=$_SESSION['con'];
-    require("../Acceso/global.php"); 
-}
-else
-{
-    header("Location: ../index.html");
-    die();
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 
 <!doctype html>
@@ -161,6 +161,7 @@ else
         
             <div class="content mt-3">
                 <div class="animated fadeIn">
+                <!--  
                    <div class="row"> 
                        <form method="post" action="./../ht/inserta-tipo-emp.php" id="form2">   
                             <div class="col-lg-12">                        
@@ -179,7 +180,8 @@ else
                                </div>
                            </div> 
                      </form>
-                   </div>  
+                   </div>
+                   -->  
                          
                       
               
@@ -213,8 +215,8 @@ else
                                                           {
                                                             echo "<tr>";
                                                             echo "<td>" . utf8_encode($resul[1]) . "</td>";
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
+                                                            // echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                            echo "<td> <button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
                                                             echo "</tr>";
                                                           }
                                                         }

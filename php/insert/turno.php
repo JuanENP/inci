@@ -31,10 +31,18 @@ session_start();
 </script>
 
 <?php 
+    function RestarHoras($horaini,$horafin)
+    {
+        $f1 = new DateTime($horaini);
+        $f2 = new DateTime($horafin);
+        $d = $f1->diff($f2);
+        return $d->format('%H:%I:%S');
+    }
+
     $turno=$_POST['turno'];
     $hora_ent=$_POST['entrada'];
     $hora_sal=$_POST['salida'];
-    //Aqui consulto si existe una categoria igual a la que se va a guardar
+    //Aqui consulto si existe un turno igual a la que se va a guardar
     $ejecu="select * from turno where idturno = '$turno'";
     $codigo=mysqli_query($con,$ejecu);
     $consultar=mysqli_num_rows($codigo);
@@ -44,18 +52,33 @@ session_start();
     }
     else
     {
-        //FALTA AGREGAR EL TOTAL DE HORAS EN LUGAR DE 0
-        if(!(mysqli_query($con,"Insert into turno values ('$turno','$hora_ent','$hora_sal',0)")))
+        $total_tiempo = RestarHoras($hora_ent,$hora_sal);
+        mysqli_autocommit($con, FALSE);
+        $nombre_host= gethostname();
+        if(!(mysqli_query($con,"Insert into turno values ('$turno','$hora_ent','$hora_sal','$total_tiempo')")))
         {
-           //Ocurrió algún error
-           echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-           die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-        }
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+            echo "alert('Datos incorrectos del turno'); history.back();";
+         }
         else
-        {
-           //Guardado correcto
-           echo "<script> Correcto(); </script>";
+        { 
+            if(!(mysqli_query($con,"call inserta_bitacora_turno('Guardado','$turno','$hora_ent','$hora_sal','$total_tiempo','-','', '', '', '$nombre_host')")))
+            {
+                mysqli_rollback($con);
+                mysqli_autocommit($con, TRUE); 
+                echo "alert('Datos incorrectos en bitacora turno); history.back();";
+            }
+            else
+            {
+                mysqli_commit($con);
+                mysqli_autocommit($con, TRUE);
+                //Guardado correcto
+                echo "<script> Correcto(); </script>";
+            }
         }
-        mysqli_close($con);   
+        mysqli_close($con); 
+        
     }
+   
 ?>
