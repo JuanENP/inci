@@ -1,16 +1,16 @@
 <?php
 session_start();
-if (($_SESSION["name"]) && ($_SESSION["con"]))
-{
-    $nombre=$_SESSION['name'];
-    $contra=$_SESSION['con'];
-    require("../Acceso/global.php"); 
-}
-else
-{
-    header("Location: ../index.html");
-    die();
-}
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <!doctype html>
 <!--[if gt IE 8]><!-->
@@ -18,7 +18,7 @@ else
     <!--<![endif]-->
 
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
             Catalogo de Categor&#237;as
@@ -149,8 +149,8 @@ else
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Catálogos</a></li>
-                                <li class="active">Categoria</li>
+                                <!-- <li><a href="#">Catálogos</a></li> -->
+                                <!-- <li class="active">Categoria</li> -->
                             </ol>
                         </div>
                     </div>
@@ -191,41 +191,41 @@ else
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
                                 </div>
-                                    <div class="card-body">
-                                        <span id="MainContent_DataTable">
-                                            <table id='' class="table table-striped table-bordered display">
-                                                <thead>
-                                                    <th>Categoría</th>
-                                                    <th>Nombre</th>
-                                                    <th>Acciones</th>
-                                                </thead>
+                                <div class="card-body">
+                                    <span id="MainContent_DataTable">
+                                        <table id='' class="table table-striped table-bordered display">
+                                            <thead>
+                                                <th>Categoría</th>
+                                                <th>Nombre</th>
+                                                <th>Acciones</th>
+                                            </thead>
                 
-                                                <tbody>
-                                                    <!--PONER AQUÍ EL contenido LA TABLA-->
-                                                    <?php
-                                                        $sql="select * from categoria";
-                                                        $query= mysqli_query($con, $sql);
-                                                        if(!$query)
-                                                        {
-                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                        }
-                                                        else
-                                                        {
-                                                          while($resul=mysqli_fetch_array($query))
-                                                          {
-                                                            echo "<tr>";
-                                                            echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                            echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
-                                                            echo "</tr>";
-                                                          }
-                                                        }
-                                                    ?> <!--FIN PHP -->
-                                                </tbody>
-                                            </table>
-                                        </span>
-                                    </div>
+                                            <tbody>
+                                                <!--PONER AQUÍ EL contenido LA TABLA-->
+                                                <?php
+                                                    $sql="select * from categoria";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {
+                                                      while($resul=mysqli_fetch_array($query))
+                                                      {
+                                                        echo "<tr>";
+                                                        echo "<td>" . $resul[0] . "</td>";
+                                                        echo "<td>" . $resul[1] . "</td>";
+                                                        echo "<td><a href='../php/eliminar-cat.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo " <a href='../php/editar-cat.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "</tr>";
+                                                      }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

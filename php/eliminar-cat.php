@@ -39,19 +39,26 @@ session_start();
     $nombre_cat=$resul[1];
   }
 
-  $sql="DELETE FROM categoria WHERE idcategoria = '".$id."'";
-  $query= mysqli_query($con, $sql);
-  if(!$query)
+  mysqli_autocommit($con, FALSE);
+  if(!(mysqli_query($con,"DELETE FROM categoria WHERE idcategoria = '".$id."'")))
   {
     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
   }
   else
   {
     $nombre_host= gethostname();
-    $sql="call inserta_bitacora_categoria('Eliminado','-','-','$id ', '$nombre_cat ', '$nombre_host')";
-    $query= mysqli_query($con, $sql) or die();
-            
-    echo"<script>Correcto();</script>";
+    if(!(mysqli_query($con,"call inserta_bitacora_categoria('Eliminado','-','-','$id ', '$nombre_cat ', '$nombre_host')")))
+    {
+        mysqli_rollback($con);
+        mysqli_autocommit($con, TRUE); 
+        echo "alert('Datos incorrectos en bitacora de categoria'); history.back();";
+    }
+    else
+    {
+        mysqli_commit($con);
+        mysqli_autocommit($con, TRUE);
+        echo "<script> Correcto(); </script>";
+    }
   }
-  mysqli_close($con);   
+
 ?>

@@ -14,12 +14,14 @@ else
 ?>
 <!doctype html>
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="">
+<html class="no-js" lang="es">
     <!--<![endif]-->
 
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+        <!-- <meta charset="utf-8" /> -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        
         <title>
             Catálogo de turnos
         </title>
@@ -147,8 +149,8 @@ else
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Catálogos</a></li>
-                                <li class="active">Turnos</li>
+                                <!-- <li><a href="#">Catálogos</a></li> -->
+                                <!-- <li class="active">Turnos</li> -->
                             </ol>
                         </div>
                     </div>

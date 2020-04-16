@@ -745,7 +745,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                                echo "alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();";
                                             }
                                             else
                                             {  
@@ -754,7 +754,7 @@ session_start();
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                                    echo "alert('Datos incorrectos en bitacora acceso'); history.back();";
                                                 }
                                                 else
                                                 {                                                
@@ -763,7 +763,7 @@ session_start();
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                                        echo "alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();";
                                                     }
                                                     else
                                                     {            
@@ -772,7 +772,7 @@ session_start();
                                                         {
                                                             mysqli_rollback($con);
                                                             mysqli_autocommit($con, TRUE); 
-                                                            echo "alert('Datos incorrectos en bitacora especial); history.back();";  
+                                                            echo "alert('Datos incorrectos en bitacora especial'); history.back();";  
                                                         }
                                                         else
                                                         {   mysqli_commit($con);
@@ -897,7 +897,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                            echo "alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();";
                                         }
                                        else
                                         {                                         
@@ -906,7 +906,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                                echo "alert('Datos incorrectos en bitacora acceso'); history.back();";
                                             }
                                             else
                                             {                                            
@@ -915,7 +915,7 @@ session_start();
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                                    echo "alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();";
                                                 }
                                                 else
                                                 {

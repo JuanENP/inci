@@ -61,7 +61,7 @@ session_start();
             {
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
-                echo "alert('Datos incorrectos en bitacora turno); history.back();";
+                echo "alert('Datos incorrectos en bitacora turno'); history.back();";
             }
             else
             {

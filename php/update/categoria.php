@@ -13,7 +13,7 @@ session_start();
     }
 ?>
 <script type="text/javascript">
-    function Alerta()
+    function Correcto()
     {
         alert("Modificado correctamente");
         location.href="../../ht/categoria.php";
@@ -37,24 +37,31 @@ actualizar($idcat, $nomcat,$old_id);
         //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
         $sql="select * from categoria where idcategoria='$id'";
         $query= mysqli_query($con, $sql) or die();
-        while($resul=mysqli_fetch_array($query))
-        {
-            $nombre_cat=$resul[1];
-        }
+        $resul=mysqli_fetch_array($query);
+        $nombre_cat=$resul[1];
 
-
-        $sql="update categoria SET idcategoria = '".$id."', nombre = '".$nom."' WHERE (idcategoria = '".$id_viejo."');";
-        $query= mysqli_query($con, $sql);
-        if(!$query)
+        mysqli_autocommit($con, FALSE);
+        if(!(mysqli_query($con,"update categoria SET idcategoria = '".$id."', nombre = '".$nom."' WHERE (idcategoria = '".$id_viejo."')")))
         {
-          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+            echo "alert('Datos incorrectos en la categoría); history.back();";
         }
         else
         {
             $nombre_host= gethostname();
-            $sql="call inserta_bitacora_categoria('Actualizado','$id','$nom', '$id_viejo', '$nombre_cat','$nombre_host')";
-            $query= mysqli_query($con, $sql) or die();
-            echo "<script> Alerta(); </script>";
+            if(!(mysqli_query($con,"call inserta_bitacora_categoria('Actualizado','$id','$nom', '$id_viejo', '$nombre_cat','$nombre_host')")))
+            {
+                mysqli_rollback($con);
+                mysqli_autocommit($con, TRUE); 
+                echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+            }
+            else
+            {
+                mysqli_commit($con);
+                mysqli_autocommit($con, TRUE);
+                echo "<script> Correcto(); </script>";
+            }
         }
     }
 ?>

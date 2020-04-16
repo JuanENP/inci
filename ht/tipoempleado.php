@@ -151,8 +151,8 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Catálogos</a></li>
-                                <li class="active">Tipos de empleados</li>
+                                <!-- <li><a href="#">Catálogos</a></li> -->
+                                <!-- <li class="active">Tipos de empleados</li> -->
                             </ol>
                         </div>
                     </div>
@@ -183,55 +183,50 @@ session_start();
                    </div>
                    -->  
                          
-                      
-              
- 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
                                 </div>
-                                    <div class="card-body">
-                                        <span id="MainContent_DataTable">
-                                            <table id='' class="table table-striped table-bordered display">
-                                                <thead>  
-                                                    <th>Nombre</th>
-                                                    <th>Acciones</th>
-                                                </thead>
+                                <div class="card-body">
+                                    <span id="MainContent_DataTable">
+                                        <table id='' class="table table-striped table-bordered display">
+                                            <thead>  
+                                                <th>Nombre</th>
+                                                <th>Acciones</th>
+                                            </thead>
                 
-                                                <tbody>
-                                                    <!--PONER AQUÍ EL contenido LA TABLA-->
-                                                    <?php
-                                                        $sql="select * from tipo";
-                                                        $query= mysqli_query($con, $sql);
-                                                        if(!$query)
-                                                        {
-                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                        }
-                                                        else
-                                                        {
-                                                          while($resul=mysqli_fetch_array($query))
-                                                          {
-                                                            echo "<tr>";
-                                                            echo "<td>" . utf8_encode($resul[1]) . "</td>";
-                                                            // echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<td> <button class='btn btn-success'> <a href='../php/editar-tipo-emp.php?id=".$resul[1]."'>Editar</a> </button> </td>";
-                                                            echo "</tr>";
-                                                          }
-                                                        }
-                                                    ?> <!--FIN PHP -->
-                                                </tbody>
-                                            </table>
-                                        </span>
-                                    </div>
+                                            <tbody>
+                                                <!--PONER AQUÍ EL contenido LA TABLA-->
+                                                <?php
+                                                    $sql="select * from tipo";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {
+                                                      while($resul=mysqli_fetch_array($query))
+                                                      {
+                                                        echo "<tr>";
+                                                        echo "<td>" . utf8_encode($resul[1]) . "</td>";
+                                                      //  echo "<td><a href='../php/eliminar-tipo-emp.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo "<td><a href='../php/editar-tipo-emp.php?id=".$resul[1]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "</tr>";
+                                                      }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- .animated -->
-            </div>
-            <!-- .content -->
+                </div><!-- .animated -->
+            </div><!-- .content -->
 
             <script type="text/javascript">
                 $(document).ready(function() {

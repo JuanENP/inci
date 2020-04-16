@@ -256,9 +256,9 @@ session_start();
 
 <!doctype html>
  
-    <html class="no-js" lang="ES">
+    <html class="no-js" lang="es">
     <head>
-        <meta charset="utf-8" />
+    <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
             Personal
@@ -443,8 +443,8 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Personal</a></li>
-                                <li class="active">Nuevo trabajador</li>
+                                <li><a href="../ht/trabajadores.php">Regresar al catálogo de personal</a></li>
+                                <!-- <li class="active">Nuevo trabajador</li> -->
                             </ol>
                         </div>
                     </div>
@@ -811,8 +811,8 @@ session_start();
 												echo "<td>" . $resul[4] . "</td>";
                                                 echo "<td>" . $resul[5] . "</td>";
                                                 echo "<td>" . $resul[6] . "</td>";
-                                                echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                echo "<button class='btn btn-success'> <a href='../php/editar-trabajadores.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                 echo "</tr>";
                                             }
                                         }
