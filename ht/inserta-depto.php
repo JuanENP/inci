@@ -17,7 +17,7 @@ session_start();
     function Ya_Existe()
     {
         alert("Ese departamento ya existe");
-        location.href="./../ht/departamentos.php";
+        location.href="../ht/departamentos.php";
     }
 </script>
 
@@ -25,7 +25,7 @@ session_start();
     function Correcto()
     {
         alert("Guardado correctamente");
-        location.href="./../ht/departamentos.php";
+        location.href="../ht/departamentos.php";
     }
 </script>
 

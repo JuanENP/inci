@@ -15,14 +15,14 @@ session_start();
 <script type="text/javascript">
     function Ya_Existe()
     {
-        alert("Ese tipo ya existe");
-        location.href="./../ht/tipoempleado.php";
+        alert("Ese tipo de empleado ya existe");
+        location.href="../ht/tipoempleado.php";
     }
 
     function Correcto()
     {
         alert("Guardado correctamente");
-        location.href="./../ht/tipoempleado.php";
+        location.href="../ht/tipoempleado.php";
     }
 </script>
 
@@ -48,8 +48,11 @@ session_start();
          }
          else
          {
-         //Guardado correcto
-         echo "<script> Correcto(); </script>";
+            $nombre_host= gethostname();
+            $sql="call inserta_bitacora_tipo('Guardado','-','$descripcion','-', '-','$nombre_host')";
+            $query= mysqli_query($con, $sql) or die();
+            //Guardado correcto
+            echo "<script> Correcto(); </script>";
          }
          mysqli_close($con);   
      }

@@ -41,28 +41,36 @@ session_start();
     $ejecu="select * from categoria where idcategoria = '$categoria'";
     $codigo=mysqli_query($con,$ejecu);
     $consultar=mysqli_num_rows($codigo);
-
     if($consultar>0)
     {
        echo "<script> Ya_Existe(); </script>";
     }
-    elseif ($consultar<=0) 
-    {
+    else
+    {   mysqli_autocommit($con, FALSE);
         if(!(mysqli_query($con,"Insert into categoria values ('$categoria','$nom')")))
         {
-        //Ocurrió algún error
-        echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+            echo "alert('Datos incorrectos en la categoría); history.back();";
         }
         else
         {
-        //Guardado correcto
-        $nombre_host= gethostname();
-        $sql="call inserta_bitacora_categoria('Guardado','$categoria','$nom','-', '-','$nombre_host')";
-        $query= mysqli_query($con, $sql) or die();
-        echo "<script> Correcto(); </script>";
-        }
-        mysqli_close($con);   
+            //Guardado correcto
+            $nombre_host= gethostname();
+            if(!(mysqli_query($con,"call inserta_bitacora_categoria('Guardado','$categoria','$nom','-', '-','$nombre_host')")))
+            {
+                mysqli_rollback($con);
+                mysqli_autocommit($con, TRUE); 
+                echo "alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();";
+            }
+            else
+            {
+                mysqli_commit($con);
+                mysqli_autocommit($con, TRUE);
+                echo "<script> Correcto(); </script>";
+            }
+
+        }  
     }
   
 ?>

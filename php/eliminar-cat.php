@@ -54,5 +54,5 @@ session_start();
             
     echo"<script>Correcto();</script>";
   }
-  mysqli_close($con);   
+
 ?>

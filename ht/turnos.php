@@ -1,28 +1,29 @@
 <?php
 session_start();
-    if (($_SESSION["name"]) && ($_SESSION["con"]))
-    {
-        $nombre=$_SESSION['name'];
-        $contra=$_SESSION['con'];
-        require("../Acceso/global.php"); 
-    }
-    else
-    {
-        header("Location: ../index.html");
-        die();
-    }
+if (($_SESSION["name"]) && ($_SESSION["con"]))
+{
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    require("../Acceso/global.php"); 
+}
+else
+{
+    header("Location: ../index.html");
+    die();
+}
 ?>
-
 <!doctype html>
-<head>
-<html class="no-js" lang="">
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="es">
     <!--<![endif]-->
 
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+        <!-- <meta charset="utf-8" /> -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        
         <title>
-            Catalogo de  turnos
+            Catálogo de turnos
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -48,15 +49,9 @@ session_start();
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
 
-        <!--  -->
-        <script src="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
-        <link href="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>                      
-
-        <!--  -->
     </head>
 
     <body>
-
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -85,7 +80,7 @@ session_start();
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.html">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.php">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
@@ -109,219 +104,206 @@ session_start();
                 <!-- /.navbar-collapse -->
             </nav>
         </aside>
-    <!-- Left Panel -->
+        <!-- /#left-panel -->
 
-    <!-- Right Panel -->
+        <!-- Right Panel -->
 
-    <div id="right-panel" class="right-panel">
+        <div id="right-panel" class="right-panel">
 
-        <!-- Header-->
-        <header id="header" class="header">
+            <!-- Header-->
+            <header id="header" class="header">
 
-            <div class="header-menu">
+                <div class="header-menu">
 
-                <div class="col-sm-7">
-                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
-                    <div class="header-left">
-                                                                        
-                    </div>
-                </div>
-
-                <div class="col-sm-5">
-                    <div class="user-area dropdown float-right">
-                        
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">                           
-                        </a>
-                        <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="updatePassword.aspx"  ><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                            <a class="nav-link" href="Logout.aspx" ><i class="fa fa-power-off"></i> Salir</a>                      
+                    <div class="col-sm-7">
+                        <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                        <div class="header-left">
                         </div>
                     </div>
+                    <div class="col-sm-5">
+                        <div class="user-area dropdown float-right">
 
-                    
-
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
+                            </a>
+                            <div class="user-menu dropdown-menu">
+                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-        </header><!-- /header -->
-        <!-- Header-->
+            </header>
+            <!-- /header -->
 
-    
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Catálogo de Turnos</h1>
+            <div class="breadcrumbs">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Catálogo de turnos</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <!-- <li><a href="#">Catálogos</a></li> -->
+                                <!-- <li class="active">Turnos</li> -->
+                            </ol>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="#">Catálogos</a></li>
-                            <li class="active">Turnos</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
         
-        <div class="content mt-3">
-            <div class="animated fadeIn">
+            <div class="content mt-3">
+                <div class="animated fadeIn">
+                   <div class="row"> 
+                       <form method="post" action="../php/insert/turno.php" id="form2">   
+                            <div class="col-lg-12">                        
+                              <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo">Nuevo turno</span>
+                                    </div>
+                                    <div class="card-body card-block">                          
+                                        <div class="form-group col-lg-6">
+                                            <span id="MainContent_lbTurno">Turno</span>
+                                            <input name="turno" type="text" id="MainContent_txtTurno" class="form-control" required/>
+                                        </div>
 
-                <div class="row">  
-                    <div class="col-lg-12">
-                                                
-                        
-                    </div>               
-                  <div class="col-lg-6">                        
-                    <div class="card">
-                      <div class="card-header">
-                        <span id="MainContent_lbtitulo">Nuevo Turno</span>
-                      </div>
-                     
-                      <div class="card-body card-block">   
-                      <form method="post" action="../php/insert/turno.php" id="form2">                       
-                          <div class="form-group col-lg-6">
-                            <span id="MainContent_lbTurno">Turno</span>
-                            <input name="turno" type="text" id="MainContent_txtTurno" class="form-control" required/>
-                          </div>
-
-                          <div class="form-group col-lg-6">
-                            <span id="MainContent_lbEntrada">Hora de entrada</span>                              
-                              <input name="entrada" type="time" id="MainContent_txtEntrada" class="form-control" required/>
-                          </div>
-                       
-                          <div class="form-group col-lg-6">
-                            <span >
-                            </span>
-                          </div>
-                          <div class="form-group col-lg-6">
-                            <span id="MainContent_lbSalida">Hora de salida</span>
-                              <input name="salida" type="time" id="MainContent_txtSalida" class="form-control" required="" />
-                          </div>
-                          
-                      </div>
-                      <div class="card-footer">
-                          <input type="submit" name="ctl00$MainContent$btnAgregar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
-                      </div>
+                                        <div class="form-group col-lg-6">
+                                            <span id="MainContent_lbEntrada">Hora de entrada</span>                              
+                                            <input name="entrada" type="time" id="MainContent_txtEntrada" class="form-control" required/>
+                                        </div>
+                                    
+                                        <div class="form-group col-lg-6">
+                                            <span >
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <span id="MainContent_lbSalida">Hora de salida</span>
+                                            <input name="salida" type="time" id="MainContent_txtSalida" class="form-control" required="" />
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
+                                    </div>
+                                </div>
+                            </div> 
                         </form>
-                      
-                    </div>
-                  </div>                
-                </div>          
+                   </div>  
 
-                <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Información</strong>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Información</strong>
+                                </div>
+                                <div class="card-body">
+                                    <span id="MainContent_DataTable">
+                                        <table id='' class="table table-striped table-bordered display">
+                                            <thead>
+                                            <th>Turno</th>
+                                            <th>Hora entrada</th>
+                                            <th>Hora salida</th>
+                                            <th>Total de horas</th>
+                                            <th>Acciones</th>
+                                            </thead>
+                
+                                            <tbody>
+                                                <!--PONER AQUÍ EL CONTENIDO DE LA TABLA-->
+                                                <?php
+                                                    $sql="select * from turno";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {
+                                                      while($resul=mysqli_fetch_array($query))
+                                                      {
+                                                        echo "<tr>";
+                                                        echo utf8_encode("<td>" . $resul[0] . "</td>");
+                                                        echo utf8_encode("<td>" . $resul[1] . "</td>");
+                                                        echo utf8_encode("<td>" . $resul[2] . "</td>");
+                                                        echo utf8_encode("<td>" . $resul[3] . "</td>");
+                                                        echo "<td> <button class='btn btn-danger'> <a href='../php/delete/turno.php?id=".$resul[0]."'>Eliminar</a> </button> ";
+                                                        echo "<button class='btn btn-success'> <a href='../php/update/turno.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                        echo "</tr>";
+                                                      }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <span id="MainContent_DataTable">
-                                <table id='' class="table table-striped table-bordered display">
-                                    <thead>
-                                        <th>Turno</th>
-                                        <th>Hora entrada</th>
-                                        <th>Hora salida</th>
-                                        <th>Acciones</th>
-                                    </thead>
-    
-                                    <tbody>
-                                        <!--PONER AQUÍ EL contenido LA TABLA-->
-                                        <?php
-                                            require("../Acceso/global.php");  
-
-                                            $sql="select * from turno";
-                                            $query= mysqli_query($con, $sql);
-                                            if(!$query)
-                                            {
-                                              die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                            }
-                                            else
-                                            {
-                                              while($resul=mysqli_fetch_array($query))
-                                              {
-                                                echo "<tr>";
-                                                echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                echo utf8_encode("<td>" . $resul[2] . "</td>");
-                                                echo "<td> <button class='btn btn-danger'> <a href='../php/delete/turno.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                echo "<button class='btn btn-success'> <a href='../php/update/turno.php?id=".$resul[0]."'>Editar</a> </button> </td>";
-                                                echo "</tr>";
-                                              }
-                                            }
-                                        ?> <!--FIN PHP -->
-                                    </tbody>
-                                </table>
-                            </span>
-                        </div>
                     </div>
-                </div>
+                </div><!-- .animated -->
+            </div>
+            <!-- .content -->
 
-                </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    setTimeout(function() {
+                        $(".alert").fadeOut(1500);
+                    }, 4000);
+                    $('table.display').DataTable({
+                        "language": {
+                            "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
+                            "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
+                            "infoEmpty": "Mostrando 0 registros de un total de 0",
+                            "infoFiltered": "(filtrados de un total de _MAX_ registros)",
+                            "loadingRecords": "Cargando...",
+                            "processing": "Procesando...",
+                            "search": "<span style='font-size:15px;'>Buscar:</span>",
+                            "searchPlaceholder": "Dato para buscar",
+                            "zeroRecords": "No se han encontrado coincidencias.",
+                            "paginate": {
+                                "first": "Primera",
+                                "last": "Última",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "aria": {
+                                "sortAscending": "Ordenación ascendente",
+                                "sortDescending": "Ordenación descendente"
+                            }
+                        },
+                        responsive: true,
+                        dom: 'Bfrtip',
+                        buttons: [{
+                                extend: 'copy',
+                                text: 'Copiar'
+                            },
+                            //'csv',
+                            'excel',
+                            'pdf',
+                            //{ extend: 'print', text: 'Imprimir' },
+                        ]
+                    });
+                });
+            </script>
+        </div>
+        <!-- /#right-panel -->
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function () {
-                $(".alert").fadeOut(1500);
-            }, 4000);
-            $('table.display').DataTable({
-                "language": {
-                    "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
-                    "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
-                    "infoEmpty": "Mostrando 0 registros de un total de 0",
-                    "infoFiltered": "(filtrados de un total de _MAX_ registros)",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "<span style='font-size:15px;'>Buscar:</span>",
-                    "searchPlaceholder": "Dato para buscar",
-                    "zeroRecords": "No se han encontrado coincidencias.",
-                    "paginate": {
-                        "first": "Primera",
-                        "last": "Última",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "aria": {
-                        "sortAscending": "Ordenación ascendente",
-                        "sortDescending": "Ordenación descendente"
-                    }
-                },
-                responsive: true,
-                dom: 'Bfrtip',
-                buttons: [
-                   { extend: 'copy', text: 'Copiar' },
-                   //'csv',
-                   'excel',
-                   //'pdf',
-                   //{ extend: 'print', text: 'Imprimir' },
-                ]
+        <!-- Right Panel -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="../assets/js/plugins.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $(".alert").fadeOut(1500);
+                }, 4000);
+                $('#menuToggle').on('click', function(event) {
+                    $('body').toggleClass('open');
+                });
             });
-        });
-    </script>
-
- 
-        
-    </div><!-- /#right-panel -->
-
-    <!-- Right Panel -->  
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-    <script src="assets/js/plugins.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function () {
-                $(".alert").fadeOut(1500);
-            }, 4000);
-            $('#menuToggle').on('click', function(event) {
-		        $('body').toggleClass('open');
-            });
-        });
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+  
+ </html>

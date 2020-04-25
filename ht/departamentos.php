@@ -13,25 +13,10 @@ else
 }
 ?>
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 
-    <div class="aspNetHidden">
-       
-    </div>
-
-    <div class="aspNetHidden">
-
-        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F1105A88" />
-        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="2IWzTZy++tA+YCARSF54Pj1Tmz8eeBCB4RtDBuAhn5UMzzeaXHoULbefce1DplPqXpsYZ58TJMnvmkn9y0fSumdFA6NEmOoAVWHaCyXtnHG22/w4kT2Guw2bU1hOiXQ2cjw36/OTtowhqakxT83HnTW3jahR+9cMOFVzpXunO+8=" />
-    </div>
-    <!--[if gt IE 8]><!-->
-    <html class="no-js" lang="">
-    <!--<![endif]-->
-
+<html class="no-js" lang="">
     <head>
-        <meta charset="utf-8" />
+    <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
             Catalogo de Departamentos
@@ -146,17 +131,11 @@ else
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
             </header>
             <!-- /header -->
-            <!-- Header-->
-
-
 
             <div class="breadcrumbs">
                 <div class="col-sm-4">
@@ -170,8 +149,8 @@ else
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Catálogos</a></li>
-                                <li class="active">Departamentos</li>
+                               <!-- <li><a href="#">Catálogos</a></li>
+                                <li class="active">Departamentos</li>-->
                             </ol>
                         </div>
                     </div>
@@ -185,7 +164,7 @@ else
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">Nuevo departamento</span>
+                                        <span id="MainContent_lbtitulo">NUEVO DEPARTAMENTO</span>
                                     </div>
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
@@ -208,49 +187,45 @@ else
                             <div class="card">
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
-                                        </div>
-                                            <div class="card-body">
-                                                <table id='' class='table table-striped table-bordered display'>
-                                                    <thead>
-                                                        <th>Departamento</th>
-                                                        <th>Nombre</th>
-                                                        <th>Acciones</th>
-                                                    </thead>
-                                                    <tbody>
-                                                            <?php
-                                                                $sql="select * from depto";
-                                                                $query= mysqli_query($con, $sql);
-                                                                    if(!$query)
-                                                                    {
-                                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                    while($resul=mysqli_fetch_array($query))
-                                                                    {
-                                                                        echo "<tr>";
-                                                                        echo "<td>" . $resul[0] . "</td>";
-                                                                        echo "<td>" . utf8_encode($resul[1]) . "</td>";
-                                                                        echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-depto.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                                        echo "<button class='btn btn-success'> <a href='../php/editar-depto.php?id=".$resul[0]."'>Editar</a> </button> </td>";
-                                                                        echo "</tr>";
-                                                                    }
-                                                                }
-                                                        
-                                                           ?> <!--FIN PHP -->
-                                                    </tbody>
-                                            </table>
-                                        </span>
+                                </div>
+                                <div class="card-body">
+                                    <span id="MainContent_DataTable">
+                                        <table id='' class='table table-striped table-bordered display'>
+                                            <thead>
+                                                <th>Departamento</th>
+                                                <th>Nombre</th>
+                                                <th>Acciones</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                    $sql="select * from depto";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {
+                                                        while($resul=mysqli_fetch_array($query))
+                                                        {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $resul[0] . "</td>";
+                                                            echo "<td>" . $resul[1] . "</td>";
+                                                            echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                            echo "</tr>";
+                                                        }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-                </div>
-                <!-- .animated -->
-            </div>
-            <!-- .content -->
+                </div><!-- .animated -->
+            </div> <!-- .content -->
 
             <script type="text/javascript">
                 $(document).ready(function() {
@@ -293,9 +268,6 @@ else
                     });
                 });
             </script>
-
-
-
         </div>
         <!-- /#right-panel -->
 
@@ -315,4 +287,4 @@ else
         </script>
     </body>
 
-    </html>
+</html>
