@@ -26,20 +26,21 @@ session_start();
 </script>
 <?php
   //obtener el id que se mandó acá
-  $id=$_GET['id'];
+  $id=$_GET['ff0_lo'];
+  $cadena = base64_decode($id); // Decode
   
   $nombre=$_SESSION['name'];
   $contra=$_SESSION['con'];
   require("../Acceso/global.php");
   //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
-  $sql="select * from categoria where idcategoria='$id'";
+  $sql="select * from categoria where idcategoria='$cadena'";
   $query= mysqli_query($con, $sql) or die();
   while($resul=mysqli_fetch_array($query))
   {
     $nombre_cat=$resul[1];
   }
 
-  $sql="DELETE FROM categoria WHERE idcategoria = '".$id."'";
+  $sql="DELETE FROM categoria WHERE idcategoria = '".$cadena."'";
   $query= mysqli_query($con, $sql);
   if(!$query)
   {
@@ -48,7 +49,7 @@ session_start();
   else
   {
     $nombre_host= gethostname();
-    $sql="call inserta_bitacora_categoria('Eliminado','-','-','$id ', '$nombre_cat ', '$nombre_host')";
+    $sql="call inserta_bitacora_categoria('Eliminado','-','-','$cadena', '$nombre_cat ', '$nombre_host')";
     $query= mysqli_query($con, $sql) or die();
             
     echo"<script>Correcto();</script>";

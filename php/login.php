@@ -1,6 +1,7 @@
 <?php
 session_start();  
 
+  error_reporting(0);//desactivar advertencias que solo aparecen cuando el usuario intenta abrir este archivo sin antes loguearse
   $nombre= $_POST['txtusuario'];
   $contra= $_POST['txtpassword'];
   include("../Acceso/global.php");

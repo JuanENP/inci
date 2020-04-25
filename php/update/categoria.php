@@ -4,11 +4,11 @@ session_start();
     {
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
-        require("../Acceso/global.php"); 
+        require("../../Acceso/global.php"); 
     }
     else
     {
-        header("Location: ../index.html");
+        header("Location: ../../index.html");
         die();
     }
 ?>
@@ -18,7 +18,6 @@ session_start();
         alert("Modificado correctamente");
         location.href="../../ht/categoria.php";
         //window.close();
-        //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
     }
 </script>
 

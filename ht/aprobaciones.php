@@ -4,7 +4,7 @@ session_start();
     {
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
-        require("../Acceso/global.php"); 
+        require("../Acceso/global.php");
     }
     else
     {
@@ -49,6 +49,10 @@ session_start();
         <link rel="stylesheet" href="../assets/css/themify-icons.css" />
         <link rel="stylesheet" href="../assets/css/flag-icon.min.css" />
         <link rel="stylesheet" href="../assets/css/cs-skin-elastic.css" />
+
+        <link rel="stylesheet" href="../assets/css/alertify.core.css" />
+        <link rel="stylesheet" href="../assets/css/alertify.default.css" />
+
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
         <link rel="stylesheet" href="../assets/scss/style.css" />
@@ -62,54 +66,358 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script src="../assets/js/jquery.min.js"></script>
+        <script src="../assets/js/main.js"></script>
+        <script src="../assets/js/alertify.min.js"></script>
 
-        <script>
-            function oculta(x)
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="../assets/js/plugins.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() 
             {
-                if(x==0)
+                setTimeout(function() 
                 {
-                    document.getElementById('fecf').style.display="none";
-                    document.getElementById('he').style.display="none";
-                    document.getElementById('hs').style.display="none";
-                    document.getElementById('empresa').style.display="none";
-                    document.getElementById('clavelicencia').style.display="none";
-                }
-                else
-                {
-                    if(x==2)
+                    $(".alert").fadeOut(1500);
+                }, 4000);
+
+                $('#menuToggle').on
+                ('click', function(event) 
                     {
-                        document.getElementById('fecf').style.display="block";
-                        document.getElementById('he').style.display="none";
-                        document.getElementById('hs').style.display="none";
-                        document.getElementById('empresa').style.display="none";
-                        document.getElementById('clavelicencia').style.display="block";
+                        $('body').toggleClass('open');
+                    }
+                );
+
+                //
+                $("#radio-justificacion").mouseover(function()
+                {
+                    $("#radio-justificacion").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-justificacion").mouseleave(function()
+                {
+                    $("#radio-justificacion").css("background-color", "transparent");
+                });
+
+                $("#radio-justificacion").click(function()
+                {
+                    $("#jus-ret").prop("checked", true);
+                    oculta(0);
+                });
+                //
+
+                //
+                $("#radio-omision").mouseover(function()
+                {
+                    $("#radio-omision").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-omision").mouseleave(function()
+                {
+                    $("#radio-omision").css("background-color", "transparent");
+                });
+                $("#radio-omision").click(function()
+                {
+                    $("#jus-omi").prop("checked", true);
+                    oculta(3);
+                });
+                //
+
+                //
+                $("#radio-comision").mouseover(function()
+                {
+                    $("#radio-comision").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-comision").mouseleave(function()
+                {
+                    $("#radio-comision").css("background-color", "transparent");
+                });
+                $("#radio-comision").click(function()
+                {
+                    $("#comi").prop("checked", true);
+                    oculta(1);
+                });
+                //
+
+                //
+                $("#radio-licencia").mouseover(function()
+                {
+                    $("#radio-licencia").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-licencia").mouseleave(function()
+                {
+                    $("#radio-licencia").css("background-color", "transparent");
+                });
+                $("#radio-licencia").click(function()
+                {
+                    $("#lice").prop("checked", true);
+                    oculta(2);
+                })
+                //
+
+                //
+                $("#radio-permiso").mouseover(function()
+                {
+                    $("#radio-permiso").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-permiso").mouseleave(function()
+                {
+                    $("#radio-permiso").css("background-color", "transparent");
+                });
+                $("#radio-permiso").click(function()
+                {
+                    $("#perm").prop("checked", true);
+                    oculta(2);
+                });
+                //
+
+                //
+                $("#radio-guardia").mouseover(function()
+                {
+                    $("#radio-guardia").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-guardia").mouseleave(function()
+                {
+                    $("#radio-guardia").css("background-color", "transparent");
+                });
+                $("#radio-guardia").click(function()
+                {
+                    $("#guard").prop("checked", true);
+                    oculta(2);
+                });
+                //
+
+                //
+                $("#radio-pt").mouseover(function()
+                {
+                    $("#radio-pt").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-pt").mouseleave(function()
+                {
+                    $("#radio-pt").css("background-color", "transparent");
+                });
+                $("#radio-pt").click(function()
+                {
+                    $("#pati").prop("checked", true);
+                    oculta(2);
+                });
+                //
+
+                //
+                $("#radio-curso").mouseover(function()
+                {
+                    $("#radio-curso").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-curso").mouseleave(function()
+                {
+                    $("#radio-curso").css("background-color", "transparent");
+                });
+                $("#radio-curso").click(function()
+                {
+                    $("#cur").prop("checked", true);
+                    oculta(9);
+                });
+                //
+
+                $("#cucap").click(function()
+                {
+                    var cod = document.getElementById("cucap").value;
+                    if(cod=="o")
+                    {
+                        document.getElementById('he').style.display = "none";
+                        document.getElementById('hs').style.display = "none";
+                    }
+                    if(cod=="d")
+                    {
+                        document.getElementById('he').style.display = "block";
+                        document.getElementById('hs').style.display = "block";
+                    }
+                });
+
+                //Para el tipo de licencia igual a un dia
+                $("#ti-l").click(function()
+                {
+                    var cod = document.getElementById("ti-l").value;
+                    if(cod=="co1")
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('he').style.display = "none";
+                        document.getElementById('hs').style.display = "none";
                     }
                     else
                     {
-                        document.getElementById('fecf').style.display="block";
-                        document.getElementById('he').style.display="block";
-                        document.getElementById('hs').style.display="block";
-                        document.getElementById('empresa').style.display="block";
-                        document.getElementById('clavelicencia').style.display="none";
+                        document.getElementById('fecf').style.display = "block";
+                        document.getElementById('he').style.display = "block";
+                        document.getElementById('hs').style.display = "block";
                     }
-                    
+                });
+            });
+        </script>  
+
+        <script>
+            function oculta(x) {
+                if (x == 0) 
+                {
+                    document.getElementById('tipo-com').style.display = "none";
+                    document.getElementById('fecf').style.display = "none";
+                    document.getElementById('he').style.display = "none";
+                    document.getElementById('hs').style.display = "none";
+                    document.getElementById('empresa').style.display = "none";
+                    document.getElementById('clavelicencia').style.display = "none";
+                    document.getElementById('div-es').style.display = "none";
+                    document.getElementById('prioridad').style.display = "none";
+                    document.getElementById('div-curso1').style.display = "none";
+                } 
+                else 
+                {
+                    if(x==1)
+                    {
+                        document.getElementById('clavelicencia').style.display = "none";
+                        document.getElementById('div-es').style.display = "none";
+                        document.getElementById('vacio_').style.display = "none";
+                        document.getElementById('div-curso1').style.display = "none";
+                        document.getElementById('tipo-com').style.display = "block";
+                        document.getElementById('fecf').style.display = "block";
+                        document.getElementById('he').style.display = "block";
+                        document.getElementById('hs').style.display = "block";
+                        document.getElementById('empresa').style.display = "block";
+                        document.getElementById('prioridad').style.display = "block";
+                    }
+                    else
+                    {
+                        if (x == 2) 
+                        {
+                            document.getElementById('tipo-com').style.display = "none";
+                            document.getElementById('he').style.display = "none";
+                            document.getElementById('hs').style.display = "none";
+                            document.getElementById('empresa').style.display = "none";
+                            document.getElementById('div-es').style.display = "none";
+                            document.getElementById('prioridad').style.display = "none";
+                            document.getElementById('div-curso1').style.display = "none";
+                            document.getElementById('clavelicencia').style.display = "block";
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('vacio_').style.display = "block";
+                        } 
+                        else
+                        {
+                            if (x == 3) 
+                            {
+                                document.getElementById('tipo-com').style.display = "none";
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('he').style.display = "none";
+                                document.getElementById('hs').style.display = "none";
+                                document.getElementById('empresa').style.display = "none";
+                                document.getElementById('clavelicencia').style.display = "none";
+                                document.getElementById('prioridad').style.display = "none";
+                                document.getElementById('div-curso1').style.display = "none";
+                                document.getElementById('div-es').style.display = "block";
+                            }
+
+                            else
+                            {
+                                if (x == 9) 
+                                {
+                                    document.getElementById('tipo-com').style.display = "none";
+                                    document.getElementById('fecf').style.display = "none";
+                                    document.getElementById('he').style.display = "none";
+                                    document.getElementById('hs').style.display = "none";
+                                    document.getElementById('empresa').style.display = "none";
+                                    document.getElementById('clavelicencia').style.display = "none";
+                                    document.getElementById('prioridad').style.display = "none";
+                                    document.getElementById('div-es').style.display = "none";
+                                    document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-curso1').style.display = "block";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            function seguro()
+            {
+                /* Para obtener el valor de la prioridad de la comisión*/
+                var cod = document.getElementById("p_NA").value;
+                if(cod=="a")
+                {
+                    alertify.confirm("ATENCIÓN. ESTA OPCIÓN ES SOLO EN CASOS DE *EXTREMA PRIORIDAD*. ESTA OPERACIÓN SERÁ REGISTRADA EN LA BITÁCORA CON SU NOMBRE DE USUARIO. GUARDE EL DOCUMENTO QUE COMPRUEBE ESTA PRIORIDAD ALTA PARA POSIBLES ACLARACIONES FUTURAS.", function(e)
+                    {
+                        if(e)
+                        {
+                            alertify.alert("¡Condición Aceptada!");
+                        }
+                        else
+                        {    
+                            $(document).ready(function()
+                            {
+                                alertify.alert("Prioridad Normal");
+                                $("#p_NA").val("n");//cambiar el option a normal
+                            });
+                        }
+                    });
                 }
             }
 
             function inicio()
             {
-                document.getElementById('fecf').style.display="none";
-                document.getElementById('he').style.display="none";
-                document.getElementById('hs').style.display="none";
-                document.getElementById('empresa').style.display="none";
-                document.getElementById('clavelicencia').style.display="none";
+                $(document).ready(function()
+                {
+                    var rad = $("input[name='opcion']:checked").val();
+                    if(rad=="justificar")
+                    {
+                        oculta(0);
+                    }
+                    if(rad=="omision")
+                    {
+                        oculta(3);
+                    }
+                    if(rad=="comision")
+                    {
+                        oculta(1);
+                    }
+                    if(rad=="licencia")
+                    {
+                        oculta(2);
+                    }
+                    if(rad=="permiso")
+                    {
+                        oculta(2);
+                    }
+                    if(rad=="guardia")
+                    {
+                        oculta(2);
+                    }
+
+                    if(rad=="curso")
+                    {
+                        oculta(2);
+                    }
+
+                    var cod = document.getElementById("ti-l").value;
+                    if(cod=="co1")
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('he').style.display = "none";
+                        document.getElementById('hs').style.display = "none";
+                    }
+                    else
+                    {
+                        document.getElementById('fecf').style.display = "block";
+                        document.getElementById('he').style.display = "block";
+                        document.getElementById('hs').style.display = "block";
+                    }
+                });
             }
         </script>
     </head>
 
     <body onload="inicio()">
-    <script src="../assets/js/jquery.min.js"></script>
-        <script src="../assets/js/main.js"></script>
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -158,16 +466,12 @@ session_start();
                             </ul>
                         </li>
                     </ul>
-                </div>
-                <!-- /.navbar-collapse -->
-            </nav>
-        </aside>
-        <!-- /#left-panel -->
-
-        <!-- Left Panel -->
+                </div> <!--FIN menu-principal-->
+                
+            </nav> <!-- FIN navbar-collapse -->
+        </aside> <!-- FIN DE ASIDE_left-panel -->
 
         <!-- Right Panel -->
-
         <div id="right-panel" class="right-panel">
 
             <!-- Header-->
@@ -195,10 +499,8 @@ session_start();
                         </div>
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
-            <!-- Header-->
 
             <div class="breadcrumbs">
                 <div class="col-sm-4">
@@ -220,7 +522,7 @@ session_start();
                 </div>
             </div>
 
-            <form method="POST" action="../php/insert/justificacion.php">
+            <form id="f1" method="POST" action="../php/insert/justificacion.php">
                 <div class="content mt-3">
                     <div class="animated fadeIn">
                         <div class="row">
@@ -234,25 +536,37 @@ session_start();
                                     <div class="card-body card-block">
                                         <div class="row col-md-12">
                                             <div class="form-group col-lg-3">
-                                                <div class="form-1-2">
-                                                    <input type="radio" name="opcion" value="justificar" onclick="oculta(0)" checked>Justificar retardo
+
+                                                <div class="form-1-2" id="radio-justificacion">
+                                                    <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> Justificar retardos
                                                 </div>
-                                                <div class="form-1-2">
+                                                <div class="form-1-2" id="radio-omision">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="radio" name="opcion" value="omision" onclick="oculta(0)">Justificar omisión
+                                                    <input type="radio" name="opcion" value="omision" id="jus-omi" onclick="oculta(3)"> Justificar omisión
                                                 </div>
-                                                <div class="form-1-2">
-                                                    <input type="radio" name="opcion" value="comision" onclick="oculta(1)">Comisiones
-                                                </div>
-
-                                                <div class="form-1-2">
-                                                    <input type="radio" name="opcion" value="licencia" onclick="oculta(2)">Licencias
+                                                <div class="form-1-2" id="radio-comision">
+                                                    <input type="radio" name="opcion" value="comision" id="comi" onclick="oculta(1)"> Comisiones
                                                 </div>
 
-                                                <div class="form-1-2">
-                                                    <input type="radio" name="opcion" value="permiso" onclick="oculta(2)">Permisos
+                                                <div class="form-1-2" id="radio-licencia">
+                                                    <input type="radio" name="opcion" value="licencia" id="lice" onclick="oculta(2)"> Licencias
                                                 </div>
 
+                                                <div class="form-1-2" id="radio-permiso">
+                                                    <input type="radio" name="opcion" value="permiso" id="perm" onclick="oculta(2)"> Permisos
+                                                </div>
+
+                                                <div class="form-1-2" id="radio-guardia">
+                                                    <input type="radio" name="opcion" value="guardia" id="guard" onclick="oculta(2)"> Guardias
+                                                </div>
+
+                                                <div class="form-1-2" id="radio-pt">
+                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(2)"> Pago de Tiempo
+                                                </div>
+
+                                                <div class="form-1-2" id="radio-curso">
+                                                    <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> Curso capacitación
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -271,11 +585,23 @@ session_start();
 
                                     <div class="card-body card-block">
                                         <div class="row col-md-12">
+
+                                            <div class="form-group col-lg-3" id="tipo-com">
+                                                <span id="">Tipo de comisión</span>
+                                                <br> 
+                                                <select name="tl" id="ti-l" class="form-control">
+                                                <option value="csi" selected>Comisión Sindical (CS) Interna</option>
+                                                <option value="cse">Comisión Sindical (CS) Externa</option>
+                                                <option value="com1">Comisión Oficial Menor a un Día - 61</option>
+                                                <option value="co1">Comisión Sindical equivalente a un Día - 17</option>
+                                                </select>
+                                            </div>
+
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbTrabajador">Trabajador</span>
                                                 <div class="form-1-2">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="text" name="caja_busqueda" id="caja_busqueda" autocomplete="off" required>
+                                                    <input type="text" name="caja_busqueda" id="caja_busqueda" autocomplete="off" class="form-control" required>
                                                 </div>
 
                                                 <div id="datos">
@@ -284,35 +610,52 @@ session_start();
                                             </div>
 
                                             <div class="form-group col-lg-3">
-                                                <span id="MainContent_lbfcinicial">Fecha Inicial</span>
-                                                <input name="fec" type="date" id="" class="form-control" required/>
+                                                <span id="">Fecha Inicial</span>
+                                                <input name="fec" type="date" id="" class="form-control" min="2020-01-01" required/>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="div-es">
+                                                <span id="">Omisión de:</span> <br>
+                                                <select name="eOs" id="eOs" class="form-control">
+                                                    <option value="e" selected>Entrada</option>
+                                                    <option value="s">Salida</option>
+                                                </select>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="fecf">
-                                                <span id="MainContent_lbfcinicial">Fecha Final</span>
+                                                <span id="">Fecha Final</span>
                                                 <input name="fecf" type="date" id="" class="form-control"/>
                                             </div>
 
-                                            <div class="form-group col-lg-3" id="">
+                                            <div class="form-group col-lg-3" id="vacio_">
                                             </div>
 
                                             <div class="form-group col-lg-3" id="he">
-                                                <span id="MainContent_lbfcinicial">Hora Entrada</span>
+                                                <span id="">Hora Entrada</span>
                                                 <input name="he" type="time" id="" class="form-control"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="hs">
-                                                <span id="MainContent_lbfcinicial">Hora Salida</span>
+                                                <span id="">Hora Salida</span>
                                                 <input name="hs" type="time" id="" class="form-control"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="empresa">
-                                                <span id="MainContent_lbfcinicial">Empresa Destino</span>
-                                                <input type="text" name="emp" id="" placeholder="Empresa destino">
+                                                <span id="">Empresa Destino</span>
+                                                <input type="text" name="emp" id="" class="form-control" placeholder="Empresa destino">
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="prioridad">
+                                                <span id="">Prioridad</span>
+                                                <br>
+                                                <select name="priority" id="p_NA" class="form-control" onchange="seguro()">
+                                                <option value="n" selected>Normal</option>
+                                                <option value="a">ALTA</option>
+                                                </select>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="clavelicencia">
-                                                <span id="MainContent_lbfcinicial">Tipo Licencia</span>
+                                                <span id="">Tipo Licencia</span>
                                                 <!--select licencias-->
                                                 <select name="lic" id="">
                                                     <?php 
@@ -334,6 +677,13 @@ session_start();
                                                 </select>
                                             </div>
 
+                                            <div class="form-group col-lg-3" id="div-curso1">
+                                                <span id="">Opción</span> <br>
+                                                <select name="cucap" id="cucap" class="form-control">
+                                                    <option value="o" selected>Omitir registros de asistencia</option>
+                                                    <option value="d">Registrar asistencia con horario distinto</option>
+                                                </select>
+                                            </div>
                                             <!--
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbfcinicial">Fecha Inicial</span>
@@ -346,8 +696,6 @@ session_start();
                                                 <input name="ctl00$MainContent$txtFechaFinal" type="date" id="MainContent_txtFechaFinal" class="form-control" required/>
                                             </div>
                                             -->
-                                        </div>
-                                        <div class="row col-md-12">
                                             <!--
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbComentarioReporte">Comentario - Corto</span>
@@ -362,112 +710,19 @@ session_start();
                                             -->
                                         </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <div class="dropdown">
-                                            <input type="submit" name="Aceptar" value="Guardar" class="btn btn-primary btn-sm" />
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
+                        </div> <!--FIN DIV CLASS ROW_NUEVA APROBACION-->
+
+                        <div class="card-footer">
+                            <div class="dropdown">
+                                <input type="submit" name="Aceptar" value="Guardar" class="btn btn-primary btn-sm" />
+                            </div>
                         </div>
+
+                    </div> <!--FIN DIV animated fadeIn-->
+                </div> <!--FIN DIV content mt-3--> 
             </form>  <!-- FIN DEL FORM -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <strong class="card-title">Información</strong>
-                                    </div>
-                                    <div class="card-body">
-
-                                        <select name="ctl00$MainContent$ddlMes" style="margin-bottom:10px">
-                                            <!--Los meses del año-->
-                                        </select>
-                                        <select name="ctl00$MainContent$ddlanio" onchange="" id="MainContent_ddlanio">
-                                            <!--Años 2018, 20191 y 2020-->
-                                        </select>
-                                        <span id="MainContent_DataTable">      
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <!-- .animated -->
-                </div>
-            <!-- .content -->
-
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    setTimeout(function() {
-                        $(".alert").fadeOut(1500);
-                    }, 4000);
-                    $('table.display').DataTable({
-                        "columnDefs": [{
-                            "width": "70px",
-                            "targets": 1
-                        }],
-                        "order": [
-                            [1, "asc"]
-                        ],
-                        "autoWidth": false,
-                        "language": {
-                            "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
-                            "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
-                            "infoEmpty": "Mostrando 0 registros de un total de 0",
-                            "infoFiltered": "(filtrados de un total de _MAX_ registros)",
-                            "loadingRecords": "Cargando...",
-                            "processing": "Procesando...",
-                            "search": "<span style='font-size:15px;'>Buscar:</span>",
-                            "searchPlaceholder": "Dato para buscar",
-                            "zeroRecords": "No se han encontrado coincidencias.",
-                            "paginate": {
-                                "first": "Primera",
-                                "last": "Última",
-                                "next": "Siguiente",
-                                "previous": "Anterior"
-                            },
-                            "aria": {
-                                "sortAscending": "Ordenación ascendente",
-                                "sortDescending": "Ordenación descendente"
-                            }
-                        },
-                        responsive: true,
-                        dom: 'Bfrtip',
-                        buttons: [{
-                                extend: 'copy',
-                                text: 'Copiar'
-                            },
-                            //'csv',
-                            'excel',
-                            //'pdf',
-                            //{ extend: 'print', text: 'Imprimir' },
-                        ]
-                    });
-                    $('.select2').select2();
-                });
-            </script>
-
-
-        </div>
-        <!-- /#right-panel -->
-
-        <!-- Right Panel -->
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="../assets/js/plugins.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                setTimeout(function() {
-                    $(".alert").fadeOut(1500);
-                }, 4000);
-                $('#menuToggle').on('click', function(event) {
-                    $('body').toggleClass('open');
-                });
-            });
- 
-        </script>        
+        </div> <!-- FIN right-panel -->       
     </body>
 </html>

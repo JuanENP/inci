@@ -203,6 +203,7 @@ else
                                                 <tbody>
                                                     <!--PONER AQUÍ EL contenido LA TABLA-->
                                                     <?php
+                                                        require("_encript.php");
                                                         $sql="select * from categoria";
                                                         $query= mysqli_query($con, $sql);
                                                         if(!$query)
@@ -216,8 +217,8 @@ else
                                                             echo "<tr>";
                                                             echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                             echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?id=".$resul[0]."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".$resul[0]."'>Editar</a> </button> </td>";
+                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?ff0_lo=". generaURL($resul[0])."'>Eliminar</a> </button> ";
+                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".generaURL($resul[0])."'>Editar</a> </button> </td>";
                                                             echo "</tr>";
                                                           }
                                                         }

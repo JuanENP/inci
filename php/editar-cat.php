@@ -12,7 +12,9 @@ session_start();
         die();
     }
     //obtener el id que se mandó acá
-    $id=$_GET['id'];
+    $cadena=$_GET['id'];
+    $id = base64_decode($cadena); // Decode
+    
     //Función que busca la categoría con el ID
     function consulta($myid)
     {
