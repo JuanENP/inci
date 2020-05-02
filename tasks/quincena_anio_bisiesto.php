@@ -17,9 +17,9 @@ require("../Acceso/global.php");
         $dia_final_feb=$porcion_fecha_feb[2];
         if($dia_final_feb==28)
         {
-        //actualizar la fecha_fin de la quincena 4 a 0000-02-29 si es un año bisiesto
-        $sql="UPDATE quincena SET fecha_fin = '0000-02-29' WHERE idquincena = 4";
-        $query= mysqli_query($con, $sql) or die();
+            //actualizar la fecha_fin de la quincena 4 a 0000-02-29 si es un año bisiesto
+            $sql="UPDATE quincena SET fecha_fin = '0000-02-29' WHERE idquincena = 4";
+            $query= mysqli_query($con, $sql) or die();
         }
         
     }

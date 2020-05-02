@@ -19,25 +19,25 @@ if($nombre==null || $nombre=='')
     <!--<![endif]-->
 
     <head>
-        <meta charset="utf-8" />
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Panel de Control
+           Reportes
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
-        <link rel="stylesheet" href="assets/css/normalize.css" />
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="assets/css/themify-icons.css" />
-        <link rel="stylesheet" href="assets/css/flag-icon.min.css" />
-        <link rel="stylesheet" href="assets/css/cs-skin-elastic.css" />
+        <link rel="stylesheet" href="../assets/css/normalize.css" />
+        <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="../assets/css/themify-icons.css" />
+        <link rel="stylesheet" href="../assets/css/flag-icon.min.css" />
+        <link rel="stylesheet" href="../assets/css/cs-skin-elastic.css" />
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
-        <link rel="stylesheet" href="assets/scss/style.css" />
-        <link href="assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../assets/scss/style.css" />
+        <link href="../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
@@ -67,37 +67,37 @@ if($nombre==null || $nombre=='')
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="panel_control.php" title="Volver al panel principal"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                            <a href="../panel_control.php" title="Volver al panel principal"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
                         </li>
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-crosshairs"></i><a href="ht/categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="ht/departamentos.php">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="ht/tipoempleado.php">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="ht/trabajadores.php">Personal</a></li>
+                                <li><i class="fa fa-crosshairs"></i><a href="../ht/categoria.php">Categorias</a></li>
+                                <li><i class="fa fa-sitemap"></i><a href="../ht/departamentos.php">Departamentos</a></li>
+                                <li><i class="fa fa-male"></i><a href="../ht/tipoempleado.php">Tipo Empleado</a></li>
+                                <li><i class="fa fa-users"></i><a href="../ht/trabajadores.php">Personal</a></li>
 
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="ht/dispositivos.html">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.html">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-calendar"></i><a href="ht/turnos.php">Turnos</a></li>
-                                <li><i class="fa fa-check-square-o"></i><a href="ht/aprobaciones.php">Aprobaciones</a></li>
-                                <li><i class="fa fa-files-o"></i><a href="ht/reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="ht/conceptos.html">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
+                                <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
+                                <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="ht/usuarios.html">Usuarios</a></li>
+                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.html">Usuarios</a></li>
                             </ul>
                         </li>
                         <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ REPOSITORIO DEL EMPLEADO -->
@@ -133,7 +133,7 @@ if($nombre==null || $nombre=='')
                         <div class="user-area dropdown float-right">
 
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
+                                <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="../php/updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
@@ -231,7 +231,7 @@ if($nombre==null || $nombre=='')
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Panel de Control</h1>
+                            <h1>REPORTES</h1>
                         </div>
                     </div>
                 </div>
@@ -461,7 +461,7 @@ if($nombre==null || $nombre=='')
         <!-- Right Panel -->
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="assets/js/plugins.js"></script>
+        <script src="../assets/js/plugins.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 setTimeout(function() {
