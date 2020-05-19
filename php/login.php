@@ -6,7 +6,8 @@ session_start();
   $contra= $_POST['txtpassword'];
   include("../Acceso/global.php");
 
-  $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE user = '$nombre' AND password = PASSWORD('$contra')");
+  $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE user = '$nombre' AND password = PASSWORD('$contra')") or die
+  ("Faltan datos para este inicio de sesión o este usuario no posee privilegios para acceder a este contenido");
   $resul=mysqli_num_rows($ejecu);
 
  if($resul==1) //si encontró algún dato en la tabla

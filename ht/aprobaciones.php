@@ -52,6 +52,8 @@ session_start();
 
         <link rel="stylesheet" href="../assets/css/alertify.core.css" />
         <link rel="stylesheet" href="../assets/css/alertify.default.css" />
+        <link rel="stylesheet" href="../assets/css/jquery-ui.css" />
+        <link rel="stylesheet" href="../assets/css/mdtimepicker.min.css" />
 
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
@@ -72,8 +74,34 @@ session_start();
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
         <script src="../assets/js/plugins.js"></script>
+        <script src="../assets/js/jquery-ui.js"></script>
+        <script src="../assets/js/mdtimepicker.min.js"></script>
 
         <script type="text/javascript">
+            $( function() 
+            {
+                $(".datepicker").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    changeMonth: true,
+                    changeYear: true
+                });
+
+                $('.hour').mdtimepicker({
+                    timeFormat:'hh:mm:ss',
+
+                    format:'hh:mm tt',   
+
+                    // 'red', 'purple', 'indigo', 'teal', 'green'
+                    theme: 'blue',        
+
+                    // determines if input is readonly
+                    readOnly: true,       
+
+                    // determines if display value has zero padding for hour value less than 10 (i.e. 05:30 PM); 24-hour format has padding by default
+                    hourPadding: false     
+                });
+            });
+
             $(document).ready(function() 
             {
                 setTimeout(function() 
@@ -240,10 +268,10 @@ session_start();
                     }
                 });
 
-                //Para el tipo de licencia igual a un dia
-                $("#ti-l").click(function()
+                //Para el tipo de comision igual a un dia
+                $("#ti-c").click(function()
                 {
-                    var cod = document.getElementById("ti-l").value;
+                    var cod = document.getElementById("ti-c").value;
                     if(cod=="co1")
                     {
                         document.getElementById('fecf').style.display = "none";
@@ -252,11 +280,120 @@ session_start();
                     }
                     else
                     {
-                        document.getElementById('fecf').style.display = "block";
-                        document.getElementById('he').style.display = "block";
-                        document.getElementById('hs').style.display = "block";
+                        if(cod=="csi" || cod=="cse" || cod=="com1")
+                        {
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('he').style.display = "block";
+                            document.getElementById('hs').style.display = "block";
+                        }
                     }
                 });
+
+                
+                $("#Selectlicencias").click(function()
+                {
+                    var cod = document.getElementById("Selectlicencias").value;
+                    if(cod=="92") //Para la tolerancia de lactancia
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('vacio_').style.display = "none";
+                        document.getElementById('div-tol-est').style.display = "none";
+                        document.getElementById('div-perm-go').style.display = "none";
+                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                        document.getElementById('div-tol-lac').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="93")//Para la tolerancia de estancia
+                        {
+                            document.getElementById('vacio_').style.display = "none";
+                            document.getElementById('div-tol-lac').style.display = "none";
+                            document.getElementById('div-perm-go').style.display = "none";
+                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('div-tol-est').style.display = "block";
+                        }
+                        else
+                        {
+                            if(cod=="41")//Para licencia goce
+                            {
+                                document.getElementById('div-tol-lac').style.display = "none";
+                                document.getElementById('div-tol-est').style.display = "none";
+                                document.getElementById('vacio_').style.display = "none";
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                document.getElementById('div-perm-go').style.display = "block";
+                            }
+                            else
+                            {
+                                if(cod=="48" || cod=="49") //licencia matrimonio y fallecimiento
+                                {
+                                    document.getElementById('fecf').style.display = "none";
+                                    document.getElementById('div-tol-lac').style.display = "none";
+                                    document.getElementById('div-tol-est').style.display = "none";
+                                    document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-perm-go').style.display = "none";
+                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                }
+                                else
+                                {
+                                    if(cod=="LSG")//licencia sin goce
+                                    {
+                                        document.getElementById('div-tol-lac').style.display = "none";
+                                        document.getElementById('div-tol-est').style.display = "none";
+                                        document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('vacio_').style.display = "none";
+                                        document.getElementById('fecf').style.display = "block";
+                                        document.getElementById('licenciaHastaUnAnio').style.display = "block";
+                                    }
+                                    else
+                                    {
+                                        if(cod=="LSGSS")//licencia sin goce para servicio social
+                                        {
+                                            document.getElementById('div-tol-lac').style.display = "none";
+                                            document.getElementById('div-tol-est').style.display = "none";
+                                            document.getElementById('div-perm-go').style.display = "none";
+                                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                            document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('fecf').style.display = "block";
+                                        }
+                                        else//todas las demas
+                                        {
+                                            if(cod=="47" || cod=="51" || cod=="53" || cod=="54" || cod=="55" || cod=="62")
+                                            {
+                                                document.getElementById('div-tol-lac').style.display = "none";
+                                                document.getElementById('div-tol-est').style.display = "none";
+                                                document.getElementById('div-perm-go').style.display = "none";
+                                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                document.getElementById('vacio_').style.display = "block";
+                                                document.getElementById('fecf').style.display = "block";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                //para licencias 41 fuerza mayor o no
+                $("#pergo").click(function()
+                {
+                    var cod = document.getElementById("pergo").value;
+                    if(cod=="1")
+                    {
+                        
+                        document.getElementById('fecf').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="2")
+                        {
+                            document.getElementById('fecf').style.display = "none";
+                        }
+                    }
+                });
+
             });
         </script>  
 
@@ -273,6 +410,11 @@ session_start();
                     document.getElementById('div-es').style.display = "none";
                     document.getElementById('prioridad').style.display = "none";
                     document.getElementById('div-curso1').style.display = "none";
+                    document.getElementById('div-tol-lac').style.display = "none";
+                    document.getElementById('div-tol-est').style.display = "none";
+                    document.getElementById('div-perm-go').style.display = "none";
+                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                    
                 } 
                 else 
                 {
@@ -282,6 +424,10 @@ session_start();
                         document.getElementById('div-es').style.display = "none";
                         document.getElementById('vacio_').style.display = "none";
                         document.getElementById('div-curso1').style.display = "none";
+                        document.getElementById('div-tol-lac').style.display = "none";
+                        document.getElementById('div-tol-est').style.display = "none";
+                        document.getElementById('div-perm-go').style.display = "none";
+                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
                         document.getElementById('tipo-com').style.display = "block";
                         document.getElementById('fecf').style.display = "block";
                         document.getElementById('he').style.display = "block";
@@ -300,6 +446,10 @@ session_start();
                             document.getElementById('div-es').style.display = "none";
                             document.getElementById('prioridad').style.display = "none";
                             document.getElementById('div-curso1').style.display = "none";
+                            document.getElementById('div-tol-lac').style.display = "none";
+                            document.getElementById('div-tol-est').style.display = "none";
+                            document.getElementById('div-perm-go').style.display = "none";
+                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
                             document.getElementById('clavelicencia').style.display = "block";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('vacio_').style.display = "block";
@@ -316,6 +466,10 @@ session_start();
                                 document.getElementById('clavelicencia').style.display = "none";
                                 document.getElementById('prioridad').style.display = "none";
                                 document.getElementById('div-curso1').style.display = "none";
+                                document.getElementById('div-tol-lac').style.display = "none";
+                                document.getElementById('div-tol-est').style.display = "none";
+                                document.getElementById('div-perm-go').style.display = "none";
+                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('div-es').style.display = "block";
                             }
 
@@ -332,6 +486,10 @@ session_start();
                                     document.getElementById('prioridad').style.display = "none";
                                     document.getElementById('div-es').style.display = "none";
                                     document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-tol-lac').style.display = "none";
+                                    document.getElementById('div-tol-est').style.display = "none";
+                                    document.getElementById('div-perm-go').style.display = "none";
+                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('div-curso1').style.display = "block";
                                 }
                             }
@@ -363,6 +521,33 @@ session_start();
                     });
                 }
             }
+
+            //Para licencia sin goce para incapacidad médica
+            function unAnio()
+            {
+                if( $("#li1Anio").prop('checked') ) 
+                {
+                    alertify.confirm("ATENCIÓN. Esta opción está basada en el artículo 37 de la Ley del ISSSTE (ENFERMEDAD NO PROFESIONAL)"+
+                        " y es exclusivamente para el caso siguiente: Si al vencer la licencia con medio sueldo continúa la imposibilidad del Trabajador para desempeñar su "+
+                        "labor, se concederá al Trabajador licencia sin goce de sueldo mientras dure la incapacidad, HASTA POR "+
+                        "CINCUENTA Y DOS SEMANAS contadas desde que se inició ésta, o a partir de que se expida la primera "+
+                        "licencia médica. Este opción deberá ser marcada SOLO EN EL CASO DESCRITO.", function(e)
+                        {
+                            if(e)
+                            {
+                                alertify.alert("¡Condición Aceptada!");
+                            }
+                            else
+                            {    
+                                $(document).ready(function()
+                                {
+                                    alertify.alert("OPCIÓN DESMARCADA");
+                                    $("#li1Anio").prop("checked", false); //desmarcar el checkbox
+                                });
+                            }
+                        });
+                }
+            }//Fin de unAnio
 
             function inicio()
             {
@@ -399,7 +584,9 @@ session_start();
                         oculta(2);
                     }
 
-                    var cod = document.getElementById("ti-l").value;
+                    //Para el tipo de comision igual a un día
+                    var cod = document.getElementById("ti-c").value;
+                    //alert (cod);
                     if(cod=="co1")
                     {
                         document.getElementById('fecf').style.display = "none";
@@ -408,9 +595,111 @@ session_start();
                     }
                     else
                     {
+                        if(cod=="cse" || cod=="com1")
+                        {
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('he').style.display = "block";
+                            document.getElementById('hs').style.display = "block";
+                        }
+                    }
+
+                    //las licencias
+                    var cod = document.getElementById("Selectlicencias").value;
+                    if(cod=="92") //Para la tolerancia de lactancia
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('vacio_').style.display = "none";
+                        document.getElementById('div-tol-est').style.display = "none";
+                        document.getElementById('div-perm-go').style.display = "none";
+                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                        document.getElementById('div-tol-lac').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="93")//Para la tolerancia de estancia
+                        {
+                            document.getElementById('vacio_').style.display = "none";
+                            document.getElementById('div-tol-lac').style.display = "none";
+                            document.getElementById('div-perm-go').style.display = "none";
+                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('div-tol-est').style.display = "block";
+                        }
+                        else
+                        {
+                            if(cod=="41")//Para licencia goce
+                            {
+                                document.getElementById('div-tol-lac').style.display = "none";
+                                document.getElementById('div-tol-est').style.display = "none";
+                                document.getElementById('vacio_').style.display = "none";
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                document.getElementById('div-perm-go').style.display = "block";
+                            }
+                            else
+                            {
+                                if(cod=="48" || cod=="49") //licencia matrimonio y fallecimiento
+                                {
+                                    document.getElementById('fecf').style.display = "none";
+                                    document.getElementById('div-tol-lac').style.display = "none";
+                                    document.getElementById('div-tol-est').style.display = "none";
+                                    document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-perm-go').style.display = "none";
+                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                }
+                                else
+                                {
+                                    if(cod=="LSG")//licencia sin goce
+                                    {
+                                        document.getElementById('div-tol-lac').style.display = "none";
+                                        document.getElementById('div-tol-est').style.display = "none";
+                                        document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('vacio_').style.display = "none";
+                                        document.getElementById('fecf').style.display = "block";
+                                        document.getElementById('licenciaHastaUnAnio').style.display = "block";
+                                    }
+                                    else
+                                    {
+                                        if(cod=="LSGSS")//licencia sin goce para servicio social
+                                        {
+                                            document.getElementById('div-tol-lac').style.display = "none";
+                                            document.getElementById('div-tol-est').style.display = "none";
+                                            document.getElementById('div-perm-go').style.display = "none";
+                                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                            document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('fecf').style.display = "block";
+                                        }
+                                        else//todas las demas
+                                        {
+                                            if(cod=="47" || cod=="51" || cod=="53" || cod=="54" || cod=="55" || cod=="62")
+                                            {
+                                                document.getElementById('div-tol-lac').style.display = "none";
+                                                document.getElementById('div-tol-est').style.display = "none";
+                                                document.getElementById('div-perm-go').style.display = "none";
+                                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                document.getElementById('vacio_').style.display = "block";
+                                                document.getElementById('fecf').style.display = "block";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //Fin licencias
+
+                    //licencia 41 fuerza mayor o no
+                    var cod = document.getElementById("pergo").value;
+                    if(cod=="1")
+                    {
                         document.getElementById('fecf').style.display = "block";
-                        document.getElementById('he').style.display = "block";
-                        document.getElementById('hs').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="2")
+                        {
+                            document.getElementById('fecf').style.display = "none";
+                        }
                     }
                 });
             }
@@ -441,7 +730,7 @@ session_start();
                                 <li><i class="fa fa-crosshairs"></i><a href="categoria.php">Categorias</a></li>
                                 <li><i class="fa fa-sitemap"></i><a href="departamentos.html">Departamentos</a></li>
                                 <li><i class="fa fa-male"></i><a href="tipoempleado.html">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="personal.html">Personal</a></li>
+                                <li><i class="fa fa-users"></i><a href="trabajadores.php">Personal</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
@@ -561,7 +850,7 @@ session_start();
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-pt">
-                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(2)"> Pago de Tiempo
+                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(2)"> Pase de Salida
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-curso">
@@ -589,11 +878,41 @@ session_start();
                                             <div class="form-group col-lg-3" id="tipo-com">
                                                 <span id="">Tipo de comisión</span>
                                                 <br> 
-                                                <select name="tl" id="ti-l" class="form-control">
-                                                <option value="csi" selected>Comisión Sindical (CS) Interna</option>
+                                                <select name="tl" id="ti-c" class="form-control">
+                                                <option value="csi">Comisión Sindical (CS) Interna</option>
                                                 <option value="cse">Comisión Sindical (CS) Externa</option>
                                                 <option value="com1">Comisión Oficial Menor a un Día - 61</option>
                                                 <option value="co1">Comisión Sindical equivalente a un Día - 17</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="clavelicencia">
+                                                <span id="">Tipo Licencia</span>
+                                                <!--select licencias-->
+                                                <select name="lic" id="Selectlicencias" class="form-control">
+                                                    <option value="" disabled selected>Elija:</option>
+                                                    <?php 
+                                                        $sql="SELECT * from clave_especial where 
+                                                        (descripcion like 'LICENCIA%' and idclave_especial!='50') 
+                                                        or descripcion like 'VACACIONES POR EM%'
+                                                        or idclave_especial='54' 
+                                                        or idclave_especial='55'
+                                                        or descripcion like 'PERMISOS CON GOCE DE SUELDO POR ANTI%'
+                                                        or descripcion like '%LACTANCIA%'
+                                                        or descripcion like '%ESTANCIA%'";
+                                                        $query= mysqli_query($con, $sql);
+                                                        if(!$query)
+                                                        {
+                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        }
+                                                        else
+                                                        {
+                                                          while($resul2=mysqli_fetch_array($query))
+                                                          {
+                                                            echo "<option value='".$resul2[0]."'>".utf8_encode($resul2[0])."-".utf8_encode($resul2[1])."</option>";   
+                                                          }
+                                                        }
+                                                    ?>
                                                 </select>
                                             </div>
 
@@ -611,7 +930,7 @@ session_start();
 
                                             <div class="form-group col-lg-3">
                                                 <span id="">Fecha Inicial</span>
-                                                <input name="fec" type="date" id="" class="form-control" min="2020-01-01" required/>
+                                                <input name="fec" type="text" class="form-control datepicker" autocomplete="off" readonly="readonly" style="background:white"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="div-es">
@@ -624,7 +943,7 @@ session_start();
 
                                             <div class="form-group col-lg-3" id="fecf">
                                                 <span id="">Fecha Final</span>
-                                                <input name="fecf" type="date" id="" class="form-control"/>
+                                                <input name="fecf" type="text" class="form-control datepicker" readonly="readonly" style="background:white" autocomplete="off"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="vacio_">
@@ -632,17 +951,17 @@ session_start();
 
                                             <div class="form-group col-lg-3" id="he">
                                                 <span id="">Hora Entrada</span>
-                                                <input name="he" type="time" id="" class="form-control"/>
+                                                <input name="he" type="text" id="" class="form-control hour" style="background:white"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="hs">
                                                 <span id="">Hora Salida</span>
-                                                <input name="hs" type="time" id="" class="form-control"/>
+                                                <input name="hs" type="text" id="" class="form-control hour" style="background:white"/>
                                             </div>
 
                                             <div class="form-group col-lg-3" id="empresa">
                                                 <span id="">Empresa Destino</span>
-                                                <input type="text" name="emp" id="" class="form-control" placeholder="Empresa destino">
+                                                <input type="text" name="emp" id="" class="form-control" autocomplete="off" placeholder="Empresa destino">
                                             </div>
 
                                             <div class="form-group col-lg-3" id="prioridad">
@@ -654,29 +973,6 @@ session_start();
                                                 </select>
                                             </div>
 
-                                            <div class="form-group col-lg-3" id="clavelicencia">
-                                                <span id="">Tipo Licencia</span>
-                                                <!--select licencias-->
-                                                <select name="lic" id="">
-                                                    <?php 
-      
-                                                        $sql="select * from clave_especial where descripcion like 'LICENCIA%'";
-                                                        $query= mysqli_query($con, $sql);
-                                                        if(!$query)
-                                                        {
-                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                        }
-                                                        else
-                                                        {
-                                                          while($resul2=mysqli_fetch_array($query))
-                                                          {
-                                                            echo "<option value='".$resul2[0]."'>".utf8_encode($resul2[0])."-".utf8_encode($resul2[1])."</option>";   
-                                                          }
-                                                        }
-                                                    ?>
-                                                </select>
-                                            </div>
-
                                             <div class="form-group col-lg-3" id="div-curso1">
                                                 <span id="">Opción</span> <br>
                                                 <select name="cucap" id="cucap" class="form-control">
@@ -684,28 +980,47 @@ session_start();
                                                     <option value="d">Registrar asistencia con horario distinto</option>
                                                 </select>
                                             </div>
-                                            <!--
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_lbfcinicial">Fecha Inicial</span>
-                                                <input name="ctl00$MainContent$txtFechaInicial" type="date" id="MainContent_txtFechaInicial" class="form-control" required/>
+
+                                            <div class="form-group col-lg-3" id="div-tol-lac">
+                                                <span id="">Opción</span> <br>
+                                                <select name="to-la" id="tolac" class="form-control">
+                                                    <option value="1" selected>30 minutos al inicio y 30 minutos al final de su turno</option>
+                                                    <option value="2">1 hora al inicio de su turno</option>
+                                                    <option value="3">1 hora al final de su turno</option>
+                                                </select>
                                             </div>
-                                            -->
-                                            <!--
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_lblfcfinal">Fecha Final</span>
-                                                <input name="ctl00$MainContent$txtFechaFinal" type="date" id="MainContent_txtFechaFinal" class="form-control" required/>
+
+                                            <div class="form-group col-lg-3" id="div-tol-est">
+                                                <span id="">Opción</span> <br>
+                                                <select name="to-es" id="toest" class="form-control">
+                                                    <option value="1">30 minutos al inicio de su turno</option>
+                                                    <option value="2">30 minutos al final de su turno</option>
+                                                </select>
                                             </div>
-                                            -->
-                                            <!--
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_lbComentarioReporte">Comentario - Corto</span>
-                                                <input name="ctl00$MainContent$txtComentarioCorto" type="text" id="MainContent_txtComentarioCorto" class="form-control" maxlength="13" />
+
+                                            <div class="form-group col-lg-3" id="div-perm-go">
+                                                <span id="">Motivo</span> <br>
+                                                <select name="per-go" id="pergo" class="form-control">
+                                                    <option value=""selected disabled>Elija:</option>
+                                                    <option value="1">Por fuerza mayor</option>
+                                                    <option value="2">Tramites para obtener pensión por jubilación, de retiro por edad, cesantía en edad avanzada</option>
+                                                </select>
                                             </div>
-                                            -->
+
+                                            
+                                            <div class="form-group col-lg-3" id="licenciaHastaUnAnio">
+                                                <span id="">¿Es una licencia para enfermedad no profesional?</span> <br>
+                                                <input type="checkbox" name="licUnAnio" value="1" id="li1Anio" onclick="unAnio()"> SI
+                                            </div>
+
                                             <!--
-                                            <div class="form-group col-lg-9">
-                                                <span id="MainContent_Label1">Comentario - Largo</span>
-                                                <input name="ctl00$MainContent$txtComentarioLargo" type="text" id="MainContent_txtComentarioLargo" class="form-control" maxlength="250" />
+                                            <div class="form-group col-lg-3" id="div-lic-sg">
+                                                <span id="">Opción</span> <br>
+                                                <select name="li-sg" id="lisg" class="form-control">
+                                                    <option value="1">Licencia sin goce Por antiguedad</option>
+                                                    <option value="2">Para practicar servicio social o pasantía</option>
+                                                    <option value="3">Se pasa de base a confianza</option>
+                                                </select>
                                             </div>
                                             -->
                                         </div>
