@@ -70,6 +70,7 @@ session_start();
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/jquery.min.js"></script>
         <script src="../assets/js/main.js"></script>
+        <script src="../assets/js/main2.js"></script>
         <script src="../assets/js/alertify.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -165,6 +166,25 @@ session_start();
                 {
                     $("#comi").prop("checked", true);
                     oculta(1);
+                    //Para el tipo de comision igual a un día
+                    var cod = document.getElementById("ti-c").value;
+                    //alert (cod);
+                    if(cod=="co1")
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('he').style.display = "none";
+                        document.getElementById('hs').style.display = "none";
+                    }
+                    else
+                    {
+                        if(cod=="cse" || cod=="com1")
+                        {
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('he').style.display = "block";
+                            document.getElementById('hs').style.display = "block";
+                        }
+                    }
+                    //fin de comision igual a un dia
                 });
                 //
 
@@ -182,6 +202,105 @@ session_start();
                 {
                     $("#lice").prop("checked", true);
                     oculta(2);
+                    //las licencias
+                    var cod = document.getElementById("Selectlicencias").value;
+                    if(cod=="92") //Para la tolerancia de lactancia
+                    {
+                        document.getElementById('fecf').style.display = "none";
+                        document.getElementById('vacio_').style.display = "none";
+                        document.getElementById('div-tol-est').style.display = "none";
+                        document.getElementById('div-perm-go').style.display = "none";
+                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                        document.getElementById('div-tol-lac').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="93")//Para la tolerancia de estancia
+                        {
+                            document.getElementById('vacio_').style.display = "none";
+                            document.getElementById('div-tol-lac').style.display = "none";
+                            document.getElementById('div-perm-go').style.display = "none";
+                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                            document.getElementById('fecf').style.display = "block";
+                            document.getElementById('div-tol-est').style.display = "block";
+                        }
+                        else
+                        {
+                            if(cod=="41")//Para licencia goce
+                            {
+                                document.getElementById('div-tol-lac').style.display = "none";
+                                document.getElementById('div-tol-est').style.display = "none";
+                                document.getElementById('vacio_').style.display = "none";
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                document.getElementById('div-perm-go').style.display = "block";
+                            }
+                            else
+                            {
+                                if(cod=="48" || cod=="49") //licencia matrimonio y fallecimiento
+                                {
+                                    document.getElementById('fecf').style.display = "none";
+                                    document.getElementById('div-tol-lac').style.display = "none";
+                                    document.getElementById('div-tol-est').style.display = "none";
+                                    document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-perm-go').style.display = "none";
+                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                }
+                                else
+                                {
+                                    if(cod=="LSG")//licencia sin goce
+                                    {
+                                        document.getElementById('div-tol-lac').style.display = "none";
+                                        document.getElementById('div-tol-est').style.display = "none";
+                                        document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('vacio_').style.display = "none";
+                                        document.getElementById('fecf').style.display = "block";
+                                        document.getElementById('licenciaHastaUnAnio').style.display = "block";
+                                    }
+                                    else
+                                    {
+                                        if(cod=="LSGSS")//licencia sin goce para servicio social
+                                        {
+                                            document.getElementById('div-tol-lac').style.display = "none";
+                                            document.getElementById('div-tol-est').style.display = "none";
+                                            document.getElementById('div-perm-go').style.display = "none";
+                                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                            document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('fecf').style.display = "block";
+                                        }
+                                        else//todas las demas
+                                        {
+                                            if(cod=="47" || cod=="51" || cod=="53" || cod=="54" || cod=="55" || cod=="62")
+                                            {
+                                                document.getElementById('div-tol-lac').style.display = "none";
+                                                document.getElementById('div-tol-est').style.display = "none";
+                                                document.getElementById('div-perm-go').style.display = "none";
+                                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                document.getElementById('vacio_').style.display = "block";
+                                                document.getElementById('fecf').style.display = "block";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                        //Fin licencias
+
+                    //licencia 41 fuerza mayor o no
+                    var cod = document.getElementById("pergo").value;
+                    if(cod=="1")
+                    {
+                        document.getElementById('fecf').style.display = "block";
+                    }
+                    else
+                    {
+                        if(cod=="2")
+                        {
+                            document.getElementById('fecf').style.display = "none";
+                        }
+                    }
+                    //Fin fuerza mayor o no
                 })
                 //
 
@@ -198,7 +317,7 @@ session_start();
                 $("#radio-permiso").click(function()
                 {
                     $("#perm").prop("checked", true);
-                    oculta(2);
+                    oculta(4);
                 });
                 //
 
@@ -215,7 +334,7 @@ session_start();
                 $("#radio-guardia").click(function()
                 {
                     $("#guard").prop("checked", true);
-                    oculta(2);
+                    oculta(5);
                 });
                 //
 
@@ -232,7 +351,7 @@ session_start();
                 $("#radio-pt").click(function()
                 {
                     $("#pati").prop("checked", true);
-                    oculta(2);
+                    oculta(6);
                 });
                 //
 
@@ -401,6 +520,8 @@ session_start();
             function oculta(x) {
                 if (x == 0) 
                 {
+                    $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                    $("#spanFechaInicial").text("Fecha del retardo");//cambiar el texto del span de la fecha inicial
                     document.getElementById('tipo-com').style.display = "none";
                     document.getElementById('fecf').style.display = "none";
                     document.getElementById('he').style.display = "none";
@@ -414,12 +535,14 @@ session_start();
                     document.getElementById('div-tol-est').style.display = "none";
                     document.getElementById('div-perm-go').style.display = "none";
                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                    
+                    document.getElementById('suplente').style.display = "none";
                 } 
                 else 
                 {
                     if(x==1)
                     {
+                        $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                        $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                         document.getElementById('clavelicencia').style.display = "none";
                         document.getElementById('div-es').style.display = "none";
                         document.getElementById('vacio_').style.display = "none";
@@ -428,17 +551,21 @@ session_start();
                         document.getElementById('div-tol-est').style.display = "none";
                         document.getElementById('div-perm-go').style.display = "none";
                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                        document.getElementById('suplente').style.display = "none";
                         document.getElementById('tipo-com').style.display = "block";
                         document.getElementById('fecf').style.display = "block";
                         document.getElementById('he').style.display = "block";
                         document.getElementById('hs').style.display = "block";
                         document.getElementById('empresa').style.display = "block";
                         document.getElementById('prioridad').style.display = "block";
+                        $("#p_NA").val("n");//cambiar el option de la prioridad de la comisión a normal
                     }
                     else
                     {
                         if (x == 2) 
                         {
+                            $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                            $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                             document.getElementById('tipo-com').style.display = "none";
                             document.getElementById('he').style.display = "none";
                             document.getElementById('hs').style.display = "none";
@@ -450,6 +577,7 @@ session_start();
                             document.getElementById('div-tol-est').style.display = "none";
                             document.getElementById('div-perm-go').style.display = "none";
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                            document.getElementById('suplente').style.display = "none";
                             document.getElementById('clavelicencia').style.display = "block";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('vacio_').style.display = "block";
@@ -458,6 +586,8 @@ session_start();
                         {
                             if (x == 3) 
                             {
+                                $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                $("#spanFechaInicial").text("Fecha de la omisión");//cambiar el texto del span de la fecha inicial
                                 document.getElementById('tipo-com').style.display = "none";
                                 document.getElementById('fecf').style.display = "none";
                                 document.getElementById('he').style.display = "none";
@@ -470,27 +600,76 @@ session_start();
                                 document.getElementById('div-tol-est').style.display = "none";
                                 document.getElementById('div-perm-go').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                document.getElementById('suplente').style.display = "none";
                                 document.getElementById('div-es').style.display = "block";
                             }
 
                             else
                             {
-                                if (x == 9) 
+                                if(x == 4)
                                 {
+                                    $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                    $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                                     document.getElementById('tipo-com').style.display = "none";
-                                    document.getElementById('fecf').style.display = "none";
                                     document.getElementById('he').style.display = "none";
                                     document.getElementById('hs').style.display = "none";
                                     document.getElementById('empresa').style.display = "none";
                                     document.getElementById('clavelicencia').style.display = "none";
                                     document.getElementById('prioridad').style.display = "none";
-                                    document.getElementById('div-es').style.display = "none";
-                                    document.getElementById('vacio_').style.display = "none";
+                                    document.getElementById('div-curso1').style.display = "none";
                                     document.getElementById('div-tol-lac').style.display = "none";
                                     document.getElementById('div-tol-est').style.display = "none";
                                     document.getElementById('div-perm-go').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                    document.getElementById('div-curso1').style.display = "block";
+                                    document.getElementById('div-es').style.display = "none";
+                                    document.getElementById('suplente').style.display = "none";
+                                    document.getElementById('fecf').style.display = "block";
+                                }
+                                else
+                                {
+                                    if(x == 5)
+                                    {
+                                        document.getElementById('tipo-com').style.display = "none";
+                                        document.getElementById('he').style.display = "none";
+                                        document.getElementById('hs').style.display = "none";
+                                        document.getElementById('empresa').style.display = "none";
+                                        document.getElementById('clavelicencia').style.display = "none";
+                                        document.getElementById('prioridad').style.display = "none";
+                                        document.getElementById('div-curso1').style.display = "none";
+                                        document.getElementById('div-tol-lac').style.display = "none";
+                                        document.getElementById('div-tol-est').style.display = "none";
+                                        document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                        document.getElementById('div-es').style.display = "none";
+                                        document.getElementById('fecf').style.display = "none";
+                                        document.getElementById('suplente').style.display = "block";
+
+                                        $("#MainContent_lbTrabajador").text("Trabajador solicitante");//cambiar el texto del span del trabajador
+                                        $("#spanFechaInicial").text("Fecha de la guardia");//cambiar el texto del span de la fecha inicial
+                                    }
+                                    else
+                                    {
+                                        if (x == 9) 
+                                        {
+                                            $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                            $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
+                                            document.getElementById('tipo-com').style.display = "none";
+                                            document.getElementById('fecf').style.display = "none";
+                                            document.getElementById('he').style.display = "none";
+                                            document.getElementById('hs').style.display = "none";
+                                            document.getElementById('empresa').style.display = "none";
+                                            document.getElementById('clavelicencia').style.display = "none";
+                                            document.getElementById('prioridad').style.display = "none";
+                                            document.getElementById('div-es').style.display = "none";
+                                            document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('div-tol-lac').style.display = "none";
+                                            document.getElementById('div-tol-est').style.display = "none";
+                                            document.getElementById('div-perm-go').style.display = "none";
+                                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                            document.getElementById('suplente').style.display = "none";
+                                            document.getElementById('div-curso1').style.display = "block";
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -546,7 +725,7 @@ session_start();
                                 });
                             }
                         });
-                }
+                }    
             }//Fin de unAnio
 
             function inicio()
@@ -565,141 +744,147 @@ session_start();
                     if(rad=="comision")
                     {
                         oculta(1);
+                        //Para el tipo de comision igual a un día
+                        var cod = document.getElementById("ti-c").value;
+                        //alert (cod);
+                        if(cod=="co1")
+                        {
+                            document.getElementById('fecf').style.display = "none";
+                            document.getElementById('he').style.display = "none";
+                            document.getElementById('hs').style.display = "none";
+                        }
+                        else
+                        {
+                            if(cod=="cse" || cod=="com1")
+                            {
+                                document.getElementById('fecf').style.display = "block";
+                                document.getElementById('he').style.display = "block";
+                                document.getElementById('hs').style.display = "block";
+                            }
+                        }
+                        //fin de comision igual a un dia
                     }
                     if(rad=="licencia")
                     {
                         oculta(2);
-                    }
-                    if(rad=="permiso")
-                    {
-                        oculta(2);
-                    }
-                    if(rad=="guardia")
-                    {
-                        oculta(2);
-                    }
-
-                    if(rad=="curso")
-                    {
-                        oculta(2);
-                    }
-
-                    //Para el tipo de comision igual a un día
-                    var cod = document.getElementById("ti-c").value;
-                    //alert (cod);
-                    if(cod=="co1")
-                    {
-                        document.getElementById('fecf').style.display = "none";
-                        document.getElementById('he').style.display = "none";
-                        document.getElementById('hs').style.display = "none";
-                    }
-                    else
-                    {
-                        if(cod=="cse" || cod=="com1")
+                        //las licencias
+                        var cod = document.getElementById("Selectlicencias").value;
+                        if(cod=="92") //Para la tolerancia de lactancia
                         {
-                            document.getElementById('fecf').style.display = "block";
-                            document.getElementById('he').style.display = "block";
-                            document.getElementById('hs').style.display = "block";
-                        }
-                    }
-
-                    //las licencias
-                    var cod = document.getElementById("Selectlicencias").value;
-                    if(cod=="92") //Para la tolerancia de lactancia
-                    {
-                        document.getElementById('fecf').style.display = "none";
-                        document.getElementById('vacio_').style.display = "none";
-                        document.getElementById('div-tol-est').style.display = "none";
-                        document.getElementById('div-perm-go').style.display = "none";
-                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                        document.getElementById('div-tol-lac').style.display = "block";
-                    }
-                    else
-                    {
-                        if(cod=="93")//Para la tolerancia de estancia
-                        {
+                            document.getElementById('fecf').style.display = "none";
                             document.getElementById('vacio_').style.display = "none";
-                            document.getElementById('div-tol-lac').style.display = "none";
+                            document.getElementById('div-tol-est').style.display = "none";
                             document.getElementById('div-perm-go').style.display = "none";
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                            document.getElementById('fecf').style.display = "block";
-                            document.getElementById('div-tol-est').style.display = "block";
+                            document.getElementById('div-tol-lac').style.display = "block";
                         }
                         else
                         {
-                            if(cod=="41")//Para licencia goce
+                            if(cod=="93")//Para la tolerancia de estancia
                             {
-                                document.getElementById('div-tol-lac').style.display = "none";
-                                document.getElementById('div-tol-est').style.display = "none";
                                 document.getElementById('vacio_').style.display = "none";
-                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('div-tol-lac').style.display = "none";
+                                document.getElementById('div-perm-go').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                document.getElementById('div-perm-go').style.display = "block";
+                                document.getElementById('fecf').style.display = "block";
+                                document.getElementById('div-tol-est').style.display = "block";
                             }
                             else
                             {
-                                if(cod=="48" || cod=="49") //licencia matrimonio y fallecimiento
+                                if(cod=="41")//Para licencia goce
                                 {
-                                    document.getElementById('fecf').style.display = "none";
                                     document.getElementById('div-tol-lac').style.display = "none";
                                     document.getElementById('div-tol-est').style.display = "none";
                                     document.getElementById('vacio_').style.display = "none";
-                                    document.getElementById('div-perm-go').style.display = "none";
+                                    document.getElementById('fecf').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                    document.getElementById('div-perm-go').style.display = "block";
                                 }
                                 else
                                 {
-                                    if(cod=="LSG")//licencia sin goce
+                                    if(cod=="48" || cod=="49") //licencia matrimonio y fallecimiento
                                     {
+                                        document.getElementById('fecf').style.display = "none";
                                         document.getElementById('div-tol-lac').style.display = "none";
                                         document.getElementById('div-tol-est').style.display = "none";
-                                        document.getElementById('div-perm-go').style.display = "none";
                                         document.getElementById('vacio_').style.display = "none";
-                                        document.getElementById('fecf').style.display = "block";
-                                        document.getElementById('licenciaHastaUnAnio').style.display = "block";
+                                        document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     }
                                     else
                                     {
-                                        if(cod=="LSGSS")//licencia sin goce para servicio social
+                                        if(cod=="LSG")//licencia sin goce
                                         {
                                             document.getElementById('div-tol-lac').style.display = "none";
                                             document.getElementById('div-tol-est').style.display = "none";
                                             document.getElementById('div-perm-go').style.display = "none";
-                                            document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                             document.getElementById('vacio_').style.display = "none";
                                             document.getElementById('fecf').style.display = "block";
+                                            document.getElementById('licenciaHastaUnAnio').style.display = "block";
                                         }
-                                        else//todas las demas
+                                        else
                                         {
-                                            if(cod=="47" || cod=="51" || cod=="53" || cod=="54" || cod=="55" || cod=="62")
+                                            if(cod=="LSGSS")//licencia sin goce para servicio social
                                             {
                                                 document.getElementById('div-tol-lac').style.display = "none";
                                                 document.getElementById('div-tol-est').style.display = "none";
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                                document.getElementById('vacio_').style.display = "block";
+                                                document.getElementById('vacio_').style.display = "none";
                                                 document.getElementById('fecf').style.display = "block";
+                                            }
+                                            else//todas las demas
+                                            {
+                                                if(cod=="47" || cod=="51" || cod=="53" || cod=="54" || cod=="55" || cod=="62")
+                                                {
+                                                    document.getElementById('div-tol-lac').style.display = "none";
+                                                    document.getElementById('div-tol-est').style.display = "none";
+                                                    document.getElementById('div-perm-go').style.display = "none";
+                                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                    document.getElementById('vacio_').style.display = "block";
+                                                    document.getElementById('fecf').style.display = "block";
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    //Fin licencias
+                        //Fin licencias
 
-                    //licencia 41 fuerza mayor o no
-                    var cod = document.getElementById("pergo").value;
-                    if(cod=="1")
-                    {
-                        document.getElementById('fecf').style.display = "block";
-                    }
-                    else
-                    {
-                        if(cod=="2")
+                        //licencia 41 fuerza mayor o no
+                        var cod = document.getElementById("pergo").value;
+                        if(cod=="1")
                         {
-                            document.getElementById('fecf').style.display = "none";
+                            document.getElementById('fecf').style.display = "block";
                         }
+                        else
+                        {
+                            if(cod=="2")
+                            {
+                                document.getElementById('fecf').style.display = "none";
+                            }
+                        }
+                        //Fin fuerza mayor o no
+                    }
+                    if(rad=="permiso")
+                    {
+                        oculta(4);
+                    }
+
+                    if(rad=="guardia")
+                    {
+                        oculta(5);
+                    }
+
+                    if(rad=="pt")
+                    {
+                        oculta(6);
+                    }
+
+                    if(rad=="curso")
+                    {
+                        oculta(9);
                     }
                 });
             }
@@ -842,15 +1027,15 @@ session_start();
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-permiso">
-                                                    <input type="radio" name="opcion" value="permiso" id="perm" onclick="oculta(2)"> Permisos
+                                                    <input type="radio" name="opcion" value="permiso" id="perm" onclick="oculta(4)"> Permiso 1-3 días
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-guardia">
-                                                    <input type="radio" name="opcion" value="guardia" id="guard" onclick="oculta(2)"> Guardias
+                                                    <input type="radio" name="opcion" value="guardia" id="guard" onclick="oculta(5)"> Guardias
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-pt">
-                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(2)"> Pase de Salida
+                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(6)"> Pase de Salida
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-curso">
@@ -928,8 +1113,19 @@ session_start();
                                                 </div>
                                             </div>
 
+                                            <div class="form-group col-lg-3" id="suplente">
+                                                <span id="MainContent_lbSuplente">Trabajador Suplente</span>
+                                                <div class="form-1-2">
+                                                    <input type="text" name="caja_busqueda2" id="caja_busqueda2" autocomplete="off" class="form-control">
+                                                </div>
+
+                                                <div id="datosSuplente">
+                                                    <!--aquí se cargan los trabajadores-->
+                                                </div>
+                                            </div>
+
                                             <div class="form-group col-lg-3">
-                                                <span id="">Fecha Inicial</span>
+                                                <span id="spanFechaInicial">Fecha Inicial</span>
                                                 <input name="fec" type="text" class="form-control datepicker" autocomplete="off" readonly="readonly" style="background:white"/>
                                             </div>
 

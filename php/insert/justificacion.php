@@ -976,7 +976,7 @@ session_start();
                                     exit();
                                 }
                                 $sql="SELECT duracion FROM especial where 
-                                ((clave_especial_clave_especial='40' and empresa!='pension') or clave_especial_clave_especial='41') 
+                                ((clave_especial_clave_especial='41' and empresa!='pension') or clave_especial_clave_especial='40') 
                                 and trabajador_trabajador='$num'
                                 and fecha_inicio like '$anio%'";
                                 //Obtener los 40 y 41 de este año y sumar los días solicitados
@@ -1211,7 +1211,7 @@ session_start();
             if($ClaveLicencia=="54")
             {
                 //¿? Se puede pedir dias antes de la fecha de hoy?
-                //AQUI
+                
                 /*
                     Todo tipo de empleado
                 */ 
@@ -1221,29 +1221,29 @@ session_start();
                     $validarfechas=RevisarFechas(1,$fecha,$fechaf,"de la licencia por incapacidad por accidente o riesgo profesional","una licencia por incapacidad por accidente o riesgo profesional","",1);
                     //ver que no tenga una licencia de este tipo activa o por activarse
                     $sql="SELECT idespecial FROM especial where trabajador_trabajador='$num' 
-                    and (clave_especial_clave_especial='47')
+                    and (clave_especial_clave_especial='54')
                     and (validez='1' or (validez='0' and fecha_inicio>now()))";
                     
                     $filas=obtenerFilas($sql);
                     if($filas==0)
                     {
                         $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
-                        if($duracion>0 && $duracion<=8)
+                        if($duracion>0 && $duracion<=365)
                         {
                             //insertar la licencia
                             $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','*Ver documento*','$duracion')";
-                            $ok= "<script> imprime('Licencia por cuidados maternos agregada correctamente.'); </script>";
+                            $ok= "<script> imprime('licencia por incapacidad por accidente o riesgo profesional agregada correctamente.'); </script>";
                             $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
                             insertaEnBD($sql,$ok,$error);
                         }
                         else
                         {
-                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días. Esta licencia debe ser obligatoriamente de 1 hasta 8 días de duración. Sustento: Artículo 55 fracción V de las CGT'); </script>";
+                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días. Esta licencia debe ser obligatoriamente de 1 hasta 365 días de duración. Sustento: Artículo 62 fracción I de la Ley del ISSSTE'); </script>";
                         }
                     }
                     else
                     {
-                        echo "<script> imprime('El empleado con número $num ya tiene una licencia por cuidados maternos activa. No se puede tener 2 de estas licencias al mismo tiempo.'); </script>";
+                        echo "<script> imprime('El empleado con número $num ya tiene una licencia por incapacidad por accidente o riesgo profesional activa. No se puede tener 2 de estas licencias al mismo tiempo.'); </script>";
                     }
                 }
                 else//fin if empty fechaf
@@ -1269,8 +1269,36 @@ session_start();
             {
                 /*
                     Todo tipo de empleado
+                    ¿?
                 */ 
-                echo "enferme no prof";
+                $antiguedad=calculaAntiguedad($num);
+                $diasPermitidos;
+                if($antiguedad<1)
+                {
+                    $diasPermitidos=15;
+                }
+                else
+                {
+                    if($antiguedad>1 && $antiguedad<5)
+                    {
+                        $diasPermitidos=30;
+                    }
+                    else
+                    {
+                        if($antiguedad>5 && $antiguedad<10)
+                        {
+                            $diasPermitidos=45;
+                        }
+                        else
+                        {
+                            if($antiguedad>10)
+                            {
+                                $diasPermitidos=60;
+                            }
+                        }
+                    }
+                }//fin ifs antiguedad
+
             }//Fin CICA 62 Radio
             
             /*incapacidad médica
@@ -1290,33 +1318,120 @@ session_start();
 
     if($operacion=="permiso")
     {
-        /*
-        CICA 40
-        Art.56 permisos con goce de sueldo, de entre uno y hasta por tres días cada uno de ellos, por los siguientes motivos:
-            I. Por intervención quirúrgica o internamiento en instituciones hospitalarias, del cónyuge, hijas o hijos, 
-            padres; 
-            II. En caso de siniestro en el hogar de la trabajadora o del trabajador;
-            III. Por privación de la libertad o accidente del cónyuge, hijas o hijos, o padres de la trabajadora 
-            o del trabajador; y
-            IV. Por sustentar examen profesional;
-            Este tipo de permisos se otorgarán a solicitud de la trabajadora o del trabajador, mediante la debida comprobación 
-            del motivo.
-            A la trabajadora o al trabajador que en el término de un semestre, exceda de tres días de permiso con goce 
-            de sueldo, se le descontarán los días excedentes de las prestaciones económicas referidas en el Artículo 87,
-            fracción VII de las presentes Condiciones (Art. 87: Como ayuda por la muerte de un familiar en primer grado, 
-            la cantidad de $2,800.00 para los gastos del funeral).
-        */
+        if ((!empty($_POST["num"])) && (!empty($_POST["fec"])) && (!empty($_POST["fecf"])))
+        {
+            $num = $_POST['num'];//el número del trabajador
+            $fecha=$_POST['fec'];//la fecha de inicio
+            $fechaf=$_POST['fecf'];
+           
+            /*
+            SOLO DE BASE
+            CICA 40
+            Art.56 permisos con goce de sueldo, de entre uno y hasta por tres días cada uno de ellos, por los siguientes motivos:
+                I. Por intervención quirúrgica o internamiento en instituciones hospitalarias, del cónyuge, hijas o hijos, 
+                padres; 
+                II. En caso de siniestro en el hogar de la trabajadora o del trabajador;
+                III. Por privación de la libertad o accidente del cónyuge, hijas o hijos, o padres de la trabajadora 
+                o del trabajador; y
+                IV. Por sustentar examen profesional;
+                Este tipo de permisos se otorgarán a solicitud de la trabajadora o del trabajador, mediante la debida comprobación 
+                del motivo.
+                A la trabajadora o al trabajador que en el término de un semestre, exceda de tres días de permiso con goce 
+                de sueldo, se le descontarán los días excedentes de las prestaciones económicas referidas en el Artículo 87,
+                fracción VII de las presentes Condiciones (Art. 87: Como ayuda por la muerte de un familiar en primer grado, 
+                la cantidad de $2,800.00 para los gastos del funeral).
+
+                En el caso de que el trabajador/ra requiera por las 4 causales mencionadas en las CGT de más días, se le concederán 
+                descontándolos de los días que por antigüedad tiene derecho, anulando automáticamente el pago de estímulos.
+            */
+            $tipo=tipoEmpleado($num);
+            if($tipo=="BASE")
+            {
+                $validarfechas=RevisarFechas(1,$fecha,$fechaf,"del permiso con goce de sueldo","una permiso con goce de sueldo","",0);
+                $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
+                $sql="SELECT duracion FROM especial where 
+                ((clave_especial_clave_especial='41' and empresa!='pension') or clave_especial_clave_especial='40') 
+                and trabajador_trabajador='$num'
+                and fecha_inicio like '$anio%'";
+                //Obtener los 40 y 41 de este año y sumar los días solicitados
+                $diasGastados=sumaRegistrosDeConsulta($sql);//Hacer una resta para obtener los días que le quedan
+
+                $antiguedad=calculaAntiguedad($num);
+                //calcular dias permitidos en base al artículo 87 fracción 7
+                $diasPermitidos=diasAntiguedad87V11($antiguedad);
+                $diasSobrantes=$diasPermitidos-$diasGastados;
+                if($duracion<=$diasSobrantes)//si aún le quedan días
+                {
+                    $Clave=40;
+                    //insertar el permiso
+                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$Clave','*Ver documento*','$duracion')";
+                    $ok= "<script> imprime('Permiso con goce de sueldo agregado correctamente.'); </script>";
+                    $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                    insertaEnBD($sql,$ok,$error);
+                }
+                else//fin if duracion<=dias sobrantes
+                {
+                    echo "<script> imprime('El empleado con número $num está solicitando un permiso con goce hasta por 3 días por un total de $duracion días; solo puede, por su antiguedad solicitar permisos pagados de este tipo por $diasPermitidos días. Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
+                    exit();
+                }
+            }
+            else
+            {
+                $tipo=utf8_encode($tipo);
+                echo "<script> imprime('El empleado con número $num es de tipo $tipo. Se requiere ser de BASE para solicitar este permiso.'); </script>";
+            }//fin if tipo==BASE
+        }
+        else//Fin if validar campos
+        {
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";} 
+            if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";}
+            echo "<script> imprime('$error'); </script>";
+        }
     }//FIN DE IF PERMISO
 
     if($operacion=="guardia")
     {
+        /*
+            Pedir:
+            fecha actual: $fec_act
+            fecha de guardia: $fec
+            que los trabajadores no sean los mismos y que sean del mismo tipo de empleado y tengan el mismo departamento
+            obtener la hora de entrada y de salida del trabajador solicitante
+        */
 
+        if ((!empty($_POST["num"])) && (!empty($_POST["numSup"])) && (!empty($_POST["fec"])))
+        {
+            $num=$_POST["num"];
+            $suplente=$_POST["numSup"];
+            $fechaGuardia=$_POST["fec"];
+            //Ver que los trabajadores no sean los mismos
+            if($num!=$suplente)
+            {
+                //Ver que sean de la misma especialidad o categoría o área
+
+                //Obtener hora de entrada y salida del trabajador
+            }
+            else
+            {
+                echo "<script> imprime('Los empleados son los mismos, POR FAVOR. Elija con cuidado.'); </script>";
+            }
+        }
+        else
+        {
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador solicitante que exista."."<br>";}
+            if (empty($_POST["numSup"])){$error.="Número de trabajador suplente que exista."."<br>";} 
+            if (empty($_POST["fec"])){$error.="La fecha de la guardia"."<br>";}
+            echo "<script> imprime('$error'); </script>";
+        }
     }//FIN DE IF GUARDIA
 
     if($operacion=="pt")
     {
         //Guardar con la clave PS, ojo :D
-        $claveAGuardar="PS";
+        $Clave="PS"; 
 
     }//FIN DE IF PT
 
@@ -1728,6 +1843,7 @@ session_start();
 
     function diasAntiguedad87V11($antiguedad)
     {
+        global $num;
         $diasPermitidos=0;
         if($antiguedad<0.5)
         {

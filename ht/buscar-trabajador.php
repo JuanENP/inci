@@ -26,10 +26,10 @@ session_start();
         $filas=mysqli_num_rows($resultado);
         if($filas>0)
         {
-            $salida.="<select name='num' id='MainContent_DropDownListTrabajadores' class='form-control select2' required>";
+            $salida.="<select name='num' id='MainContent_DropDownListTrabajadores' class='form-control select2' style='font-weight: bold; color: black;' required>";
             while($resul=mysqli_fetch_array($resultado))
             {
-                $salida.="<option value='".$resul[0]."'>". $resul[0] . " " . utf8_encode($resul[1]). " " . utf8_encode($resul[2]) . " ". utf8_encode($resul[3]) . " " ."</option>";
+                $salida.="<option value='".$resul[0]."' style='font-weight: bold; color: black;'>". $resul[0] . " " . utf8_encode($resul[1]). " " . utf8_encode($resul[2]) . " ". utf8_encode($resul[3]) . " " ."</option>";
             }
             $salida.="</select>";
         }
