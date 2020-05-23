@@ -53,7 +53,7 @@ session_start();
         <link rel="stylesheet" href="../assets/css/alertify.core.css" />
         <link rel="stylesheet" href="../assets/css/alertify.default.css" />
         <link rel="stylesheet" href="../assets/css/jquery-ui.css" />
-        <link rel="stylesheet" href="../assets/css/mdtimepicker.min.css" />
+        <link rel="stylesheet" href="../assets/css/mdtimepicker.min.css"/>
 
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
@@ -649,7 +649,7 @@ session_start();
                                     }
                                     else
                                     {
-                                        if (x == 9) 
+                                        if (x == 6) 
                                         {
                                             $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                                             $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
@@ -667,7 +667,30 @@ session_start();
                                             document.getElementById('div-perm-go').style.display = "none";
                                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                             document.getElementById('suplente').style.display = "none";
-                                            document.getElementById('div-curso1').style.display = "block";
+                                            document.getElementById('div-curso1').style.display = "none";
+                                        }
+                                        else
+                                        {
+                                            if (x == 9) 
+                                            {
+                                                $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                                $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
+                                                document.getElementById('tipo-com').style.display = "none";
+                                                document.getElementById('fecf').style.display = "none";
+                                                document.getElementById('he').style.display = "none";
+                                                document.getElementById('hs').style.display = "none";
+                                                document.getElementById('empresa').style.display = "none";
+                                                document.getElementById('clavelicencia').style.display = "none";
+                                                document.getElementById('prioridad').style.display = "none";
+                                                document.getElementById('div-es').style.display = "none";
+                                                document.getElementById('vacio_').style.display = "none";
+                                                document.getElementById('div-tol-lac').style.display = "none";
+                                                document.getElementById('div-tol-est').style.display = "none";
+                                                document.getElementById('div-perm-go').style.display = "none";
+                                                document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                document.getElementById('suplente').style.display = "none";
+                                                document.getElementById('div-curso1').style.display = "block";
+                                            }
                                         }
                                     }
                                 }
@@ -907,7 +930,7 @@ session_start();
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="default.aspx"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control</a>
+                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control</a>
                         </li>
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
@@ -927,7 +950,7 @@ session_start();
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-calendar"></i><a href="turnos.html">Turnos</a></li>
+                                <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="#">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="conceptos.html">Tipo de Incidencias</a></li>
@@ -1012,34 +1035,34 @@ session_start();
                                             <div class="form-group col-lg-3">
 
                                                 <div class="form-1-2" id="radio-justificacion">
-                                                    <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> Justificar retardos
-                                                </div>
+                                                    <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> <label>Justificar retardos</label> 
+                                                </div> 
                                                 <div class="form-1-2" id="radio-omision">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
-                                                    <input type="radio" name="opcion" value="omision" id="jus-omi" onclick="oculta(3)"> Justificar omisión
+                                                    <input type="radio" name="opcion" value="omision" id="jus-omi" onclick="oculta(3)"> <label> Justificar omisión</label>
                                                 </div>
                                                 <div class="form-1-2" id="radio-comision">
-                                                    <input type="radio" name="opcion" value="comision" id="comi" onclick="oculta(1)"> Comisiones
+                                                    <input type="radio" name="opcion" value="comision" id="comi" onclick="oculta(1)"> <label> Comisiones</label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-licencia">
-                                                    <input type="radio" name="opcion" value="licencia" id="lice" onclick="oculta(2)"> Licencias
+                                                    <input type="radio" name="opcion" value="licencia" id="lice" onclick="oculta(2)"> <label> Licencias</label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-permiso">
-                                                    <input type="radio" name="opcion" value="permiso" id="perm" onclick="oculta(4)"> Permiso 1-3 días
+                                                    <input type="radio" name="opcion" value="permiso" id="perm" onclick="oculta(4)"> <label> Permiso 1-3 días</label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-guardia">
-                                                    <input type="radio" name="opcion" value="guardia" id="guard" onclick="oculta(5)"> Guardias
+                                                    <input type="radio" name="opcion" value="guardia" id="guard" onclick="oculta(5)"> <label> Guardias</label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-pt">
-                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(6)"> Pase de Salida
+                                                    <input type="radio" name="opcion" value="pt" id="pati" onclick="oculta(6)"> <label> Pase de Salida</label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-curso">
-                                                    <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> Curso capacitación
+                                                    <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> <label> </label>Curso capacitación
                                                 </div>
                                             </div>
                                         </div>

@@ -996,11 +996,18 @@ session_start();
                                 {
                                     if($diasSobrantes==0)
                                     {
-                                        echo "<script> imprime('El empleado con número $num está solicitando una licencia con goce por fuerza mayor por un total de $duracion días; sin embargo, este empleado ha agotado sus días disponibles por antiguedad para solicitar licencias de este tipo. Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
+                                        echo "<script> imprime('El empleado con número $num está solicitando una licencia con goce' + 
+                                        ' por fuerza mayor por un total de $duracion días; sin embargo, este empleado ha agotado' + 
+                                        ' sus días disponibles por antiguedad para solicitar licencias de este tipo.' + 
+                                        ' Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
                                     }
                                     else
                                     {
-                                        echo "<script> imprime('El empleado con número $num está solicitando una licencia con goce por fuerza mayor por un total de $duracion días; solo puede, por su antiguedad solicitar licencias con goce por $diasSobrantes días; esto debido a que ya ha solicitado licencias de este tipo con anterioridad y los días que merece por antiguedad disminuyeron. Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
+                                        echo "<script> imprime('El empleado con número $num está solicitando una licencia con goce por' + 
+                                        ' fuerza mayor por un total de $duracion días; solo puede, por su antiguedad solicitar licencias' + 
+                                        ' con goce por $diasSobrantes días; esto debido a que ya ha solicitado licencias de este tipo' + 
+                                        ' con anterioridad y los días que merece por antiguedad disminuyeron.' + 
+                                        ' Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
                                     }
                                 }
                             }
@@ -1112,7 +1119,9 @@ session_start();
                             }
                             else//fin if duracion entre 88 y 90
                             {
-                                echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días. Esta licencia debe ser obligatoriamente de 90 días de duración. Sustento: Artículo 55 fracción IV de las CGT'); </script>";
+                                echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días.' + 
+                                ' Esta licencia debe ser obligatoriamente de 90 días de duración.' + 
+                                ' Sustento: Artículo 55 fracción IV de las CGT'); </script>";
                             }
                         }
                         else//fin if filas
@@ -1169,7 +1178,9 @@ session_start();
                         }
                         else
                         {
-                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días. Esta licencia debe ser obligatoriamente de 1 hasta 8 días de duración. Sustento: Artículo 55 fracción V de las CGT'); </script>";
+                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días.' + 
+                            ' Esta licencia debe ser obligatoriamente de 1 hasta 8 días de duración.' +
+                            ' Sustento: Artículo 55 fracción V de las CGT'); </script>";
                         }
                     }
                     else
@@ -1238,7 +1249,9 @@ session_start();
                         }
                         else
                         {
-                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días. Esta licencia debe ser obligatoriamente de 1 hasta 365 días de duración. Sustento: Artículo 62 fracción I de la Ley del ISSSTE'); </script>";
+                            echo "<script> imprime('La duración de esta licencia que está solicitando es de $duracion días.' + 
+                            ' Esta licencia debe ser obligatoriamente de 1 hasta 365 días de duración.' + 
+                            ' Sustento: Artículo 62 fracción I de la Ley del ISSSTE'); </script>";
                         }
                     }
                     else
@@ -1371,7 +1384,9 @@ session_start();
                 }
                 else//fin if duracion<=dias sobrantes
                 {
-                    echo "<script> imprime('El empleado con número $num está solicitando un permiso con goce hasta por 3 días por un total de $duracion días; solo puede, por su antiguedad solicitar permisos pagados de este tipo por $diasPermitidos días. Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
+                    echo "<script> imprime('El empleado con número $num está solicitando un permiso con goce hasta por 3 días por' + 
+                    ' un total de $duracion días; solo puede, por su antiguedad solicitar permisos pagados de este tipo' + 
+                    ' por $diasPermitidos días. Sustento: Artículos 57 y 87 Fracción 7 de las CGT.'); </script>";
                     exit();
                 }
             }
@@ -1400,22 +1415,59 @@ session_start();
             que los trabajadores no sean los mismos y que sean del mismo tipo de empleado y tengan el mismo departamento
             obtener la hora de entrada y de salida del trabajador solicitante
         */
-
         if ((!empty($_POST["num"])) && (!empty($_POST["numSup"])) && (!empty($_POST["fec"])))
         {
             $num=$_POST["num"];
             $suplente=$_POST["numSup"];
             $fechaGuardia=$_POST["fec"];
-            //Ver que los trabajadores no sean los mismos
-            if($num!=$suplente)
-            {
-                //Ver que sean de la misma especialidad o categoría o área
 
-                //Obtener hora de entrada y salida del trabajador
-            }
+            //verificar que la fecha de guardia no sea hoy o un día anterior a hoy
+            $validarfechas=RevisarFechas(2,$fechaGuardia,"","de la guardia","una guardia","",0);
+
+            //ver que el solicitante no tenga ya registrada una guardia en esta quincena
+            $sql="select idguardias from guardias where trabajador_solicitante='$num' and quincena='$quincena'";
+            $filas=obtenerFilas($sql);
+            if($filas==0)//no posee una guardia en esta quincena
+            {
+                //Ver que los trabajadores no sean los mismos
+                if($num!=$suplente)
+                {
+                    //Ver que sean de la misma categoría
+                    $sql="SELECT categoria_categoria from trabajador where numero_trabajador='$num'";
+                    $categoriaSolicitante=retornaAlgoDeBD(0, $sql);
+
+                    $sql="SELECT categoria_categoria from trabajador where numero_trabajador='$suplente'";
+                    $categoriaSuplente=retornaAlgoDeBD(0, $sql);
+
+                    if($categoriaSolicitante==$categoriaSuplente) //misma categoria
+                    {
+                        //Obtener hora de entrada y salida del trabajador solicitante
+                        $horario=obtenerHorario($num);
+                        $horaE=$horario[0];
+                        $horaS=$horario[1];
+
+                        //insertar la guardia
+                        $sql="INSERT INTO guardias (fecha_registro, fecha_guardia, trabajador_solicitante, trabajador_suplente, hora_entrada, hora_salida, quincena) 
+                        VALUES ('$fec_act', '$fechaGuardia', '$num', '$suplente', '$horaE', '$horaS', '$quincena')";
+                        $ok= "<script> imprime('Guardia agregada correctamente.'); </script>";
+                        $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                        insertaEnBD($sql,$ok,$error);
+                    }
+                    else//fin comparar categoria
+                    {
+                        echo "<script> imprime('Los empleados NO POSEEN LA MISMA CATEGORÍA. Debido a lo anterior no es' +
+                        'posible guardar esta guardia.'); </script>";
+                    }
+                }
+                else
+                {
+                    echo "<script> imprime('Los empleados son los mismos, POR FAVOR. Elija con cuidado.'); </script>";
+                }
+            }//fin if filas==0
             else
             {
-                echo "<script> imprime('Los empleados son los mismos, POR FAVOR. Elija con cuidado.'); </script>";
+                echo "<script> imprime('El empleado con número $num ya posee una guardia en esta quincena. Solo se permite una' +
+                ' guardia por quincena. NO ES POSIBLE guardar esta guardia por el motivo anterior.'); </script>";
             }
         }
         else
@@ -1428,11 +1480,49 @@ session_start();
         }
     }//FIN DE IF GUARDIA
 
-    if($operacion=="pt")
-    {
-        //Guardar con la clave PS, ojo :D
-        $Clave="PS"; 
+    if($operacion=="pt") //debería se PS pero surgió un error de sintaxis. Disculpe :).
+    {        
+        if ((!empty($_POST["num"])) && (!empty($_POST["fec"])))
+        {
+            $num=$_POST["num"];
+            $fecha=$_POST["fec"];
+            $tipoEmpleado=tipoEmpleado($num);
 
+            $validarfechas=RevisarFechas(2,$fecha,"","del pase de salida","un pase de salidas","",0); 
+            //Guardar con la clave PS, ojo :D
+            $Clave="PS";
+            if($tipoEmpleado=="BASE")
+            {
+                //ver que no tenga una PS en la quincena
+                $sql="SELECT idpase_salida from pase_salida where trabajador_trabajador='$num' and quincena_quincena='$quincena'";
+                $filas=obtenerFilas($sql);
+                if($filas==0)
+                {
+                    //ingresar el pase
+                    $sql="INSERT INTO pase_salida (fecha_uso, trabajador_trabajador, quincena_quincena) VALUES ('$fecha', '$num', '$quincena')";
+                    $ok= "<script> imprime('Pase de salida agregado correctamente.'); </script>";
+                    $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                    insertaEnBD($sql,$ok,$error);
+                }
+                else//fin filas==0
+                {
+                    echo "<script> imprime('El empleado con número $num ya posee un pase de salida en esta quincena. Solo se permite un' +
+                    ' pase de salida por quincena. NO ES POSIBLE guardar este PS por el motivo anterior.'); </script>";
+                }
+            }
+            else//fin if tipo=BASE
+            {
+                echo "<script> imprime('El empleado con número $num es de tipo $tipoEmpleado. Este pase es SOLO' +
+                ' empleados de BASE'); </script>";
+            }
+        }
+        else//fin if post vacíos
+        {
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha del pase de salida"."<br>";}
+            echo "<script> imprime('$error'); </script>";
+        }
     }//FIN DE IF PT
 
     if($operacion=="curso")
@@ -1944,5 +2034,63 @@ session_start();
             $mod_dia=date("Y-m-d",$mod_dia);
         }//fin del for i<50
         return $fechaCompleta;
+    }
+
+    function retornaAlgoDeBD($tipoDatoADevolver, $elQuery)
+    {
+        global $con;
+        /* 
+            $elQuery             : es la consulta que se desea ejecutar 
+            $tipoDatoADevolver=0 : Devolverá 1 solo dato de la consulta dada
+            $tipoDatoADevolver=1 : Devolverá 1 array de la consulta dada
+
+            Ejemplo de uso
+            $devuelve=retornaAlgoDeBD(0, $sql)
+        */
+        $sql=$elQuery;
+        if($tipoDatoADevolver==0)
+        {
+            $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+            $filas=mysqli_num_rows($query);
+            if($filas>0)
+            {
+                $resul=mysqli_fetch_array($query);
+                return $resul[0];//Devolver un solo dato
+            }
+            else
+            {
+                echo "Esta consulta arrojó un conjunto vacío. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                exit();
+            }  
+        }
+        else//fin if devolver ==0
+        {
+            if($tipoDatoADevolver==1)
+            {
+                $datos=array();//para guardar los datos
+                $pos=0;//para controlas las posiciones del array
+                $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                $filas=mysqli_num_rows($query);
+                if($filas>0)
+                {
+                    while($resul=mysqli_fetch_array($query))
+                    { 
+                        $datos[$pos]=$resul[0];//Guardar el día feriado correspondiente en el array
+                        $pos++;//aumentar la posición del array
+                    }
+                    return $datos;//devolver un array con los datos
+                }  
+                else
+                {
+                    echo "Esta consulta arrojó un conjunto vacío. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                    exit();
+                }
+            }
+            else//fin if devolver==1
+            {
+                echo "Parametro *tipoDatoADevolver=$tipoDatoADevolver* de la función retornaAlgoDeBD no admitido";
+                exit();
+            }
+        } 
     }
 ?>
