@@ -18,7 +18,8 @@ session_start();
     date_default_timezone_set('America/Mexico_City');
     //obtener la fecha de hoy
     $fec_act=date("Y-m-d H:i:s"); //la fecha actual
-    $anio=date("Y");//solo el año actual 
+    $anio=date("Y");//solo el año actual
+    $mes=date("m");//solo el mes actual  
     
     /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
     $sql5="SELECT idquincena from quincena where validez=1";
@@ -1459,7 +1460,7 @@ session_start();
                         'posible guardar esta guardia.'); </script>";
                     }
                 }
-                else
+                else//fin if num distinto de suplente
                 {
                     echo "<script> imprime('Los empleados son los mismos, POR FAVOR. Elija con cuidado.'); </script>";
                 }
@@ -1527,8 +1528,96 @@ session_start();
 
     if($operacion=="curso")
     {
-        /*las becas capacitacion son 12 días máximo al semestre
-            CICA 29*/
+        /*las becas capacitacion son 12 días máximo al semestre: según Artículo 29 fracción VIII de las CGT
+            CICA 29
+        */
+
+        if ((!empty($_POST["num"])) && (!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_POST["cucap"])))
+        {
+            $num=$_POST["num"];
+            $fecha=$_POST["fec"];
+            $fechaf=$_POST["fecf"];
+            $opcionCurso=$_POST["cucap"];
+            $Clave="29";
+            $he="00:00:00";
+            $hs="00:00:00";
+
+            $validarfechas=RevisarFechas(1,$fecha,$fechaf,"del curso capacitación","un curso capacitación","",0);
+
+            //Verificar que si elige la opcion de verificar con horario distinto tengamos las horas de entrada y salida
+            if($opcionCurso=="d")
+            {
+                if ((!empty($_POST["he"])) && (!empty($_POST["hs"])))
+                {
+                    $he=$_POST["he"];
+                    $hs=$_POST["hs"];
+                }
+                else //fin if hora de entrada y salida no vacíos
+                {
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["he"])){$error.="La hora nueva de entrada"."<br>";}
+                    if (empty($_POST["hs"])){$error.="La hora nueva de salida"."<br>";}
+                    echo "<script> imprime('$error'); </script>";
+                    exit();
+                }
+            }
+            //fin verificacion de tipo de curso con horario distinto
+
+            //Saber cuantos días ya ha usado de este permiso, recordemos que son 12 por semestre
+            if($mes>0 && $mes<=6)//de enero a junio
+            {
+                $sql="SELECT duracion, idespecial, fecha_inicio, fecha_fin FROM especial where 
+                clave_especial_clave_especial='29'
+                and ((fecha_inicio>='2020-01-01' or fecha_inicio>='2020-06-31') 
+                or (fecha_fin>='2020-01-01' or fecha_fin>='2020-06-31'));";
+            }
+            else
+            {
+                if($mes>6 && $mes<=12) //de julio a diciembre
+                {
+                    $sql="SELECT duracion, idespecial, fecha_inicio, fecha_fin FROM especial where 
+                    clave_especial_clave_especial='29'
+                    and ((fecha_inicio>='2020-07-01' or fecha_inicio>='2020-12-31') 
+                    or (fecha_fin>='2020-07-01' or fecha_fin>='2020-12-31'));";
+                }
+            }
+            $diasUsados=sumaRegistrosDeConsulta($sql);
+            //Fin saber cuantos dias ha usado este permiso
+            $diasRestantes=12-$diasUsados;
+
+            $duracion=calcularDuracionEntreDosFechas(2,$fecha,$fechaf);//la duracion excluyendo los días festivos
+            if($duracion<=12)
+            {
+                if($duracion<=$diasRestantes)
+                {
+                    //Agregar curso
+                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$he', '$hs', '0', '$num', '$Clave','*Ver documento*','$duracion')";
+                    $ok= "<script> imprime('Curso capacitación agregado correctamente.'); </script>";
+                    $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                    insertaEnBD($sql,$ok,$error);
+                }
+                else
+                {
+                    echo "<script> imprime('La duración del curso que está solicitando es de $duracion días, sin embargo' +
+                    ' el empleado con número $num ya ha gastado $diasUsados días de los 12 por semestre que tiene' +
+                    ' permitidos. Sustento: Artículo 29 fracción VIII de las CGT'); </script>";
+                }
+            }
+            else//fin ifduracion<=12
+            {
+                echo "<script> imprime('La duración de este curso es de $duracion días. Este tipo de curso solo se puede'+
+                ' solicitar por una duración de 12 días máximo por semestre. Sustento: Artículo 29 fracción VIII de las CGT'); </script>";
+            }
+        }
+        else// fin if validar posts
+        {
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha de inicio del curso"."<br>";}
+            if (empty($_POST["fecf"])){$error.="La fecha de fin del curso"."<br>";}
+            if (empty($_POST["cucap"])){$error.="La opción del curso"."<br>";}
+            echo "<script> imprime('$error'); </script>";
+        }
     }//FIN DE IF CURSO
 
     /*Articulo 60 CGT vacaciones*/
@@ -1555,6 +1644,7 @@ session_start();
     {
         /*Tipo=0 Se compararán las dos fechas elegidas
           Tipo=1 Se comparará la fecha de inicio con el día de hoy
+          Tipo=2 Se compararán las dos fechas elegidas y se le restarán los días hábiles si es que se encuentran en el rango
         */
         if($tipo==0)
         {
@@ -1577,7 +1667,51 @@ session_start();
             }
             else
             {
-                echo "Parámetro *tipo* no válido en función calcularDuracionEntreDosFechas";
+                if($tipo==2)
+                {
+                    $date1= new DateTime($fecha_inicio);
+                    $date2= new DateTime($fecha_final);
+                    $interval = $date1->diff($date2);
+                    $totDias=$interval->format('%a');
+
+                    //saber la duración normal de las fechas y guardar todas esas fechas en un array
+                    $rangoFechas=array();//para guardar los datos
+                    $tDias=calcularDuracionEntreDosFechas(0,$fecha_inicio,$fecha_final);
+                    $rangoFechas[0]=$fecha_inicio;//la fecha de inicio va primero
+                    for($i=1;$i<$tDias;$i++)
+                    {
+                        $fecha_inicio=SumRestDiasMesAnio(1,$fecha_inicio,"1 days");
+                        $rangoFechas[$i]=$fecha_inicio;
+                    }
+
+                    //restar los días festivos
+                    $sql="SELECT fecha from dia_festivo";
+                    $diasFeriados=retornaAlgoDeBD(1,$sql);
+                    $tamanioFeriado = count($diasFeriados);//tamanio del array
+                    $tamanioFechas = count($rangoFechas);//tamanio del array
+
+                    //recorrer ambos arrays en busca de fechas coincidentes a los feriados
+                    for($i=0;$i<$tamanioFechas;$i++)
+                    {
+                        $fecha=$rangoFechas[$i];
+                        for($j=0;$j<$tamanioFeriado;$j++)
+                        {
+                            if($fecha==$diasFeriados[$j])
+                            {
+                                /*
+                                    Si la fecha es igual a un dia feriado significa 
+                                    que se deberá restar 1 día al total de dias originales
+                                */
+                                $totDias--;
+                            }
+                        }
+                    }
+                    return $totDias+1;
+                }
+                else
+                {
+                    echo "Parámetro *tipo=$tipo* no válido en función calcularDuracionEntreDosFechas";
+                }
             }
         }
     }//fin de calcularDuracionEntreDosFechas
@@ -1916,6 +2050,9 @@ session_start();
 
     function sumaRegistrosDeConsulta($elQuery)
     {
+        /*
+            Suma las filas que se obtiene de una consulta que arroja UNA sola columna
+        */
         global $con;
         $diasUsados=0;
         $sql=$elQuery;
@@ -2034,7 +2171,7 @@ session_start();
             $mod_dia=date("Y-m-d",$mod_dia);
         }//fin del for i<50
         return $fechaCompleta;
-    }
+    }//Fin de feriadoConArray
 
     function retornaAlgoDeBD($tipoDatoADevolver, $elQuery)
     {
@@ -2068,7 +2205,7 @@ session_start();
             if($tipoDatoADevolver==1)
             {
                 $datos=array();//para guardar los datos
-                $pos=0;//para controlas las posiciones del array
+                $pos=0;//para controlar las posiciones del array
                 $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
                 $filas=mysqli_num_rows($query);
                 if($filas>0)

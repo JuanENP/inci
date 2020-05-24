@@ -676,7 +676,6 @@ session_start();
                                                 $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                                                 $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                                                 document.getElementById('tipo-com').style.display = "none";
-                                                document.getElementById('fecf').style.display = "none";
                                                 document.getElementById('he').style.display = "none";
                                                 document.getElementById('hs').style.display = "none";
                                                 document.getElementById('empresa').style.display = "none";
@@ -689,6 +688,7 @@ session_start();
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                 document.getElementById('suplente').style.display = "none";
+                                                document.getElementById('fecf').style.display = "block";
                                                 document.getElementById('div-curso1').style.display = "block";
                                             }
                                         }
