@@ -1,5 +1,6 @@
 <?php
     date_default_timezone_set('America/Mexico_City'); 
+    set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script
     $nombre="biometric";
     $contra="5_w**/pQxcmk.";
     require("../Acceso/global.php");
@@ -28,7 +29,7 @@
         $resul=mysqli_fetch_array($query);
         $valor=$resul[0];
         
-        //Seleccionar a todos los que chcearon su salida
+        //Seleccionar a todos los que checaron su salida
         $sql1="select d.fecha_salida,a.numero_trabajador,d.id from trabajador a
         inner join acceso b on a.numero_trabajador=b.trabajador_trabajador 
         inner join turno c on b.turno_turno=c.idturno
@@ -126,13 +127,24 @@
         
     /*Inserta datos en la tabla incidencia*/ 
     function inserta($mt, $ma_d, $inc,$id_asis)
-    { //ma_d guarda la palabra antes o despues
+    { 
         global $nombre;
         global $contra;
         require("../Acceso/global.php"); 
-        $mt=$mt . " minutos " . $ma_d;
-        mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
-        mysqli_close($con);     
+        //Si mt está vacio no se debe insertar algo en descripcion
+        if($mt=='')
+        {
+            $mt="-";
+            mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
+            mysqli_close($con); 
+
+        }
+        else
+        {//ma_d guarda la palabra antes o despues
+            $mt=$mt . " minutos " . $ma_d;
+            mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
+            mysqli_close($con); 
+        }    
     }
     
         
@@ -147,7 +159,7 @@
         $fechaOriginal=strtotime($fechaO);
         $fechaSale=strtotime($fechaS);
         //Ver si salió justo en su hora de salida o despues
-        if($fechaOriginal <= $fechaSale)
+        if($fechaSale>=$fechaOriginal)
         {
             //No hacer algo 
         }
@@ -166,19 +178,19 @@
                 $tiene=pase_salida($numero);
                 if($tiene==false)
                 {
-                    inserta($mt,"antes",'25',$id_asis);
+                    inserta($mt,'antes','25',$id_asis);
                 }
             }
             else
             {
-                inserta($mt,"antes",'25',$id_asis);
+                inserta($mt,'antes','25',$id_asis);
             }
         }
 
     }
 
   
-   function pase_salida($num)
+    function pase_salida($num)
     {
        
         global $f_hoy;
@@ -195,6 +207,89 @@
             return false;
         }
     }
-
+    falta();
+    function falta()
+    {
+        global $f_hoy;
+        global $nombre;
+        global $contra;
+        require("../Acceso/global.php");  
+        //Ver en que quincena estamos
+        $sql="SELECT idquincena FROM quincena where validez =1";
+        $query= mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas>0)
+        {   
+            $resul=mysqli_fetch_array($query);
+            $idquincena=$resul[0];
+        }
+ 
+        //Seleccionar a todos los empleados de vienen hoy que siguen con -1 y -1
+        $sql2="SELECT trabajador_trabajador FROM vienen_hoy where observar_e=-1 and observar_s=-1";
+        $query2= mysqli_query($con, $sql2);
+        $filas2=mysqli_num_rows($query2);
+        if($filas2>0)
+        {   
+            while($resul2=mysqli_fetch_array($query2))
+            {
+                $numero_empleado=$resul2[0];
+                //Insertar una falta
+                $sql3="INSERT INTO falta VALUES ('','$f_hoy', '$idquincena', '$numero_empleado')";
+                $query3= mysqli_query($con, $sql3);
+            }
+        }
+    }
+    omision_entrada();
+    function omision_entrada()
+    {
+        global $f_hoy;
+        global $nombre;
+        global $contra;
+        require("../Acceso/global.php"); 
+        //Seleccionar a todos los empleados de vienen hoy que siguen con -1
+        $sql="SELECT b.id, a.trabajador_trabajador FROM vienen_hoy a
+        inner join asistencia b on a.trabajador_trabajador=b.trabajador_trabajador
+		and Cast(b.fecha_salida As Date)='$f_hoy' 
+		and observar_e=-1 and observar_s=0;";
+        $query= mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas>0)
+        {   
+            while($resul=mysqli_fetch_array($query))
+            {
+                $idasistencia=$resul[0];
+                $numero_empleado=$resul[1];
+                //'18', 'OMISIÓN DE ENTRADA EN EL REGISTRO DE ASISTENCIA A LA JORNADA LABORAL'
+                // '20', 'OMISIÓN DE ENTRADA Y/O SALIDA AL TURNO OPCIONAL O PERCEPCIÓN ADICIONAL EN EL REGISTRO DE ASISTENCIA.'
+                inserta('','','18',$idasistencia);
+            }
+        }
+    }
+    omision_salida();
+    function omision_salida()
+    {   global $f_hoy;
+        global $nombre;
+        global $contra;
+        require("../Acceso/global.php");   
+        //Seleccionar a todos los empleados de vienen hoy que siguen con -1
+        $sql="SELECT b.id, a.trabajador_trabajador FROM vienen_hoy a
+        inner join asistencia b on a.trabajador_trabajador=b.trabajador_trabajador
+		and Cast(b.fecha_entrada As Date)='$f_hoy' 
+		and observar_e=0 and observar_s=-1;";
+        $query= mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas>0)
+        {   
+            while($resul=mysqli_fetch_array($query))
+            {
+                $idasistencia=$resul[0];
+                $numero_empleado=$resul[1];
+	            //19	OMISIÓN DE SALIDA EN EL REGISTRO DE ASISTENCIA A LA JORNADA LABORAL CONTINUA. 
+                //	20	OMISIÓN DE ENTRADA Y/O SALIDA AL TURNO OPCIONAL O PERCEPCIÓN ADICIONAL EN EL REGISTRO DE ASISTENCIA.
+                inserta('','','19',$idasistencia);
+                
+            }
+        }
+    }
 
 ?>

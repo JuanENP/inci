@@ -1,5 +1,6 @@
 <?php
     date_default_timezone_set('America/Mexico_City'); 
+    set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script
     $deben_hoy_ultimo=0;
     $deben_hoy=[];
 
