@@ -1,5 +1,6 @@
 <?php
-    date_default_timezone_set('America/Mexico_City'); 
+    date_default_timezone_set('America/Mexico_City');
+    set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script 
     $nombre="biometric";
     $contra="5_w**/pQxcmk.";
     require("../Acceso/global.php");
@@ -187,6 +188,7 @@
                                 //inserta($mt,"",'18',$id_asis);
                             } 
                             */
+                            inserta($mt,"tarde",'18',$id_asis);
                         }
                     }
                 }

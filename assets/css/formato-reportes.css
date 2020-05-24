@@ -1,0 +1,38 @@
+html 
+{
+    margin: 70px;
+}
+body
+{
+    font-family: Arial;
+    font-size:13px;
+    /* margin: 100mm 8mm 2mm 100mm; */
+}
+.logo_superior
+{
+    margin-right: 50px;
+    width: 110px;
+    height: 80px;
+}
+
+#p1
+{
+    /* TITULO */
+    text-align: center;
+    flex-basis: calc(60%-10px);
+
+}
+.borde_superior
+{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+#p2
+{
+    text-align:center;
+    background-color: gray;
+    font-weight: bold;
+    border:20px;
+    border-color: black;
+}

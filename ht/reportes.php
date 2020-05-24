@@ -1,23 +1,23 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
-{
-    header("Location: ../index.html");
-    die();
-}
+date_default_timezone_set('America/Mexico_City'); 
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+        $anio_actual=date("Y");//guardar la fecha actual
+        $id="";
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 
 <!doctype html>
-<form method="post" action="./panel_control.html" id="form1" autocomplete="off">
-
-    <!--[if gt IE 8]><!-->
     <html class="no-js" lang="es">
-    <!--<![endif]-->
-
     <head>
         <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -26,6 +26,7 @@ if($nombre==null || $nombre=='')
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -43,11 +44,525 @@ if($nombre==null || $nombre=='')
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
-
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script type="text/javascript">
+            function oculta(x) 
+            {
+                if (x == 1) 
+                {
+                    // $('input:hidden[name=enviar]').val("rango");
+                    document.getElementById('rangos').style.display = "block";//ver
+                    document.getElementById('todos-q').style.display = "none";//no ver
+                    document.getElementById('numeros').style.display = "none";
 
+                } 
+                else 
+                { 
+                    if (x == 2) 
+                    {  
+                        //  $('input:hidden[name=enviar]').val("todos-q");
+                        document.getElementById('todos-q').style.display = "block";//ver
+                        document.getElementById('rangos').style.display = "none";//no ver
+                        document.getElementById('numeros').style.display = "none";
+                    } 
+                    else
+                    {
+                        if (x == 3) 
+                        {  
+                            //  $('input:hidden[name=enviar]').val("numero");
+                            document.getElementById('numeros').style.display = "block";//ver
+                            document.getElementById('rangos').style.display = "none";//no ver
+                            document.getElementById('todos-q').style.display = "none";
+                        } 
+                    }
+
+                }
+            }//Fin function
+
+            //COMISIONES
+            function ocultacomision(x)
+            {
+                if(x==1)
+                {
+                    document.getElementById('boton-descargar').style.display = "none";//ver
+                    document.getElementById('buscar-comision').style.display = "block";//ver        
+                }
+                else
+                {
+                    if(x==2)
+                    {
+                        document.getElementById('boton-descargar').style.display = "none";//ver
+                        document.getElementById('buscar-comision').style.display = "block";//ver        
+
+                    }
+                    else
+                    {
+                        if(x==3)
+                        {
+                            document.getElementById('boton-descargar').style.display = "none";//ver
+                            document.getElementById('buscar-comision').style.display = "block";//ver 
+
+                        }
+                        else
+                        {
+                            if(x==4)
+                            {
+                                document.getElementById('boton-descargar').style.display = "block";//ver
+                                document.getElementById('buscar-comision').style.display = "none";      
+                            }
+                        }
+                    }
+                }
+            }
+            function ocultadescargar(x)
+            {
+                if(x==1)
+                {
+                    document.getElementById('boton-descargar').style.display = "block";//ver        
+                }
+            }
+            //COMISIONES
+
+
+            function ocultavinieron(x)
+            {
+                if(x==1)
+                {
+                    document.getElementById('numero-vinieron').style.display = "none";//no ver  
+                    document.getElementById('quincena-vinieron').style.display = "none";//no ver  
+                    document.getElementById('rangos-vinieron').style.display = "block";//ver              
+
+                }
+                else
+                {
+                    if(x==2)
+                    {
+                        document.getElementById('rangos-vinieron').style.display = "none";// no ver 
+                        document.getElementById('quincena-vinieron').style.display = "none";//no ver 
+                        document.getElementById('numero-vinieron').style.display = "block";//ver        
+                    }
+                    else
+                    {
+                        if(x==3)
+                        {
+                            document.getElementById('rangos-vinieron').style.display = "none";// no ver 
+                            document.getElementById('numero-vinieron').style.display = "none";//    
+                            document.getElementById('quincena-vinieron').style.display = "block";//ver   
+                        }
+                    }
+                }
+            }
+
+            function ocultafaltaron(x)
+            {
+                if(x==1)
+                {
+                    document.getElementById('numero-faltaron').style.display = "none";//no ver  
+                    document.getElementById('quincena-faltaron').style.display = "none";//no ver  
+                    document.getElementById('rangos-faltaron').style.display = "block";//ver              
+
+                }
+                else
+                {
+                    if(x==2)
+                    {
+                        document.getElementById('rangos-faltaron').style.display = "none";// no ver 
+                        document.getElementById('quincena-faltaron').style.display = "none";//no ver 
+                        document.getElementById('numero-faltaron').style.display = "block";//ver        
+                    }
+                    else
+                    {
+                        if(x==3)
+                        {
+                            document.getElementById('rangos-faltaron').style.display = "none";// no ver 
+                            document.getElementById('numero-faltaron').style.display = "none";//    
+                            document.getElementById('quincena-faltaron').style.display = "block";//ver   
+                        }
+                    }
+                }
+            }
+            function ocultaguardias(x)
+            {
+                if(x==1)
+                {
+                    document.getElementById('numero-guardias').style.display = "none";//no ver  
+                    document.getElementById('quincena-guardias').style.display = "none";//no ver  
+                    document.getElementById('rangos-guardias').style.display = "block";//ver              
+
+                }
+                else
+                {
+                    if(x==2)
+                    {
+                        document.getElementById('rangos-guardias').style.display = "none";// no ver 
+                        document.getElementById('quincena-guardias').style.display = "none";//no ver 
+                        document.getElementById('numero-guardias').style.display = "block";//ver        
+                    }
+                    else
+                    {
+                        if(x==3)
+                        {
+                            document.getElementById('rangos-guardias').style.display = "none";// no ver 
+                            document.getElementById('numero-guardias').style.display = "none";//    
+                            document.getElementById('quincena-guardias').style.display = "block";//ver   
+                        }
+                    }
+                }
+            }
+            function ocultaSubElementos()
+            {
+                //Quienes tienen cumpleaños u onomasticos
+                document.getElementById('rangos-guardias').style.display = "none";// no ver 
+                document.getElementById('numero-guardias').style.display = "none";//    
+                document.getElementById('quincena-guardias').style.display = "none";//ver  
+                
+                //Quienes faltaron
+                document.getElementById('rangos-faltaron').style.display = "none";// no ver
+                document.getElementById('numero-faltaron').style.display = "none";//no ver 
+                document.getElementById('quincena-faltaron').style.display = "none";//no ver 
+
+                //Quienes vinieron
+                document.getElementById('rangos-vinieron').style.display = "none";// no ver
+                document.getElementById('numero-vinieron').style.display = "none";//no ver 
+                document.getElementById('quincena-vinieron').style.display = "none";//no ver 
+                //Vacaciones
+                document.getElementById('rangos').style.display = "none";// no ver
+                document.getElementById('todos-q').style.display = "none";//no ver
+                document.getElementById('numeros').style.display = "none";
+                //comisiones
+                document.getElementById('buscar-comision').style.display = "none";//no ver   
+
+            }
+
+            // <!--Funcion que sirve para mostrar u ocultar los divs del modal  --> 
+            function recibir(numero)
+            {
+                var valor = document.getElementById(numero).value;/*Es el valor del value del botón*/
+                if(valor=="UNICO")
+                {
+                        $('input:hidden[name=id]').val("unico");
+                        ocultaSubElementos();
+                        document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                        document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                        document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                        document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                        document.getElementById('vinieron').style.display = "none";  
+                        document.getElementById('faltaron').style.display = "none";
+                        document.getElementById('cumpleOno').style.display = "none"; 
+                        document.getElementById('guardias').style.display = "none"; 
+                        document.getElementById('sextas').style.display = "none";
+                        document.getElementById('licencias').style.display = "none";
+                        document.getElementById('unico').style.display = "block";/*Ver div*/
+                        document.getElementById('boton-descargar').style.display = "block"; 
+                }
+                else
+                {  
+                        if(valor=="VACACIONES")
+                        {   
+                            $('input:hidden[name=id]').val("vacaciones");
+                            ocultaSubElementos();
+                            document.getElementById('unico').style.display = "none";/*No ver div*/   
+                            document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
+                            document.getElementById('todos-q').style.display = "none";/*No ver div*/   
+                            document.getElementById('rangos').style.display = "none";/*No ver div*/  
+                            document.getElementById('numeros').style.display = "none";/*No ver div*/ 
+                            document.getElementById('comisionados').style.display = "none";/*No ver div*/     
+                            document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                            document.getElementById('vinieron').style.display = "none";  
+                            document.getElementById('faltaron').style.display = "none";
+                            document.getElementById('cumpleOno').style.display = "none";
+                            document.getElementById('guardias').style.display = "none"; 
+                            document.getElementById('sextas').style.display = "none";
+                            document.getElementById('licencias').style.display = "none"; 
+                            document.getElementById('vacaciones').style.display = "block";/*Ver div*/
+                            document.getElementById('boton-descargar').style.display = "block"; 
+                            var rad = $("input[name='opcion']:checked").val();
+                            if(rad=="rangos")
+                            {
+                                oculta(1);
+                            }
+                            else
+                            {
+                                if(rad=="todos")
+                                {
+                                    oculta(2);
+                                }
+                                else
+                                {
+                                    if(rad=="numero")
+                                    {
+                                        oculta(3);
+                                    }
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            if(valor=="ASISTENCIA")
+                            {   $('input:hidden[name=id]').val("asistencia");
+                                ocultaSubElementos();
+                                document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                document.getElementById('vacaciones').style.display = "none";/*No ver div*/
+                                document.getElementById('comisionados').style.display = "none";/*No ver div*/ 
+                                document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                document.getElementById('vinieron').style.display = "none";  
+                                document.getElementById('faltaron').style.display = "none";
+                                document.getElementById('cumpleOno').style.display = "none"; 
+                                document.getElementById('guardias').style.display = "none"; 
+                                document.getElementById('sextas').style.display = "none";
+                                document.getElementById('licencias').style.display = "none";
+                                // document.getElementById('rangos2').style.display = "none";/*No ver div*/  
+                                // document.getElementById('fecha').style.display = "none";/*No ver div*/ 
+                                document.getElementById('asistencia').style.display = "block";/*Ver div*/ 
+                                document.getElementById('boton-descargar').style.display = "block"; 
+                                
+                            }
+                            else
+                            {
+                                if(valor=="COMISIONADOS")
+                                {   $('input:hidden[name=id]').val("comisionados");
+                                    ocultaSubElementos();
+                                    document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                    document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                    document.getElementById('asistencia').style.display = "none";  
+                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                    document.getElementById('boton-descargar').style.display = "none";/*No ver div*/
+                                    document.getElementById('vinieron').style.display = "none";
+                                    document.getElementById('faltaron').style.display = "none";
+                                    document.getElementById('cumpleOno').style.display = "none";
+                                    document.getElementById('guardias').style.display = "none"; 
+                                    document.getElementById('sextas').style.display = "none";
+                                    document.getElementById('licencias').style.display = "none";
+                                    document.getElementById('comisionados').style.display = "block";/*Ver div*/ 
+                                    
+                                    var rad = $("input[name='opc']:checked").val();
+                                    if(rad=="fora")
+                                    {
+                                        ocultacomision(1);
+                                    }
+                                    else
+                                    {
+                                        if(rad=="int")
+                                        {
+                                            ocultacomision(2);
+                                        }
+                                        else
+                                        {
+                                            if(rad=="ext")
+                                            {
+                                                ocultacomision(3);
+                                            }
+                                            else
+                                            {
+                                                if(rad=="vence")
+                                                {
+                                                    ocultacomision(4);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    //Sirve para que las subopciones muestren  el boton de descargar
+                                    var subrad = $("input[name='sub-opc']:checked").val();
+                                    if(subrad=="activas" || subrad=="inactivas")
+                                    {
+                                        ocultadescargar(1);
+                                    }
+
+                                }
+                                else
+                                {
+                                    
+                                    if(valor=="VINIERON")
+                                    {   $('input:hidden[name=id]').val("vinieron");//id
+                                        ocultaSubElementos();
+                                    
+                                        document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                        document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                        document.getElementById('asistencia').style.display = "none";  
+                                        document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                        document.getElementById('comisionados').style.display = "none";
+                                        document.getElementById('faltaron').style.display = "none";
+                                        document.getElementById('cumpleOno').style.display = "none";
+                                        document.getElementById('guardias').style.display = "none"; 
+                                        document.getElementById('sextas').style.display = "none";
+                                        document.getElementById('licencias').style.display = "none";
+                                        document.getElementById('vinieron').style.display = "block";
+                                        document.getElementById('boton-descargar').style.display = "block";/*ver div*/
+                                        
+                                        var rad = $("input[name='opcion-v']:checked").val();
+                                        if(rad=="rango-v")
+                                        {
+                                            ocultavinieron(1);
+                                        }
+                                        else
+                                        {
+                                            if(rad=="numero-v")
+                                            {
+                                                ocultavinieron(2);
+                                            }
+                                            else
+                                            {    if(rad=="quincena-v")
+                                                {
+                                                    ocultavinieron(3);
+                                                }
+                                                
+                                            }
+                                        }
+                                    }//fin if
+                                    else
+                                    {
+                                        if(valor=="FALTARON")
+                                        {  
+                                            $('input:hidden[name=id]').val("faltaron");//id
+                                            ocultaSubElementos();
+                                        
+                                            document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                            document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                            document.getElementById('asistencia').style.display = "none";  
+                                            document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                            document.getElementById('comisionados').style.display = "none";
+                                            document.getElementById('vinieron').style.display = "none";
+                                            document.getElementById('cumpleOno').style.display = "none"; 
+                                            document.getElementById('guardias').style.display = "none";
+                                            document.getElementById('sextas').style.display = "none";
+                                            document.getElementById('licencias').style.display = "none";
+                                            document.getElementById('faltaron').style.display = "block";/*ver div*/
+                                            document.getElementById('boton-descargar').style.display = "block";/*ver div*/
+                                            var rad = $("input[name='opcion-f']:checked").val();
+                                            if(rad=="rango-f")
+                                            {
+                                                ocultafaltaron(1);
+                                            }
+                                            else
+                                            {
+                                                if(rad=="numero-f")
+                                                {
+                                                    ocultafaltaron(2);
+                                                }
+                                                else
+                                                {   if(rad=="quincena-f")
+                                                    {
+                                                        ocultafaltaron(3);
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        }//fin if
+                                        else
+                                        {
+                                            if(valor=="CUMPLEONO")
+                                            {   
+                                                $('input:hidden[name=id]').val("cumpleOno");
+                                                ocultaSubElementos();
+                                                document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                                document.getElementById('vacaciones').style.display = "none";/*No ver div*/
+                                                document.getElementById('comisionados').style.display = "none";/*No ver div*/ 
+                                                document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                                document.getElementById('vinieron').style.display = "none";  
+                                                document.getElementById('faltaron').style.display = "none";
+                                                // document.getElementById('rangos2').style.display = "none";/*No ver div*/  
+                                                // document.getElementById('fecha').style.display = "none";/*No ver div*/ 
+                                                document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
+                                                document.getElementById('guardias').style.display = "none";
+                                                document.getElementById('sextas').style.display = "none";
+                                                document.getElementById('licencias').style.display = "none";
+                                                document.getElementById('cumpleOno').style.display = "block"; 
+                                                document.getElementById('boton-descargar').style.display = "block"; 
+                                                
+                                            }//fin if
+                                            else
+                                            {
+                                                if(valor=="GUARDIAS")
+                                                {   $('input:hidden[name=id]').val("guardias");//id
+                                                    ocultaSubElementos();
+                                                
+                                                    document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                                    document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                                    document.getElementById('asistencia').style.display = "none";  
+                                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                                    document.getElementById('comisionados').style.display = "none";
+                                                    document.getElementById('faltaron').style.display = "none";
+                                                    document.getElementById('cumpleOno').style.display = "none"; 
+                                                    document.getElementById('vinieron').style.display = "none";
+                                                    document.getElementById('sextas').style.display = "none";
+                                                    document.getElementById('licencias').style.display = "none";
+                                                    document.getElementById('guardias').style.display = "block";/*ver div*/
+                                                    document.getElementById('boton-descargar').style.display = "block";/*ver div*/
+                                                    
+                                                    var rad = $("input[name='opcion-g']:checked").val();
+                                                    if(rad=="rango-g")
+                                                    {
+                                                        ocultaguardias(1);
+                                                    }
+                                                    else
+                                                    {
+                                                        if(rad=="numero-g")
+                                                        {
+                                                            ocultaguardias(2);
+                                                        }
+                                                        else
+                                                        {    if(rad=="quincena-g")
+                                                            {
+                                                                ocultaguardias(3);
+                                                            }
+                                                            
+                                                        }
+                                                    }//fin else
+                                                }//fin if
+                                                else
+                                                {
+                                                    if(valor=="SEXTAS")
+                                                    {
+                                                        $('input:hidden[name=id]').val("sextas");
+                                                        ocultaSubElementos();
+                                                        document.getElementById('unico').style.display = "none";
+                                                        document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                                                        document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                                                        document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                                                        document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                                                        document.getElementById('vinieron').style.display = "none";  
+                                                        document.getElementById('faltaron').style.display = "none";
+                                                        document.getElementById('cumpleOno').style.display = "none"; 
+                                                        document.getElementById('guardias').style.display = "none"; 
+                                                        document.getElementById('licencias').style.display = "none";
+                                                        document.getElementById('sextas').style.display = "block";/*Ver div*/
+                                                        document.getElementById('boton-descargar').style.display = "block"; 
+                                                    }
+                                                    else
+                                                    {
+                                                        if(valor=="LICENCIAS")
+                                                        {
+                                                            $('input:hidden[name=id]').val("licencias");
+                                                            ocultaSubElementos();
+                                                            document.getElementById('unico').style.display = "none";
+                                                            document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                                                            document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                                                            document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                                                            document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                                                            document.getElementById('vinieron').style.display = "none";  
+                                                            document.getElementById('faltaron').style.display = "none";
+                                                            document.getElementById('cumpleOno').style.display = "none"; 
+                                                            document.getElementById('guardias').style.display = "none"; 
+                                                            document.getElementById('sextas').style.display = "none";
+                                                            document.getElementById('licencias').style.display = "block";/*Ver div*/
+                                                            document.getElementById('boton-descargar').style.display = "block"; 
+                                                        }
+
+                                                    }//fin else sextas
+                                                }//fin else guardias
+                                            }//fin else cumpleono
+                                        }//fin else faltaron
+                                    }
+                                }
+                            }
+                        }
+                        
+                }
+            } 
+            // <!--Funcion que sirve para mostrar u ocultar los divs del modal  -->
+        </script> 
     </head>
 
     <body>
@@ -125,13 +640,11 @@ if($nombre==null || $nombre=='')
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
 
                     <div class="col-sm-5">
                         <div class="user-area dropdown float-right">
-
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
@@ -140,93 +653,10 @@ if($nombre==null || $nombre=='')
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
-
-
-
-            <!--Load the AJAX API-->
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            <script type="text/javascript">
-                // Load the Visualization API and the corechart package.
-                google.charts.load('current', {
-                    'packages': ['corechart']
-                });
-
-                // Set a callback to run when the Google Visualization API is loaded.
-                google.charts.setOnLoadCallback(drawChart);
-
-                // Callback that creates and populates a data table,
-                // instantiates the pie chart, passes in the data and
-                // draws it.
-                function drawChart() {
-
-                    // Create the data table.
-                    var data = new google.visualization.DataTable();
-                    data.addColumn('string', 'Tipo');
-                    data.addColumn('number', 'Cantidad');
-                    data.addRows([
-                        ['Ausente', 1171],
-                        ['Presente', 679],
-                    ]);
-                    //data.addRows([
-                    //  ['Ausente', 300],
-                    //  ['Presente', 700],
-                    //]);
-
-                    // Set chart options
-                    var options = {
-                        //'title': '',                
-                    };
-
-                    // Instantiate and draw our chart, passing in some options.
-                    var chart = new google.visualization.PieChart(document.getElementById('asistencia'));
-                    chart.draw(data, options);
-                }
-            </script>
-
-
-            <script type="text/javascript">
-                // Load the Visualization API and the corechart package.
-                google.charts.load('current', {
-                    'packages': ['corechart']
-                });
-
-                // Set a callback to run when the Google Visualization API is loaded.
-                google.charts.setOnLoadCallback(drawChart);
-
-                // Callback that creates and populates a data table,
-                // instantiates the pie chart, passes in the data and
-                // draws it.
-                function drawChart() {
-
-                    // Create the data table.
-                    var data = new google.visualization.arrayToDataTable([
-                        ['Tipo', 'Cantidad'],
-                        ['Retardos', 0],
-                        ['Salida Temprana', 0],
-                        ['Ausente', 1171],
-                        ['Presente', 679],
-                        ['Horas Extra', 0],
-                    ]);
-
-                    // Set chart options
-                    var options = {
-                        //'title': 'Incidencias',
-                    };
-
-                    // Instantiate and draw our chart, passing in some options.
-                    var chart = new google.visualization.PieChart(document.getElementById('incidencias'));
-                    chart.draw(data, options);
-                }
-            </script>
-
             <div class="breadcrumbs">
                 <div class="col-sm-4">
                     <div class="page-header float-left">
@@ -246,173 +676,585 @@ if($nombre==null || $nombre=='')
                 </div>
             </div>
 
-            <div class="content mt-3">
+            <div class="content mt-5">
                 <div class="animated fadeIn">
-
-                    <div class="row" style="text-align:center">
-
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card text-white bg-flat-color-1">
-                                <div class="card-body pb-0">
-                                    <h4 class="mb-0">
-                                        <span id="MainContent_spanBiometricoConectado" class="count">0</span>
-                                    </h4>
-                                    <p class="text-light">Equipo Biometrico Conectado</p>
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <!--/.col-->
-
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card text-white bg-flat-color-2">
-                                <div class="card-body pb-0">
-                                    <h4 class="mb-0">
-                                        <span id="MainContent_spanEmpleadosActivos" class="count">0</span>
-                                    </h4>
-                                    <p class="text-light">Personal Activo</p>
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <!--/.col-->
-
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card text-white bg-flat-color-5">
-                                <div class="card-body pb-0">
-                                    <h4 class="mb-0">
-                                        <span class="count">Estable</span>
-                                    </h4>
-                                    <p class="text-light">Servidor Web</p>
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <!--/.col-->
-
-                    </div>
-
                     <div class="row">
-                        <div class="col-xl-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-8">
-                                            <h4 class="card-title mb-0">Asistencia</h4>
-                                            <div class="small text-muted">Hoy</div>
-                                        </div>
-                                    </div>
-                                    <!--/.row-->
-                                    <div class="chart-wrapper mt-4">
-                                        <div id="asistencia"></div>
-                                    </div>
+                        <div class="contenedor">
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"id="1"   value="UNICO" onclick="recibir(1);"><i class="fa fa-file-pdf-o"></i> REPORTE ÚNICO DE INCIDENCIAS </button></a> 
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <h4 class="card-title mb-0">Incidencias</h4>
-                                            <div class="small text-muted">Hoy</div>
-                                        </div>
-                                    </div>
-                                    <!--/.row-->
-                                    <div class="chart-wrapper mt-4">
-                                        <div id="incidencias"></div>
-                                    </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"id="2"  value="VACACIONES" onclick="recibir(2);"><i class="fa fa-file-pdf-o"></i>VACACIONES</button></a> 
                                 </div>
                             </div>
+                            
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="3" value="ASISTENCIA" onclick="recibir(3);"><i class="fa fa-file-pdf-o"></i> ¿QUIÉN DEBE ASISTIR?</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="4" value="COMISIONADOS" onclick="recibir(4);"><i class="fa fa-file-pdf-o"></i> COMISIONADOS</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="5" value="VINIERON" onclick="recibir(5);"><i class="fa fa-file-pdf-o"></i> ¿QUIÉNES VINIERON?</button></a> 
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="6" value="FALTARON" onclick="recibir(6);"><i class="fa fa-file-pdf-o"></i> ¿QUIÉNES FALTARON?</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report"  data-toggle="modal" data-target="#mimodalejemplo"   name="boton" id="7" value="CUMPLEONO" onclick="recibir(7);"><i class="fa fa-file-pdf-o"></i> CUMPLEAÑOS U ONOMÁSTICO</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="8" value="GUARDIAS" onclick="recibir(8);"><i class="fa fa-file-pdf-o"></i> GUARDIAS</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="9" value="SEXTAS" onclick="recibir(9);"><i class="fa fa-file-pdf-o"></i>SEXTAS</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="10" value="LICENCIAS" onclick="recibir(10);"><i class="fa fa-file-pdf-o"></i>LICENCIAS Y PERMISOS</button></a> 
+                                </div>
+                            </div>
+
+                                
+ 
+            
+            <!-- Modal -->
+            <div class="modal fade" id="mimodalejemplo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" id="modal" >
+                        <div class="modal-header">
+                            <!-- <h4 class="modal-title" id="myModalLabel">REPORTE</h4> -->
                         </div>
+                        <form method="post" action="../rep-asistencia/crearPdf-reportes.php" id="form2" class="form-modal">
+                            <!-- <p>Cuerpo del modal</p> -->
+                            <div class="modal-body">
+                                <div class="form-row">
+                   
+                                   
+                                    <div id="unico">
+
+                                        <div class="col-md5 bn-3 label">
+                                            <!-- <span>Color:</span><input type="text" id="codigo"/> -->
+                                            <label for="">Seleccione la quincena: </label>
+                                            <?php
+                                                $nombre=$_SESSION['name'];
+                                                $contra=$_SESSION['con'];
+                                                require("../Acceso/global.php"); 
+                                                $sql="select idquincena from quincena where (validez=1);";
+                                                $query= mysqli_query($con, $sql);
+                                                $resul=mysqli_fetch_array($query);
+                                                $idactual= $resul[0];
+                                                    
+                                                $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                $query2= mysqli_query($con, $sql2);
+                                                if(!$query2)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {   
+                                                    echo "<select name='quincena' class='form-control'>";
+                                                    while($fila=mysqli_fetch_array($query2))
+                                                    {   ///Divido la fecha de inicio y fin de la quincena
+                                                        $f_ini=explode('-',$fila[1]);
+                                                        $f_fin=explode('-',$fila[2]);
+                                                        // Concateno el año actual a las fechas
+                                                        $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                        $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+
+                                                        echo "<option value='".$fila[0]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+                                                    }
+                                                    echo "</select>";
+                                                }
+                                            ?> <!--FIN PHP -->
+                                        </div> <!--fin col-md5 bn-3 label -->
+                                        
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="unico" >                                                    
+                                    </div><!--fin div unico-->
+
+                                    <div id="vacaciones">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                            <label for="">Seleccione cómo desea que busquemos:</label>
+                                            <p></p>
+                                            <label for="rango"> Por rango de fechas
+                                            <input type="radio" name="opcion" value="rango" id="rango" onclick="oculta(1)"></label>
+                                            <p></p>
+                                            <label for="todos"> Todos los empleados en una quincena
+                                            <input type="radio" name="opcion" value="todos" id="todos" onclick="oculta(2)"></label>
+                                            <p></p>
+                                            <label for="numero"> Por un número de empleado en específico 
+                                            <input type="radio" name="opcion" value="numero" id="numero" onclick="oculta(3)"></label>
+                                            <p></p>
+                                            </div>
+                                            <div class="form-1-2">
+                                                <div id=rangos> 
+                
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="f_ini">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="f_fin">
+                                                
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-1-2" >
+                                               
+                                                <div id="todos-q">
+                                                    <label for="">Seleccione la quincena: </label>
+                                                    <?php
+                                                    $nombre=$_SESSION['name'];
+                                                    $contra=$_SESSION['con'];
+                                                    require("../Acceso/global.php"); 
+                                                    $sql="select idquincena from quincena where (validez=1);";
+                                                    $query= mysqli_query($con, $sql);
+                                                    $resul=mysqli_fetch_array($query);
+                                                    $idactual= $resul[0];
+                                                
+                                                    $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                    $query2= mysqli_query($con, $sql2);
+                                                    if(!$query2)
+                                                    {
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {   
+                                                        echo "<select name='quincena2' class='form-control' >";
+                                                        while($fila=mysqli_fetch_array($query2))
+                                                        {   ///Divido la fecha de inicio y fin de la quincena
+                                                            $f_ini=explode('-',$fila[1]);
+                                                            $f_fin=explode('-',$fila[2]);
+                                                            // Concateno el año actual a las fechas
+                                                            $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                            $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+                                                            
+                                                            echo "<option value='".$fila[0]."'>". Quincena. " ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+                                                        }
+                                                        echo "</select>";
+                                                    }
+                                                    ?> <!--FIN PHP -->
+                                                    <!--Sirve para enviar que queremos buscar en el reporte-->
+                                                    <input type="hidden" name="enviar" value="todos-q" >  
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-1-2" >
+                                                <div id=numeros>
+                                                    <label for="">Ingrese un numéro de trabajador: </label>
+                                                    <input type="text" class="form-control" name="num">
+                                                    <!--Sirve para enviar que queremos buscar en el reporte-->
+                                                    <input type="hidden" name="enviar" value="numero" >  
+                                                </div>
+                                            </div>
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="vacaciones" >                                                    
+                                    </div><!--fin div-->
+
+                                    <div id="asistencia">
+
+                                        <div class="col-md5 bn-3 label">
+                                            <!--<label for="">Seleccione cómo desea que busquemos:</label>
+                                            <p></p>
+                                            <label for="rango2">Por rango de fechas <input type="radio" name="opcion2" value="rango2" id="rango2" onclick="oculta2(1)"></label>
+                                            <p></p>
+                                            <label for="fecha2">Por fecha en específico<input type="radio" name="opcion2" value="fecha2" id="fecha2" onclick="oculta2(2)"></label>
+                                            <p></p>
+                                            <div class="form-1-2" >
+                                                <div id=rangos2> 
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="ini">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fin">
+                                                </div>
+                                            </div> -->
+                                            <div class="form-1-2"> 
+                                                <div id=fecha> 
+                                                    <label for="">Seleccione una fecha:</label>
+                                                    <input type="date" class="form-control" name="fecha">
+                                                </div>
+                                            </div> 
+                                         </div>
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="asistencia" >                                                    
+                                    </div><!--fin div-->
+                                    
+                                    <div id="comisionados">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                            <h4>Seleccione una opción:</h4>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opc" value="fora" id="fora" onclick="ocultacomision(1)">
+                                            <label for="fora"> Comisionados foráneos </label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opc" value="int" id="int" onclick="ocultacomision(2)">
+                                            <label for="int"> Comisionados internos</label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opc" value="ext" id="ext" onclick="ocultacomision(3)">
+                                            <label for="ext"> Comisionados externos</label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opc" value="vence" id="vence" onclick="ocultacomision(4)">
+                                            <label for="vence"> Comisiones por vencer</label>
+                                            <p></p>
+                                            </div>
+                                            <div class="form-1-2">
+                                                <div id=buscar-comision> 
+                                                    <p> Seleccione una opción:</p>
+                                                    <input type="radio" name="sub-opc" value="activas" id="act" onclick="ocultadescargar(1)">
+                                                    <label for="act"> Comisiones activas</label>  
+                                                    <p></p>
+                                                    <input type="radio" name="sub-opc" value="inactivas" id="ina" onclick="ocultadescargar(1)">
+                                                    <label for="ina"> Comisiones inactivas</label>
+                                                    <p></p>                                                                
+                                                </div>
+                                            </div> 
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="comisionados" >                                                    
+                                    </div><!--fin div -->
+
+                                    <div id="vinieron">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">Seleccione cómo desea buscar:</label>
+                                                <p></p>
+                                                <label for="rango-v"> Por rango de fechas
+                                                <input type="radio" name="opcion-v" value="rango-v" id="rango-v" onclick="ocultavinieron(1)"></label>
+                                                <p></p>
+                                                <label for="numero-v"> Por un número de empleado y rango de fechas
+                                                <input type="radio" name="opcion-v" value="numero-v" id="numero-v" onclick="ocultavinieron(2)"></label>
+                                                <p></p>
+                                                <label for="quincena-v"> Por quincena
+                                                <input type="radio" name="opcion-v" value="quincena-v" id="quincena-v" onclick="ocultavinieron(3)"></label>
+                                                <p></p>
+                                            </div>
+                                            <div class="form-1-2">
+                                                <div id=rangos-vinieron> 
+            
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="f_ini-v">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="f_fin-v">
+                                                
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-1-2" >
+                                                <div id=numero-vinieron>
+                                                    <label for="">Ingrese un numéro de trabajador: </label>
+                                                    <input type="text" class="form-control" name="num-v">
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="ini-v">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fin-v">
+                                                </div>
+                                            </div>
+                                            <div class="form-1-2" >
+                                               <div id="quincena-vinieron">
+                                                   <label for="">Seleccione la quincena: </label>
+                                                   <?php
+                                                   $nombre=$_SESSION['name'];
+                                                   $contra=$_SESSION['con'];
+                                                   require("../Acceso/global.php"); 
+                                                   $sql="select idquincena from quincena where (validez=1);";
+                                                   $query= mysqli_query($con, $sql);
+                                                   $resul=mysqli_fetch_array($query);
+                                                   $idactual= $resul[0];
+                                               
+                                                   $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                   $query2= mysqli_query($con, $sql2);
+                                                   if(!$query2)
+                                                   {
+                                                       die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                   }
+                                                   else
+                                                   {   
+                                                       echo "<select name='quincena3' class='form-control' >";
+                                                       while($fila=mysqli_fetch_array($query2))
+                                                       {   ///Divido la fecha de inicio y fin de la quincena
+                                                           $f_ini=explode('-',$fila[1]);
+                                                           $f_fin=explode('-',$fila[2]);
+                                                           // Concateno el año actual a las fechas
+                                                           $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                           $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+                                                           
+                                                           echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+  
+                                                       }
+                                                       echo "</select>";
+                                                   }
+                                                   ?> <!--FIN PHP -->
+                                                </div>    
+                                            </div> 
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="vinieron" >                                                    
+                                    </div><!--fin div-->
+
+                                    <div id="faltaron">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">Seleccione cómo desea buscar:</label>
+                                                <p></p>
+                                                <label for="rango-f"> Por rango de fechas
+                                                <input type="radio" name="opcion-f" value="rango-f" id="rango-f" onclick="ocultafaltaron(1)"></label>
+                                                <p></p>
+                                                <label for="numero-f"> Por un número de empleado y rango de fechas
+                                                <input type="radio" name="opcion-f" value="numero-f" id="numero-f" onclick="ocultafaltaron(2)"></label>
+                                                <p></p>
+                                                <label for="numero-f"> Por quincena
+                                                <input type="radio" name="opcion-f" value="quincena-f" id="quincena-f" onclick="ocultafaltaron(3)"></label>
+                                                <p></p>
+                                            </div>
+                                            <div class="form-1-2">
+                                                <div id=rangos-faltaron> 
+            
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="ini-f">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fin-f">
+                                                
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-1-2" >
+                                                <div id=numero-faltaron>
+                                                    <label for="">Ingrese un numéro de trabajador: </label>
+                                                    <input type="text" class="form-control" name="num-f">
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="ini-f">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fin-f">
+                                                </div>
+                                            </div>
+                                            <div class="form-1-2" >
+                                               <div id="quincena-faltaron">
+                                                   <label for="">Seleccione la quincena: </label>
+                                                   <?php
+                                                   $nombre=$_SESSION['name'];
+                                                   $contra=$_SESSION['con'];
+                                                   require("../Acceso/global.php"); 
+                                                   $sql="select idquincena from quincena where (validez=1);";
+                                                   $query= mysqli_query($con, $sql);
+                                                   $resul=mysqli_fetch_array($query);
+                                                   $idactual= $resul[0];
+                                               
+                                                   $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                   $query2= mysqli_query($con, $sql2);
+                                                   if(!$query2)
+                                                   {
+                                                       die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                   }
+                                                   else
+                                                   {   
+                                                       echo "<select name='quincena4' class='form-control' >";
+                                                       while($fila=mysqli_fetch_array($query2))
+                                                       {   ///Divido la fecha de inicio y fin de la quincena
+                                                           $f_ini=explode('-',$fila[1]);
+                                                           $f_fin=explode('-',$fila[2]);
+                                                           // Concateno el año actual a las fechas
+                                                           $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                           $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+                                                           
+                                                           echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+  
+                                                       }
+                                                       echo "</select>";
+                                                   }
+                                                   ?> <!--FIN PHP -->
+                                                </div>    
+                                            </div> 
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="faltaron" >                                                    
+                                    </div><!--fin div-->
+                                   
+                                    <div id="cumpleOno">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">REPORTE DE CUMPLEAÑOS U ONOMÁSTICOS </label><br><br>
+                                                <label for="">Fecha inicio</label>
+                                                <input type="date" class="form-control" name="ini-c">
+                                                <label for="">Fecha fin</label>
+                                                <input type="date" class="form-control" name="fin-c">
+                                            </div>
+                                        </div> 
+                                   
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="cumpleOno" >                                                    
+                                    </div><!--fin div-->
+
+                                    <div id="guardias">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">REPORTE DE GUARDIAS </label><br><br>
+                                                <label for="">Seleccione cómo desea buscar:</label>
+                                                <p></p>
+                                                
+                                                <input type="radio" name="opcion-g" value="rango-g" id="rango-g" onclick="ocultaguardias(1)">
+                                                <label for="rango-g"> Por rango de fechas</label>
+                                                <p></p>
+                                                <input type="radio" name="opcion-g" value="numero-g" id="numero-g" onclick="ocultaguardias(2)">
+                                                <label for="numero-g"> Por un número de empleado y rango de fechas</label>
+                                                
+                                                <p></p>
+                                                <input type="radio" name="opcion-g" value="quincena-g" id="quincena-g" onclick="ocultaguardias(3)">
+                                                <label for="quincena-g"> Por quincena</label>
+                                                <p></p>
+                                            </div>
+                                            <div class="form-1-2">
+                                                <div id=rangos-guardias> 
+            
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="ini-g">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fin-g">
+                                                
+                                                </div>
+                                            </div> 
+                                            <div class="form-1-2" >
+                                                <div id=numero-guardias>
+                                                    <label for="">Ingrese un numéro de trabajador: </label>
+                                                    <input type="text" class="form-control" name="num-g">
+                                                    <label for="">Fecha inicio</label>
+                                                    <input type="date" class="form-control" name="in-g">
+                                                    <label for="">Fecha fin</label>
+                                                    <input type="date" class="form-control" name="fi-g">
+                                                </div>
+                                            </div>
+                                            <div class="form-1-2" >
+                                               <div id="quincena-guardias">
+                                                   <label for="">Seleccione la quincena: </label>
+                                                   <?php
+                                                   $nombre=$_SESSION['name'];
+                                                   $contra=$_SESSION['con'];
+                                                   require("../Acceso/global.php"); 
+                                                   $sql="select idquincena from quincena where (validez=1);";
+                                                   $query= mysqli_query($con, $sql);
+                                                   $resul=mysqli_fetch_array($query);
+                                                   $idactual= $resul[0];
+                                               
+                                                   $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                   $query2= mysqli_query($con, $sql2);
+                                                   if(!$query2)
+                                                   {
+                                                       die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                   }
+                                                   else
+                                                   {   
+                                                       echo "<select name='quin-g' class='form-control' >";
+                                                       while($fila=mysqli_fetch_array($query2))
+                                                       {   ///Divido la fecha de inicio y fin de la quincena
+                                                           $f_ini=explode('-',$fila[1]);
+                                                           $f_fin=explode('-',$fila[2]);
+                                                           // Concateno el año actual a las fechas
+                                                           $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                           $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+                                                           
+                                                           echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+  
+                                                       }
+                                                       echo "</select>";
+                                                   }
+                                                   ?> <!--FIN PHP -->
+                                                </div>    
+                                            </div> 
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="guardias" >                                                    
+                                    </div><!--fin div-->
+
+                                    <div id="sextas">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">REPORTE DE SEXTAS</label><br><br>
+                                                <label for="">Seleccione qué desea buscar:</label>
+                                                <p></p>
+                                                <input type="radio" name="opcion-s" value="todos-sexta" id="todos-sexta" >
+                                                <label for="todos-sexta"> Todos los empleados con sexta</label>
+                                                <p></p>
+                                                <input type="radio" name="opcion-s" value="viene-sexta" id="viene-sexta" >
+                                                <label for="viene-sexta"> ¿Quién viene hoy y tiene sexta?</label>  
+                                                <p></p>
+                                            </div>
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="sextas" >                                                    
+                                    </div><!--fin div-->
+
+                                    <div id="licencias">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                            <h4>Seleccione una opción:</h4>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opcion-l" value="noempiezan" id="noempiezan" >
+                                            <label for="noempiezan"> Licencias y permisos que aún no empiezan </label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opcion-l" value="xvencer" id="xvencer" >
+                                            <label for="xvencer"> Licencias y permisos por vencer</label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opcion-l" value="vencida" id="vencida" >
+                                            <label for="vencida"> Licencias y permisos vencidos</label>
+                                            <p></p>
+                                            
+                                            <input type="radio" name="opcion-l" value="activa" id="activa" >
+                                            <label for="activa"> Licencias y permisos activos</label>
+                                            <p></p>
+                                            </div>
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="licencias" >                                                    
+                                    </div><!--fin div -->
+                                    
+                                    <div class="modal-footer">
+                                        <div id="boton-descargar">                       
+                                            <button type="submit" id="descargar" class="btn btn-primary">Descargar</button>
+                                        </div>  
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    </div><!--fin modal-footer-->
+                                </div><!--fin form-row-->
+                            </div> <!--fin modal -->
+                        </form>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Fecha Reporte</span>
-                                </div>
-
-                                <div class="card-body card-block">
-                                    <div class="row col-md-12">
-                                        <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbfcinicial">Fecha Inicial</span><input name="ctl00$MainContent$txtFechaInicial" type="date" id="MainContent_txtFechaInicial" class="form-control" required="" />
-                                        </div>
-                                        <div class="form-group col-lg-3">
-                                            <span id="MainContent_lblfcfinal">Fecha Final</span><input name="ctl00$MainContent$txtFechaFinal" type="date" id="MainContent_txtFechaFinal" class="form-control" required="" />
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-12">
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbTrabajador">Trabajador</span>
-                                            <select name="ctl00$MainContent$DropDownListTrabajadores" id="MainContent_DropDownListTrabajadores" class="form-control select2" required="">
-												<!--Aquí iban todos los trabajadores y su número de empleado
-												     en forma de option, dah :D-->
-
-											</select>
-                                        </div>
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbDepto">Departamento</span>
-                                            <select name="ctl00$MainContent$DropDownListDepartamentos" id="MainContent_DropDownListDepartamentos" class="form-control select2" required="">
-											<!--Aquí iban los departamentos-->
-
-											</select>
-                                        </div>
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbCategoria">Categoria</span>
-                                            <select name="ctl00$MainContent$DropDownListCategorias" id="MainContent_DropDownListCategorias" class="form-control select2" required="">
-												<!--Aquí iban las categorías de los empleados-->
-											</select>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="card-footer">
-                                    <div class="dropdown">
-                                        <input type="submit" name="ctl00$MainContent$btnBuscar" value="Ejecutar" id="MainContent_btnBuscar" class="btn btn-primary btn-sm" />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Reporte Asistencia Retardos</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_DataTable"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Reporte Asistencia Faltas</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_Reporte_Faltas"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-                <!-- .animated -->
             </div>
-            <!-- .content -->
+            <!-- Fin-Modal -->            
 
+         
             <script type="text/javascript">
                 $(document).ready(function() {
                     $('table.display').DataTable({
@@ -452,14 +1294,8 @@ if($nombre==null || $nombre=='')
                     $('.select2').select2();
                 });
             </script>
-
-
-
         </div>
-        <!-- /#right-panel -->
-
-        <!-- Right Panel -->
-
+        <!-- /#right-panel -->    
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
         <script src="../assets/js/plugins.js"></script>
         <script type="text/javascript">
@@ -471,8 +1307,7 @@ if($nombre==null || $nombre=='')
                     $('body').toggleClass('open');
                 });
             });
+
         </script>
     </body>
-
-    </html>
-</form>
+</html>
