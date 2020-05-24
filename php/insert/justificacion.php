@@ -142,7 +142,10 @@ session_start();
         else
         {
             //Obligar al usuario a que meta todos los campos que se solicitan en aprobaciones.php
-            echo "<script> imprime('NO debe dejar NINGÚN campo VACÍO. Verifique...'); </script>";
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha del retardo a justificar"."<br>";} 
+            echo "<script> imprime('$error'); </script>";
         }
     }//FIN DEL IF JUSTIFICAR
 
@@ -258,7 +261,11 @@ session_start();
         else
         {
             //Obligar al usuario a que meta todos los campos que se solicitan en aprobaciones.php
-            echo "<script> imprime('NO debe dejar NINGÚN campo VACÍO. Verifique...'); </script>";
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha de inicio de la omisión a justificar."."<br>";} 
+            if (empty($_POST["eOs"])){$error.="Si es una omisión de entrada o de salida."."<br>";}
+            echo "<script> imprime('$error'); </script>";
         }
     }//FIN DEL IF OMISIÓN
 
@@ -307,7 +314,11 @@ session_start();
                 else
                 {
                     //Obligar al usuario a que meta todos los campos que se solicitan en aprobaciones.php
-                    echo "<script> imprime('NO debe dejar NINGÚN campo VACÍO de la Comisión. Verifique...'); </script>";
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["he"])){$error.="La hora de entrada de la comisión."."<br>";}
+                    if (empty($_POST["hs"])){$error.="La hora de salida de la comisión."."<br>";} 
+                    if (empty($_POST["fecf"])){$error.="La fecha de fin de la comisión."."<br>";}
+                    echo "<script> imprime('$error'); </script>";
                 }
             }
             else
@@ -327,7 +338,11 @@ session_start();
                     else
                     {
                         //Obligar al usuario a que meta todos los campos que se solicitan en aprobaciones.php
-                        echo "<script> imprime('NO debe dejar NINGÚN campo VACÍO de la Comisión. Verifique...'); </script>";
+                        $error="Faltan los siguientes datos:"."<br>";
+                        if (empty($_POST["he"])){$error.="La hora de entrada de la comisión."."<br>";}
+                        if (empty($_POST["hs"])){$error.="La hora de salida de la comisión."."<br>";} 
+                        if (empty($_POST["fecf"])){$error.="La fecha de fin de la comisión."."<br>";}
+                        echo "<script> imprime('$error'); </script>";
                     } 
                 }
                 else
@@ -420,7 +435,13 @@ session_start();
         else
         {
             //Obligar al usuario a que meta todos los campos que se solicitan en aprobaciones.php
-            echo "<script> imprime('NO debe dejar NINGÚN campo VACÍO de la Comisión. Verifique...'); </script>";
+            $error="Faltan los siguientes datos:"."<br>";
+            if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
+            if (empty($_POST["fec"])){$error.="La fecha de inicio de la comisión."."<br>";} 
+            if (empty($_POST["emp"])){$error.="La empresa."."<br>";}
+            if (empty($_POST["tl"])){$error.="El tipo de comisión."."<br>";}
+            if (empty($_POST["priority"])){$error.="La proridad."."<br>";}
+            echo "<script> imprime('$error'); </script>";
         }
     }//FIN DEL IF COMISIÓN
 
@@ -1264,7 +1285,7 @@ session_start();
                 {
                     echo "<script> imprime('Falta la fecha final, no debe dejarla vacía...'); </script>";
                 }
-            }//Fin CICA 62 Radio
+            }//Fin CICA 54 
 
 
             /*

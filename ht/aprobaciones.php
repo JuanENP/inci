@@ -369,6 +369,21 @@ session_start();
                 {
                     $("#cur").prop("checked", true);
                     oculta(9);
+                    //curso capacitacion opcion
+                    var cod = document.getElementById("cucap").value;
+                    if(cod=="o")
+                    {
+                        document.getElementById('he').style.display = "none";
+                        document.getElementById('hs').style.display = "none";
+                    }
+                    else
+                    {
+                        if(cod=="d")
+                        {
+                            document.getElementById('he').style.display = "block";
+                            document.getElementById('hs').style.display = "block";
+                        }
+                    }
                 });
                 //
 
@@ -434,7 +449,7 @@ session_start();
                         }
                         else
                         {
-                            if(cod=="41")//Para licencia goce
+                            if(cod=="41")//Para licencia goce antiguedad
                             {
                                 document.getElementById('div-tol-lac').style.display = "none";
                                 document.getElementById('div-tol-est').style.display = "none";
@@ -442,6 +457,21 @@ session_start();
                                 document.getElementById('fecf').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('div-perm-go').style.display = "block";
+
+                                //ver que opción está seleccionada
+                                var cod = document.getElementById("pergo").value;
+                                if(cod=="1")
+                                {
+                                    
+                                    document.getElementById('fecf').style.display = "block";
+                                }
+                                else
+                                {
+                                    if(cod=="2")
+                                    {
+                                        document.getElementById('fecf').style.display = "none";
+                                    }
+                                }
                             }
                             else
                             {
@@ -908,6 +938,22 @@ session_start();
                     if(rad=="curso")
                     {
                         oculta(9);
+
+                        //curso capacitacion opcion
+                        var cod = document.getElementById("cucap").value;
+                        if(cod=="o")
+                        {
+                            document.getElementById('he').style.display = "none";
+                            document.getElementById('hs').style.display = "none";
+                        }
+                        else
+                        {
+                            if(cod=="d")
+                            {
+                                document.getElementById('he').style.display = "block";
+                                document.getElementById('hs').style.display = "block";
+                            }
+                        }
                     }
                 });
             }
@@ -1124,6 +1170,40 @@ session_start();
                                                 </select>
                                             </div>
 
+                                            <div class="form-group col-lg-3" id="div-tol-lac">
+                                                <span id="">Opción</span> <br>
+                                                <select name="to-la" id="tolac" class="form-control">
+                                                    <option value="1" selected>30 minutos al inicio y 30 minutos al final de su turno</option>
+                                                    <option value="2">1 hora al inicio de su turno</option>
+                                                    <option value="3">1 hora al final de su turno</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="div-tol-est">
+                                                <span id="">Opción</span> <br>
+                                                <select name="to-es" id="toest" class="form-control">
+                                                    <option value="1">30 minutos al inicio de su turno</option>
+                                                    <option value="2">30 minutos al final de su turno</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="div-curso1">
+                                                <span id="">Opción</span> <br>
+                                                <select name="cucap" id="cucap" class="form-control">
+                                                    <option value="o" selected>Omitir registros de asistencia</option>
+                                                    <option value="d">Registrar asistencia con horario distinto</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="div-perm-go">
+                                                <span id="">Motivo</span> <br>
+                                                <select name="per-go" id="pergo" class="form-control">
+                                                    <option value=""selected disabled>Elija:</option>
+                                                    <option value="1">Por fuerza mayor</option>
+                                                    <option value="2">Tramites para obtener pensión por jubilación, de retiro por edad, cesantía en edad avanzada</option>
+                                                </select>
+                                            </div>
+
                                             <div class="form-group col-lg-3">
                                                 <span id="MainContent_lbTrabajador">Trabajador</span>
                                                 <div class="form-1-2">
@@ -1191,41 +1271,6 @@ session_start();
                                                 <option value="a">ALTA</option>
                                                 </select>
                                             </div>
-
-                                            <div class="form-group col-lg-3" id="div-curso1">
-                                                <span id="">Opción</span> <br>
-                                                <select name="cucap" id="cucap" class="form-control">
-                                                    <option value="o" selected>Omitir registros de asistencia</option>
-                                                    <option value="d">Registrar asistencia con horario distinto</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group col-lg-3" id="div-tol-lac">
-                                                <span id="">Opción</span> <br>
-                                                <select name="to-la" id="tolac" class="form-control">
-                                                    <option value="1" selected>30 minutos al inicio y 30 minutos al final de su turno</option>
-                                                    <option value="2">1 hora al inicio de su turno</option>
-                                                    <option value="3">1 hora al final de su turno</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group col-lg-3" id="div-tol-est">
-                                                <span id="">Opción</span> <br>
-                                                <select name="to-es" id="toest" class="form-control">
-                                                    <option value="1">30 minutos al inicio de su turno</option>
-                                                    <option value="2">30 minutos al final de su turno</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group col-lg-3" id="div-perm-go">
-                                                <span id="">Motivo</span> <br>
-                                                <select name="per-go" id="pergo" class="form-control">
-                                                    <option value=""selected disabled>Elija:</option>
-                                                    <option value="1">Por fuerza mayor</option>
-                                                    <option value="2">Tramites para obtener pensión por jubilación, de retiro por edad, cesantía en edad avanzada</option>
-                                                </select>
-                                            </div>
-
                                             
                                             <div class="form-group col-lg-3" id="licenciaHastaUnAnio">
                                                 <span id="">¿Es una licencia para enfermedad no profesional?</span> <br>
