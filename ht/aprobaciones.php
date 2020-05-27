@@ -1065,7 +1065,7 @@ session_start();
                 </div>
             </div>
 
-            <form id="f1" method="POST" action="../php/insert/justificacion.php">
+            <form id="f1" method="POST" action="../php/insert/justificacion.php" enctype="multipart/form-data">
                 <div class="content mt-3">
                     <div class="animated fadeIn">
                         <div class="row">
