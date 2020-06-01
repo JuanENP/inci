@@ -16,6 +16,7 @@ session_start();
     require("../../assets/js/alerts-justificacion.php");
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
+    set_time_limit(300);//5 minutos máximo para la ejecución de un script
     //obtener la fecha de hoy
     $fec_act=date("Y-m-d H:i:s"); //la fecha actual
     $anio=date("Y");//solo el año actual
@@ -454,7 +455,7 @@ session_start();
 
     if($operacion=="licencia")
     {
-        if ((!empty($_POST["num"])) && (!empty($_POST["fec"])) && (!empty($_POST["lic"])))
+        if ((!empty($_POST["num"])) && (!empty($_POST["lic"])))
         {
             $num = $_POST['num'];//el número del trabajador
             $TipoEmp=tipoEmpleado($num);
@@ -661,8 +662,7 @@ session_start();
                                     $fechaUltimaLicGravidez=($resul[1]);
                                     //la última vez que pase por el while se guardará la fecha final de su última beca licencia por gravidez
                                 }
-
-                                //ojo
+                                //ojo ¿?
                                 $duracion=calcularDuracionEntreDosFechas(1,$fechaUltimaLicGravidez,"");
                                 if($duracion<7)
                                 {
@@ -690,10 +690,13 @@ session_start();
                                     $ok= "<script> imprime('Tolerancia de lactancia agregada correctamente'); </script>";
                                     $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
                                     $correcto=insertaEnBD($sql,$ok,$error,0);
-                                    insertaEnBitacoraEspecial($ok,$num,$ClaveLicencia,$fechaUltimaLicGravidez,$FechaFin,"-",$duracion,"-");
+                                    insertaEnBitacoraEspecial($ok,"Guardado",$fechaUltimaLicGravidez,$FechaFin,$horaE,$horaS,
+                                    $ClaveLicencia,"-","180","-","-","-","-",
+                                    "-","-","-",$num,$correcto);
                                 }
                                 else
                                 {
+                                    //¿?
                                     echo "<script> imprime('Han pasado $duracion días desde que terminó la licencia por gravidez. La tolerancia de lactancia debió solicitarse justo después de que terminó dicha licencia por gravidez. NO es posible registrar esta tolerancia de lactancia'); </script>";
                                 }//fin if duración<7
                             }
@@ -725,7 +728,7 @@ session_start();
             */
             if($ClaveLicencia=="93")
             {
-                if (!empty($_POST["fecf"]))
+                if (!empty($_POST["fecf"]) && !empty($_POST["fec"]))
                 {
                     //Ver si no posee una tolerancia de estancia activa aún
                     $sql="SELECT idespecial from especial where trabajador_trabajador='$num'
@@ -756,7 +759,11 @@ session_start();
                             $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$horaE', '$horaS', '0', '$num', '$ClaveLicencia','Ninguna','$duracion')";
                             $ok= "<script> imprime('Tolerancia de estancia agregada correctamente'); </script>";
                             $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                            insertaEnBD($sql,$ok,$error,1);
+                            $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                            insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,$horaE,$horaS,
+                            $ClaveLicencia,"-",$duracion,"-","-","-","-",
+                            "-","-","-",$num,$correcto);
                         }
                     }
                     else
@@ -766,7 +773,10 @@ session_start();
                 }
                 else
                 {
-                    echo "<script> imprime('Falta la fecha de fin. NO DEBE dejarla vacía.'); </script>";
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
+                    if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";}
+                    echo "<script> imprime('$error'); </script>"; 
                 }//Fin else empty fechaf
             }//Fin tolerancia estancia CICA 93
 
@@ -803,7 +813,7 @@ session_start();
             */
             if($ClaveLicencia=="LSG" || $ClaveLicencia=="LSGSS")
             {
-                if ((!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
+                if ((!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
                 {
                     $tipo=tipoEmpleado($num);
                     if($tipo=="BASE" || $tipo=="CONFIANZA")
@@ -881,6 +891,10 @@ session_start();
                                     //correcto obtiene el último ID que se insertó
 
                                     $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                                    insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                    $ClaveLicencia,"-","$diasQueSolicita","-","-","-","-",
+                                    "-","-","-",$num,$correcto);
                                 } 
                                 else
                                 {
@@ -922,6 +936,10 @@ session_start();
                                         //correcto obtiene el último ID que se insertó
 
                                         $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                                        insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                        $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                        "-","-","-",$num,$correcto);
                                     }
                                     else
                                     {
@@ -955,7 +973,7 @@ session_start();
                                     $min6Meses=$duracion/365;
                                     if($min6Meses<0.333)//< a 4 meses
                                     {
-                                        echo "<script> imprime('Toda LSGSS debe durar mínimo 4 meses. La licencia que intenta agregar no cumple el requisito anterior. Verifique'); </script>";
+                                        echo "<script> imprime('Toda LSGSS debe durar mínimo 4 meses. La licencia que intenta agregar no cumple el requisito anterior. Verifique.'); </script>";
                                         exit();
                                     }
 
@@ -972,6 +990,10 @@ session_start();
                                     //correcto obtiene el último ID que se insertó
 
                                     $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                                    insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                    $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                    "-","-","-",$num,$correcto);
                                 }
                                 else
                                 {
@@ -988,6 +1010,7 @@ session_start();
                 else
                 {
                     $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
                     if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";} 
                     if (empty($_FILES["archivo"]["name"][0])){$error.="El archivo escaneado"."<br>";}
                     echo "<script> imprime('$error'); </script>";
@@ -1018,7 +1041,7 @@ session_start();
             */
             if($ClaveLicencia=="41")
             {
-                if ((!empty($_POST["per-go"])))
+                if ((!empty($_POST["per-go"])) && (!empty($_POST["fec"])))
                 {
                     $tipo_permiso_goce=$_POST['per-go'];
 
@@ -1039,7 +1062,11 @@ session_start();
                             $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','pension','$duracion')";
                             $ok= "<script> imprime('Licencia por pensión agregada correctamente'); </script>";
                             $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                            insertaEnBD($sql,$ok,$error,1);
+                            $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                            insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                            $ClaveLicencia,"-","$duracion","-","-","-","-",
+                            "-","-","-",$num,$correcto);
                         }
                         else
                         {
@@ -1076,12 +1103,15 @@ session_start();
                                 $diasSobrantes=$diasPermitidos-$diasGastados;
                                 if($duracion<=$diasSobrantes) //aún le quedan días
                                 {
-
                                     //insertar la licencia
                                     $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '1', '$num', '$ClaveLicencia','','$duracion')";
                                     $ok= "<script> imprime('Licencia por fuerza mayor agregada correctamente'); </script>";
                                     $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                                    insertaEnBD($sql,$ok,$error,1);
+                                    $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                                    insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                    $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                    "-","-","-",$num,$correcto);
                                 }
                                 else//fin if dias permitidos < dias gastados
                                 {
@@ -1111,7 +1141,10 @@ session_start();
                 }
                 else
                 {
-                    echo "<script> imprime('Falta el motivo. NO DEBE dejar ningún campo vacío.'); </script>";
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
+                    if (empty($_POST["per-go"])){$error.="El motivo del permiso."."<br>";}
+                    echo "<script> imprime('$error'); </script>"; 
                 }//fin if empty
             }
 
@@ -1123,25 +1156,38 @@ session_start();
             */
             if($ClaveLicencia=="48")
             {
-                $validarfechas=RevisarFechas(2,$fecha,"","de la licencia por matrimonio","una licencia por matrimonio","",0);
-                //ver que no tenga una licencia por matrimonio pasada o por activarse, solo es una en la vida
-                $sql="SELECT idespecial FROM especial where trabajador_trabajador='$num' 
-                and (clave_especial_clave_especial='48')
-                and (validez='1' or (validez='0' and fecha_inicio>now()) or (validez='0' and fecha_fin<now()))";
-                $filas=obtenerFilas($sql);
-                if($filas==0)
+                if(!empty($_POST["fec"]))
                 {
-                    $fechaf=feriadoConArray($fecha,10);
-                    $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
-                    //insertar la licencia
-                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','*Ver documento*','$duracion')";
-                    $ok= "<script> imprime('Licencia por contraer matrimonio agregada correctamente. ESTE EMPLEADO TENDRÁ 60 DÍAS PARA ENTREGAR EL ACTA DE MATRIMONIO EN ESTE LUGAR A PARTIR DEL $fechaf.'); </script>";
-                    $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                    insertaEnBD($sql,$ok,$error,1);
+                    $validarfechas=RevisarFechas(2,$fecha,"","de la licencia por matrimonio","una licencia por matrimonio","",0);
+                    //ver que no tenga una licencia por matrimonio pasada o por activarse, solo es una en la vida
+                    $sql="SELECT idespecial FROM especial where trabajador_trabajador='$num' 
+                    and (clave_especial_clave_especial='48')
+                    and (validez='1' or (validez='0' and fecha_inicio>now()) or (validez='0' and fecha_fin<now()))";
+                    $filas=obtenerFilas($sql);
+                    if($filas==0)
+                    {
+                        $fechaf=feriadoConArray($fecha,10);
+                        $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
+                        //insertar la licencia
+                        $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','*Ver documento*','$duracion')";
+                        $ok= "<script> imprime('Licencia por contraer matrimonio agregada correctamente. ESTE EMPLEADO TENDRÁ 60 DÍAS PARA ENTREGAR EL ACTA DE MATRIMONIO EN ESTE LUGAR A PARTIR DEL $fechaf.'); </script>";
+                        $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                        $correcto=insertaEnBD($sql,$ok,$error,0);
+    
+                        insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                        $ClaveLicencia,"-","$duracion","-","-","-","-",
+                        "-","-","-",$num,$correcto);
+                    }
+                    else
+                    {
+                        echo "<script> imprime('El empleado con número $num ya solicitó antes una licencia por contraer matrimonio. Esta licencia se puede pedir solo UNA vez por trabajador. Sustento: Artículo 55 fracción 2 de las CGT.'); </script>";
+                    }
                 }
                 else
                 {
-                    echo "<script> imprime('El empleado con número $num ya solicitó antes una licencia por contraer matrimonio. Esta licencia se puede pedir solo UNA vez por trabajador. Sustento: Artículo 55 fracción 2 de las CGT.'); </script>";
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
+                    echo "<script> imprime('$error'); </script>";
                 }
             }
 
@@ -1154,26 +1200,39 @@ session_start();
             */
             if($ClaveLicencia=="49")
             {
-                $validarfechas=RevisarFechas(2,$fecha,"","de la licencia por fallecimiento","una licencia por fallecimiento","",0);
-                //ver que no tenga una licencia por fallecimiento activa o por activarse
-                $sql="SELECT idespecial FROM especial where trabajador_trabajador='$num' 
-                and (clave_especial_clave_especial='49')
-                and (validez='1' or (validez='0' and fecha_inicio>now()))";
-                
-                $filas=obtenerFilas($sql);
-                if($filas==0)
+                if(!empty($_POST["fec"]))
                 {
-                    $fechaf=feriadoConArray($fecha,5);
-                    $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
-                    //insertar la licencia
-                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','*Ver documento*','$duracion')";
-                    $ok= "<script> imprime('Licencia por fallecimiento de un familiar agregada correctamente. ESTE EMPLEADO TENDRÁ 15 DÍAS PARA ENTREGAR EL ACTA DE DEFUNCIÓN EN ESTE LUGAR A PARTIR DEL $fechaf.'); </script>";
-                    $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                    insertaEnBD($sql,$ok,$error,1);
+                    $validarfechas=RevisarFechas(2,$fecha,"","de la licencia por fallecimiento","una licencia por fallecimiento","",0);
+                    //ver que no tenga una licencia por fallecimiento activa o por activarse
+                    $sql="SELECT idespecial FROM especial where trabajador_trabajador='$num' 
+                    and (clave_especial_clave_especial='49')
+                    and (validez='1' or (validez='0' and fecha_inicio>now()))";
+                    
+                    $filas=obtenerFilas($sql);
+                    if($filas==0)
+                    {
+                        $fechaf=feriadoConArray($fecha,5);
+                        $duracion=calcularDuracionEntreDosFechas(0,$fecha,$fechaf);
+                        //insertar la licencia
+                        $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '0', '$num', '$ClaveLicencia','*Ver documento*','$duracion')";
+                        $ok= "<script> imprime('Licencia por fallecimiento de un familiar agregada correctamente. ESTE EMPLEADO TENDRÁ 15 DÍAS PARA ENTREGAR EL ACTA DE DEFUNCIÓN EN ESTE LUGAR A PARTIR DEL $fechaf.'); </script>";
+                        $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                        $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                        insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                        $ClaveLicencia,"-","$duracion","-","-","-","-",
+                        "-","-","-",$num,$correcto);
+                    }
+                    else
+                    {
+                        echo "<script> imprime('El empleado con número $num ya tiene una licencia por fallecimiento de un familiar activa. No se puede tener 2 de estas licencias al mismo tiempo.'); </script>";
+                    }
                 }
                 else
                 {
-                    echo "<script> imprime('El empleado con número $num ya tiene una licencia por fallecimiento de un familiar activa. No se puede tener 2 de estas licencias al mismo tiempo.'); </script>";
+                    $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
+                    echo "<script> imprime('$error'); </script>";
                 }
             }
 
@@ -1184,7 +1243,7 @@ session_start();
             */
             if($ClaveLicencia=="53")
             {
-                if((!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
+                if((!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
                 {
                     $fechaf=$_POST["fecf"];
                     $genero=obtenerSexo($num);
@@ -1215,7 +1274,10 @@ session_start();
                                 $correcto=insertaEnBD($sql,$ok,$error,0);
 
                                 $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
-                                insertaEnBitacoraEspecial($ok,$num,$ClaveLicencia,$fecha,$fechaf,"-",$duracion,$correcto);
+                                
+                                insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                "-","-","-",$num,$correcto);
                             }
                             else//fin if duracion entre 88 y 90
                             {
@@ -1237,6 +1299,7 @@ session_start();
                 else//fin if empty fechaf
                 {
                     $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
                     if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";} 
                     if (empty($_FILES["archivo"]["name"][0])){$error.="El archivo escaneado"."<br>";}
                     echo "<script> imprime('$error'); </script>";
@@ -1258,7 +1321,7 @@ session_start();
             */
             if($ClaveLicencia=="47")
             { 
-                if((!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
+                if((!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
                 {
                     $fechaf=$_POST["fecf"];
                     $validarfechas=RevisarFechas(1,$fecha,$fechaf,"de la licencia por cuidados maternos","una licencia por cuidados maternos","",1);
@@ -1287,6 +1350,10 @@ session_start();
                             //correcto obtiene el último ID que se insertó
 
                             $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                            insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                            $ClaveLicencia,"-","$duracion","-","-","-","-",
+                            "-","-","-",$num,$correcto);
                         }
                         else
                         {
@@ -1303,6 +1370,7 @@ session_start();
                 else//fin if empty fechaf
                 {
                     $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
                     if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";} 
                     if (empty($_FILES["archivo"]["name"][0])){$error.="El archivo escaneado"."<br>";}
                     echo "<script> imprime('$error'); </script>";
@@ -1341,7 +1409,7 @@ session_start();
                 /*
                     Todo tipo de empleado
                 */ 
-                if((!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
+                if((!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
                 {
                     $fechaf=$_POST["fecf"];
                     $validarfechas=RevisarFechas(1,$fecha,$fechaf,"de la licencia por incapacidad por accidente o riesgo profesional","una licencia por incapacidad por accidente o riesgo profesional","",1);
@@ -1370,6 +1438,10 @@ session_start();
                             //correcto obtiene el último ID que se insertó
 
                             $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                            insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                            $ClaveLicencia,"-","$duracion","-","-","-","-",
+                            "-","-","-",$num,$correcto);
                         }
                         else
                         {
@@ -1386,6 +1458,7 @@ session_start();
                 else//fin if empty fechaf
                 {
                     $error="Faltan los siguientes datos:"."<br>";
+                    if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
                     if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";} 
                     if (empty($_FILES["archivo"]["name"][0])){$error.="El archivo escaneado"."<br>";}
                     echo "<script> imprime('$error'); </script>";
@@ -1411,6 +1484,7 @@ session_start();
                     Todo tipo de empleado
                     ¿?
                 */ 
+                echo "Licencia 55";
                 $antiguedad=calculaAntiguedad($num);
                 $diasPermitidos;
                 if($antiguedad<1)
@@ -1450,7 +1524,6 @@ session_start();
         {
             $error="Faltan los siguientes datos:"."<br>";
             if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
-            if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";} 
             if (empty($_POST["lic"])){$error.="El tipo de licencia que está solicitando."."<br>";}
             echo "<script> imprime('$error'); </script>";
         }//FIN IF post vacios
@@ -1516,6 +1589,10 @@ session_start();
                     //correcto obtiene el último ID que se insertó
 
                     $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                    insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                    $Clave,"-","$duracion","-","-","-","-",
+                    "-","-","-",$num,$correcto);
                 }
                 else//fin if duracion<=dias sobrantes
                 {
@@ -1588,7 +1665,11 @@ session_start();
                         VALUES ('$fec_act', '$fechaGuardia', '$num', '$suplente', '$horaE', '$horaS', '$quincena')";
                         $ok= "<script> imprime('Guardia agregada correctamente.'); </script>";
                         $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                        insertaEnBD($sql,$ok,$error,1);
+                        $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                        insertaEnBitacoraGuardia($ok,"Guardado",$fecha,$fechaf,$horaE,$horaS,
+                        $Clave,"-","$duracion","-","-","-","-",
+                        "-","-","-",$num,$correcto);
                     }
                     else//fin comparar categoria
                     {
@@ -1639,7 +1720,12 @@ session_start();
                     $sql="INSERT INTO pase_salida (fecha_uso, trabajador_trabajador, quincena_quincena) VALUES ('$fecha', '$num', '$quincena')";
                     $ok= "<script> imprime('Pase de salida agregado correctamente.'); </script>";
                     $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
-                    insertaEnBD($sql,$ok,$error,1);
+                    $correcto=insertaEnBD($sql,$ok,$error,0);
+
+                    //agregar a la bitacora pase de salida
+                    insertaEnBitacoraPS($ok,"Guardado",$fecha,$fechaf,$horaE,$horaS,
+                    $Clave,"-","$duracion","-","-","-","-",
+                    "-","-","-",$num,$correcto);
                 }
                 else//fin filas==0
                 {
@@ -1739,6 +1825,10 @@ session_start();
                     //correcto obtiene el último ID que se insertó
 
                     $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+
+                    insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,$he,$hs,
+                    $Clave,"-","$duracion","-","-","-","-",
+                    "-","-","-",$num,$correcto);
                 }
                 else
                 {
@@ -1767,24 +1857,6 @@ session_start();
 
     /*Articulo 60 CGT vacaciones*/
 
-    function insertaBeca($f_inicio, $f_final, $numero_emp, $Clavelic,$duracion)
-    {
-        global $nombre;
-        global $contra;
-        require("../../Acceso/global.php");
-        $sql="INSERT INTO especial (fecha_inicio, fecha_fin, hora_entrada, hora_salida, validez, trabajador_trabajador, clave_especial_clave_especial, empresa, duracion) VALUES ('$f_inicio', '$f_final', '00:00:00', '00:00:00', '0', '$numero_emp', '$Clavelic', '*Ver documento*', '$duracion');";
-        if((mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
-        {
-            //Agregar a la bitacora más la prioridad
-            mysqli_close($con);
-            echo "<script> todoCorrecto('Licencia por Beca Agregada Correctamente');</script>";
-        }
-        else
-        {
-            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-        }
-    }// fin de insertaBeca
-
     function calcularDuracionEntreDosFechas($tipo, $fecha_inicio, $fecha_final)
     {
         /*Tipo=0 Se compararán las dos fechas elegidas
@@ -1808,7 +1880,7 @@ session_start();
                 $date2= new DateTime($fecha_inicio);
                 $interval = $date1->diff($date2);
                 $totDias=$interval->format('%a');
-                return $totDias;
+                return $totDias+1;
             }
             else
             {
@@ -2000,7 +2072,7 @@ session_start();
         //obtener la hora entrada y hora salida del empleado
         $sql="SELECT t.entrada,t.salida from turno t 
         inner join acceso a on a.turno_turno=t.idturno
-        and a.trabajador_trabajador='15321030'";
+        and a.trabajador_trabajador='$numero_de_empleado'";
         $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
         $resul=mysqli_fetch_array($query);
         return [$resul[0],$resul[1]];
@@ -2356,12 +2428,18 @@ session_start();
         }
     }//Fin de función analizaYCargaImagen
 
-    function insertaEnBitacoraEspecial($ok,$numero,$clave,$f_ini,$f_fin,$empresa,$totDias,$id)
+    function insertaEnBitacoraEspecial($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
+    $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
     {
+        //$ok,$numero,$clave,$f_ini,$f_fin,$empresa,$totDias,$id
+        
         global $con;
         $nombre_host=gethostname();
         //GUARDAR EN LA BITACORA DE ESPECIAL
-        if((mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','$clave','$empresa','$totDias','-','-','','','-','-','-','$numero','$nombre_host','$id')")))
+        //call inserte_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','$clave','$empresa','$totDias','-','-','','','-','-','-','$numero','$nombre_host','$id')
+        if((mysqli_query($con,"call inserta_bitacora_especial('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
+        '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
+        '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
         {
             echo $ok;
         }
@@ -2376,4 +2454,50 @@ session_start();
         }
 
     }//FIN de insertaEnBitacoraEspecial
+
+    function insertaEnBitacoraGuardia($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
+    $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
+    {
+        global $con;
+        $nombre_host=gethostname();
+        //GUARDAR EN LA BITACORA DE Guardia
+        if((mysqli_query($con,"call inserta_bitacora_guardia('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
+        '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
+        '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
+        {
+            echo $ok;
+        }
+        else
+        {
+            $sql="DELETE FROM guardias WHERE (idguardias = '$id')";
+            hazAlgoEnBDSinRetornarAlgo($sql);
+
+            echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
+            ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
+            exit();
+        }
+    }//FIN de insertaEnBitacoraGuardia
+
+    function insertaEnBitacoraPS($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
+    $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
+    {
+        global $con;
+        $nombre_host=gethostname();
+        //GUARDAR EN LA BITACORA DE Guardia
+        if((mysqli_query($con,"call inserta_bitacora_pase_salida('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
+        '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
+        '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
+        {
+            echo $ok;
+        }
+        else
+        {
+            $sql="DELETE FROM pase_salida WHERE (idpase_salida = '$id')";
+            hazAlgoEnBDSinRetornarAlgo($sql);
+
+            echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
+            ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
+            exit();
+        }
+    }//FIN de insertaEnBitacoraPS
 ?>
