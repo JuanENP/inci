@@ -1662,14 +1662,19 @@ session_start();
 
                         //insertar la guardia
                         $sql="INSERT INTO guardias (fecha_registro, fecha_guardia, trabajador_solicitante, trabajador_suplente, hora_entrada, hora_salida, quincena) 
-                        VALUES ('$fec_act', '$fechaGuardia', '$num', '$suplente', '$horaE', '$horaS', '$quincena')";
+                        VALUES ('$fec_act', '$fechaGuardia', $num, $suplente, '$horaE', '$horaS', '$quincena')";
                         $ok= "<script> imprime('Guardia agregada correctamente.'); </script>";
                         $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
                         $correcto=insertaEnBD($sql,$ok,$error,0);
 
-                        insertaEnBitacoraGuardia($ok,"Guardado",$fecha,$fechaf,$horaE,$horaS,
-                        $Clave,"-","$duracion","-","-","-","-",
-                        "-","-","-",$num,$correcto);
+                        insertaEnBitacoraGuardia($ok,"Guardado",$correcto,$fec_act,$fechaGuardia,$num,
+                        $suplente, $horaE,$horaS,$quincena,"-","-","-",
+                        "-","-","-","-","-");
+                        /*
+                        insertaEnBitacoraGuardia($ok,$operacion,$id_new,$fechaRegistro_new,$fechaGuardia_new,$solicitante_new,
+                        $suplente_new,$he_new,$hs_new,$quincena_new,$id_old,$fechaRegistro_old,$fechaGuardia_old,$solicitante_old,
+                        $suplente_old,$he_old,$hs_old,$quincena_old);
+                        */
                     }
                     else//fin comparar categoria
                     {
@@ -1723,9 +1728,7 @@ session_start();
                     $correcto=insertaEnBD($sql,$ok,$error,0);
 
                     //agregar a la bitacora pase de salida
-                    insertaEnBitacoraPS($ok,"Guardado",$fecha,$fechaf,$horaE,$horaS,
-                    $Clave,"-","$duracion","-","-","-","-",
-                    "-","-","-",$num,$correcto);
+                    insertaEnBitacoraPS($ok,"Guardado",$fecha,$num,$quincena,$correcto);
                 }
                 else//fin filas==0
                 {
@@ -1753,7 +1756,6 @@ session_start();
         /*las becas capacitacion son 12 días máximo al semestre: según Artículo 29 fracción VIII de las CGT
             CICA 29
         */
-
         if ((!empty($_POST["num"])) && (!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_POST["cucap"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
         {
             $num=$_POST["num"];
@@ -1818,7 +1820,7 @@ session_start();
                     $origen=$_FILES["archivo"]["tmp_name"][0];
                     $destino=$carpetaDestino.$laImagen;
                     //Agregar curso
-                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$he', '$hs', '0', '$num', '$Clave','*Ver documento*','$duracion')";
+                    $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$he', '$hs', '0', $num, '$Clave','*Ver documento*','$duracion')";
                     $ok= "<script> imprime('Curso capacitación agregado correctamente.'); </script>";
                     $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
                     $correcto=insertaEnBD($sql,$ok,$error,0);
@@ -2455,21 +2457,22 @@ session_start();
 
     }//FIN de insertaEnBitacoraEspecial
 
-    function insertaEnBitacoraGuardia($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
-    $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
+    function insertaEnBitacoraGuardia($ok,$operacion,$id_new,$fechaRegistro_new,$fechaGuardia_new,$solicitante_new,$suplente_new,
+    $he_new,$hs_new,$quincena_new,$id_old,$fechaRegistro_old,$fechaGuardia_old,$solicitante_old,$suplente_old,
+    $he_old,$hs_old,$quincena_old)
     {
         global $con;
         $nombre_host=gethostname();
         //GUARDAR EN LA BITACORA DE Guardia
-        if((mysqli_query($con,"call inserta_bitacora_guardia('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
-        '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
-        '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
+        if((mysqli_query($con,"call inserta_bitacora_guardias('$operacion',$id_new,'$fechaRegistro_new','$fechaGuardia_new',
+        '$solicitante_new','$suplente_new','$he_new','$hs_new','$quincena_new','$id_old','$fechaRegistro_old','$fechaGuardia_old',
+        '$solicitante_old','$suplente_old','$he_old','$hs_old','$quincena_old','$nombre_host')")))
         {
             echo $ok;
         }
         else
         {
-            $sql="DELETE FROM guardias WHERE (idguardias = '$id')";
+            $sql="DELETE FROM guardias WHERE (idguardias = '$id_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
@@ -2478,15 +2481,12 @@ session_start();
         }
     }//FIN de insertaEnBitacoraGuardia
 
-    function insertaEnBitacoraPS($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
-    $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
+    function insertaEnBitacoraPS($ok,$operacion,$fecha_uso,$num,$quincena,$id)
     {
         global $con;
-        $nombre_host=gethostname();
+        $host=gethostname();
         //GUARDAR EN LA BITACORA DE Guardia
-        if((mysqli_query($con,"call inserta_bitacora_pase_salida('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
-        '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
-        '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
+        if((mysqli_query($con,"call inserta_bitacora_pase('$operacion','$fecha_uso','$num','$quincena','$host')")))
         {
             echo $ok;
         }
