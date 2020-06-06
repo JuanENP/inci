@@ -153,6 +153,23 @@ session_start();
                 //
 
                 //
+                $("#radio-falta").mouseover(function()
+                {
+                    $("#radio-falta").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-falta").mouseleave(function()
+                {
+                    $("#radio-falta").css("background-color", "transparent");
+                });
+                $("#radio-falta").click(function()
+                {
+                    $("#jus-falt").prop("checked", true);
+                    oculta(7);
+                });
+                //
+
+                //
                 $("#radio-comision").mouseover(function()
                 {
                     $("#radio-comision").css("background-color", "rgb(202, 250, 240)");
@@ -803,7 +820,7 @@ session_start();
                                         }
                                         else
                                         {
-                                            if (x == 9) 
+                                            if(x == 7)
                                             {
                                                 $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                                                 $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
@@ -820,10 +837,35 @@ session_start();
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                 document.getElementById('suplente').style.display = "none";
+                                                document.getElementById('div-curso1').style.display = "none";
+                                                document.getElementById('fecf').style.display = "none";
                                                 document.getElementById('imagen').style.display = "block";
-                                                document.getElementById('fecf').style.display = "block";
-                                                document.getElementById('div-curso1').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
+                                            }
+                                            else
+                                            {
+                                                if (x == 9) 
+                                                {
+                                                    $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                                    $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
+                                                    document.getElementById('tipo-com').style.display = "none";
+                                                    document.getElementById('he').style.display = "none";
+                                                    document.getElementById('hs').style.display = "none";
+                                                    document.getElementById('empresa').style.display = "none";
+                                                    document.getElementById('clavelicencia').style.display = "none";
+                                                    document.getElementById('prioridad').style.display = "none";
+                                                    document.getElementById('div-es').style.display = "none";
+                                                    document.getElementById('vacio_').style.display = "none";
+                                                    document.getElementById('div-tol-lac').style.display = "none";
+                                                    document.getElementById('div-tol-est').style.display = "none";
+                                                    document.getElementById('div-perm-go').style.display = "none";
+                                                    document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                    document.getElementById('suplente').style.display = "none";
+                                                    document.getElementById('imagen').style.display = "block";
+                                                    document.getElementById('fecf').style.display = "block";
+                                                    document.getElementById('div-curso1').style.display = "block";
+                                                    document.getElementById('fec').style.display = "block";
+                                                }
                                             }
                                         }
                                     }
@@ -907,6 +949,10 @@ session_start();
                     if(rad=="omision")
                     {
                         oculta(3);
+                    }
+                    if(rad=="falta")
+                    {
+                        oculta(7);
                     }
                     if(rad=="comision")
                     {
@@ -1232,7 +1278,7 @@ session_start();
                 </div>
             </div>
 
-            <form id="f1" method="POST" action="../php/insert/justificacion.php" enctype="multipart/form-data">
+            <form id="f1" method="POST" action="../php/insert/aprobacion.php" enctype="multipart/form-data">
                 <div class="content mt-3">
                     <div class="animated fadeIn">
                         <div class="row">
@@ -1248,11 +1294,15 @@ session_start();
                                             <div class="form-group col-lg-3">
 
                                                 <div class="form-1-2" id="radio-justificacion">
-                                                    <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> <label>Justificar retardos</label> 
+                                                    <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> <label>Justificar retardo</label> 
                                                 </div> 
                                                 <div class="form-1-2" id="radio-omision">
                                                     <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
                                                     <input type="radio" name="opcion" value="omision" id="jus-omi" onclick="oculta(3)"> <label> Justificar omisión</label>
+                                                </div>
+                                                <div class="form-1-2" id="radio-falta">
+                                                    <!--<label for="caja_busqueda" id="MainContent_lbTrabajador">Buscar:</label>-->
+                                                    <input type="radio" name="opcion" value="falta" id="jus-falt" onclick="oculta(7)"> <label> Justificar falta</label>
                                                 </div>
                                                 <div class="form-1-2" id="radio-comision">
                                                     <input type="radio" name="opcion" value="comision" id="comi" onclick="oculta(1)"> <label> Comisiones</label>
