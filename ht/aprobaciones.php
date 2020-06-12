@@ -495,6 +495,7 @@ session_start();
                 
                 $("#Selectlicencias").click(function()
                 {
+                    document.getElementById("myfile").value = "";
                     var cod = document.getElementById("Selectlicencias").value;
                     if(cod=="92") //Para la tolerancia de lactancia
                     {
@@ -678,6 +679,7 @@ session_start();
                 {
                     if(x==1)
                     {
+                        document.getElementById("myfile").value = "";
                         $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                         $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                         document.getElementById('clavelicencia').style.display = "none";
@@ -703,6 +705,7 @@ session_start();
                     {
                         if (x == 2) 
                         {
+                            document.getElementById("myfile").value = "";
                             $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                             $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                             document.getElementById('tipo-com').style.display = "none";
@@ -822,6 +825,7 @@ session_start();
                                         {
                                             if(x == 7)
                                             {
+                                                document.getElementById("myfile").value = "";
                                                 $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                                                 $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                                                 document.getElementById('tipo-com').style.display = "none";
@@ -846,6 +850,7 @@ session_start();
                                             {
                                                 if (x == 9) 
                                                 {
+                                                    document.getElementById("myfile").value = "";
                                                     $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                                                     $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                                                     document.getElementById('tipo-com').style.display = "none";
@@ -1496,7 +1501,7 @@ session_start();
 
                                             <div class="form-group col-lg-3" id="imagen">
                                                 <span id="">Escaneo del documento</span>
-                                                <input type="file" name="archivo[]">
+                                                <input type="file" name="archivo[]" id="myfile">
                                             </div>
 
                                             <!--

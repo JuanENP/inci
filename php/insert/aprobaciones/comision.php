@@ -131,7 +131,7 @@
                 if($totDias>165 && $prioridad=="n")
                 {
                     mysqli_close($con);
-                    echo "<script> noMaxComision('$fecha','$fechaf'); </script>";
+                    echo "<script> imprime('El periodo entre las fechas $fecha y $fechaf es superior a 5 meses y medio. NO ES POSIBLE TENER UNA COMISIÓN QUE DURE ESE TIEMPO.'); </script>";
                 }
                 else
                 {
@@ -175,7 +175,7 @@
         {
             //El empleado ya posee una comisión activa y no puede tener 2 comisiones a la vez
             mysqli_close($con);
-            echo "<script> noComision($num); </script>";
+            echo "<script> imprime('El trabajador con número $num Ya posee una comisión activa. NO ES POSIBLE TENER 2 COMISIONES A LA VEZ'); </script>"; 
         }
     }//Fin del if valida POST
     else

@@ -25,9 +25,9 @@ session_start();
     
     /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
     $sql5="SELECT idquincena from quincena where validez=1";
-    $query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-    $resul5=mysqli_fetch_array($query5);
-    $quincena=$resul5[0];
+    //$query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+    //$resul5=mysqli_fetch_array($query5);
+    $quincena=retornaAlgoDeBD(0,$sql5);
     /*FIN DE OBTENER QUINCENA ACTUAL*/
     if(empty($_POST["opcion"]))
     {
@@ -735,4 +735,26 @@ session_start();
             exit();
         }
     }//FIN de insertaEnBitacoraPS
+
+    function insertaEnBitacoraJustificarFalta($ok,$operacion,$idjustFalta_new,$fecha_new,
+    $falta_falta_new,$idjustFalta_old,$fecha_old,$falta_falta_old)
+    {
+        global $con;
+        $host=gethostname();
+        //GUARDAR EN LA BITACORA DE justificar Falta
+        if((mysqli_query($con,"call inserta_bitacora_justificar_falta('$operacion','$idjustFalta_new','$fecha_new',
+        '$falta_falta_new','$idjustFalta_old','$fecha_old','$falta_falta_old','$host')")))
+        {
+            echo $ok;
+        }
+        else
+        {
+            $sql="DELETE FROM justificar_falta WHERE (idjustificar_falta = '$idjustFalta_new')";
+            hazAlgoEnBDSinRetornarAlgo($sql);
+
+            echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
+            ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
+            exit();
+        }
+    }//FIN de insertaEnBitacoraJustificarFalta
 ?>

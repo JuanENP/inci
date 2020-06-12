@@ -9,6 +9,7 @@
         if(strlen($fec_format[0])>4)
         {
             echo "<script> imprime('Formato de año incorrecto. Verifique...'); </script>";
+            exit();
         }
         else
         {
@@ -16,20 +17,20 @@
             una omisión + 1 retardo o 
             2 retardos (Art. 46 CGT)
             */
-            //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificaciones
+            //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificacion
             $sql6="SELECT count(d.clave_justificacion_clave_justificacion)
             FROM trabajador a
             INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = '$num' 
             INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
-            INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 09
+            INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and fecha_inicio like '$anio' and d.clave_justificacion_clave_justificacion= 09
             INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
             INNER JOIN turno f on e.turno_turno = f.idturno";
             $totalRetardos=retornaAlgoDeBD(0,$sql6);
-            //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificaciones de incidencia
+            //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion
             $sql9="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
             INNER JOIN asistencia b on a.numero_trabajador = b.trabajador_trabajador and a.numero_trabajador = $num 
             INNER JOIN incidencia c on  b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
-            INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and d.clave_justificacion_clave_justificacion= 08
+            INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and fecha_inicio like '$anio' and d.clave_justificacion_clave_justificacion= 08
             INNER JOIN acceso e on a.numero_trabajador=e.trabajador_trabajador
             INNER JOIN turno f on e.turno_turno = f.idturno";  
             $totalOmisionesIncidencia=retornaAlgoDeBD(0,$sql9);
@@ -49,7 +50,7 @@
                 if($filas13==0)
                 {
                     mysqli_close($con);
-                    echo "<script> omisionNoExiste($num,'$fecha'); </script>";              
+                    echo "<script> imprime('No hay una incidencia en la fecha $fecha para el número de trabajador $num en la QUINCENA ACTUAL'); </script>";              
                 }
                 else
                 {
@@ -70,7 +71,7 @@
                         if((mysqli_query($con, $sql16) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)))))
                         {
                             mysqli_close($con);
-                            echo "<script> omisionCorrecta(); </script>";
+                            echo "<script> imprime('Omisión justificada correctamente'); </script>";
                         }
                         else
                         {
@@ -81,7 +82,7 @@
                     {
                         //Esta omision ya fue justificada antes
                         mysqli_close($con);
-                        echo "<script> antesOmision(); </script>";
+                        echo "<script> imprime('Esta omisión ya fue justificada antes.'); </script>";
                     }
                 }
             }
@@ -89,7 +90,7 @@
             {
                 //ya posee dos justificaciones o dos omisiones o 1 justificacion + 1 omision
                 mysqli_close($con);
-                echo "<script> no(); </script>";
+                echo "<script> imprime('Ya posee 2 justificaciones o  2 omisiones o 1 omisión+ 1 justificación. Sustento: Art. 46 CGT.'); </script>";
             }
         }//Fin del else de validacion fecha
         
