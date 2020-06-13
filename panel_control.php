@@ -9,11 +9,11 @@ if($nombre==null || $nombre=='')
     header("Location: ../index.html");
     die();
 }
+require("Acceso/global.php");
+
 ?>
 
 <!doctype html>
-<form method="post" action="./panel_control.html" id="form1" autocomplete="off">
-
     <!--[if gt IE 8]><!-->
     <html class="no-js" lang="es">
     <!--<![endif]-->
@@ -26,6 +26,7 @@ if($nombre==null || $nombre=='')
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="assets/css/normalize.css" />
@@ -51,7 +52,6 @@ if($nombre==null || $nombre=='')
     </head>
 
     <body>
-
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -97,7 +97,9 @@ if($nombre==null || $nombre=='')
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
+                                 
                                 <li><i class="fa fa-users"></i><a href="ht/usuarios.html">Usuarios</a></li>
+                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                         <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ REPOSITORIO DEL EMPLEADO -->
@@ -136,13 +138,10 @@ if($nombre==null || $nombre=='')
                                 <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="../php/updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
+                                <a class="nav-link" href="php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
@@ -286,9 +285,7 @@ if($nombre==null || $nombre=='')
                                         <span class="count">Estable</span>
                                     </h4>
                                     <p class="text-light">Servidor Web</p>
-
                                 </div>
-
                             </div>
                         </div>
                         <!--/.col-->
@@ -369,7 +366,6 @@ if($nombre==null || $nombre=='')
 											</select>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="card-footer">
@@ -407,7 +403,6 @@ if($nombre==null || $nombre=='')
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- .animated -->
             </div>
@@ -452,9 +447,6 @@ if($nombre==null || $nombre=='')
                     $('.select2').select2();
                 });
             </script>
-
-
-
         </div>
         <!-- /#right-panel -->
 
@@ -473,6 +465,7 @@ if($nombre==null || $nombre=='')
             });
         </script>
     </body>
-
+    <?php
+    require("ht/modalCambiarPass.php"); 
+    ?>
     </html>
-</form>

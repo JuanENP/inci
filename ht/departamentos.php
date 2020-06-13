@@ -164,7 +164,7 @@ else
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">NUEVO DEPARTAMENTO</span>
+                                        <span id="MainContent_lbtitulo">Nuevo departamento</span>
                                     </div>
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
@@ -177,9 +177,9 @@ else
                                     <div class="card-footer">
                                             <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
                                     </div>
-                               </div>
-                           </div> 
-                     </form>
+                                </div>
+                            </div> 
+                        </form>
                    </div>  
 
                     <div class="row">
@@ -262,7 +262,7 @@ else
                             },
                             //'csv',
                             'excel',
-                            //'pdf',
+                            'pdf',
                             //{ extend: 'print', text: 'Imprimir' },
                         ]
                     });

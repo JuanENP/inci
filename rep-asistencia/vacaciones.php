@@ -6,10 +6,19 @@ ob_start();
         $contra=$_SESSION['con'];
         require("../Acceso/global.php"); 
         $fecha=$_SESSION['fecha'];
-        $quincena=$_SESSION['quincena'];
         $anio=$_SESSION['anio'];
-        $reporte=$_SESSION['datos'];
-        $contador=$_SESSION['c_d'];
+        $tipo=$_SESSION['tipo'];
+        if($_SESSION['c_d']>0)
+        {
+            //---Informacion del hospital------//
+            $clave=$_SESSION['clave'];
+            $nombre=$_SESSION['nombre'];
+            $descripcion=$_SESSION['descripcion'];
+            //--------------------------------//
+            $contador=$_SESSION['c_d'];
+            $reporte=$_SESSION['datos'];
+
+        } 
     }
     else
     {
@@ -33,20 +42,18 @@ ob_start();
                 <img src= "../images/pdf/logo-cuadrado.jpg" class="logo_superior">
             </div>
             <div id="p1">
-                <p>HOSPITAL REGIONAL CENTENARIO DE LA REVOLUCIÓN MEXICANA</p>
+                <p><?php echo$nombre?></p>
                 <p>COORDINACION DE RECURSOS HUMANOS</p>
                 <p>JEFATURA DE INCIDENCIAS</p>
             </div> 
         </div>
         <div id="p2">
-            <p>REPORTE ÚNICO QUINCENAL DE VACACIONES DEL PERSONAL</p>
+            <!-- <p>REPORTE ÚNICO QUINCENAL DE VACACIONES DEL PERSONAL</p> -->
+            <p>REPORTE DE <?php echo $tipo ?></p>
         </div>
         <div id="p3">
-            <p>CLAVE DE ADSCRIPCION: 04865</p>    
-            <p>DESCRIPCION: HOSP.REG. C.R.M </p>    
-            <p>FECHA:<?php echo$fecha ?> </p> 
-            <p>QUINCENA:<?php echo$quincena ?></p>  
-            <p>AÑO:<?php echo$anio ?> </p>   
+            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    
+            <p>FECHA: <u> <?php echo$fecha?>   </u>  AÑO: <u> <?php echo$anio ?></p>    
         </div>
         <table class="tabla_datos">
             <thead>
@@ -55,16 +62,14 @@ ob_start();
                     <td>NOMBRE</td>
                     <td>CLAVE</td>
                     <td>PERIODO</td>
-                    <td>F. INICIAL</td>
-                    <td>F. FINAL</td>
+                    <td>FECHAS</td>
                     <td>T. DIAS</td>
                 </tr>
             </thead>
             <tbody>
-                    HOLA
                 <?php        
 
-                 /*   for($i=0;$i<$contador;$i++)
+                   for($i=0;$i<$contador;$i++)
                     {   echo"<tr>";
                         echo "<td>".$reporte[$i][0]."</td>";
                         echo "<td>".$reporte[$i][1]."</td>";
@@ -72,9 +77,8 @@ ob_start();
                         echo "<td>".$reporte[$i][3]."</td>";
                         echo "<td>".$reporte[$i][4]."</td>";
                         echo "<td>".$reporte[$i][5]."</td>";
-                        echo "<td>".$reporte[$i][6]."</td>";
                         echo"</tr>";
-                    }*/
+                    }
                 ?>
             </tbody>
         </table>

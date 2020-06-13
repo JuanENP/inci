@@ -8,6 +8,11 @@ ob_start();
         $fecha=$_SESSION['fecha'];
         if($_SESSION['contar']>0)
         {
+            //---Informacion del hospital------//
+            $clave=$_SESSION['clave'];
+            $nombre=$_SESSION['nombre'];
+            $descripcion=$_SESSION['descripcion'];
+            //--------------------------------//
             $contador=$_SESSION['contar'];
             $reporte=$_SESSION['dato'];   
         }
@@ -35,7 +40,7 @@ ob_start();
                 <img src= "../images/pdf/logo-cuadrado.jpg" class="logo_superior">
             </div>
             <div id="p1">
-                <p>HOSPITAL REGIONAL CENTENARIO DE LA REVOLUCIÓN MEXICANA</p>
+                <p><?php echo$nombre?></p>
                 <p>COORDINACIÓN DE RECURSOS HUMANOS</p>
                 <p>JEFATURA DE INCIDENCIAS</p> 
             </div> 
@@ -43,10 +48,9 @@ ob_start();
         <div id="p2">
             <p>LISTADO DEL PERSONAL QUE DEBE ASISTIR EL DÍA <?php echo$fecha ?></p>
         </div>
-        <div id="p3">
-            <p>CLAVE DE ADSCRIPCIÓN: 04865</p>    
-            <p>DESCRIPCIÓN: HOSP.REG. C.R.M </p>    
-            
+        <div id="p3">  
+            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    
+
         </div>
         <table class="tabla_datos">
             <thead>

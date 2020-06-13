@@ -10,6 +10,11 @@ ob_start();
         $tipo=$_SESSION['tipo'];
         if($_SESSION['c_d']>0)
         {
+            //---Informacion del hospital------//
+            $clave=$_SESSION['clave'];
+            $nombre=$_SESSION['nombre'];
+            $descripcion=$_SESSION['descripcion'];
+            //--------------------------------//
             $contador=$_SESSION['c_d'];
             $reporte=$_SESSION['datos'];
         }     
@@ -45,10 +50,8 @@ ob_start();
             <p>REPORTE DE <?php echo$tipo ?> </p>
         </div>
         <div id="p3">
-            <p>CLAVE DE ADSCRIPCION: 04865</p>    
-            <p>DESCRIPCION: HOSP.REG. C.R.M </p>    
-            <p>FECHA:<?php echo$fecha ?> </p>  
-            <p>AÑO:<?php echo$anio ?> </p>   
+            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    
+            <p>FECHA: <u> <?php echo$fecha?>   </u>  AÑO: <u> <?php echo$anio ?></p>   
         </div>
         <table class="tabla_datos">
             <thead>

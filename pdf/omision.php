@@ -1,22 +1,38 @@
 <?php 
     ob_start();
-    $num  =$_SESSION['num'];
-    $nom  =$_SESSION['nom'];
-    $a_pat=$_SESSION['a_pat']; 
-    $a_mat=$_SESSION['a_mat'];  
-    $cat  =$_SESSION['cat'];  
-    $des  =$_SESSION['des']; 
-    $nombre=$nom." ".$a_pat. " ".$a_mat;
-    $operacion =$_SESSION['operacion'];
-    if($operacion==1)
-    {
-    $omision="entrada";
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+	{
+		$nombre=$_SESSION['name'];
+		$contra=$_SESSION['con'];
+        require("../Acceso/global.php");
+        $dia_mes  =$_SESSION['dia_mes'];
+        $municipio =$_SESSION['municipio'];
+        $estado=$_SESSION['estado']; 
+        $abrev_estado=$_SESSION['abrevia_estado'];
+        $fecha  =$_SESSION['fecha']; 
+        $num  =$_SESSION['num'];
+        $nom  =$_SESSION['nom'];
+        $a_pat=$_SESSION['a_pat']; 
+        $a_mat=$_SESSION['a_mat'];  
+        $cat  =$_SESSION['cat'];  
+        $des  =$_SESSION['des']; 
+        $nombre=$nom." ".$a_pat. " ".$a_mat;
+        $operacion =$_SESSION['operacion'];
+        if($operacion==1)
+        {
+            $omision="entrada";
+        }
+        if($operacion==2)
+        {
+            $omision="salida";
+        }
     }
-    if($operacion==2)
-    {
-    $omision="salida";
-    }
-  
+	else
+	{
+		header("Location: ../index.html");
+		die();
+	}
+    
 
 ?>
 
@@ -38,8 +54,8 @@
     <p>Coordinación de Mantenimiento</p>
     <br>
     <b>OFICIO No. 043/140/CM/0107/2020</b>
-    <p>Emiliano Zapata, Mor., a 18 de marzo de 2020</p>
-    
+    <!-- <p>Emiliano Zapata, Mor., a 18 de marzo de 2020</p> -->
+    <p><?php echo $municipio.', '.$abrev_estado.', a '.$dia_mes?></p>
     <b>Asunto: Justificación de Omisión de <?php echo $omision?></b>
     <br> 
     </div>
@@ -53,8 +69,8 @@
     <br> 
     </div>
     <div id="p2-2">
-    <p>Me permito solicitar su valiosa intervención para que le justifique la omisión de entrada del día 17 de marzo 2020, del C. <b><?php echo $nombre?></b>, 
-    Categoría: <b><?php echo $des?></b>, No. Empleado <?php echo $num?>, en virtud de que no se afecte su salario y estímulos correspondientes. 
+    <p>Me permito solicitar su valiosa intervención para que le justifique la omisión de entrada del día <?php echo $fecha?>, del C. <b><?php echo $nombre?></b>, 
+    Categoría: <b><?php echo $des?></b>, No. Empleado <b><?php echo $num?></b>, en virtud de que no se afecte su salario y estímulos correspondientes. 
     <br><br> 
     Agradeciendo de antemano su atención al respecto, aprovecho la ocasión para enviarle un cordial saludo.</p>
     <br><br>

@@ -217,8 +217,8 @@ session_start();
                                                             echo "<tr>";
                                                             echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                             echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td> <button class='btn btn-danger'> <a href='../php/eliminar-cat.php?ff0_lo=". generaURL($resul[0])."'>Eliminar</a> </button> ";
-                                                            echo "<button class='btn btn-success'> <a href='../php/editar-cat.php?id=".generaURL($resul[0])."'>Editar</a> </button> </td>";
+                                                            echo "<td><a href='../php/eliminar-cat.php?ff0_lo=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            echo "<a href='../php/editar-cat.php?id=".generaURL($resul[0])."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                             echo "</tr>";
                                                           }
                                                         }

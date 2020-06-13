@@ -25,107 +25,153 @@ session_start();
     { 
         $resul=mysqli_fetch_array($query);
         $tipo=$resul[0];
+
+        //TRABAJADOR
+        function consulta($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            $sql="select * from trabajador where numero_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [
+                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6]
+                ];
+            }
+        }
+
+        //CUMPLE
+        function consulta2($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            //Consultar todo de la tabla cumpleaños de tal trabajador
+            $sql="select * from cumple_ono where trabajador_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1],$resul[2] ];
+            }
+        
+        }
+        //ACCESO
+        function consulta3($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            //Consultar todo de la tabla acceso
+            $sql="select * from acceso where trabajador_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
+            }
+        }
+
+        //TIEMPO SERVICIO
+        function consulta4($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            //Consultar todo de la tabla acceso
+            $sql="select * from tiempo_servicio where trabajador_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1] ];
+            }
+           
+        }
+        function consultaGenero($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            //Consultar todo de la tabla acceso
+            $sql="select genero from trabajador where numero_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[0]];
+                
+            }
+        }
+        function consultaSexta($myid)
+        {
+            $nombre=$_SESSION['name'];
+            $contra=$_SESSION['con'];
+            require("../Acceso/global.php");
+            //Consultar todo de la tabla acceso
+            $sql="select idsexta, lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '".$myid."'";
+            $query= mysqli_query($con, $sql);
+            if(!$query)
+            {
+                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            }
+            else
+            { 
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8]];
+                
+            }
+  
+        }
         //Si el tipo de empleado del que se seleccionó es comisionado foráneo
         if($tipo==4)
         {
-            //TRABAJADOR
-            function consulta($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                $sql="select * from trabajador where numero_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return[
-                $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6]
-                ];
-                }
-            }
-            //guardar el array que retornó la función consulta
+
+            //guardar el array que retornó la función consulta de trabajador
             $id2=consulta($id);
        
-
-            //CUMPLE
-            function consulta2($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla cumpleaños de tal trabajador
-                $sql="select * from cumple_ono where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1],$resul[2] ];
-                }
-     
-            }
-             //guardar el array que retornó la función consulta
+             //guardar el array que retornó la función consulta de cumple
              $id3=consulta2($id);
     
-            //ACCESO
-            function consulta3($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla acceso
-                $sql="select * from acceso where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
-                }
-     
-            }
-             //guardar el array que retornó la función consulta
+             //guardar el array que retornó la función consulta de acceso
              $id4=consulta3($id);
             
-             //TIEMPO SERVICIO
-             function consulta4($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla acceso
-                $sql="select * from tiempo_servicio where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1] ];
-                }
-     
-            }
-             //guardar el array que retornó la función consulta
+             //guardar el array que retornó la función consulta de tiempo servicio
              $id5=consulta4($id);
 
             //ESPECIAL
@@ -146,109 +192,34 @@ session_start();
                 $fecha_fin = $resul[2];
                 $empresa = $resul[8];
             } 
+
+            //guardar el array que retornó la función consulta
+            $genero=consultaGenero($id);   
+
+              //guardar el array que retornó la función consulta
+            $sexta=consultaSexta($id);    
         }
 
         else //SINO ES TRABAJADOR COMISIONADO
         {
-            //TRABAJADOR
-            function consulta($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla trabajador
-                $sql="select * from trabajador where numero_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6] ];
-                }
-            }
-            //guardar el array que retornó la función consulta
-            $id2=consulta($id);
+
+             //guardar el array que retornó la función consulta de trabajador
+             $id2=consulta($id);
             
-             //CUMPLE
-            function consulta2($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla cumpleaños de tal trabajador
-                $sql="select * from cumple_ono where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1],$resul[2] ];
-                }
- 
-            }
-             //guardar el array que retornó la función consulta
+             //guardar el array que retornó la función consulta de cumple
              $id3=consulta2($id);
 
-            //ACCESO
-            function consulta3($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla acceso
-                $sql="select * from acceso where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
-                }
- 
-            }
-             //guardar el array que retornó la función consulta
+             //guardar el array que retornó la función consulta de acceso
              $id4=consulta3($id);
             
-             //TIEMPO SERVICIO
-            function consulta4($myid)
-            {
-                $nombre=$_SESSION['name'];
-                $contra=$_SESSION['con'];
-                require("../Acceso/global.php");
-                //Consultar todo de la tabla acceso
-                $sql="select * from tiempo_servicio where trabajador_trabajador = '".$myid."'";
-                $query= mysqli_query($con, $sql);
-                if(!$query)
-                {
-                     die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                }
-                else
-                { 
-                    $resul=mysqli_fetch_array($query);
-                    //retornar este array
-                    return
-                    [ $resul[1] ];
-                    
-                }
-     
-            }
+             //guardar el array que retornó la función consulta de tiempo de servicio
+             $id5=consulta4($id);  
+
              //guardar el array que retornó la función consulta
-             $id5=consulta4($id);   
+             $genero=consultaGenero($id);  
+
+              //guardar el array que retornó la función consulta
+            $sexta=consultaSexta($id);    
 
         }       
     }   
@@ -345,6 +316,25 @@ session_start();
                 }); 
             }
 
+            function verDiasSexta()
+            {
+                var valor = document.getElementById("turno").value;/*Es el valor del value del select del turno*/
+                
+                //Separamos el value debido a que en el se obtiene el id, h entrada, h salida y total horas
+                var  array = valor . split(" ");
+                 alert(array[1]);
+                //Si la hora de entrada del turno es igual a  6 h o 6 h y media, podrán tener sexta
+                if((array[1]=="06:00:00") || (array[1]=="06:30:00"))
+                {
+                    document.getElementById('dia_sexta').style.display="block";//ver
+                  
+                }
+                else
+                {
+                    document.getElementById('dia_sexta').style.display="none";//ocultar
+                    
+                }
+            }
         </script>
     </head>
 
@@ -510,16 +500,49 @@ session_start();
                                                 </span>
                                                 <input name="ono" type="date" value="<?php echo $id3[1]?>" id="MainContent_txtNombre" class="form-control"  min="1930-01-01"/>
                                             </div>
+                                            <?php 
+                                            if($genero[0]=='M')
+                                            {
+                                                echo"
+                                                <div class='form-group col-lg-5'>
+                                                <span>Género:</span><br>
+                                                <label class='radio-inline'>
+                                                <input type='radio' id='h' name='genero' value='M' checked>
+                                                <label for='h'>Masculino </label><br>
+                                                </label>
 
+                                                <label class='radio-inline'>
+                                                <input type='radio' id='m' name='genero' value='F'>
+                                                <label for='m'> Femenino</label><br>
+                                                </label> 
+                                                </div>";
+                                            }
+                                            else
+                                            {
+                                                if($genero[0]=='F')
+                                                {
+                                                echo"
+                                                <div class='form-group col-lg-5'>
+                                                <span>Género:</span><br>
+                                                <label class='radio-inline'>
+                                                <input type='radio' id='h' name='genero' value='M'>
+                                                <label for='h'>Masculino </label><br>
+                                                </label>
+                                                <label class='radio-inline'>
+                                                <input type='radio' id='m' name='genero' value='F' checked>
+                                                <label for='m'> Femenino</label><br>
+                                                </label> 
+                                                </div>";
+                                                }
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div> <!--FIN_ROW1-->
+                            
 
-                        <!--ROW2-->
-                        <div class="row">
-                            <div class="col-md-12">
+
+
                                 <div class="card">
                                     <div class="card-header">
                                         <span id="MainContent_lbtitulo">
@@ -530,7 +553,7 @@ session_start();
                                         <div class="row col-md-12">
 
                                             <div class="form-group col-lg-5">
-                                                <span id="MainContent_lbCategoria">
+                                                <span >
                                                     Departamento
                                                 </span>
                                                 <?php
@@ -566,7 +589,7 @@ session_start();
                                             </div>
 
                                             <div class="form-group col-lg-5">
-                                                <span id="MainContent_lbNombre">
+                                                <span >
                                                     Categoría
                                                 </span>
                                                 <?php
@@ -602,7 +625,7 @@ session_start();
                                             </div>
 
                                             <div class="form-group col-lg-5">
-                                                <span id="MainContent_lbNombre">
+                                                <span>
                                                     Tipo de empleado
                                                 </span>
                                                 <?php
@@ -671,29 +694,49 @@ session_start();
 
                                             </div>
 
-                                            <div class="form-group col-lg-5">
-                                                <span id="MainContent_lbNombre">
-                                                    Días de trabajo
-                                                </span><br>
+                                            <div class="form-group col-lg-7">
                                                 <?php 
                                                     $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');
                                                     $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos');
+                                                     echo"<div class='form-group col-lg-4'>
+                                                    <span> Días de trabajo</span><br>";
                                                     for ($i=0;$i<8;$i++)
                                                     {
                                                         if($id4[$i]==1)
                                                         {
-                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]' checked/>$semana2[$i]<br/>";  
+                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
                                                         }
                                                         else
                                                         {
-                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]'/>$semana2[$i]<br/>";
+                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]'/> $semana2[$i]<br/>";
                                                         }  
                                                     }
+                                                    echo"</div";
+                                                    
+                                                    // if(($sexta[0]>0))
+                                                    {
+                                                        echo"
+                                                        <div id='dia_sexta' class='form-group col-lg-3'>
+                                                        <span> Días de sexta </span><br>";
+                                                        for ($i=0;$i<8;$i++)
+                                                        {
+                                                            if($sexta[$i]==1)
+                                                            {
+                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
+                                                            }
+                                                            else
+                                                            {
+                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]'/> $semana2[$i]<br/>";
+                                                            }  
+                                                        }
+                                                        echo"</div>";
+                                                    } 
                                                 ?>
+
                                             </div>
 
                                             <div class="form-group col-lg-5">
-                                                <span id="MainContent_lbNombre">
+                                                <span >
                                                     Turno
                                                 </span>
                                                 <?php
@@ -709,16 +752,16 @@ session_start();
                                                     }
                                                     else
                                                     {
-                                                        echo "<select name='turno' class='form-control' >";
+                                                        echo "<select name='turno' id='turno' class='form-control' onchange='verDiasSexta()' >";
                                                         while($fila=mysqli_fetch_array($query))
                                                         {
                                                             if($id4[8]==$fila[0])
                                                             {
-                                                                echo "<option value='".$fila[0]."'selected>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
+                                                                echo "<option value='".$fila[0]." " .$fila[3]."'selected>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
                                                             }
                                                             else
                                                             {
-                                                                echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
+                                                                echo "<option value='".$fila[0]." " .$fila[3]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
                                                             }
 
                                                         }
@@ -727,17 +770,14 @@ session_start();
                                                     mysqli_close($con);
                                                 ?> <!--FIN PHP -->
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>  <!--FIN ROW2-->
+                          
+                        
 
-                        <!--ROW3-->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
+
+                                <div class="card" >
                                     <div class="card-header">
                                         <span id="MainContent_lbtitulo">
                                             Inicio de servicio laboral
@@ -745,19 +785,17 @@ session_start();
                                     </div>
                                     <div class="card-body card-block">
                                         <div class="row col-md-12">
-
-                                            <div class="form-group col-lg-3">
+                                            <div class="form-group col-lg-9">
                                                 <span id="MainContent_lbCategoria">
                                                     Fecha de alta del trabajador (Según su FM1) 
                                                 </span>
                                                 <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id5[0]?>" required  min="1930-01-01" />
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>  <!--FIN ROW3-->
+                            </div> <!--FIN_ROW1-->
+    
 
                         <div class="card-footer">
                             <div class="dropdown">
@@ -784,7 +822,8 @@ session_start();
 								<th>Apellido Materno</th> 
                                 <th>Departamento</th> 
 								<th>Categoría</th> 
-								<th>Tipo de empleado</th>  
+								<th>Tipo de empleado</th> 
+                                <th>Acción</th>  
                                 </thead>
                                 <tbody>
                                     <?php

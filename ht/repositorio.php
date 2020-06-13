@@ -1,9 +1,26 @@
 <?php
 session_start();
-#ESTA FUNCIÓN SIRVE PARA CONSULTAR LA INFORMACIÓN DEl TRABAJADOR
-require("../Acceso/global.php");  
-$numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
- 
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    //si la variable de sesión no existe, entonces no es posible entrar al panel. 
+    //Lo redirigimos al index.html para que inicie sesión
+    if($nombre==null || $nombre=='')
+    {
+        header("Location: ../index.html");
+        die();
+    }
+    require("../Acceso/global.php");  
+    //$numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
+    //$numero=$nombre;
+    $sql="select mail from mail where trabajador_trabajador='$nombre';";
+    $query= mysqli_query($con, $sql);
+    $resul=mysqli_num_rows($query);
+    if($resul>0)
+    {
+      $resul=mysqli_fetch_array($query);
+      $email=$resul[0];
+    }
+
 ?>
 <!doctype html>
 
@@ -20,6 +37,7 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -46,13 +64,13 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
             {
                 if(x==0)
                 {
-                    document.getElementById('causa').style.display="block";//ver
-                    document.getElementById('fecha').style.display="block";//ver
+                    document.getElementById('fecha').style.display="none";//ver
+                    document.getElementById('causa').style.display="block";//no ver
                 }
                 else
                 {
                     document.getElementById('causa').style.display="none";//ocultar
-                    document.getElementById('fecha').style.display="none";//ocultar
+                    document.getElementById('fecha').style.display="block";//ver
                 }
    
             }
@@ -61,6 +79,40 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
                 document.getElementById('causa').style.display="none";//ocultar
                 document.getElementById('fecha').style.display="none";//ocultar   
             }
+
+            function mostrarPasswordActual($x)
+            {
+                
+                var cambio = document.getElementById("txtPassword");
+                if(cambio.type == "password")
+                {
+                    cambio.type = "text";
+                    $('#A').removeClass('fa fa-eye-slash').addClass('fa fa-eye');//El ide del icono es A
+                }
+                else
+                {
+                    cambio.type = "password";
+                    $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash');//El ide del icono es N
+                }
+                
+            }
+            function mostrarPasswordNueva()
+            {
+                
+                var cambio2 = document.getElementById("txtPassword2");
+                if(cambio2.type == "password")
+                {
+                    cambio2.type = "text";
+                    $('#N').removeClass('fa fa-eye-slash N').addClass('fa fa-eye');
+                }
+                else
+                {
+                    cambio2.type = "password";
+                    $('#N').removeClass('fa fa-eye N').addClass('fa fa-eye-slash');
+                }
+                
+                
+	        } 
 
         </script>
 
@@ -74,21 +126,21 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                    <a class="navbar-brand" href="#">EMPLEADO ISSSTE</a>
+                    <a class="navbar-brand" href="#">EMPLEADO <?php echo$nombre?></a>
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
              <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ DEL EMPLEADO -->
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                            <!-- <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a> -->
                         </li>
-                
-                        <li id="Menu_Sistema" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Ver</a>
-                            <ul class="sub-menu children dropdown-menu">
+                    
+                        <li id="Menu_Sistema" ><!-- class="menu-item-has-children dropdown" -->
+                            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="menu-icon fa fa-key"></i>Cambiar contraseña</a>
+                            <!--<ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-users"></i><a href="../ht/usuarios.php">Mi usuario</a></li>
-                            </ul>
+                            </ul>-->
                         </li>
                     </ul>
                 </div>
@@ -120,7 +172,7 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.html"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
@@ -149,40 +201,85 @@ $numero= $_SESSION['num_emp']; //NÚMERO DE EMPLEADO
 
 
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header">
                                     <span id="MainContent_lbtitulo">Seleccione el documento que desee: </span>
-                                    </div>
+                                </div>
+                                <div class="card-body card-block">
                                     <form method="post" action="../pdf/crearPdf.php" id="form2">
                                     <!-- BUSCAR CUANTAS JUSTIFICACIONES DE OMISION TENGO -->
-                                     <!-- BUSCAR CUANTAS JUSTIFICACIONES DE RETARDO TENGO -->
-                                      <!-- BUSCAR CUANTOS PASES DE SALIDA TENGO -->
-                                    <?php
-                                    ?>
-                                    <input type="hidden" name="num" value="<?php echo $numero ?>">
-                                    <input type="radio" name="formato" class="form-input" value="1" onclick='oculta(1)'/> Justificación de omisión de entrada <br>
-                                    <input type="radio" name="formato" class="form-input" value="2" onclick='oculta(1)'/> Justificación de omisión de salida <br>
-                                    <input type="radio" name="formato" class="form-input" value="3" onclick='oculta(1)' /> Justificación de retardo <br>
-                                    <input type="radio" name="formato" class="form-input" value="4" onclick='oculta(0)' /> Pase de salida<br>
-                                    <div id="causa">
-                                    <br><span>Motivo: </span> <br> <input type='text' class='form-control' name='motivo'>
-                                    <span>Fecha : </span> <br> <input type='date' class='form-control' name='fecha'><br>
-                                    </div>
-                                    <input class="form-btn" name="descargar" type="submit" value="Descargar" />
+                                    <!-- BUSCAR CUANTAS JUSTIFICACIONES DE RETARDO TENGO -->
+                                    <!-- BUSCAR CUANTOS PASES DE SALIDA TENGO -->
                                 
+                                        <label for="jus-omi"><input type="radio" id="jus-omi" name="formato" class="form-input" value="1" onclick='oculta(1)'/> Justificación de omisión de entrada</label><br>
+                                        <label for="jus-omi-sal"><input type="radio" id="jus-omi-sal" name="formato" class="form-input" value="2" onclick='oculta(1)'/> Justificación de omisión de salida</label><br>
+                                        <label for="jus-ret"><input type="radio" id="jus-ret" name="formato" class="form-input" value="3" onclick='oculta(1)' /> Justificación de retardo</label><br>
+                                        <label for="ps"><input type="radio" id="ps" name="formato" class="form-input" value="4" onclick='oculta(0)' /> Pase de salida</label><br>
+                                        <div id="causa">
+                                            <span>Deseo solicitar un pase de salida para: </span> <br> <input type='text' class='form-control' name='motivo'>
+                                            <span>Fecha en la que deseo usar mi pase de salida: </span> <br> <input type='date' class='form-control' name='fecha'><br>
+                                        </div>
+                                        <div id="fecha">
+                                            <span>Fecha que deseo justificar: </span> <br> <input type='date' class='form-control' name='f-justifica'><br>
+                                        </div>
+                                        <div id="descargar">
+                                            <input class="btn btn-primary black-background white" name="descargar" type="submit" value="Descargar" />
+                                        </div>
                                     </form>
-                               
-                              </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- .animated --> 
+                </div><!-- .content -->
+            </div>
+
+            <div class="modal fade" id="mimodalejemplo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" id="modal" >
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">MI USUARIO</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <form method="post" action="../php/update/modificarPass.php" autocomplete="off" >
+                                        <label> Usuario</label>
+                                        <div class="input-group">
+                                            <input type="text" name="numControl" Class="form-control" disabled="disabled" value="<?php echo$nombre;?>">
+                                        </div>
+                                        <label>Correo electrónico</label>
+                                        <div class="input-group">
+                                            <input type="email" name="email" Class="form-control" disabled="disabled" value="<?php echo$email;?>">
+                                        </div>
+                                        
+                                        <label> Ingrese contraseña actual</label>
+                                        <div class="input-group">
+                                            <input id="txtPassword" type="Password" Class="form-control" name="contraActual" required maxlength=4 minlength=4 pattern="[0-9]{4}"  title="Ingrese exactamente 4 números">
+                                            <div class="input-group-append">
+                                                <button id="show_password" class="btn btn-primary" type="button" onclick="mostrarPasswordActual();"> <span class="fa fa-eye-slash icon" id="A" ></span> </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <label> Ingrese nueva contraseña</label>
+                                        <div class="input-group">
+                                            <input id="txtPassword2" type="Password" Class="form-control" name="nuevaContra" required maxlength=4 minlength=4 pattern="[0-9]{4}"  title="Ingrese exactamente 4 números">
+                                            <div class="input-group-append">
+                                                <button id="show_password2" class="btn btn-primary" type="button" onclick="mostrarPasswordNueva();"> <span class="fa fa-eye-slash icon" id="N"></span> </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="modal-footer">            
+                                            <button type="submit" id="guardar" class="btn btn-primary">Guardar</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div><!--fin modal-footer-->
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                   
- 
-                 
                 </div>
-                <!-- .animated -->
             </div>
-            <!-- .content -->
 
             <script type="text/javascript">
                 $(document).ready(function() {

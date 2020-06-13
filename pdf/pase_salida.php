@@ -1,22 +1,33 @@
 <?php 
 ob_start();
-//******formatear a la zona horaria de la ciudad de México**********
-date_default_timezone_set('America/Mexico_City');
-$num  =$_SESSION['num'];
-$nom  =$_SESSION['nom'];
-$a_pat=$_SESSION['a_pat']; 
-$a_mat=$_SESSION['a_mat'];  
-$cat  =$_SESSION['cat'];  
-$des  =$_SESSION['des']; 
-$ent  =$_SESSION['ent']; 
-$sal  =$_SESSION['sal']; 
-$motivo  =$_SESSION['motivo']; 
-$fecha =$_SESSION['fecha'];
-$nombre=$nom." ".$a_pat. " ".$a_mat;
-$horario=$ent."-".$sal;
-
-
-
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php");
+        $hoy =$_SESSION['dia_mes'];
+        $municipio =$_SESSION['municipio'];
+        $estado=$_SESSION['estado']; 
+        $abrev_estado=$_SESSION['abrevia_estado'];
+        $num  =$_SESSION['num'];
+        $nom  =$_SESSION['nom'];
+        $a_pat=$_SESSION['a_pat']; 
+        $a_mat=$_SESSION['a_mat'];  
+        $cat  =$_SESSION['cat'];  
+        $des  =$_SESSION['des']; //descripción de la categoría
+        $ent  =$_SESSION['ent']; 
+        $sal  =$_SESSION['sal']; 
+        $motivo  =$_SESSION['motivo']; 
+        $fecha =$_SESSION['fecha'];
+        $posibleHoraSalida=$_SESSION['posibleHoraSalida'];
+        $nombre=$nom." ".$a_pat. " ".$a_mat;
+        $horario=$ent."-".$sal;
+    }
+    else
+    {
+        header("Location: ../index.html");
+        die();
+    }
 ?>
 <html lang="es">
 <head>
@@ -48,14 +59,14 @@ $horario=$ent."-".$sal;
         
         <div id="p3">
         <p>SE HA CONCEDIDO PERMISO A: <?php echo $nombre?>
-        <p>PARA SALIR EL DÍA DE HOY, DE LAS 12:30 A LAS 14:30 HRS</p>
+        <p>PARA SALIR EL DÍA <?php echo strtoupper($fecha).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
         <p>PARA: <?php echo $motivo?></p>
         <p>CATEGORÍA: <?php echo $des?> </p>
         <p>HORARIO: <?php echo $horario?> </p><br>
         </div>
      
         <div id="p4">
-            <p>CUERNAVACA, MORELOS A <?php echo $fecha?> </p><br><br>
+            <p><?php echo strtoupper($municipio).', '.strtoupper($estado).' A '. strtoupper($hoy)?> </p><br><br>
             <p >______________________________</p>
                     <b>AUTORIZACIÓN</b>
         </div>

@@ -10,8 +10,15 @@ ob_start();
         $anio=$_SESSION['anio'];
         if($_SESSION['c']>0)
         {
+            //---Informacion del hospital------//
+            $clave=$_SESSION['clave'];
+            $nombre=$_SESSION['nombre'];
+            $descripcion=$_SESSION['descripcion'];
+            //--------------------------------//
             $contador=$_SESSION['c'];
             $reporte=$_SESSION['rep'];
+            $f_ini=$_SESSION['f_ini'];
+            $f_fin=$_SESSION['f_fin'];
         }
         
     }
@@ -37,20 +44,18 @@ ob_start();
                 <img src= "../images/pdf/logo-cuadrado.jpg" class="logo_superior">
             </div>
             <div id="p1">
-                <p>HOSPITAL REGIONAL CENTENARIO DE LA REVOLUCIÓN MEXICANA</p>
+                <p><?php echo$nombre?></p>
                 <p>COORDINACION DE RECURSOS HUMANOS</p>
                 <p>JEFATURA DE INCIDENCIAS</p>
             </div> 
         </div>
         <div id="p2">
-            <p>REPORTE ÚNICO QUINCENAL DE INCIDENCIAS DEL PERSONAL</p>
+            <p>REPORTE DE ÚNICO QUINCENAL DE INCIDENCIAS DEL PERSONAL</p>
         </div>
         <div id="p3">
-            <p>CLAVE DE ADSCRIPCION: 04865</p>    
-            <p>DESCRIPCION: HOSP.REG. C.R.M </p>    
-            <p>FECHA:<?php echo$fecha ?> </p> 
-            <p>QUINCENA:<?php echo$quincena ?></p>  
-            <p>AÑO:<?php echo$anio ?> </p>   
+            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    
+            <p>FECHA: <u> <?php echo$fecha?>   </u>  AÑO: <u> <?php echo$anio ?>  </u> QUINCENA: <u> <?php echo $quincena?> </u> </p>  
+            <!-- <p>PERÍODO: <u><?php  ' DEL '.$f_ini.' AL ' .$f_fin ?> </u></p> -->
         </div>
         <table class="tabla_datos">
             <thead>

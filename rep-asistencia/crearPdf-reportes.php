@@ -28,15 +28,27 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	$mes = $mes[(date('m', strtotime($f_hoy))*1)-1];
 	$anio= date("Y", strtotime($f_hoy));
 	$dia_mes=$num.' DE '.$mes;
-	
+	//Enviar informacion del hospital a los reportes//
+	$info=informacionHospital();
+	if($info!=null)
+	{
+		$_SESSION['clave'] = $info[0];
+		$_SESSION['nombre'] = $info[1];
+		$_SESSION['descripcion'] = $info[2];
+	}
 	
 	//REPORTE DE UNICO QUINCENAL DE INCIDENCIAS 
 	if($operacion=="unico")
 	{  	
 		if(!(empty($_POST['quincena'])))
 		{
-			$quincena=$_POST['quincena'];
+			$todo_quincena=$_POST['quincena'];
 		}
+		$separa=explode(' ',$todo_quincena);
+		$quincena=$separa[0];//Número de quincena
+		$f_ini=$separa[1];//fecha inicio de quincena
+		$f_fin=$separa[2];//fecha fin de quincena
+
 		$fila=array();
 		$reporte=array();
 		$ultimo_r=0;
@@ -54,41 +66,24 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			$contador++;
 		}
 		
-		//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
-		$_SESSION['fecha'] = $dia_mes;
-		$_SESSION['quincena'] = $quincena;
-		$_SESSION['anio'] = $anio;	
-		//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
-		$_SESSION['fecha'] = $dia_mes;
-		$_SESSION['quincena'] = $quincena;
-		$_SESSION['anio'] = $anio;
 		if($contador>0)
 		{
-			$_SESSION['c'] = $contador;
+			//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+			$_SESSION['fecha'] = $dia_mes;
+			$_SESSION['quincena'] = $quincena;
+			$_SESSION['anio'] = $anio;
 			$_SESSION['rep'] = $arreglo;
+			$_SESSION['c'] = $contador;
+			$_SESSION['f_ini'] = $f_ini;
+			$_SESSION['f_fin'] = $f_fin;
+			$nomArchivo="unico.php";
+			$nomPdf="Reporte-de-incidencias.pdf";
+			imprimepdf($nomArchivo,$nomPdf);
 		
-			//Ubicacion del formato de reporte unico de incidencias quincenal
-			include("unico.php");
-
-			// Instanciamos un objeto de la clase DOMPDF.
-			$pdf = new DOMPDF();
-			
-			// Definimos el tamaño y orientación del papel que queremos.
-			$pdf->set_paper("letter", "portrait");
-			//$pdf->set_paper(array(0,0,104,250));
-			
-			// Cargamos el contenido HTML.
-			$pdf->load_html(ob_get_clean());
-			
-			// Renderizamos el documento PDF.
-			$pdf->render();
-			
-			// Enviamos el fichero PDF al navegador.
-			$pdf->stream('reporte-incidencias.pdf');
 		}
 		else
 		{
-		   	echo "<script language='javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
+		   	echo "<script language='javascript'> alert('No hay incidencias'); history.back();</script>";
 			exit();
 
 		}
@@ -123,25 +118,26 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				else
 				{	
 					$salida.=" Debe escribir una fecha de inicio.";
-					//Si la fecha de fin está vacia
-					if (!(empty($_POST['f_fin'])))
+				}
+				//Si la fecha de fin está vacia
+				if (!(empty($_POST['f_fin'])))
+				{
+					$fec_fin=$_POST['f_fin'];
+					$valor2=explode('-',$fec_fin);
+					if(strlen($valor2[0])==4)
 					{
-						$fec_fin=$_POST['f_fin'];
-						$valor2=explode('-',$fec_fin);
-						if(strlen($valor2[0])==4)
-						{
-							$f_fin=$fec_fin;
-						}
-						else
-						{
-							$salida.="El año de la fecha de fin es incorrecto.";
-						}
+						$f_fin=$fec_fin;
 					}
 					else
-					{   
-						$salida.=" Debe escribir una fecha de fin.";
+					{
+						$salida.="El año de la fecha de fin es incorrecto.";
 					}
 				}
+				else
+				{   
+					$salida.=" Debe escribir una fecha de fin.";
+				}
+				
 				
 				if(empty($salida))
 				{
@@ -154,71 +150,133 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					//Si el arreglo tiene datos, imprimir el reporte
 					if($contador>0)
 					{
+						$tipo="VACACIONES DEL $f_ini AL $f_fin DE TODOS LO EMPLEADOS ";
 						//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
 						$_SESSION['fecha'] = $dia_mes;
-						$_SESSION['quincena'] = $quincena;
 						$_SESSION['anio'] = $anio;
 						$_SESSION['datos'] = $datos;
 						$_SESSION['c_d'] = $contador;
-
-						//Ubicacion del formato de reporte unico de incidencias quincenal
-						include("vacaciones.php");
-
-						// Instanciamos un objeto de la clase DOMPDF.
-						$pdf = new DOMPDF();
-						
-						// Definimos el tamaño y orientación del papel que queremos.
-						$pdf->set_paper("letter", "portrait");
-						//$pdf->set_paper(array(0,0,104,250));
-						
-						// Cargamos el contenido HTML.
-						$pdf->load_html(ob_get_clean());
-						
-						// Renderizamos el documento PDF.
-						$pdf->render();
-						
-						// Enviamos el fichero PDF al navegador.
-						$pdf->stream('reporte-vacaciones.pdf');	
-					
+						$_SESSION['tipo'] = $tipo;
+						$nomArchivo="vacaciones.php";
+						$nomPdf="Reporte-de-vacaciones.pdf";
+						imprimepdf($nomArchivo,$nomPdf);
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
-			if($div=="todos-q")
+			if($div=="todos")
 			{
-				if(!(empty($_POST['quincena2'])))
+
+				$todo_quincena=$_POST['quincena2'];
+				$separa=explode(' ',$todo_quincena);
+				$quincena=$separa[0];//Número de quincena
+				
+				$f_ini=$separa[1];//fecha inicio de quincena
+				$f_fin=$separa[2];//fecha fin de quincena
+
+				buscarxquincena();
+				//Calcula la cantidad de filas del arreglo
+				foreach($datos as $fila)
 				{
-					$quincena2=$_POST['quincena2'];
+					$contador++;
 				}
-
-				// buscarxquincena();
-
-			}
-			if($div=="numero")
-			{
-				if (!(empty($_POST['num'])))
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
 				{
-					$num=$_POST['num'];
-					// buscarxnumero();
+					
+					$tipo="VACACIONES DEL PERSONAL EN LA QUINCENA $quincena DEL $f_ini AL $f_fin";
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['datos'] = $datos;
+					$_SESSION['c_d'] = $contador;
+					$_SESSION['tipo'] = $tipo;
+			
+					$nomArchivo="vacaciones.php";
+					$nomPdf="Reporte-de-vacaciones.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+			
 				}
 				else
 				{
 
-				}	
-			}
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+				
+			}//fin todos-q
+
+			if($div=="numero")
+			{
+				//ver si el número de empleado no está vacio
+				if (!(empty($_POST['num'])))
+				{
+					$num_v=$_POST['num'];
+					//Ver si el empleado existe en la base de datos
+					$respuesta=consultaNumEmpleado($num_v);
+					if($respuesta==true)
+					{
+						$num=$_POST['num'];
+					}
+					else
+					{
+						$salida.=" Debe escribir un número de empleado que exista";
+					}
+				}
+				else
+				{   
+					$salida.=" Debe escribir un número de empleado";
+				}
+
+				if(empty($salida))
+				{
+					buscarxnumero();
+					//Calcula la cantidad de filas del arreglo
+					foreach($datos as $fila)
+					{
+						$contador++;
+					}
+					//Si el arreglo tiene datos, imprimir el reporte
+					if($contador>0)
+					{
+						$tipo='VACACIONES DEL EMPLEADO '.$num.' ';
+						//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+						$_SESSION['fecha'] = $dia_mes;
+						$_SESSION['anio'] = $anio;
+						$_SESSION['datos'] = $datos;
+						$_SESSION['c_d'] = $contador;
+						$_SESSION['tipo'] = $tipo;
+                       
+						$nomArchivo="vacaciones.php";
+						$nomPdf="Reporte-de-vacaciones.pdf";
+						imprimepdf($nomArchivo,$nomPdf);
+					
+					}
+					else
+					{
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+						exit();
+					}//Fin del else que revisa si el arreglo tiene datos
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
+					exit();
+				}//fin del else que revisa si hubo algun error en los input
+			}//fin div numero
 		}
 		else
 		{
-			echo "<script language='javascript'> alert('Seleccione una opción'); location.href='../ht/reportes.php';</script>";
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
 			exit();
 		}	
 	
@@ -284,34 +342,20 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				$anio2= date("Y", strtotime($fecha));
 				$fecha_buscada=$dia2.' DE '.$mes2.' DEL '.$anio2;
 
+				// $tipo="COMISIONES PRÓXIMAS A VENCER";
 				//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
 				$_SESSION['fecha'] = $fecha_buscada;
 				$_SESSION['dato'] = $dato;
 				$_SESSION['contar'] = $contar;
-
-				//Ubicacion del formato de reporte unico de incidencias quincenal
-				include("asistencia.php");
-
-				// Instanciamos un objeto de la clase DOMPDF.
-				$pdf = new DOMPDF();
-				
-				// Definimos el tamaño y orientación del papel que queremos.
-				$pdf->set_paper("letter", "portrait");
-				//$pdf->set_paper(array(0,0,104,250));
-				
-				// Cargamos el contenido HTML.
-				$pdf->load_html(ob_get_clean());
-				
-				// Renderizamos el documento PDF.
-				$pdf->render();
-				
-				// Enviamos el fichero PDF al navegador.
-				$pdf->stream('reporte-asistencia.pdf');	
+				// $_SESSION['tipo'] = $tipo;
+				$nomArchivo="asistencia.php";
+				$nomPdf="Reporte-asistencia.pdf";
+				imprimepdf($nomArchivo,$nomPdf);	
 			
 			}
 			else
 			{
-				echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+				echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 				exit();
 			}//Fin del else que revisa si el arreglo tiene datos
 		}
@@ -359,7 +403,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -386,7 +430,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -417,7 +461,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -444,7 +488,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -475,7 +519,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -502,7 +546,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 			}
@@ -531,7 +575,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 			else
 			{
-				echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+				echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 				exit();
 			}//Fin del else que revisa si el arreglo tiene datos
 		}//fin del div 
@@ -614,13 +658,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -713,13 +757,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -768,13 +812,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -783,7 +827,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 		else
 		{
-			echo "<script language='javascript'> alert('Seleccione una opción'); location.href='../ht/reportes.php';</script>";
+			echo "<script language='javascript'> alert('Seleccione un opción'); history.back();</script>";
 			exit();
 		}	
 	
@@ -873,7 +917,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script> error('$salida'); history.back();</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -965,13 +1009,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script> error('$salida'); history.back();</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -1020,13 +1064,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script> error('$salida'); history.back();</script>";
+					echo "<script language='javascript'> alert('$salida); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div rango
@@ -1036,7 +1080,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 		else
 		{
-			echo "<script language='javascript'> alert('Seleccione una opción f'); location.href='../ht/reportes.php';</script>";
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
 			exit();
 		}	
 	
@@ -1114,13 +1158,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 			else
 			{
-				echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+				echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 				exit();
 			}//Fin del else que revisa si el arreglo tiene datos
 		}
 		else
 		{
-			echo "<script> error('$salida'); </script>";
+			echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 			exit();
 		}//fin del else que revisa si hubo algun error en los input
 	
@@ -1180,7 +1224,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				if(empty($salida))
 				{
 					buscarguardias(1);
-					//Calcula la cantidad de filas del arreglo
+					//Calcula la cantidad de filas del arfreglo
 					foreach($datos as $fila)
 					{
 						$contador++;
@@ -1205,13 +1249,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div 
@@ -1305,13 +1349,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div 
@@ -1361,20 +1405,20 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 						exit();
 					}//Fin del else que revisa si el arreglo tiene datos
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('$salida'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('$salida); history.back();</script>";
 					exit();
 				}//fin del else que revisa si hubo algun error en los input
 			}//fin del div 
 		}
 		else
 		{
-			echo "<script language='javascript'> alert('Seleccione una opción'); location.href='../ht/reportes.php';</script>";
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
 			exit();
 		}	
 	
@@ -1415,7 +1459,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 
@@ -1451,7 +1495,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> nodatos();</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 
@@ -1461,7 +1505,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 		else
 		{
-			echo "<script language='javascript'> opcion();</script>";
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
 			exit();
 		}	
 	
@@ -1502,7 +1546,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 
@@ -1533,12 +1577,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> nodatos();</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
-
-
-
 			}//fin del div 
 
 			if($div=="vencida")
@@ -1567,7 +1608,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 
@@ -1599,7 +1640,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				}
 				else
 				{
-					echo "<script language='javascript'> alert('No hay datos'); location.href='../ht/reportes.php';</script>";
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
 
@@ -1608,12 +1649,123 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 		else
 		{
-			echo "<script language='javascript'> opcion();</script>";
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
 			exit();
 		}	
 	
 	} //fin if
 
+	if($operacion=="pases")
+	{
+		if(!(empty($_POST['opcion-p'])))
+		{
+			$div=$_POST['opcion-p'];
+			$datos=array();
+			$contador_d=0;
+			$contador=0;
+
+			if($div=="hoy")
+			{
+				pase_salida(1);
+				//Calcula la cantidad de filas del arreglo
+				foreach($datos as $fila)
+				{
+					$contador++;
+				}
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
+				{ 
+					$tipo="PASE DE SALIDA ";
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['datos'] = $datos;
+					$_SESSION['c_d'] = $contador;
+					$_SESSION['tipo'] = $tipo;
+					$nomArchivo="pases.php";
+					$nomPdf="Reporte-de-pases-salida-hoy.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+				
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+
+			}//fin del div 
+
+			if($div=="vencido")
+			{
+				pase_salida(2);
+				//Calcula la cantidad de filas del arreglo
+				foreach($datos as $fila)
+				{
+					$contador++;
+				}
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
+				{
+					$tipo="PASE DE SALIDA VENCIDOS";
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['datos'] = $datos;
+					$_SESSION['c_d'] = $contador;
+					$_SESSION['tipo'] = $tipo;
+		
+					$nomArchivo="pases.php";
+					$nomPdf="Reporte-de-pases-salida-venidos.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+
+			}//fin del div 
+
+			if($div=="antes")
+			{
+				pase_salida(3);
+				//Calcula la cantidad de filas del arreglo
+				foreach($datos as $fila)
+				{
+					$contador++;
+				}
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
+				{ 
+					$tipo="PASE DE SALIDA SIN VENCER";
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['datos'] = $datos;
+					$_SESSION['c_d'] = $contador;
+					$_SESSION['tipo'] = $tipo;
+		
+					$nomArchivo="pases.php";
+					$nomPdf="Reporte-pases-salida-sin-vencer.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+				
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+
+			}//fin del div 
+
+		}
+		else
+		{
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
+			exit();
+		}	
+	
+	} //fin if
 
 	function imprimepdf($nomArchivo,$nomPdf)
 	{
@@ -1808,9 +1960,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				if($pivote==$reporte[$j][0])
 				{
 					//echo "<br>";
-					$arreglo[$c][2]=$arreglo[$c][2] . $reporte[$j][2];
+					$arreglo[$c][2]=$arreglo[$c][2] .','. $reporte[$j][2];
 					//echo "<br>" . $reporte[$c][2];
-					$arreglo[$c][3]=$arreglo[$c][3] . $reporte[$j][3];
+					$arreglo[$c][3]=$arreglo[$c][3] .','. $reporte[$j][3];
 					//echo "<br>" . $reporte[$c][3];
 					if($j==($ultimo_r-1))//Para romper el bucle principal en cuanto se alcance la última posición $reporte
 					{
@@ -1837,11 +1989,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		global $datos;
 		global $contador_d;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.fecha_inicio,fecha_fin,b.total_dias
+		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
-		where b.fecha_inicio >='$f_ini' and b.fecha_fin <='$f_fin'
-		order by  a.numero_trabajador;";  
+		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
+		where c.dia >='$f_ini' and c.dia <='$f_fin'
+		and c.tomado=1
+		order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -1855,15 +2009,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			while($resul=mysqli_fetch_array($query))
 			{
 			
-				$datos[0]=$resul[0];//numero
-				$datos[1]=$resul[1];//nombre
-				$datos[2]="60";//Clave	
-				$datos[3]="1°/2020";//Periodo
-				$datos[4]=$resul[2];//fecha_inicio
-				$datos[5]=$resul[3];//fecha_fin
-				$datos[6]=$resul[4];//t_dias
+				$datos[$contador_d][0]=$resul[0];//numero
+				$datos[$contador_d][1]=$resul[1];//nombre
+				$datos[$contador_d][2]="60";//Clave	
+				$datos[$contador_d][3]=$resul[2];//Periodo
+				$datos[$contador_d][4]=$resul[3];//fecha
+				$datos[$contador_d][5]=1;//t_dias
 				$contador_d++;
-				//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
 
@@ -1871,19 +2023,21 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	function buscarxquincena()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
-		global $quincena2;
+		global $f_ini;
+		global $f_fin;
 		global $datos;
 		global $contador_d;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.fecha_inicio,fecha_fin,b.total_dias
+		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
-		where b.fecha_inicio >='$f_ini' and b.fecha_fin <='$f_fin'
-		order by  a.numero_trabajador;";  
+		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
+		where c.dia >='$f_ini' and c.dia <='$f_fin'
+		and c.tomado=1
+		order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -1897,17 +2051,16 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			while($resul=mysqli_fetch_array($query))
 			{
 			
-				$datos[0]=$resul[0];//numero
-				$datos[1]=$resul[1];//nombre
-				$datos[2]="60";//Clave	
-				$datos[3]="1°/2020";//Periodo
-				$datos[4]=$resul[2];//fecha_inicio
-				$datos[5]=$resul[3];//fecha_fin
-				$datos[6]=$resul[4];//t_dias
+				$datos[$contador_d][0]=$resul[0];//numero
+				$datos[$contador_d][1]=$resul[1];//nombre
+				$datos[$contador_d][2]="60";//Clave	
+				$datos[$contador_d][3]=$resul[2];//Periodo
+				$datos[$contador_d][4]=$resul[3];//fecha
+				$datos[$contador_d][5]=1;//t_dias
 				$contador_d++;
-				//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
-		}
+		}		
+
 	}//fin function xquincena
 
 	function buscarxnumero()
@@ -1916,15 +2069,17 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
-		global $quincena2;
+		global $num;
 		global $datos;
 		global $contador_d;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.fecha_inicio,fecha_fin,b.total_dias
+		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
-		where b.fecha_inicio >='$f_ini' and b.fecha_fin <='$f_fin'
-		order by  a.numero_trabajador;";  
+		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
+		where b.trabajador_trabajador='$num'
+		and c.tomado=1
+		order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -1938,18 +2093,15 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			while($resul=mysqli_fetch_array($query))
 			{
 			
-				$datos[0]=$resul[0];//numero
-				$datos[1]=$resul[1];//nombre
-				$datos[2]="60";//Clave	
-				$datos[3]="1°/2020";//Periodo
-				$datos[4]=$resul[2];//fecha_inicio
-				$datos[5]=$resul[3];//fecha_fin
-				$datos[6]=$resul[4];//t_dias
+				$datos[$contador_d][0]=$resul[0];//numero
+				$datos[$contador_d][1]=$resul[1];//nombre
+				$datos[$contador_d][2]="60";//Clave	
+				$datos[$contador_d][3]=$resul[2];//Periodo
+				$datos[$contador_d][4]=$resul[3];//fecha
+				$datos[$contador_d][5]=1;//t_dias
 				$contador_d++;
-				//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
-
 	}//fin function xnumero
 
 	function vienen_hoy()
@@ -2071,6 +2223,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
        	cumple_ono();
 	}
 
+	//QUIENES DEBEN ASISTIR HOY SI TIENEN GUARDIA 
 	function tiene_guardia()
     { 
         global $f_hoy;
@@ -2278,7 +2431,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
             } //fin del if  
         }//fin del for
     }//FIN QUIEN TIENE CUMPLEAÑOS U ONOMASTICO
-    /////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
+	
+	//QUIEN TIENE COMISIONES
 	function activasFora()
 	{
 		
@@ -3371,6 +3526,23 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  now()<b.fecha_inicio
+		and (
+		b.clave_especial_clave_especial='29'
+		or b.clave_especial_clave_especial='40'
+		or b.clave_especial_clave_especial='41'
+		or b.clave_especial_clave_especial='47'
+		or b.clave_especial_clave_especial='48'
+		or b.clave_especial_clave_especial='49'
+		or b.clave_especial_clave_especial='51'
+		or b.clave_especial_clave_especial='53'
+		or b.clave_especial_clave_especial='54'
+		or b.clave_especial_clave_especial='55'
+		or b.clave_especial_clave_especial='62'
+		or b.clave_especial_clave_especial='92'
+		or b.clave_especial_clave_especial='93'
+		or b.clave_especial_clave_especial='LSG'
+		or b.clave_especial_clave_especial='LSGSS'
+		)
 		order by b.fecha_inicio,b.trabajador_trabajador,b.clave_especial_clave_especial;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
@@ -3415,7 +3587,25 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  b.validez=1
-		order by b.fecha_inicio, b.trabajador_trabajador;";  
+		and (
+		b.clave_especial_clave_especial='29'
+		or b.clave_especial_clave_especial='40'
+		or b.clave_especial_clave_especial='41'
+		or b.clave_especial_clave_especial='47'
+		or b.clave_especial_clave_especial='48'
+		or b.clave_especial_clave_especial='49'
+		or b.clave_especial_clave_especial='51'
+		or b.clave_especial_clave_especial='53'
+		or b.clave_especial_clave_especial='54'
+		or b.clave_especial_clave_especial='55'
+		or b.clave_especial_clave_especial='62'
+		or b.clave_especial_clave_especial='92'
+		or b.clave_especial_clave_especial='93'
+		or b.clave_especial_clave_especial='LSG'
+		or b.clave_especial_clave_especial='LSGSS'
+		)
+		order by b.fecha_inicio, b.trabajador_trabajador;
+		";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -3483,6 +3673,23 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  b.fecha_fin <now() and validez=0
+		and (
+		b.clave_especial_clave_especial='29'
+		or b.clave_especial_clave_especial='40'
+		or b.clave_especial_clave_especial='41'
+		or b.clave_especial_clave_especial='47'
+		or b.clave_especial_clave_especial='48'
+		or b.clave_especial_clave_especial='49'
+		or b.clave_especial_clave_especial='51'
+		or b.clave_especial_clave_especial='53'
+		or b.clave_especial_clave_especial='54'
+		or b.clave_especial_clave_especial='55'
+		or b.clave_especial_clave_especial='62'
+		or b.clave_especial_clave_especial='92'
+		or b.clave_especial_clave_especial='93'
+		or b.clave_especial_clave_especial='LSG'
+		or b.clave_especial_clave_especial='LSGSS'
+		)
 		order by b.clave_especial_clave_especial,b.fecha_inicio,b.fecha_fin,b.trabajador_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
@@ -3511,7 +3718,136 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+	function pase_salida($x)
+	{
+		$nombre=$_SESSION['name'];
+		$contra=$_SESSION['con'];
+		require("../Acceso/global.php"); 
+		global $datos;
+		global $contador_d;
+		$dia=date("Y-m-d");//guardar la fecha actual
+		if($x==1)
+		{
 
+			//Seleccionamos a los empleados que tienen pase de salida hoy
+			$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_uso
+			from trabajador a 
+			inner join pase_salida b on a.numero_trabajador=b.trabajador_trabajador
+			and  b.fecha_uso='$dia'
+			order by b.fecha_uso, b.trabajador_trabajador;";  
+			$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+			$resul=mysqli_num_rows($query);
+	
+			//si total es igual a cero significa que no hay datos
+			if($resul==0)
+			{  
+				// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
+			} 
+			else
+			{
+				while($resul=mysqli_fetch_array($query))
+				{
+				
+					$datos[$contador_d][0]=$resul[0];//numero
+					$datos[$contador_d][1]=$resul[1];//nombre
+					$datos[$contador_d][2]=$resul[2];//depto
+					$datos[$contador_d][3]=$resul[3];//categoria
+					$datos[$contador_d][4]=$resul[4];//fecha
+					$contador_d;
+					
+				}
+			}
+		}
+		if($x==2)
+		{
+			//Seleccionamos los pases de salida vencidos
+			$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_uso
+			from trabajador a 
+			inner join pase_salida b on a.numero_trabajador=b.trabajador_trabajador
+			and  b.fecha_uso<'$dia'
+			order by b.fecha_uso, b.trabajador_trabajador;";  
+			$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+			$resul=mysqli_num_rows($query);
+		
+			//si total es igual a cero significa que no hay datos
+			if($resul==0)
+			{  
+				// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
+			} 
+			else
+			{
+				while($resul=mysqli_fetch_array($query))
+				{
+				
+					$datos[$contador_d][0]=$resul[0];//numero
+					$datos[$contador_d][1]=$resul[1];//nombre
+					$datos[$contador_d][2]=$resul[2];//depto
+					$datos[$contador_d][3]=$resul[3];//categoria
+					$datos[$contador_d][4]=$resul[4];//fecha
+					$contador_d;
+					
+				}
+			}
+			
+		}
+		if($x==3)
+		{
+			//Seleccionamos los pases de salidas que aun no vencen
+			$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_uso
+			from trabajador a 
+			inner join pase_salida b on a.numero_trabajador=b.trabajador_trabajador
+			and  '$dia'<b.fecha_uso
+			order by b.fecha_uso, b.trabajador_trabajador;";  
+			$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+			$resul=mysqli_num_rows($query);
+		
+			//si total es igual a cero significa que no hay datos
+			if($resul==0)
+			{  
+				// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
+			} 
+			else
+			{
+				while($resul=mysqli_fetch_array($query))
+				{
+				
+					$datos[$contador_d][0]=$resul[0];//numero
+					$datos[$contador_d][1]=$resul[1];//nombre
+					$datos[$contador_d][2]=$resul[2];//depto
+					$datos[$contador_d][3]=$resul[3];//categoria
+					$datos[$contador_d][4]=$resul[4];//fecha
+					$contador_d;
+					
+				}
+			}
+			
+		}
+	}
+
+	function informacionHospital()
+	{
+		$nombre=$_SESSION['name'];
+		$contra=$_SESSION['con'];
+		require("../Acceso/global.php"); 
+		global $datos;
+		global $contador_d;
+
+		//Seleccionamos a los empleados que tienen pase de salida hoy
+		$sql="SELECT * FROM hospital;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+	
+		//si total es igual a cero significa que no hay datos
+		if($resul>0)
+		{  
+			$fila=mysqli_fetch_array($query);
+			return [$fila[0],$fila[1],$fila[2]];	
+		} 
+		else
+		{
+			return null;
+		}
+	}
 
     /*Obtiene los minutos transcurridos entre dos fechas*/
     function minutosTranscurridos($fecha_i,$fecha_f)
@@ -3562,6 +3898,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	{
 		alert('No hay datos');
 		history.back();
+		exit();
 	}
 	function opcion()
 	{

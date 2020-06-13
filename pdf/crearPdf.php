@@ -1,23 +1,133 @@
 <?php
+session_start();
 ob_start();
+date_default_timezone_set('America/Mexico_City'); 
+set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script
+	if (($_SESSION["name"]) && ($_SESSION["con"]))
+	{
+		$nombre=$_SESSION['name'];
+		$contra=$_SESSION['con'];
+		require("../Acceso/global.php");
+		$f_hoy=date("Y-m-d");//guardar la fecha actual
+	}
+	else
+	{
+		header("Location: ../index.html");
+		die();
+	}
+	//NUMERO DE TRABAJADOR
+	$numero=$nombre;
 	// Cargamos la librería dompdf que hemos instalado en la carpeta dompdf
 	require_once("../pdf/dompdf/autoload.inc.php");
 	use Dompdf\Dompdf;
-	$numero=$_POST['num'];
-	$motivo =$_POST['motivo'];
-	$fecha=$_POST['fecha'];
+	// $numero=$_POST['num'];
+	if(empty($_POST['formato']))
+	{
+		echo "<script language='javascript'> alert('Seleccione un opción'); history.back();</script>";
+		exit();
+	}
 	$operacion=$_POST['formato'];
+	if($operacion=="4")
+	{
+		if(empty($_POST['motivo']) || empty($_POST['fecha']))
+		{
+			echo "<script language='javascript'> alert('No deje campos vacíos.'); history.back();</script>";
+			exit();
+		}
+		else
+		{
+			$motivo =$_POST['motivo'];
+			$fecha=$_POST['fecha'];
+			$separa=explode('-',$fecha);
+			$anio_solicita=$separa[0];
+			if(strlen($anio_solicita)==4)
+			{
+				$anio_actual=date("Y");
+				$anio_solicita = strtotime($anio_solicita);
+				$anio_actual= strtotime($anio_actual);
+				if($anio_solicita==$anio_actual)
+				{
+					$num = date("d", strtotime($fecha));
+					$mes = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+					$mes = $mes[(date('m', strtotime($fecha))*1)-1];
+					$anio= date("Y", strtotime($fecha));
+					$fecha=$num.' de '.$mes .' del '.$anio;	
+					//----------------------------------------------------//
+					$_SESSION['fecha'] = $fecha;
+					$_SESSION['motivo']   = $motivo;
+					$_SESSION['fecha']   = $fecha;
 
-	require("../Acceso/global.php");  
-		
-	$sql="select  a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.categoria_categoria,b.nombre,d.entrada,d.salida from trabajador a
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('Debe elegir el año actual.'); history.back();</script>";
+					exit();
+				}	
+			}
+			else
+			{
+				echo "<script language='javascript'> alert('El año debe tener cuatro dígitos.'); history.back();</script>";
+				exit();	
+			}
+		}
+	}
+	else
+	{
+		if(empty($_POST['f-justifica']))
+		{
+			echo "<script language='javascript'> alert('Seleccione una fecha.'); history.back();</script>";
+			exit();
+		}
+		else
+		{
+			$fecha=$_POST['f-justifica'];
+			$separa=explode('-',$fecha);
+			$anio_solicita=$separa[0];
+			if(strlen($anio_solicita)==4)
+			{
+				$anio_actual=date("Y");
+				$anio_solicita = strtotime($anio_solicita);
+				$anio_actual= strtotime($anio_actual);
+				if($anio_solicita==$anio_actual)
+				{  
+					$num = date("d", strtotime($fecha));
+					$mes = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+					$mes = $mes[(date('m', strtotime($fecha))*1)-1];
+					$anio= date("Y", strtotime($fecha));
+					$fecha=$num.' de '.$mes .' del '.$anio;	
+					//----------------------------------------------------//
+					$_SESSION['fecha'] = $fecha;
+
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('Debe elegir el año actual.'); history.back();</script>";
+					exit();
+				}	
+			}
+			else
+			{
+				echo "<script language='javascript'> alert('El año debe tener cuatro dígitos.'); history.back();</script>";
+				exit();	
+			}
+		}
+
+	}
+	//----Obtener la fecha de hoy para el documento------//
+	$num = date("d", strtotime($f_hoy));
+	$mes = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+	$mes = $mes[(date('m', strtotime($f_hoy))*1)-1];
+	$anio= date("Y", strtotime($f_hoy));
+	$dia_mes=$num.' de '.$mes .' del '.$anio;	
+	//----------------------------------------------------//
+	$sql="select a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.categoria_categoria,b.nombre,d.entrada,d.salida from trabajador a
 	inner join categoria b on b.idcategoria = a.categoria_categoria and a.numero_trabajador = '$numero'
 	inner join acceso c on a.numero_trabajador= c.trabajador_trabajador
 	inner join turno d on c.turno_turno = d.idturno "; 
 	$query= mysqli_query($con, $sql);
 	if(!$query)
 	{
-	die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+		die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
 	}
 	else
 	{
@@ -34,6 +144,16 @@ ob_start();
 		
 		
 		//   VARIABLES QUE DESEO ENVIAR A LOS FORMATOS
+		//Enviar informacion del hospital a los reportes//
+		$info=informacionHospital();
+		if($info!=null)
+		{
+			$_SESSION['municipio'] = $info[0];
+			$_SESSION['estado'] = $info[1];
+			$_SESSION['abrevia_estado'] = $info[2];
+		}
+	
+		$_SESSION['dia_mes'] = $dia_mes  ;
 		$_SESSION['num']   = $num  ;
 		$_SESSION['nom']   = $nom  ;
 		$_SESSION['a_pat'] = $a_pat;
@@ -42,9 +162,10 @@ ob_start();
 		$_SESSION['des']   = $des  ;
 		$_SESSION['ent']   = $ent  ;
 		$_SESSION['sal']   = $sal  ;
-		$_SESSION['motivo']   = $motivo;
-		$_SESSION['fecha']   = $fecha;
 		$_SESSION['operacion']   = $operacion;
+		//CALCULAR DE QUE HORA A QUE HORA PUDEDE SALIR UN EMPLEADO SI PIDE UN PASE DE SALIDA(2 HORAS ANTES DE SU SALIDA)
+		$posibleHoraSalida=date("H:i:s", strtotime( $sal." - 2 hour"));
+		$_SESSION['posibleHoraSalida'] = $posibleHoraSalida;
 	
 	
 	}
@@ -212,7 +333,7 @@ ob_start();
 		//si totalOm es menor que 2 significa que aún puede justificar su omisión
 		if($total>=2)
 		{  
-		echo "<script type='text/javascript'> alert('Ya excedió el límite de omisiones o retardos'); location.href='../ht/repositorio.php';</script>";
+			echo "<script type='text/javascript'> alert('Ya excedió el límite de omisiones o retardos'); location.href='../ht/repositorio.php';</script>";
 		}
 		else
 		{
@@ -241,21 +362,21 @@ ob_start();
 
 	if($operacion=="4")
 	{
-	/*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
-	$sql5="SELECT idquincena, fecha_inicio, fecha_fin from quincena where validez=1";
-	$query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-	$resul5=mysqli_fetch_array($query5);
-	$quincena=$resul5[0];
-	$f_inicio=$resul5[1];
-	$f_fin=$resul5[2];
-	$anio_actual=date("Y");
-	/*FIN DE OBTENER QUINCENA ACTUAL*/
+		/*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
+		$sql5="SELECT idquincena, fecha_inicio, fecha_fin from quincena where validez=1";
+		$query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul5=mysqli_fetch_array($query5);
+		$quincena=$resul5[0];
+		$f_inicio=$resul5[1];
+		$f_fin=$resul5[2];
+		$anio_actual=date("Y");
+		/*FIN DE OBTENER QUINCENA ACTUAL*/
 
-	//contamos cuántos PS  posee el empleado en la tabla especiales
-	$sql9="SELECT count(clave_especial_clave_especial='PS') from especial where trabajador_trabajador='$num' and clave_especial_clave_especial='PS' and fecha_inicio>='2020-03-16' and fecha_fin<='2020-03-31'";  
-	$query9= mysqli_query($con, $sql9) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-	$resul9=mysqli_fetch_array($query9);
-	$pase_salida=$resul9[0];
+		//contamos cuántos PS  posee el empleado en la tabla especiales
+		$sql9="SELECT count(clave_especial_clave_especial='PS') from especial where trabajador_trabajador='$num' and clave_especial_clave_especial='PS' and fecha_inicio>='2020-03-16' and fecha_fin<='2020-03-31'";  
+		$query9= mysqli_query($con, $sql9) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul9=mysqli_fetch_array($query9);
+		$pase_salida=$resul9[0];
 
 		if($pase_salida==1)
 		{  
@@ -287,6 +408,32 @@ ob_start();
 		}                                             
 	} //fin if-4
 
+
+	function informacionHospital()
+	{
+		$nombre=$_SESSION['name'];
+		$contra=$_SESSION['con'];
+		require("../Acceso/global.php"); 
+		global $datos;
+		global $contador_d;
+
+		//Seleccionamos a los empleados que tienen pase de salida hoy
+		$sql="SELECT * FROM hospital;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+	
+		//si total es igual a cero significa que no hay datos
+		if($resul>0)
+		{  
+			$fila=mysqli_fetch_array($query);
+			return [$fila[3],$fila[4],$fila[5]];	
+		} 
+		else
+		{
+			return null;
+		}
+	}
+	
 	function file_get_contents_curl($url) 
 	{
 		$crl = curl_init();

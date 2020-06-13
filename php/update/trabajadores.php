@@ -37,7 +37,10 @@ session_start();
     $cat=$_POST['cat'];
     $depto=$_POST['depto'];
     $tipo=$_POST['tipo'];
-    $turno=$_POST['turno'];
+    $todoturno=$_POST['turno'];
+    $separa=explode(' ',$todoturno);
+    $turno=$separa[0];
+    $t_horas_turno=$separa[1];
     $cumple=$_POST['cumple'];
     $valores=explode('-',$cumple);
     $fecha_alta=$_POST['fecha_alta'];
@@ -82,42 +85,42 @@ session_start();
         //Si es foráneo
         if($tipo==4)
         {
-                $empresa=$_POST['emp'];
-                $f_ini=$_POST['f_ini'];
-                $f_fin=$_POST['f_fin'];
-                $empresa_validar=trim($empresa);
-                if(empty($empresa_validar))
-                {
-                    $salida.="No ha escrito el nombre de la empresa.";
-                }
+            $empresa=$_POST['emp'];
+            $f_ini=$_POST['f_ini'];
+            $f_fin=$_POST['f_fin'];
+            $empresa_validar=trim($empresa);
+            if(empty($empresa_validar))
+            {
+                $salida.="No ha escrito el nombre de la empresa.";
+            }
 
-                $valores_ini=explode('-',$f_ini);
-                if(strlen($valores_ini[0])>4)
-                {
-                    $salida.="El año de inicio es incorrecto.";
-                }
+            $valores_ini=explode('-',$f_ini);
+            if(strlen($valores_ini[0])>4)
+            {
+                $salida.="El año de inicio es incorrecto.";
+            }
 
-                $valores_fin=explode('-',$f_fin);
-                if(strlen($valores_fin[0])>4)
-                {
-                $salida.="El año de fin es incorrecto.";
-                }
+            $valores_fin=explode('-',$f_fin);
+            if(strlen($valores_fin[0])>4)
+            {
+            $salida.="El año de fin es incorrecto.";
+            }
 
-                $date1= new DateTime($f_ini);
-                $date2= new DateTime($f_fin);
+            $date1= new DateTime($f_ini);
+            $date2= new DateTime($f_fin);
 
-                $interval = $date1->diff($date2);
-                $totDias=$interval->format('%a');//los días que durará la comisión
-                //si el periodo de comisión es superior a 165 días (5 meses y medio)
-                if($totDias>165)
-                {
-                    $salida.="No se puede comisionar más de 5 meses y medio.";
-                }
+            $interval = $date1->diff($date2);
+            $totDias=$interval->format('%a');//los días que durará la comisión
+            //si el periodo de comisión es superior a 165 días (5 meses y medio)
+            if($totDias>165)
+            {
+                $salida.="No se puede comisionar más de 5 meses y medio.";
+            }
 
-                $fecha_hoy=date("Y-m-d");//la fecha de hoy
-                $fecha_ac = strtotime($fecha_hoy);
-                $fecha_in = strtotime($f_ini);
-        //Si la fecha actual es mayor que la fecha inicial de la comisión entonces
+            $fecha_hoy=date("Y-m-d");//la fecha de hoy
+            $fecha_ac = strtotime($fecha_hoy);
+            $fecha_in = strtotime($f_ini);
+             //Si la fecha actual es mayor que la fecha inicial de la comisión entonces
             if($fecha_ac > $fecha_in)
             {
                 $salida.="La fecha de inicio de la comisión ya pasó, no es posible registrar una comisión que inició antes de hoy .";
@@ -222,20 +225,20 @@ session_start();
                 
                 mysqli_autocommit($con, FALSE);
                 //UPDATE `checada6`.`trabajador` SET `numero_trabajador` = '101010', `nombre` = 'DANIAA', `apellido_paterno` = 'MARTINEZA', `apellido_materno` = 'FLORESA', `depto_depto` = '043202', `categoria_categoria` = 'HE00702', `tipo_tipo` = '2' WHERE (`numero_trabajador` = '1010');
-                if(!(mysqli_query($con,"Update trabajador SET nombre='$nombre',apellido_paterno='$a_pat',apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo WHERE (numero_trabajador='$numero')")))
+                if(!(mysqli_query($con,"Update trabajador SET nombre='$nombre',apellido_paterno='$a_pat',apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo WHERE numero_trabajador='$numero'")))
                 {
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
-                    echo "alert('Datos incorrectos del trabajador'); history.back();";
+                    echo "<script type=\"text/javascript\">alert('Datos incorrectos del trabajador'); history.back();</script>";
                 }
                 else
                 {   
                     //UPDATE `checada6`.`acceso` SET `lunes` = '0', `martes` = '1', `miercoles` = '1', `jueves` = '1', `viernes` = '0', `sabado` = '0', `domingo` = '0', `dia_festivo` = '1', `turno_turno` = 'T2' WHERE (`idacceso` = '1');
-                    if(!(mysqli_query($con,"Update acceso SET lunes='$semana[0]',martes='$semana[1]',miercoles='$semana[2]',jueves='$semana[3]',viernes='$semana[4]',sabado='$semana[5]',domingo='$semana[6]',dia_festivo='$semana[7]',turno_turno='$turno' WHERE(trabajador_trabajador='$numero')")))
+                    if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes=$semana[4],sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "alert('Datos incorrectos de los días de trabajo o el turno'); history.back();";    
+                        echo "<script type=\"text/javascript\">alert('Datos incorrectos de los días de trabajo o el turno 2'); history.back();</script>";    
                     }
                     else
                     { //UPDATE `checada6`.`cumple_ono` SET `fecha_cumple` = '2002-02-22', `fecha_ono` = '2002-02-21' WHERE (`idcumple_ono` = '40');
@@ -248,7 +251,7 @@ session_start();
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            echo "alert('Datos incorrectos del cumpleaños u onomástico'); history.back();";            
+                            echo "<script type=\"text/javascript\">alert('Datos incorrectos del cumpleaños u onomástico'); history.back();</script>";            
                         }
                         else
                         {
@@ -258,11 +261,11 @@ session_start();
                             $query= mysqli_query($con, $sql) or die();
                             $fila=mysqli_fetch_array($query);
                             $idtiempo_servicio=$fila[0];
-                            if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where (idtiempo_servicio=$idtiempo_servicio)")))
+                            if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where idtiempo_servicio=$idtiempo_servicio")))
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "alert('Datos incorrectos del tiempo de servicio'); history.back();";
+                                echo "<script type=\"text/javascript\">alert('Datos incorrectos del tiempo de servicio'); history.back();</script>";
                             }
                             else
                             {   //UPDATE `checada6`.`especial` SET `fecha_inicio` = '2020-04-22', `fecha_fin` = '2020-04-26', `empresa` = 'HOSPITALL', `duracion` = '7' WHERE (`idespecial` = '25');
@@ -275,7 +278,7 @@ session_start();
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    echo "alert('Datos incorrectos de la comisión'); history.back();";
+                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos de la comisión'); history.back();</script>";
 
                                 }
                                 else
@@ -293,7 +296,7 @@ session_start();
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora trabajador'); history.back();</script>";
                                     }
                                     else
                                     {                                       
@@ -302,7 +305,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                            echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora cumple u onomástico); history.back();</script>";
                                         }
                                         else
                                         {  
@@ -311,7 +314,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                                echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora acceso); history.back();</script>";
                                             }
                                             else
                                             {
@@ -321,7 +324,7 @@ session_start();
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora tiempo de servicio); history.back();</script>";
                                                 }
                                                 else
                                                 {
@@ -330,7 +333,7 @@ session_start();
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        echo "alert('Datos incorrectos en bitacora especial); history.back();";  
+                                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora especial); history.back();</script>";  
                                                     }
                                                     else
                                                     {   mysqli_commit($con);
@@ -393,16 +396,17 @@ session_start();
                 {
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
-                    echo "alert('Datos incorrectos del trabajador'); history.back();";
+                    echo "<script type=\"text/javascript\">alert('Datos incorrectos del trabajador'); history.back();</script>";
                 }
                 else
                 {   
                     //UPDATE `checada6`.`acceso` SET `lunes` = '0', `martes` = '1', `miercoles` = '1', `jueves` = '1', `viernes` = '0', `sabado` = '0', `domingo` = '0', `dia_festivo` = '1', `turno_turno` = 'T2' WHERE (`idacceso` = '1');
-                    if(!(mysqli_query($con,"Update acceso SET lunes='$semana[0]',martes='$semana[1]',miercoles='$semana[2]',jueves='$semana[3]',viernes='$semana[4]',sabado='$semana[5]',domingo='$semana[6]',dia_festivo='$semana[7]',turno_turno='$turno' WHERE(trabajador_trabajador='$numero')")))
+                    // if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes=$semana[4],sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
+                    if(!(mysqli_query($con,"Update acceso SET lunes=0,martes=0,miercoles=1,jueves=1,viernes=1,sabado=1,domingo=1,dia_festivo=1,turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "alert('Datos incorrectos de los días de trabajo o el turno'); history.back();";    
+                        echo "<script type=\"text/javascript\">alert('Datos incorrectos de los días de trabajo o el turno 3 $turno'); history.back();</script>";    
                     }
                     else
                     { //UPDATE `checada6`.`cumple_ono` SET `fecha_cumple` = '2002-02-22', `fecha_ono` = '2002-02-21' WHERE (`idcumple_ono` = '40');
@@ -415,7 +419,7 @@ session_start();
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            echo "alert('Datos incorrectos del cumpleaños u onomástico'); history.back();";            
+                            echo "<script type=\"text/javascript\">alert('Datos incorrectos del cumpleaños u onomástico'); history.back();</script>";            
                         }
                         else
                         {
@@ -429,7 +433,7 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "alert('Datos incorrectos del tiempo de servicio'); history.back();";
+                                echo "<script type=\"text/javascript\">alert('Datos incorrectos del tiempo de servicio'); history.back();</script>";
                             }
                             else
                             {  
@@ -446,7 +450,7 @@ session_start();
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora trabajador'); history.back();</script>";
                                 }
                                 else
                                 {
@@ -455,7 +459,7 @@ session_start();
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        echo "alert('Datos incorrectos en bitacora cumple u onomástico); history.back();";
+                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora cumple u onomástico); history.back();</script>";
                                     }
                                 else
                                     {  
@@ -464,7 +468,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "alert('Datos incorrectos en bitacora acceso); history.back();";
+                                            echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora acceso); history.back();</script>";
                                         }
                                         else
                                         {
@@ -473,7 +477,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                                                echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora tiempo de servicio); history.back();</script>";
                                             }
                                             else
                                             {
@@ -622,7 +626,7 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "alert('Datos incorrectos del trabajador'); history.back();";
+                        echo "<script type=\"text/javascript\">alert('Datos incorrectos del trabajador'); history.back();</script>";
                     }
                     else
                     { 
@@ -673,11 +677,11 @@ session_start();
                         //////////////////////////  
                         mysqli_commit($con);
                         //UPDATE `checada6`.`acceso` SET `lunes` = '0', `martes` = '1', `miercoles` = '1', `jueves` = '1', `viernes` = '0', `sabado` = '0', `domingo` = '0', `dia_festivo` = '1', `turno_turno` = 'T2' WHERE (`idacceso` = '1');
-                        if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes='$semana[4]',sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE(trabajador_trabajador='$numero')")))
+                        if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes='$semana[4]',sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            echo "alert('Datos incorrectos de los días de trabajo o el turno'); history.back();";    
+                            echo "<script type=\"text/javascript\">alert('Datos incorrectos de los días de trabajo o el turno 4'); history.back();</script>";    
                         }
                         else
                         { //UPDATE `checada6`.`cumple_ono` SET `fecha_cumple` = '2002-02-22', `fecha_ono` = '2002-02-21' WHERE (`idcumple_ono` = '40');
@@ -690,7 +694,7 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "alert('Datos incorrectos del cumpleaños u onomástico'); history.back();";            
+                                echo "<script type=\"text/javascript\">alert('Datos incorrectos del cumpleaños u onomástico'); history.back();</script>";            
                             }
                             else
                             {
@@ -704,7 +708,7 @@ session_start();
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    echo "alert('Datos incorrectos del tiempo de servicio'); history.back();";
+                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos del tiempo de servicio'); history.back();</script>";
                                 }
                                 else
                                 {   //UPDATE `checada6`.`especial` SET `fecha_inicio` = '2020-04-22', `fecha_fin` = '2020-04-26', `empresa` = 'HOSPITALL', `duracion` = '7' WHERE (`idespecial` = '25');
@@ -717,7 +721,7 @@ session_start();
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        echo "alert('Datos incorrectos de la comisión'); history.back();";
+                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos de la comisión'); history.back();</script>";
 
                                     }
                                     else
@@ -736,7 +740,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                            echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora trabajador'); history.back();</script>";
                                         }
                                         else
                                         {
@@ -745,7 +749,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();";
+                                                echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();</script>";
                                             }
                                             else
                                             {  
@@ -754,7 +758,7 @@ session_start();
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "alert('Datos incorrectos en bitacora acceso'); history.back();";
+                                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora acceso'); history.back();</script>";
                                                 }
                                                 else
                                                 {                                                
@@ -763,16 +767,16 @@ session_start();
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        echo "alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();";
+                                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();</script>";
                                                     }
                                                     else
                                                     {            
                                                         //GUARDAR EN LA BITACORA DE ESPECIAL
-                                                        if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','17','$empresa',$totDias,'$f_ini_anterior','$f_fin_anterior','','','$clave_especial_anterior','$empresa_anterior','$duracion_anterior','$numero','$nombre_host')")))
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','17','$empresa',$totDias,'$f_ini_anterior','$f_fin_anterior','','','$clave_especial_anterior','$empresa_anterior','$duracion_anterior','$numero','$nombre_host',-1)")))
                                                         {
                                                             mysqli_rollback($con);
                                                             mysqli_autocommit($con, TRUE); 
-                                                            echo "alert('Datos incorrectos en bitacora especial'); history.back();";  
+                                                            echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora especial'); history.back();</script>";  
                                                         }
                                                         else
                                                         {   mysqli_commit($con);
@@ -834,17 +838,17 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "alert('Datos incorrectos del trabajador'); history.back();";
+                        echo "<script type=\"text/javascript\">alert('Datos incorrectos del trabajador'); history.back();</script>";
                     }
                     else
                     {   
                         mysqli_commit($con);
                         //UPDATE `checada6`.`acceso` SET `lunes` = '0', `martes` = '1', `miercoles` = '1', `jueves` = '1', `viernes` = '0', `sabado` = '0', `domingo` = '0', `dia_festivo` = '1', `turno_turno` = 'T2' WHERE (`idacceso` = '1');
-                        if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes='$semana[4]',sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE(trabajador_trabajador='$numero')")))
+                        if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes=$semana[4],sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            echo "alert('Datos incorrectos de los días de trabajo o el turno'); history.back();";    
+                            echo "<script type=\"text/javascript\">alert('Datos incorrectos de los días de trabajo o el turno 1'); history.back();</script>";    
                         }
                         else
                         { //UPDATE `checada6`.`cumple_ono` SET `fecha_cumple` = '2002-02-22', `fecha_ono` = '2002-02-21' WHERE (`idcumple_ono` = '40');
@@ -857,7 +861,7 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "alert('Datos incorrectos del cumpleaños u onomástico'); history.back();";            
+                                echo "<script type=\"text/javascript\">alert('Datos incorrectos del cumpleaños u onomástico'); history.back();</script>";            
                             }
                             else
                             {
@@ -871,7 +875,7 @@ session_start();
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    echo "alert('Datos incorrectos del tiempo de servicio'); history.back();";
+                                    echo "<script type=\"text/javascript\">alert('Datos incorrectos del tiempo de servicio'); history.back();</script>";
                                 }
                                 else
                                 {   
@@ -888,7 +892,7 @@ session_start();
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        echo "alert('Datos incorrectos en bitacora trabajador'); history.back();";
+                                        echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora trabajador'); history.back();</script>";
                                     }
                                     else
                                     {
@@ -897,7 +901,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();";
+                                            echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora cumple u onomástico'); history.back();</script>";
                                         }
                                        else
                                         {                                         
@@ -906,7 +910,7 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "alert('Datos incorrectos en bitacora acceso'); history.back();";
+                                                echo "<script type=\"text/javascript\">alert('Datos incorrectos en bitacora acceso'); history.back();</script>";
                                             }
                                             else
                                             {                                            
@@ -915,7 +919,7 @@ session_start();
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();";
+                                                    echo "<script type=\"text/javascript\"><script type=\"text/javascript\">alert('Datos incorrectos en bitacora tiempo de servicio'); history.back();</script>";
                                                 }
                                                 else
                                                 {

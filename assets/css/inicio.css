@@ -1,0 +1,10 @@
+a.passOlvidada:hover {
+	color:#100;
+  }
+a.passOlvidada:link 
+{
+    color:rgb(6, 6, 99) !important;
+    padding-left: 160px;
+}
+a.passOlvidada:visited {color:rgb(102, 102, 143) !important;}
+a.passOlvidada:active {color:rgb(100, 100, 119) !important;}

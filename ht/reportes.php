@@ -51,7 +51,7 @@ date_default_timezone_set('America/Mexico_City');
             {
                 if (x == 1) 
                 {
-                    // $('input:hidden[name=enviar]').val("rango");
+                    
                     document.getElementById('rangos').style.display = "block";//ver
                     document.getElementById('todos-q').style.display = "none";//no ver
                     document.getElementById('numeros').style.display = "none";
@@ -61,7 +61,7 @@ date_default_timezone_set('America/Mexico_City');
                 { 
                     if (x == 2) 
                     {  
-                        //  $('input:hidden[name=enviar]').val("todos-q");
+                        
                         document.getElementById('todos-q').style.display = "block";//ver
                         document.getElementById('rangos').style.display = "none";//no ver
                         document.getElementById('numeros').style.display = "none";
@@ -70,7 +70,7 @@ date_default_timezone_set('America/Mexico_City');
                     {
                         if (x == 3) 
                         {  
-                            //  $('input:hidden[name=enviar]').val("numero");
+                    
                             document.getElementById('numeros').style.display = "block";//ver
                             document.getElementById('rangos').style.display = "none";//no ver
                             document.getElementById('todos-q').style.display = "none";
@@ -86,7 +86,13 @@ date_default_timezone_set('America/Mexico_City');
                 if(x==1)
                 {
                     document.getElementById('boton-descargar').style.display = "none";//ver
-                    document.getElementById('buscar-comision').style.display = "block";//ver        
+                    document.getElementById('buscar-comision').style.display = "block";//ver
+                    //Sirve para que las subopciones muestren  el boton de descargar
+                    var subrad = $("input[name='sub-opc']:checked").val();
+                    if(subrad=="activas" || subrad=="inactivas")
+                    {
+                        ocultadescargar(1);//Ver el botón descargar
+                    }        
                 }
                 else
                 {
@@ -94,7 +100,12 @@ date_default_timezone_set('America/Mexico_City');
                     {
                         document.getElementById('boton-descargar').style.display = "none";//ver
                         document.getElementById('buscar-comision').style.display = "block";//ver        
-
+                        //Sirve para que las subopciones muestren  el boton de descargar
+                        var subrad = $("input[name='sub-opc']:checked").val();
+                        if(subrad=="activas" || subrad=="inactivas")
+                        {
+                            ocultadescargar(1);//Ver el botón descargar
+                        }  
                     }
                     else
                     {
@@ -102,7 +113,12 @@ date_default_timezone_set('America/Mexico_City');
                         {
                             document.getElementById('boton-descargar').style.display = "none";//ver
                             document.getElementById('buscar-comision').style.display = "block";//ver 
-
+                            //Sirve para que las subopciones muestren  el boton de descargar
+                            var subrad = $("input[name='sub-opc']:checked").val();
+                            if(subrad=="activas" || subrad=="inactivas")
+                            {
+                                ocultadescargar(1);//Ver el botón descargar
+                            }  
                         }
                         else
                         {
@@ -253,6 +269,7 @@ date_default_timezone_set('America/Mexico_City');
                         document.getElementById('guardias').style.display = "none"; 
                         document.getElementById('sextas').style.display = "none";
                         document.getElementById('licencias').style.display = "none";
+                        document.getElementById('pases').style.display = "none";
                         document.getElementById('unico').style.display = "block";/*Ver div*/
                         document.getElementById('boton-descargar').style.display = "block"; 
                 }
@@ -264,9 +281,6 @@ date_default_timezone_set('America/Mexico_City');
                             ocultaSubElementos();
                             document.getElementById('unico').style.display = "none";/*No ver div*/   
                             document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
-                            document.getElementById('todos-q').style.display = "none";/*No ver div*/   
-                            document.getElementById('rangos').style.display = "none";/*No ver div*/  
-                            document.getElementById('numeros').style.display = "none";/*No ver div*/ 
                             document.getElementById('comisionados').style.display = "none";/*No ver div*/     
                             document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
                             document.getElementById('vinieron').style.display = "none";  
@@ -275,12 +289,14 @@ date_default_timezone_set('America/Mexico_City');
                             document.getElementById('guardias').style.display = "none"; 
                             document.getElementById('sextas').style.display = "none";
                             document.getElementById('licencias').style.display = "none"; 
+                            document.getElementById('pases').style.display = "none";
                             document.getElementById('vacaciones').style.display = "block";/*Ver div*/
                             document.getElementById('boton-descargar').style.display = "block"; 
                             var rad = $("input[name='opcion']:checked").val();
-                            if(rad=="rangos")
+                            if(rad=="rango")
                             {
-                                oculta(1);
+                                oculta(1);//Solo ver el div de rango
+                                
                             }
                             else
                             {
@@ -313,6 +329,7 @@ date_default_timezone_set('America/Mexico_City');
                                 document.getElementById('guardias').style.display = "none"; 
                                 document.getElementById('sextas').style.display = "none";
                                 document.getElementById('licencias').style.display = "none";
+                                document.getElementById('pases').style.display = "none";
                                 // document.getElementById('rangos2').style.display = "none";/*No ver div*/  
                                 // document.getElementById('fecha').style.display = "none";/*No ver div*/ 
                                 document.getElementById('asistencia').style.display = "block";/*Ver div*/ 
@@ -335,24 +352,40 @@ date_default_timezone_set('America/Mexico_City');
                                     document.getElementById('guardias').style.display = "none"; 
                                     document.getElementById('sextas').style.display = "none";
                                     document.getElementById('licencias').style.display = "none";
+                                    document.getElementById('pases').style.display = "none";
                                     document.getElementById('comisionados').style.display = "block";/*Ver div*/ 
                                     
                                     var rad = $("input[name='opc']:checked").val();
+                                    //Sirve para que las subopciones muestren  el boton de descargar
+                                    var subrad = $("input[name='sub-opc']:checked").val();
+                                    
                                     if(rad=="fora")
                                     {
                                         ocultacomision(1);
+                                        if(subrad=="activas" || subrad=="inactivas")
+                                        {
+                                            ocultadescargar(1);
+                                        }
                                     }
                                     else
                                     {
                                         if(rad=="int")
                                         {
                                             ocultacomision(2);
+                                            if(subrad=="activas" || subrad=="inactivas")
+                                            {
+                                                ocultadescargar(1);
+                                            }
                                         }
                                         else
                                         {
                                             if(rad=="ext")
                                             {
                                                 ocultacomision(3);
+                                                if(subrad=="activas" || subrad=="inactivas")
+                                                {
+                                                    ocultadescargar(1);
+                                                }
                                             }
                                             else
                                             {
@@ -362,12 +395,6 @@ date_default_timezone_set('America/Mexico_City');
                                                 }
                                             }
                                         }
-                                    }
-                                    //Sirve para que las subopciones muestren  el boton de descargar
-                                    var subrad = $("input[name='sub-opc']:checked").val();
-                                    if(subrad=="activas" || subrad=="inactivas")
-                                    {
-                                        ocultadescargar(1);
                                     }
 
                                 }
@@ -388,6 +415,7 @@ date_default_timezone_set('America/Mexico_City');
                                         document.getElementById('guardias').style.display = "none"; 
                                         document.getElementById('sextas').style.display = "none";
                                         document.getElementById('licencias').style.display = "none";
+                                        document.getElementById('pases').style.display = "none";
                                         document.getElementById('vinieron').style.display = "block";
                                         document.getElementById('boton-descargar').style.display = "block";/*ver div*/
                                         
@@ -428,6 +456,7 @@ date_default_timezone_set('America/Mexico_City');
                                             document.getElementById('guardias').style.display = "none";
                                             document.getElementById('sextas').style.display = "none";
                                             document.getElementById('licencias').style.display = "none";
+                                            document.getElementById('pases').style.display = "none";
                                             document.getElementById('faltaron').style.display = "block";/*ver div*/
                                             document.getElementById('boton-descargar').style.display = "block";/*ver div*/
                                             var rad = $("input[name='opcion-f']:checked").val();
@@ -468,6 +497,7 @@ date_default_timezone_set('America/Mexico_City');
                                                 document.getElementById('guardias').style.display = "none";
                                                 document.getElementById('sextas').style.display = "none";
                                                 document.getElementById('licencias').style.display = "none";
+                                                document.getElementById('pases').style.display = "none";
                                                 document.getElementById('cumpleOno').style.display = "block"; 
                                                 document.getElementById('boton-descargar').style.display = "block"; 
                                                 
@@ -488,6 +518,7 @@ date_default_timezone_set('America/Mexico_City');
                                                     document.getElementById('vinieron').style.display = "none";
                                                     document.getElementById('sextas').style.display = "none";
                                                     document.getElementById('licencias').style.display = "none";
+                                                    document.getElementById('pases').style.display = "none";
                                                     document.getElementById('guardias').style.display = "block";/*ver div*/
                                                     document.getElementById('boton-descargar').style.display = "block";/*ver div*/
                                                     
@@ -527,6 +558,7 @@ date_default_timezone_set('America/Mexico_City');
                                                         document.getElementById('cumpleOno').style.display = "none"; 
                                                         document.getElementById('guardias').style.display = "none"; 
                                                         document.getElementById('licencias').style.display = "none";
+                                                        document.getElementById('pases').style.display = "none";
                                                         document.getElementById('sextas').style.display = "block";/*Ver div*/
                                                         document.getElementById('boton-descargar').style.display = "block"; 
                                                     }
@@ -546,8 +578,31 @@ date_default_timezone_set('America/Mexico_City');
                                                             document.getElementById('cumpleOno').style.display = "none"; 
                                                             document.getElementById('guardias').style.display = "none"; 
                                                             document.getElementById('sextas').style.display = "none";
+                                                            document.getElementById('pases').style.display = "none";
                                                             document.getElementById('licencias').style.display = "block";/*Ver div*/
                                                             document.getElementById('boton-descargar').style.display = "block"; 
+                                                        }
+                                                        else
+                                                        {
+                                                            if(valor=="PASES")
+                                                            {
+                                                                $('input:hidden[name=id]').val("pases");
+                                                                ocultaSubElementos();
+                                                                document.getElementById('unico').style.display = "none";
+                                                                document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                                                                document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                                                                document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                                                                document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                                                                document.getElementById('vinieron').style.display = "none";  
+                                                                document.getElementById('faltaron').style.display = "none";
+                                                                document.getElementById('cumpleOno').style.display = "none"; 
+                                                                document.getElementById('guardias').style.display = "none"; 
+                                                                document.getElementById('sextas').style.display = "none";
+                                                                document.getElementById('licencias').style.display = "none";
+                                                                document.getElementById('pases').style.display = "block";
+                                                                document.getElementById('boton-descargar').style.display = "block"; 
+                                                            }
+
                                                         }
 
                                                     }//fin else sextas
@@ -725,7 +780,7 @@ date_default_timezone_set('America/Mexico_City');
 
                             <div class="col-xl-5">
                                 <div class="card">
-                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="8" value="GUARDIAS" onclick="recibir(8);"><i class="fa fa-file-pdf-o"></i> GUARDIAS</button></a> 
+                                    <a><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="8" value="GUARDIAS" onclick="recibir(8);"><i class="fa fa-file-pdf-o"></i> GUARDIAS</button></a> 
                                 </div>
                             </div>
 
@@ -738,6 +793,12 @@ date_default_timezone_set('America/Mexico_City');
                             <div class="col-xl-5">
                                 <div class="card">
                                     <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="10" value="LICENCIAS" onclick="recibir(10);"><i class="fa fa-file-pdf-o"></i>LICENCIAS Y PERMISOS</button></a> 
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <div class="card">
+                                    <a ><button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="11" value="PASES" onclick="recibir(11);"><i class="fa fa-file-pdf-o"></i>PASES DE SALIDA</button></a> 
                                 </div>
                             </div>
 
@@ -754,14 +815,15 @@ date_default_timezone_set('America/Mexico_City');
                         <form method="post" action="../rep-asistencia/crearPdf-reportes.php" id="form2" class="form-modal">
                             <!-- <p>Cuerpo del modal</p> -->
                             <div class="modal-body">
-                                <div class="form-row">
+                            <div class="container-fluid">
+                                <div class="row">
                    
                                    
                                     <div id="unico">
 
-                                        <div class="col-md5 bn-3 label">
-                                            <!-- <span>Color:</span><input type="text" id="codigo"/> -->
-                                            <label for="">Seleccione la quincena: </label>
+                                        <div class="col-md-12 label">
+                                            <label>REPORTE ÚNICO DE INCIDENCIAS</label><br><br>
+                                            <span>Seleccione la quincena: </span>
                                             <?php
                                                 $nombre=$_SESSION['name'];
                                                 $contra=$_SESSION['con'];
@@ -788,7 +850,7 @@ date_default_timezone_set('America/Mexico_City');
                                                         $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
                                                         $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
 
-                                                        echo "<option value='".$fila[0]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+                                                        echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
                                                     }
                                                     echo "</select>";
                                                 }
@@ -800,8 +862,9 @@ date_default_timezone_set('America/Mexico_City');
                                     </div><!--fin div unico-->
 
                                     <div id="vacaciones">
-                                        <div class="col-md5 bn-3 ">
+                                        <div class="col-md-12 label ">
                                             <div class="radios">
+                                            <label for="">REPORTE DE VACACIONES</label><br><br>
                                             <label for="">Seleccione cómo desea que busquemos:</label>
                                             <p></p>
                                             <label for="rango"> Por rango de fechas
@@ -855,7 +918,7 @@ date_default_timezone_set('America/Mexico_City');
                                                             $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
                                                             $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
                                                             
-                                                            echo "<option value='".$fila[0]."'>". Quincena. " ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+                                                            echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>". Quincena. " ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
                                                         }
                                                         echo "</select>";
                                                     }
@@ -869,8 +932,7 @@ date_default_timezone_set('America/Mexico_City');
                                                 <div id=numeros>
                                                     <label for="">Ingrese un numéro de trabajador: </label>
                                                     <input type="text" class="form-control" name="num">
-                                                    <!--Sirve para enviar que queremos buscar en el reporte-->
-                                                    <input type="hidden" name="enviar" value="numero" >  
+                                                   
                                                 </div>
                                             </div>
                                         </div>  
@@ -880,7 +942,8 @@ date_default_timezone_set('America/Mexico_City');
 
                                     <div id="asistencia">
 
-                                        <div class="col-md5 bn-3 label">
+                                        <div class="col-md-12 label">
+                                        <label >REPORTE DE QUIÉN DEBE ASISTIR</label><br><br>
                                             <!--<label for="">Seleccione cómo desea que busquemos:</label>
                                             <p></p>
                                             <label for="rango2">Por rango de fechas <input type="radio" name="opcion2" value="rango2" id="rango2" onclick="oculta2(1)"></label>
@@ -908,8 +971,9 @@ date_default_timezone_set('America/Mexico_City');
                                     
                                     <div id="comisionados">
                                         <div class="col-md5 bn-3 ">
+                                        <label for="">REPORTE DE COMISIONES</label><br><br>
                                             <div class="radios">
-                                            <h4>Seleccione una opción:</h4>
+                                            <p>Seleccione una opción:</p>
                                             <p></p>
                                             
                                             <input type="radio" name="opc" value="fora" id="fora" onclick="ocultacomision(1)">
@@ -946,8 +1010,9 @@ date_default_timezone_set('America/Mexico_City');
 
                                     <div id="vinieron">
                                         <div class="col-md5 bn-3 ">
+                                        <label for="">REPORTE DE ASISTENCIAS</label><br><br>
                                             <div class="radios">
-                                                <label for="">Seleccione cómo desea buscar:</label>
+                                                <p>Seleccione cómo desea buscar:</p>
                                                 <p></p>
                                                 <label for="rango-v"> Por rango de fechas
                                                 <input type="radio" name="opcion-v" value="rango-v" id="rango-v" onclick="ocultavinieron(1)"></label>
@@ -1025,7 +1090,8 @@ date_default_timezone_set('America/Mexico_City');
                                     <div id="faltaron">
                                         <div class="col-md5 bn-3 ">
                                             <div class="radios">
-                                                <label for="">Seleccione cómo desea buscar:</label>
+                                                <label for="">REPORTE DE FALTAS</label><br><br>
+                                                <p>Seleccione cómo desea buscar:</p>
                                                 <p></p>
                                                 <label for="rango-f"> Por rango de fechas
                                                 <input type="radio" name="opcion-f" value="rango-f" id="rango-f" onclick="ocultafaltaron(1)"></label>
@@ -1119,19 +1185,20 @@ date_default_timezone_set('America/Mexico_City');
                                         <div class="col-md5 bn-3 ">
                                             <div class="radios">
                                                 <label for="">REPORTE DE GUARDIAS </label><br><br>
-                                                <label for="">Seleccione cómo desea buscar:</label>
-                                                <p></p>
+                                                <p>Seleccione cómo desea buscar:</p>
                                                 
+                                                <label for="rango-g"> Por rango de fechas
                                                 <input type="radio" name="opcion-g" value="rango-g" id="rango-g" onclick="ocultaguardias(1)">
-                                                <label for="rango-g"> Por rango de fechas</label>
-                                                <p></p>
-                                                <input type="radio" name="opcion-g" value="numero-g" id="numero-g" onclick="ocultaguardias(2)">
-                                                <label for="numero-g"> Por un número de empleado y rango de fechas</label>
+                                                </label> <p></p>
                                                 
-                                                <p></p>
+                                                <label for="numero-g"> Por un número de empleado y rango de fechas
+                                                <input type="radio" name="opcion-g" value="numero-g" id="numero-g" onclick="ocultaguardias(2)">
+                                                </label><p></p>
+                                                
+                                                <label for="quincena-g"> Por quincena
                                                 <input type="radio" name="opcion-g" value="quincena-g" id="quincena-g" onclick="ocultaguardias(3)">
-                                                <label for="quincena-g"> Por quincena</label>
-                                                <p></p>
+                                                </label><p></p>
+                                                
                                             </div>
                                             <div class="form-1-2">
                                                 <div id=rangos-guardias> 
@@ -1199,13 +1266,16 @@ date_default_timezone_set('America/Mexico_City');
                                         <div class="col-md5 bn-3 ">
                                             <div class="radios">
                                                 <label for="">REPORTE DE SEXTAS</label><br><br>
-                                                <label for="">Seleccione qué desea buscar:</label>
+                                                <p>Seleccione qué desea buscar:</p>
                                                 <p></p>
+                                                <label for="todos-sexta">
                                                 <input type="radio" name="opcion-s" value="todos-sexta" id="todos-sexta" >
-                                                <label for="todos-sexta"> Todos los empleados con sexta</label>
+                                                 Todos los empleados con sexta</label>
                                                 <p></p>
+
+                                                <label for="viene-sexta">
                                                 <input type="radio" name="opcion-s" value="viene-sexta" id="viene-sexta" >
-                                                <label for="viene-sexta"> ¿Quién viene hoy y tiene sexta?</label>  
+                                                 ¿Quién viene hoy y tiene sexta?</label>  
                                                 <p></p>
                                             </div>
                                         </div>  
@@ -1216,28 +1286,54 @@ date_default_timezone_set('America/Mexico_City');
                                     <div id="licencias">
                                         <div class="col-md5 bn-3 ">
                                             <div class="radios">
-                                            <h4>Seleccione una opción:</h4>
+                                            <label for="">REPORTE DE LICENCIAS Y PERMISOS </label><br><br>
+                                            <p>Seleccione una opción:</p>
                                             <p></p>
-                                            
+                                            <label for="noempiezan">
                                             <input type="radio" name="opcion-l" value="noempiezan" id="noempiezan" >
-                                            <label for="noempiezan"> Licencias y permisos que aún no empiezan </label>
+                                            Licencias y permisos que aún no empiezan </label>
                                             <p></p>
-                                            
+                                            <label for="xvencer">
                                             <input type="radio" name="opcion-l" value="xvencer" id="xvencer" >
-                                            <label for="xvencer"> Licencias y permisos por vencer</label>
+                                            Licencias y permisos por vencer</label>
                                             <p></p>
-                                            
+                                            <label for="vencida">
                                             <input type="radio" name="opcion-l" value="vencida" id="vencida" >
-                                            <label for="vencida"> Licencias y permisos vencidos</label>
+                                             Licencias y permisos vencidos</label>
                                             <p></p>
-                                            
+                                            <label for="activa"> 
                                             <input type="radio" name="opcion-l" value="activa" id="activa" >
-                                            <label for="activa"> Licencias y permisos activos</label>
+                                            Licencias y permisos activos</label>
                                             <p></p>
                                             </div>
                                         </div>  
                                         <!--Sirve para enviar que reporte queremos-->
                                         <input type="hidden" name="id" value="licencias" >                                                    
+                                    </div><!--fin div -->
+
+                                    <div id="pases">
+                                        <div class="col-md5 bn-3 ">
+                                            <div class="radios">
+                                                <label for="">REPORTE DE PASES DE SALIDA </label><br><br>
+                                                <p>Seleccione una opción:</p>
+                                                <p></p>
+                                                <label for="hoy"> 
+                                                <input type="radio" name="opcion-p" value="hoy" id="hoy" >
+                                                Pases de salida de hoy </label>
+                                                <p></p>
+                                                <label for="vencido">
+                                                <input type="radio" name="opcion-p" value="vencido" id="vencido" >
+                                                Pases de salida vencidos</label>
+                                                <p></p>
+                                                <label for="antes"> 
+                                                <input type="radio" name="opcion-p" value="antes" id="antes" >
+                                                Pases de salida próximos </label>
+                                                <p></p>
+
+                                            </div>
+                                        </div>  
+                                        <!--Sirve para enviar que reporte queremos-->
+                                        <input type="hidden" name="id" value="pases" >                                                    
                                     </div><!--fin div -->
                                     
                                     <div class="modal-footer">
@@ -1247,6 +1343,7 @@ date_default_timezone_set('America/Mexico_City');
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                     </div><!--fin modal-footer-->
                                 </div><!--fin form-row-->
+                            </div>
                             </div> <!--fin modal -->
                         </form>
                     </div>
