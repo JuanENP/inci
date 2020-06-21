@@ -23,10 +23,9 @@ session_start();
     $mes=date("m");//solo el mes actual  
     $carpetaDestino="../../documents/";//carpeta destino para las imagenes
     
-    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
+    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS
+     Si la quincena está vacía dará el error: esta consulta arrojó... que se encuentra en la  función retornaAlgoDeBD*/
     $sql5="SELECT idquincena from quincena where validez=1";
-    //$query5=mysqli_query($con, $sql5) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-    //$resul5=mysqli_fetch_array($query5);
     $quincena=retornaAlgoDeBD(0,$sql5);
     /*FIN DE OBTENER QUINCENA ACTUAL*/
     if(empty($_POST["opcion"]))
@@ -550,14 +549,14 @@ session_start();
         {
             $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
             $filas=mysqli_num_rows($query);
-            if($filas>0)
+            if($filas==1)
             {
                 $resul=mysqli_fetch_array($query);
                 return $resul[0];//Devolver un solo dato
             }
             else
             {
-                echo "Esta consulta arrojó un conjunto vacío. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                echo "Esta consulta arrojó un conjunto vacío o un array. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
                 exit();
             }  
         }
@@ -668,12 +667,9 @@ session_start();
     function insertaEnBitacoraEspecial($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
     $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)
     {
-        //$ok,$numero,$clave,$f_ini,$f_fin,$empresa,$totDias,$id
-        
         global $con;
         $nombre_host=gethostname();
         //GUARDAR EN LA BITACORA DE ESPECIAL
-        //call inserte_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','$clave','$empresa','$totDias','-','-','','','-','-','-','$numero','$nombre_host','$id')
         if((mysqli_query($con,"call inserta_bitacora_especial('$operacion','$f_inicio_new','$f_fin_new','$he_new','$hs_new',
         '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
         '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
@@ -682,9 +678,9 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM especial WHERE (idespecial = '$id')";
             hazAlgoEnBDSinRetornarAlgo($sql);
-
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
             ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
             exit();
@@ -707,6 +703,7 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM guardias WHERE (idguardias = '$id_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
@@ -727,6 +724,7 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM pase_salida WHERE (idpase_salida = '$id')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
@@ -749,9 +747,9 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM justificar_falta WHERE (idjustificar_falta = '$idjustFalta_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
-
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
             ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
             exit();

@@ -32,7 +32,7 @@ session_start();
   $nombre=$_SESSION['name'];
   $contra=$_SESSION['con'];
   require("../Acceso/global.php");
-  //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
+  //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A eliminar
   $sql="select * from categoria where idcategoria='$cadena'";
   $query= mysqli_query($con, $sql) or die();
   while($resul=mysqli_fetch_array($query))

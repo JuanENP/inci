@@ -51,7 +51,7 @@
         }
         else
         {
-            echo "<script> imprime('No una falta en la fecha $fecha para el trabajador $num.'); </script>";
+            echo "<script> imprime('No hay una falta en la fecha $fecha para el trabajador $num.'); </script>";
         }
     }
     else //fin if posts vacíos

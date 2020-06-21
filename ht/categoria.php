@@ -88,13 +88,18 @@ session_start();
                                 <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
-                                <li><i class="fa fa-chain"></i><a href="especiales.php" title="comisiones, lactancia, estancia">Especiales</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.php">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
                             </ul>
                         </li>
                     </ul>
@@ -160,7 +165,7 @@ session_start();
             <div class="content mt-3">
                 <div class="animated fadeIn">
                    <div class="row"> 
-                       <form method="post" action="./../ht/inserta-cat.php" id="form2">   
+                       <form method="post" action="../../ht/inserta-cat.php" id="form2">   
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">
@@ -182,9 +187,6 @@ session_start();
                      </form>
                    </div>  
                          
-                      
-              
- 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">

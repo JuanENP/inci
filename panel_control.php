@@ -97,8 +97,13 @@ require("Acceso/global.php");
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                 
-                                <li><i class="fa fa-users"></i><a href="ht/usuarios.html">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>

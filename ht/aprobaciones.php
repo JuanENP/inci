@@ -194,11 +194,20 @@ session_start();
                     }
                     else
                     {
-                        if(cod=="cse" || cod=="com1")
+                        if(cod=="cse")
                         {
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('he').style.display = "block";
                             document.getElementById('hs').style.display = "block";
+                        }
+                        else
+                        {
+                            if(cod=="com1")
+                            {
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('he').style.display = "block";
+                                document.getElementById('hs').style.display = "block";
+                            }
                         }
                     }
                     //fin de comision igual a un dia
@@ -483,11 +492,20 @@ session_start();
                     }
                     else
                     {
-                        if(cod=="csi" || cod=="cse" || cod=="com1")
+                        if(cod=="csi" || cod=="cse")
                         {
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('he').style.display = "block";
                             document.getElementById('hs').style.display = "block";
+                        }
+                        else
+                        {
+                            if(cod=="com1")
+                            {
+                                document.getElementById('fecf').style.display = "none";
+                                document.getElementById('he').style.display = "block";
+                                document.getElementById('hs').style.display = "block";
+                            }
                         }
                     }
                 });
@@ -973,11 +991,20 @@ session_start();
                         }
                         else
                         {
-                            if(cod=="cse" || cod=="com1")
+                            if(cod=="cse")
                             {
                                 document.getElementById('fecf').style.display = "block";
                                 document.getElementById('he').style.display = "block";
                                 document.getElementById('hs').style.display = "block";
+                            }
+                            else
+                            {
+                                if(cod=="com1")
+                                {
+                                    document.getElementById('fecf').style.display = "none";
+                                    document.getElementById('he').style.display = "block";
+                                    document.getElementById('hs').style.display = "block";
+                                }
                             }
                         }
                         //fin de comision igual a un dia
@@ -1223,7 +1250,7 @@ session_start();
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="usuarios.html">Usuarios</a></li>
+                                <li><i class="fa fa-users"></i><a href="usuarios.php">Usuarios</a></li>
                             </ul>
                         </li>
                     </ul>
