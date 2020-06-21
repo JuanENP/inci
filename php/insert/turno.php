@@ -11,26 +11,7 @@ session_start();
         header("Location: ../../index.html");
         die();
     }
-?>
-
-<script type="text/javascript">
-    function Ya_Existe()
-    {
-        alert("Esta turno ya existe, verifique");
-        history.back();
-        
-    }
-</script>
-
-<script type="text/javascript">
-    function Correcto()
-    {
-        alert("Turno guardado correctamente");
-        location.href="../../ht/turnos.php";
-    }
-</script>
-
-<?php 
+    
     function RestarHoras($horaini,$horafin)
     {
         $f1 = new DateTime($horaini);
@@ -38,6 +19,24 @@ session_start();
         $d = $f1->diff($f2);
         return $d->format('%H:%I:%S');
     }
+
+    function insertaEnBitacoraTurno($operacion,$idturno_new,$entrada_new,
+    $salida_new, $thoras_new, $idturno_old,$entrada_old, $salida_old, $thoras_old)
+    {
+        global $con;
+        $host=gethostname();
+        //GUARDAR EN LA BITACORA DE turno
+        if(!(mysqli_query($con,"call inserta_bitacora_turno('$operacion','$idturno_new','$entrada_new',
+        '$salida_new', '$thoras_new', '$idturno_old','$entrada_old', '$salida_old', '$thoras_old','$host')")))
+        {
+            echo mysqli_errno($con) . ": " . mysqli_error($con) . "\n";
+            return 1;//algo salió mal
+        }
+        else
+        {
+            return 0; //ok
+        }
+    }//FIN de insertaEnBitacoraJustificarFalta
 
     $turno=$_POST['turno'];
     $hora_ent=$_POST['entrada'];
@@ -48,7 +47,7 @@ session_start();
     $consultar=mysqli_num_rows($codigo);
     if($consultar>0)
     {
-        echo "<script> Ya_Existe(); </script>";
+        echo "<script> alert('Este turno ya existe, verifique.'); history.back(); </script>";
     }
     else
     {
@@ -60,25 +59,25 @@ session_start();
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
             echo "alert('Datos incorrectos del turno'); history.back();";
-         }
+        }
         else
         { 
-            if(!(mysqli_query($con,"call inserta_bitacora_turno('Guardado','$turno','$hora_ent','$hora_sal','$total_tiempo','-','', '', '', '$nombre_host')")))
+            $valor=insertaEnBitacoraTurno("Guardado",$turno,$hora_ent,
+            $hora_sal, $total_tiempo, "-","-", "-", "-");
+            if($valor==1)
             {
                 mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE); 
-                echo "alert('Datos incorrectos en bitacora turno); history.back();";
+                mysqli_autocommit($con, TRUE);
+                echo "<script> alert('Datos incorrectos en la bitácora, reintente...'); history.back(); </script>";
             }
             else
             {
                 mysqli_commit($con);
                 mysqli_autocommit($con, TRUE);
                 //Guardado correcto
-                echo "<script> Correcto(); </script>";
+                echo "<script> alert('Turno guardado correctamente'); history.back(); </script>";
             }
         }
         mysqli_close($con); 
-        
     }
-   
 ?>

@@ -23,7 +23,7 @@ session_start();
 
 <?php
   //obtener el id que se mandó acá
-  echo $id=$_GET['id'];
+  $id=$_GET['id'];
   mysqli_autocommit($con, FALSE);
   $nombre_host= gethostname();
 
@@ -55,7 +55,6 @@ session_start();
       //Guardado correcto
       echo "<script> Correcto(); </script>";
     }
-    
   }
   mysqli_close($con);   
 ?>

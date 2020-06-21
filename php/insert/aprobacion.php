@@ -23,7 +23,8 @@ session_start();
     $mes=date("m");//solo el mes actual  
     $carpetaDestino="../../documents/";//carpeta destino para las imagenes
     
-    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
+    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS
+     Si la quincena está vacía dará el error: esta consulta arrojó... que se encuentra en la  función retornaAlgoDeBD*/
     $sql5="SELECT idquincena from quincena where validez=1";
     $quincena=retornaAlgoDeBD(0,$sql5);
     /*FIN DE OBTENER QUINCENA ACTUAL*/
@@ -548,14 +549,14 @@ session_start();
         {
             $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
             $filas=mysqli_num_rows($query);
-            if($filas>0)
+            if($filas==1)
             {
                 $resul=mysqli_fetch_array($query);
                 return $resul[0];//Devolver un solo dato
             }
             else
             {
-                echo "Esta consulta arrojó un conjunto vacío. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                echo "Esta consulta arrojó un conjunto vacío o un array. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
                 exit();
             }  
         }
@@ -677,9 +678,9 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM especial WHERE (idespecial = '$id')";
             hazAlgoEnBDSinRetornarAlgo($sql);
-
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
             ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
             exit();
@@ -702,6 +703,7 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM guardias WHERE (idguardias = '$id_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
@@ -722,6 +724,7 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM pase_salida WHERE (idpase_salida = '$id')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
@@ -744,9 +747,9 @@ session_start();
         }
         else
         {
+            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
             $sql="DELETE FROM justificar_falta WHERE (idjustificar_falta = '$idjustFalta_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
-
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
             ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
             exit();
