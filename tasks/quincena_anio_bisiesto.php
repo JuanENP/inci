@@ -1,6 +1,8 @@
 <?php
-date_default_timezone_set('America/Mexico_City');
-require("../Acceso/global.php");
+    date_default_timezone_set('America/Mexico_City');
+    $nombre="biometric";
+    $contra="5_w**/pQxcmk.";
+    require("../Acceso/global.php");
     $month = date('Y-m');
     $aux = date('Y-m-d', strtotime("{$month} + 1 month"));
     $last_day = date('d', strtotime("{$aux} - 1 day"));

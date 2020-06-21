@@ -11,7 +11,6 @@
     {
         $email='';
     }
-
 ?>
 <script>
     function mostrarPasswordActual($x)
@@ -50,6 +49,7 @@
 
 </script>
 <html>
+    <!-- ESTA MODAL SOLO ESE MUESTRA A USUARIOS LOS USUARIOS JEFES -->
     <head>
         <!-- <link rel="stylesheet" href="../assets/css/reportes.css" /> -->
     </head>
@@ -70,7 +70,7 @@
                                     </div>
                                     <label>Correo electrónico</label>
                                     <div class="input-group">
-                                        <input type="email" name="email" Class="form-control" disabled="disabled" value="<?php echo$email;?>">
+                                        <input type="email" name="email" Class="form-control" value="<?php echo $email;?>">
                                     </div>
                                     
                                     <label> Ingrese contraseña actual</label>
