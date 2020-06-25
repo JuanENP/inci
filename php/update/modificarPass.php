@@ -5,16 +5,25 @@ session_start();
         $nombre=$_SESSION['name'];// numero del trabajador
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php"); 
-
-        if(!empty($_POST['contraActual']) && !empty($_POST['nuevaContra']) )
+        $salida='';
+        if(!empty($_POST['contraActual']) && !empty($_POST['nuevaContra']) && !empty($_POST['email']))
         {
             $contraActual=$_POST['contraActual'];
             $nuevaContra=$_POST['nuevaContra'];
+            $mail=$_POST['email'];
+            //Comprobar si la estructura del correo es correcto
+            $correo = filter_var($mail, FILTER_VALIDATE_EMAIL);
+            if ($correo == false) 
+            {
+                $salida.='La dirección de correo electronico es incorrecta.';
+            }  
+            //comprobar si la contraseña actual coincide con el usuario
+            $resultado=comprobarPasswordActual($nombre,$contraActual);
         }
         else
         {        
-            echo"<script language= javascript type= text/javascript> alert('Campos vacíos'); history.back();</script >";
-            exit();
+           echo "<script language= javascript type= text/javascript> alert('Campos vacíos'); history.back();</script >";
+           exit();
         }
     }
     else
@@ -23,50 +32,78 @@ session_start();
         die();
     }
 
-    if($contraActual==$nuevaContra)
+    
+    if(empty($salida))
     {
-        echo"<script language= javascript type= text/javascript> alert('No se actualizó su contraseña'); history.back();</script >";
+        //Si la contra actual es igual que la nueva contra, entonces solo se actualizará el correo del usuario
+        if($contraActual==$nuevaContra)
+        {
+            $mailActualizado=actualizarMail($mail,$nombre);
+            echo "<script language= javascript type= text/javascript> alert('Datos actualizados correctamente'); history.back();</script >"; 
+        }
+        else //Sino se actualizará el correo y la contraseña
+        {
+            $passActualizada=actualizarPassword($nombre,$nuevaContra);
+            $mailActualizado=actualizarMail($mail,$nombre);
+            echo "<script language= javascript type= text/javascript> alert('Datos actualizados correctamente, inicie sesión nuevamente');location.href='../../index.html';</script >";    
+        }
     }
     else
     {
-        $resultado=comprobarPasswordActual($nombre,$contraActual);
-        if($resultado==1)
-        {
-            $actualizado=actualizarPassword($nombre,$nuevaContra);
-            echo"<script language= javascript type= text/javascript> alert('Contraseña actualizada correctamente, inicie sesión nuevamente');location.href='../../index.html';</script >";
-
+        echo "<script language= javascript type= text/javascript> alert('$salida'); history.back();</script >";
+        exit();
+    }
+    
+    function comprobarPasswordActual($nomUsuario,$passwordActual)
+    {
+        global $con;
+        $sql="select User from mysql.user where User='$nomUsuario' and Password=PASSWORD('$passwordActual');";
+        if($query=mysqli_query($con, $sql))
+        {   
+            $resul=mysqli_num_rows($query);
+            if($resul>0)
+            {
+                return 0;
+            }
+            else
+            {
+                echo "<script language= javascript type= text/javascript> alert('Datos incorrectos'); history.back();</script >";
+                exit();
+            }
         }
         else
         {
-            echo"<script language= javascript type= text/javascript> alert('Error de información'); history.back();</script >";
+            echo "<script language= javascript type= text/javascript> alert('Datos incorrectos'); history.back();</script >";
             exit();
         }
     }
-    function comprobarPasswordActual($nomUsuario,$passwordActual)
+
+    function actualizarPassword($nomUsuario,$newPassword)
     {
-        $nombre=$_SESSION['name'];
-        $contra=$_SESSION['con'];
-        require("../../Acceso/global.php"); 
-        $sql="select User from mysql.user where User='$nomUsuario' and Password=PASSWORD('$passwordActual');";
-        $query= mysqli_query($con, $sql) or die();
-        $resul=mysqli_num_rows($query);
-        if($resul>0)
-        {   
-            return 1;
-        }
-        else
+        global $con;
+        $sql="ALTER USER '$nomUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
+        if(mysqli_query($con, $sql))
         {
             return 0;
         }
+        else
+        {
+            echo mysqli_errno($con).": ".mysqli_error($con);
+            exit();
+        }
     }
-    function actualizarPassword($nomUsuario,$newPassword)
+    function actualizarMail($mail,$nomUsuario)
     {
-        $nombre=$_SESSION['name'];
-        $contra=$_SESSION['con'];
-        require("../../Acceso/global.php"); 
-        $sql="ALTER USER '$nomUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
-        $query= mysqli_query($con, $sql) or die();
-        return 0;
+        global $con;
+        $sql="UPDATE mail SET mail = '$mail' WHERE trabajador_trabajador='$nomUsuario';";
+        if(mysqli_query($con, $sql))
+        {
+            return 0;
+        }
+        else
+        {
+            echo mysqli_errno($con).": ".mysqli_error($con);
+            exit();
+        }
     }
-
 ?>

@@ -74,9 +74,9 @@ session_start();
         {  
             $correo=$_POST['mail'];
             // filter_var regresa los datos filtrados
-            $correo = filter_var($correo, FILTER_VALIDATE_EMAIL);
+            $Sicorreo = filter_var($correo, FILTER_VALIDATE_EMAIL);
             // regresa false si no son válidos
-            if ($correo !== false) 
+           if ($Sicorreo != false) 
             {
                 $mail=$_POST['mail'];
                 $opcion=3;
@@ -94,15 +94,15 @@ session_start();
         header("Location: ../../index.html");
         die();
     }
-   // echo"<script language= javascript type= text/javascript> alert('$opcion');history.back();</script>";
+//    echo"<script language= javascript type= text/javascript> alert('$opcion');history.back();</script>";
 
     
-    if($opcion==0)
+   /* if($opcion==0)
     {
         echo"<script language= javascript type= text/javascript> alert('Hay un error en los datos o hay campos vacíos');history.back();</script>";
         exit();
     }
-    else
+    else*/
     {
         if($opcion==1)
         {  
@@ -143,30 +143,25 @@ session_start();
             else
             {
                 if($opcion==3)
-                {
-                    if($mail)
-                    {   
-                        require('../insert/mail.php');
-                        $resultado=guardarMail($mail);
-                        if(is_numeric($nombre))
-                        {
-                            echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../ht/repositorio.php';</script>";  
-
-                        }
-                        else
-                        {
-                            echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../panel_control.php';</script>";  
-                        }
+                {  
+                    require('../insert/mail.php');
+                    $resultado=guardarMail($mail);
+                    if(is_numeric($nombre))
+                    {
+                        echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../ht/repositorio.php';</script>";  
                     }
+                    else
+                    {
+                        echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../panel_control.php';</script>";  
+                    }
+                    
                 }
             }
         }
     }
     function actualizarPassword($nuevoUsuario,$newPassword)
     {
-        $nombre=$_SESSION['name'];
-        $contra=$_SESSION['con'];
-        require("../../Acceso/global.php"); 
+        global $con;
         $sql="ALTER USER '$nuevoUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
         $query= mysqli_query($con, $sql) or die('Ocurrió un error al actualizar la contraseña');
         return 0;

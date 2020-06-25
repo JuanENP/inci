@@ -11,7 +11,6 @@
     {
         $email='';
     }
-
 ?>
 <script>
     function mostrarPasswordActual($x)
@@ -44,17 +43,14 @@
             cambio2.type = "password";
             $('#N').removeClass('fa fa-eye N').addClass('fa fa-eye-slash');
         }
-        
-        
 	} 
-
 </script>
 <html>
+    <!-- ESTA MODAL SOLO ESE MUESTRA A USUARIOS JEFES -->
     <head>
-        <!-- <link rel="stylesheet" href="../assets/css/reportes.css" /> -->
     </head>
     <body>  
-        <div class="modal fade" id="mimodalejemplo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="mimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content" id="modal" >
                     <div class="modal-header">
@@ -63,14 +59,14 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                             <div class="row">
-                                <form method="post" action="php/update/modificarPass.php" >
+                                <form method="post" action="<?php echo $ubicacion;?>" >
                                     <label> Usuario</label>
                                     <div class="input-group">
                                         <input type="text" name="numControl" Class="form-control" disabled="disabled" value="<?php echo$nombre;?>">
                                     </div>
                                     <label>Correo electrónico</label>
                                     <div class="input-group">
-                                        <input type="email" name="email" Class="form-control" disabled="disabled" value="<?php echo$email;?>">
+                                        <input type="email" name="email" Class="form-control" value="<?php echo $email;?>">
                                     </div>
                                     
                                     <label> Ingrese contraseña actual</label>

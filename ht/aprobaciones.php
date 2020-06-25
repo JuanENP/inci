@@ -5,6 +5,7 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php");
+        $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
     {
@@ -41,6 +42,7 @@ session_start();
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -1250,7 +1252,14 @@ session_start();
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="usuarios.php">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -1281,7 +1290,7 @@ session_start();
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
@@ -1558,4 +1567,5 @@ session_start();
             </form>  <!-- FIN DEL FORM -->
         </div> <!-- FIN right-panel -->       
     </body>
+    <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

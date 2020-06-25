@@ -8,6 +8,7 @@ date_default_timezone_set('America/Mexico_City');
         require("../Acceso/global.php"); 
         $anio_actual=date("Y");//guardar la fecha actual
         $id="";
+        $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
     {
@@ -667,7 +668,14 @@ date_default_timezone_set('America/Mexico_City');
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.html">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                         <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ REPOSITORIO DEL EMPLEADO -->
@@ -704,7 +712,7 @@ date_default_timezone_set('America/Mexico_City');
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="../php/updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
@@ -1407,4 +1415,5 @@ date_default_timezone_set('America/Mexico_City');
 
         </script>
     </body>
+    <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

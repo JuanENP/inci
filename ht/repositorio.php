@@ -250,7 +250,7 @@ session_start();
                                         </div>
                                         <label>Correo electrónico</label>
                                         <div class="input-group">
-                                            <input type="email" name="email" Class="form-control" disabled="disabled" value="<?php echo$email;?>">
+                                            <input type="email" name="email" Class="form-control" value="<?php echo$email;?>">
                                         </div>
                                         
                                         <label> Ingrese contraseña actual</label>

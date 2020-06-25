@@ -2,7 +2,7 @@
 session_start();
 ob_start();
 date_default_timezone_set('America/Mexico_City'); 
-set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script
+//set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script
 	if (($_SESSION["name"]) && ($_SESSION["con"]))
 	{
 		$nombre=$_SESSION['name'];
@@ -20,13 +20,15 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	// Cargamos la librería dompdf que hemos instalado en la carpeta dompdf
 	require_once("../pdf/dompdf/autoload.inc.php");
 	use Dompdf\Dompdf;
-	// $numero=$_POST['num'];
+
 	if(empty($_POST['formato']))
 	{
 		echo "<script language='javascript'> alert('Seleccione un opción'); history.back();</script>";
 		exit();
 	}
 	$operacion=$_POST['formato'];
+
+	//OPCION PASE DE SALIDA, REVISION DE INPUTS
 	if($operacion=="4")
 	{
 		if(empty($_POST['motivo']) || empty($_POST['fecha']))
@@ -38,6 +40,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		{
 			$motivo =$_POST['motivo'];
 			$fecha=$_POST['fecha'];
+			$revisar=RevisarFechas($fecha,2);//Sirve para revisar si la fecha es menor o igual a hoy
 			$separa=explode('-',$fecha);
 			$anio_solicita=$separa[0];
 			if(strlen($anio_solicita)==4)
@@ -81,6 +84,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		else
 		{
 			$fecha=$_POST['f-justifica'];
+			$revisar=RevisarFechas($fecha,1);//Sirve para revisar si la fecha es menor o igual a hoy
 			$separa=explode('-',$fecha);
 			$anio_solicita=$separa[0];
 			if(strlen($anio_solicita)==4)
@@ -113,6 +117,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 
 	}
+
 	//----Obtener la fecha de hoy para el documento------//
 	$num = date("d", strtotime($f_hoy));
 	$mes = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
@@ -120,6 +125,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	$anio= date("Y", strtotime($f_hoy));
 	$dia_mes=$num.' de '.$mes .' del '.$anio;	
 	//----------------------------------------------------//
+	// OBTENER LA INFORMACION DEL TRABAJADOR
 	$sql="select a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.categoria_categoria,b.nombre,d.entrada,d.salida from trabajador a
 	inner join categoria b on b.idcategoria = a.categoria_categoria and a.numero_trabajador = '$numero'
 	inner join acceso c on a.numero_trabajador= c.trabajador_trabajador
@@ -131,7 +137,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	}
 	else
 	{
-	$resul=mysqli_fetch_array($query);
+		$resul=mysqli_fetch_array($query);
 	
 		$num=$resul[0];
 		$nom =$resul[1];
@@ -170,7 +176,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	
 	}
 
-	//pase de entrada
+	//omision de entrada
 	if($operacion=="1")
 	{  
 		/*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
@@ -235,7 +241,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	} //fin if-1
 
-	//pase de salida
+	//omision
 	if($operacion=="2")
 	{   
 		/*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
@@ -298,6 +304,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	} //fin if-2
 
+	//retardo
 	if($operacion=="3")
 	{ 	    /*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
 		$sql5="SELECT idquincena from quincena where validez=1";
@@ -359,7 +366,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	} //fin if-3
 
-
+	//pase de salida
 	if($operacion=="4")
 	{
 		/*OBTENER LA QUINCENA ACTUAL EN LA QUE ESTAMOS*/
@@ -445,5 +452,40 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		curl_close($crl);
 		return $ret;
 	}
+
+	function RevisarFechas($fechaInicio,$op)
+    {
+        $today=date("Y-m-d");
+        $fecha_hoy=strtotime($today);
+        $fecha_in = strtotime($fechaInicio);
+		if($op==1)
+		{
+			if(($fecha_in<=$fecha_hoy))
+			{
+				return 0;//todo correcto
+			}
+			else
+			{
+				echo "<script> alert('La fecha debe ser menor o igual a hoy'); history.back(); </script>"; 
+				exit(); 
+			}
+		}
+		else
+		{
+			if($op==2)
+			{
+				if($fecha_in>=$fecha_hoy) 
+				{
+					return 0;//todo correcto
+				}
+				else
+				{
+					echo "<script> alert('La fecha debe ser mayor o igual a hoy'); history.back(); </script>"; 
+					exit(); 
+				}
+			}
+		}
+
+    }//fin de RevisarFechas
 
 ?>

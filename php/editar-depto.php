@@ -4,7 +4,7 @@ session_start();
     $nombre=$_SESSION['name'];
     $contra=$_SESSION['con'];
     require("../Acceso/global.php");
-                                
+    $ubicacion='update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     //si la variable de sesión no existe, entonces no es posible entrar al panel. 
     //Lo redirigimos al index.html para que inicie sesión
     if($nombre==null || $nombre=='')
@@ -51,6 +51,7 @@ session_start();
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -122,7 +123,14 @@ session_start();
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.php">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -155,13 +163,12 @@ session_start();
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
 
@@ -217,36 +224,36 @@ session_start();
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
                                 </div>
-                                    <div class="card-body">
-                                        <table id='' class='table table-striped table-bordered display'>
-                                            <thead>
-                                                <th>Departamento</th>
-                                                <th>Nombre</th>
-                                                <th>Acciones</th>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                
-                                                    $sql="select * from depto";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
+                                <div class="card-body">
+                                    <table id='' class='table table-striped table-bordered display'>
+                                        <thead>
+                                            <th>Departamento</th>
+                                            <th>Nombre</th>
+                                            <th>Acciones</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            
+                                                $sql="select * from depto";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    while($resul=mysqli_fetch_array($query))
                                                     {
-                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        echo "<tr>";
+                                                        echo "<td>" . $resul[0] . "</td>";
+                                                        echo "<td>" . ($resul[1]) . "</td>";
+                                                        echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."''><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "</tr>";
                                                     }
-                                                    else
-                                                    {
-                                                        while($resul=mysqli_fetch_array($query))
-                                                        {
-                                                            echo "<tr>";
-                                                            echo "<td>" . $resul[0] . "</td>";
-                                                            echo "<td>" . ($resul[1]) . "</td>";
-                                                            echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."''><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                            echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
-                                                            echo "</tr>";
-                                                        }
-                                                    }
-                                                ?> <!--FIN PHP -->
-                                            </tbody>
+                                                }
+                                            ?> <!--FIN PHP -->
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -314,5 +321,5 @@ session_start();
             });
         </script>
     </body>
-
+    <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

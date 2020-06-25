@@ -1,12 +1,17 @@
 <?php
-
-    function guardarMail($mail)
+    function guardarMail($miMail)
     {
-        $nombre=$_SESSION['name'];
-        $contra=$_SESSION['con'];
-        require("../../Acceso/global.php"); 
-        $sql="INSERT INTO mail VALUES ('', '$mail', '$nombre');";
-        $query= mysqli_query($con, $sql) or die();
-        return 0;
+        global $con;
+        global $nombre;
+        $sql="INSERT INTO mail(mail,trabajador_trabajador) VALUES ('$miMail', '$nombre');";
+        if(mysqli_query($con, $sql))
+        {
+            return 0;
+        }
+        else
+        {
+            echo mysqli_errno($con).": ".mysqli_error($con);
+            exit();
+        }
     }
 ?>

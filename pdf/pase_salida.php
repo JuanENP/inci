@@ -30,48 +30,48 @@ ob_start();
     }
 ?>
 <html lang="es">
-<head>
-    <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/normalize.css" />
-    <link rel="stylesheet" href="../assets/css/formato-pase-salida.css">
-    <title>Documento</title>
-</head>
-<body>
-  
-    <!-- DIV QUE SELECCIONA TODO -->
-    <div class="contenedor">
-       
-       <div class="borde_superior">
-            <div id="imagen_superior">
-                <img src= "../images/pdf/logo.png" id="logo_superior">
+    <head>
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../assets/css/normalize.css" />
+        <link rel="stylesheet" href="../assets/css/formato-pase-salida.css">
+        <title>Documento</title>
+    </head>
+    <body>
+    
+        <!-- DIV QUE SELECCIONA TODO -->
+        <div class="contenedor">
+        
+        <div class="borde_superior">
+                <div id="imagen_superior">
+                    <img src= "../images/pdf/logo.png" id="logo_superior">
+                </div>
+                <div id="p1">
+                    <b><p>HOSPITAL REGIONAL "B"</p>
+                    <p>"CENTENARIO DE LA REVOLUCIÓN MEXICANA"</p>
+                    <p>(ALTA ESPECIALIDAD)<p></b>
+                    <br> 
+                    <b> NO. EMPLEADO </b> <?php echo $num?> </p>
+                </div> 
             </div>
-            <div id="p1">
-                <b><p>HOSPITAL REGIONAL "B"</p>
-                <p>"CENTENARIO DE LA REVOLUCIÓN MEXICANA"</p>
-                <p>(ALTA ESPECIALIDAD)<p></b>
-                <br> 
-                <b> NO. EMPLEADO </b> <?php echo $num?> </p>
-            </div> 
-        </div>
-        
+            
 
+            
+            <div id="p3">
+            <p>SE HA CONCEDIDO PERMISO A: <?php echo $nombre?>
+            <p>PARA SALIR EL DÍA <?php echo strtoupper($fecha).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
+            <p>PARA: <?php echo strtoupper($motivo)?></p>
+            <p>CATEGORÍA: <?php echo $des?> </p>
+            <p>HORARIO: <?php echo $horario?> </p><br>
+            </div>
         
-        <div id="p3">
-        <p>SE HA CONCEDIDO PERMISO A: <?php echo $nombre?>
-        <p>PARA SALIR EL DÍA <?php echo strtoupper($fecha).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
-        <p>PARA: <?php echo $motivo?></p>
-        <p>CATEGORÍA: <?php echo $des?> </p>
-        <p>HORARIO: <?php echo $horario?> </p><br>
+            <div id="p4">
+                <p><?php echo strtoupper($municipio).', '.strtoupper($estado).' A '. strtoupper($hoy)?> </p><br><br>
+                <p >______________________________</p>
+                        <b>AUTORIZACIÓN</b>
+            </div>
+            <br><br>
         </div>
-     
-        <div id="p4">
-            <p><?php echo strtoupper($municipio).', '.strtoupper($estado).' A '. strtoupper($hoy)?> </p><br><br>
-            <p >______________________________</p>
-                    <b>AUTORIZACIÓN</b>
-        </div>
-        <br><br>
-    </div>
 
-</body>
+    </body>
 </html>
