@@ -713,24 +713,22 @@ session_start();
                                                     }
                                                     echo"</div";
                                                     
-                                                    // if(($sexta[0]>0))
+                                                    echo"
+                                                    <div id='dia_sexta' class='form-group col-lg-3'>
+                                                    <span> Días de sexta </span><br>";
+                                                    for ($i=0;$i<8;$i++)
                                                     {
-                                                        echo"
-                                                        <div id='dia_sexta' class='form-group col-lg-3'>
-                                                        <span> Días de sexta </span><br>";
-                                                        for ($i=0;$i<8;$i++)
+                                                        if($sexta[$i]==1)
                                                         {
-                                                            if($sexta[$i]==1)
-                                                            {
-                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
-                                                            }
-                                                            else
-                                                            {
-                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]'/> $semana2[$i]<br/>";
-                                                            }  
+                                                            echo "<input type='checkbox' name='diaS[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
                                                         }
-                                                        echo"</div>";
-                                                    } 
+                                                        else
+                                                        {
+                                                            echo "<input type='checkbox' name='diaS[]' value='$semana[$i]'/> $semana2[$i]<br/>";
+                                                        }  
+                                                    }
+                                                    echo"</div>";
+                                                    
                                                 ?>
 
                                             </div>
