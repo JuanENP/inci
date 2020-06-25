@@ -5,6 +5,7 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con']; 
         require("../Acceso/global.php");
+        $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
     {
@@ -14,7 +15,8 @@ session_start();
     //obtener el id que se mandó acá
     $id=$_GET['id'];
     $_SESSION['anterior_num']=$id;
-    
+
+    //Seleccionar el tipo de trabajador
     $sql="select tipo_tipo from trabajador where numero_trabajador = '".$id."'";
     $query= mysqli_query($con, $sql);
     if(!$query)
@@ -25,159 +27,16 @@ session_start();
     { 
         $resul=mysqli_fetch_array($query);
         $tipo=$resul[0];
-
-        //TRABAJADOR
-        function consulta($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            $sql="select * from trabajador where numero_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [
-                    $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6]
-                ];
-            }
-        }
-
-        //CUMPLE
-        function consulta2($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla cumpleaños de tal trabajador
-            $sql="select * from cumple_ono where trabajador_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[1],$resul[2] ];
-            }
-        
-        }
-        //ACCESO
-        function consulta3($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla acceso
-            $sql="select * from acceso where trabajador_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
-            }
-        }
-
-        //TIEMPO SERVICIO
-        function consulta4($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla acceso
-            $sql="select * from tiempo_servicio where trabajador_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[1] ];
-            }
-           
-        }
-        function consultaGenero($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla acceso
-            $sql="select genero from trabajador where numero_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[0]];
-                
-            }
-        }
-        function consultaSexta($myid)
-        {
-            $nombre=$_SESSION['name'];
-            $contra=$_SESSION['con'];
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla acceso
-            $sql="select idsexta, lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '".$myid."'";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                 die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8]];
-                
-            }
-  
-        }
+        require('buscar_info_trabajador.php');
         //Si el tipo de empleado del que se seleccionó es comisionado foráneo
         if($tipo==4)
         {
-
-            //guardar el array que retornó la función consulta de trabajador
-            $id2=consulta($id);
-       
-             //guardar el array que retornó la función consulta de cumple
-             $id3=consulta2($id);
-    
-             //guardar el array que retornó la función consulta de acceso
-             $id4=consulta3($id);
-            
-             //guardar el array que retornó la función consulta de tiempo servicio
-             $id5=consulta4($id);
-
-            //ESPECIAL
-            require("../Acceso/global.php");
-            //Consultar todo de la tabla trabajador
-            $sql="select * from especial where trabajador_trabajador = $id";
+            $id2=consultaTrabajador($id);
+            $id3=consultaCumple($id);
+            $id4=consultaAcceso($id);
+            $id5=consultaTServicio($id);
+            //Consultar todo de la tabla especial
+            $sql="select fecha_inicio,fecha_fin,empresa from especial where trabajador_trabajador = $id";
             $query= mysqli_query($con, $sql);
             if(!$query)
             {
@@ -186,56 +45,35 @@ session_start();
             else
             { 
                 $resul=mysqli_fetch_array($query);
-                //retornar este array
                  //FECHA INICIO, FECHA FIN, EMPRESAS
                 $fecha_inicio = $resul[1];
                 $fecha_fin = $resul[2];
                 $empresa = $resul[8];
             } 
-
-            //guardar el array que retornó la función consulta
             $genero=consultaGenero($id);   
-
-              //guardar el array que retornó la función consulta
-            $sexta=consultaSexta($id);    
         }
-
         else //SINO ES TRABAJADOR COMISIONADO
         {
-
-             //guardar el array que retornó la función consulta de trabajador
-             $id2=consulta($id);
-            
-             //guardar el array que retornó la función consulta de cumple
-             $id3=consulta2($id);
-
-             //guardar el array que retornó la función consulta de acceso
-             $id4=consulta3($id);
-            
-             //guardar el array que retornó la función consulta de tiempo de servicio
-             $id5=consulta4($id);  
-
-             //guardar el array que retornó la función consulta
-             $genero=consultaGenero($id);  
-
-              //guardar el array que retornó la función consulta
-            $sexta=consultaSexta($id);    
-
+            $id2=consultaTrabajador($id);
+            $id3=consultaCumple($id);
+            $id4=consultaAcceso($id);
+            $id5=consultaTServicio($id);  
+            $genero=consultaGenero($id);  
         }       
     }   
 ?>
 
-<!doctype html>
- 
-    <html class="no-js" lang="es">
+<!doctype html> 
+<html class="no-js" lang="es">
     <head>
-    <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+        <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
             Personal
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -255,6 +93,7 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script src="../assets/js/diaSexta.js"></script>
         <script>
             function noCopy()
             {
@@ -298,6 +137,22 @@ session_start();
                 }
                 
             }
+
+            function inicial(consulta) {
+            $.ajax({
+                    url: '_loadSexta.php',
+                    type: 'POST',
+                    dataType: 'html',
+                    data: { consulta: consulta },
+                })
+                .done(function(respuesta) {
+                 $("#dias_sexta").html(respuesta);
+                })
+                .fail(function() {
+                    console.log("error");
+                });
+            }
+
             function inicio()
             {
                 $(document).ready(function()
@@ -313,32 +168,16 @@ session_start();
                     {
                         document.getElementById('empresa').style.display="block";//ver empresa
                     }
-                }); 
-            }
 
-            function verDiasSexta()
-            {
-                var valor = document.getElementById("turno").value;/*Es el valor del value del select del turno*/
-                
-                //Separamos el value debido a que en el se obtiene el id, h entrada, h salida y total horas
-                var  array = valor . split(" ");
-                 alert(array[1]);
-                //Si la hora de entrada del turno es igual a  6 h o 6 h y media, podrán tener sexta
-                if((array[1]=="06:00:00") || (array[1]=="06:30:00"))
-                {
-                    document.getElementById('dia_sexta').style.display="block";//ver
-                  
-                }
-                else
-                {
-                    document.getElementById('dia_sexta').style.display="none";//ocultar
-                    
-                }
+                    var numTrabajador=document.getElementById("sexta").value;
+                    inicial(numTrabajador);
+                }); 
             }
         </script>
     </head>
 
     <body onload="inicio()">  
+    
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -383,7 +222,14 @@ session_start();
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="../ht/usuarios.php">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -393,7 +239,6 @@ session_start();
         
         <!-- Right Panel ------------------------------------------------------------------------------------------------------>
         <div id="right-panel" class="right-panel">
-            <!-- Header-->
             <header id="header" class="header">
 
                 <div class="header-menu">
@@ -412,20 +257,18 @@ session_start();
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
-            <!-- /header -->
-
             <div class="breadcrumbs">
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Trabajador</h1>
+                            <h1>MODIFICAR EMPLEADO</h1>
                         </div>
                     </div>
                 </div>
@@ -441,428 +284,360 @@ session_start();
                 </div>
             </div>
 
-            <!--FORM-->
-            <form id="f1" method="POST" action="../php/update/trabajadores.php">
-                <div class="content mt-3">
-                    <div class="animated fadeIn">
-
-                        <!--ROW1-->
+            <div class="content mt-3">
+                <div class="animated fadeIn">
+                    <form id="f1" method="POST" action="../php/update/trabajadores.php">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-lg-12">
                                 <div class="card">
-                                    <div class="card-header">
-                                        <span id="MainContent_lbtitulo">
+                                   <div class="card-header">
+                                        <span>
                                             Datos personales
                                         </span>
-                                    </div>
+                                   </div>
+                                   <div class="card-body card-block">
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Número de empleado
+                                            </span>
+                                            <input name="num" type="number" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id2[0]?>" required/>
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Nombre
+                                            </span>
+                                            <input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Apellido paterno
+                                            </span>
+                                            <input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Apellido materno
+                                            </span>
+                                            <input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
+                                        </div>
+                                        
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Fecha de nacimiento
+                                            </span>
+                                            <input name="cumple" type="date" value="<?php echo $id3[0]?>" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
+                                        </div>
 
-                                    <div class="card-body card-block">
-                                        <div class="row col-md-12">
-
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_numero">
-                                                    Número de empleado
-                                                </span>
-                                                <input name="num" type="number" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id2[0]?>" required/>
-                                            </div>
-                                            
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_nombre">
-                                                    Nombre
-                                                </span>
-                                                <input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
-                                            </div>
-                                            
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_a_pat">
-                                                    Apellido paterno
-                                                </span>
-                                                <input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
-                                            </div>
-                                            
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_a_mat">
-                                                    Apellido materno
-                                                </span>
-                                                <input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
-                                            </div>
-                                            
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_f_nac">
-                                                    Fecha de nacimiento
-                                                </span>
-                                                <input name="cumple" type="date" value="<?php echo $id3[0]?>" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
-                                            </div>
-
-                                            <div class="form-group col-lg-3">
-                                                <span id="MainContent_lbNombre">
-                                                    Fecha de onomástico
-                                                </span>
-                                                <input name="ono" type="date" value="<?php echo $id3[1]?>" id="MainContent_txtNombre" class="form-control"  min="1930-01-01"/>
-                                            </div>
-                                            <?php 
+                                        <div class="form-group col-lg-3">
+                                            <span>
+                                                Fecha de onomástico
+                                            </span>
+                                            <input name="ono" type="date" value="<?php echo $id3[1]?>" id="MainContent_txtNombre" class="form-control"  min="1930-01-01"/>
+                                        </div>
+                                        <?php 
                                             if($genero[0]=='M')
                                             {
                                                 echo"
                                                 <div class='form-group col-lg-5'>
-                                                <span>Género:</span><br>
-                                                <label class='radio-inline'>
-                                                <input type='radio' id='h' name='genero' value='M' checked>
-                                                <label for='h'>Masculino </label><br>
-                                                </label>
-
-                                                <label class='radio-inline'>
-                                                <input type='radio' id='m' name='genero' value='F'>
-                                                <label for='m'> Femenino</label><br>
-                                                </label> 
+                                                    <span>Género:</span><br>
+                                                    <label class='radio-inline'>
+                                                        <input type='radio' id='h' name='genero' value='M' checked>
+                                                        <label for='h'>Masculino </label><br>
+                                                    </label>
+                                                    <label class='radio-inline'>
+                                                        <input type='radio' id='m' name='genero' value='F'>
+                                                        <label for='m'> Femenino</label><br>
+                                                    </label> 
                                                 </div>";
                                             }
                                             else
                                             {
                                                 if($genero[0]=='F')
                                                 {
-                                                echo"
-                                                <div class='form-group col-lg-5'>
-                                                <span>Género:</span><br>
-                                                <label class='radio-inline'>
-                                                <input type='radio' id='h' name='genero' value='M'>
-                                                <label for='h'>Masculino </label><br>
-                                                </label>
-                                                <label class='radio-inline'>
-                                                <input type='radio' id='m' name='genero' value='F' checked>
-                                                <label for='m'> Femenino</label><br>
-                                                </label> 
-                                                </div>";
+                                                    echo"
+                                                    <div class='form-group col-lg-5'>
+                                                        <span>Género:</span><br>
+                                                        <label class='radio-inline'>
+                                                            <input type='radio' id='h' name='genero' value='M'>
+                                                            <label for='h'>Masculino </label><br>
+                                                        </label>
+                                                        <label class='radio-inline'>
+                                                            <input type='radio' id='m' name='genero' value='F' checked>
+                                                            <label for='m'> Femenino</label><br>
+                                                        </label> 
+                                                    </div>";
                                                 }
                                             }
-                                            ?>
-                                        </div>
+                                        ?>
                                     </div>
                                 </div>
-                            
-
-
 
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">
+                                        <span>
                                             Puesto de trabajo
                                         </span>
                                     </div>
                                     <div class="card-body card-block">
-                                        <div class="row col-md-12">
-
-                                            <div class="form-group col-lg-5">
-                                                <span >
-                                                    Departamento
-                                                </span>
-                                                <?php
-                                                    $nombre=$_SESSION['name'];
-                                                    $contra=$_SESSION['con'];
-                                                    require("../Acceso/global.php");  
-
-                                                    $sql="select * from depto";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
+                                        <div class="form-group col-lg-5">
+                                            <span >
+                                                Departamento
+                                            </span>
+                                            <?php
+                                                $sql="select * from depto";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {   
+                                                    echo "<select name='depto' class='form-control' >";
+                                                    while($fila=mysqli_fetch_array($query))
                                                     {
-                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                    }
-                                                    else
-                                                    {   
-                                                        echo "<select name='depto' class='form-control' >";
-                                                        while($fila=mysqli_fetch_array($query))
+                                                        if($fila[0]==$id2[4])
                                                         {
-                                                            if($fila[0]==$id2[4])
-                                                            {
-                                                                echo "<option value='".$fila[0]."' selected>". $fila[0] . " " .$fila[1]."</option>";
-                                                            }
-                                                            else
-                                                            {
-                                                                echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
-                                                            }
-                                                        
-                                                        }
-                                                        echo "</select>";
-                                                    }    
-                                                    mysqli_close($con);
-                                                ?> <!--FIN PHP -->
-                                            </div>
-
-                                            <div class="form-group col-lg-5">
-                                                <span >
-                                                    Categoría
-                                                </span>
-                                                <?php
-                                                    $nombre=$_SESSION['name'];
-                                                    $contra=$_SESSION['con'];
-                                                    require("../Acceso/global.php");  
-                                                
-                                                    $sql="select * from categoria";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                    }
-                                                    else
-                                                    {
-                                                        echo "<select name='cat' class='form-control' value='<?php echo $id2[5];?>' >";
-                                                        while($fila=mysqli_fetch_array($query))
-                                                        {
-                                                            if($id2[5]==$fila[0])
-                                                            {
-                                                                echo "<option value='".$fila[0]."' selected >". $fila[0] . " " .$fila[1]."</option>";  
-                                                            }
-                                                            else
-                                                            {
-                                                                echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>"; 
-                                                            }
-                                                        
-                                                        }
-                                                        echo "</select>";
-                                                    }
-                                                    mysqli_close($con);
-                                                ?> <!--FIN PHP -->
-                                            </div>
-
-                                            <div class="form-group col-lg-5">
-                                                <span>
-                                                    Tipo de empleado
-                                                </span>
-                                                <?php
-                                                    $nombre=$_SESSION['name'];
-                                                    $contra=$_SESSION['con'];
-                                                    require("../Acceso/global.php");  
-                                                    
-                                                    $sql="select * from tipo";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                    }
-                                                    else
-                                                    {
-                                                        while($fila=mysqli_fetch_array($query))
-                                                        {
-                                                            if($id2[6]==$fila[0])
-                                                            {  
-                                                                if($id2[6]==1)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-
-                                                                }
-                                                                if($id2[6]==2)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_base' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-
-                                                                }
-                                                                if($id2[6]==3)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-
-                                                                }
-                                                            
-                                                                if($id2[6]==4)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_foraneo' value='".$fila[0]."' onclick='oculta(0)'checked >". $fila[1] . " ". "</input>";
-
-                                                                }
-                                                            }
-                                                            else
-                                                            {  
-                                                                if($fila[0]==4)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
-
-                                                                }
-                                                                else
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
-                                                                }
-
-                                                            }
-                                                        
-                                                        }//fin del while
-                                                        echo  //El id= empresa del div sirve para ocultar estos elementos
-                                                        "<div id='empresa' class='form-group col-lg-12'>
-                                                        <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð&,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
-                                                        <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
-                                                        <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
-                                                        </div>";
-                                                    }
-                                                    mysqli_close($con);
-                                                ?> <!--FIN PHP -->
-
-                                            </div>
-
-                                            <div class="form-group col-lg-7">
-                                                <?php 
-                                                    $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');
-                                                    $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos');
-                                                     echo"<div class='form-group col-lg-4'>
-                                                    <span> Días de trabajo</span><br>";
-                                                    for ($i=0;$i<8;$i++)
-                                                    {
-                                                        if($id4[$i]==1)
-                                                        {
-                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
+                                                            echo "<option value='".$fila[0]."' selected>". $fila[0] . " " .$fila[1]."</option>";
                                                         }
                                                         else
                                                         {
-                                                            echo "<input type='checkbox' name='dia[]' value='$semana[$i]'/> $semana2[$i]<br/>";
-                                                        }  
-                                                    }
-                                                    echo"</div";
+                                                            echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
+                                                        }
                                                     
-                                                    // if(($sexta[0]>0))
+                                                    }
+                                                    echo "</select>";
+                                                }    
+                                            ?> <!--FIN PHP -->
+                                        </div>
+
+                                        <div class="form-group col-lg-7">
+                                            <span >
+                                                Categoría
+                                            </span>
+                                            <?php
+                                                $sql="select * from categoria";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    echo "<select name='cat' class='form-control' value='<?php echo $id2[5];?>' >";
+                                                    while($fila=mysqli_fetch_array($query))
                                                     {
-                                                        echo"
-                                                        <div id='dia_sexta' class='form-group col-lg-3'>
-                                                        <span> Días de sexta </span><br>";
-                                                        for ($i=0;$i<8;$i++)
+                                                        if($id2[5]==$fila[0])
                                                         {
-                                                            if($sexta[$i]==1)
+                                                            echo "<option value='".$fila[0]."' selected >". $fila[0] . " " .$fila[1]."</option>";  
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>"; 
+                                                        }
+                                                    }
+                                                    echo "</select>";
+                                                }
+                                            ?> <!--FIN PHP -->
+                                        </div>
+
+                                        <div class="form-group col-lg-5">
+                                            <span>
+                                                Tipo de empleado
+                                            </span>
+                                            <?php
+                                                $sql="select * from tipo";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    while($fila=mysqli_fetch_array($query))
+                                                    {
+                                                        if($id2[6]==$fila[0])
+                                                        {  
+                                                            if($id2[6]==1)
                                                             {
-                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]' checked/> $semana2[$i]<br/>";  
+                                                                echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+
+                                                            }
+                                                            if($id2[6]==2)
+                                                            {
+                                                                echo "<br> <input type='radio' name='tipo' id='radio_base' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+
+                                                            }
+                                                            if($id2[6]==3)
+                                                            {
+                                                                echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+
+                                                            }
+                                                        
+                                                            if($id2[6]==4)
+                                                            {
+                                                                echo "<br> <input type='radio' name='tipo' id='radio_foraneo' value='".$fila[0]."' onclick='oculta(0)'checked >". $fila[1] . " ". "</input>";
+
+                                                            }
+                                                        }
+                                                        else
+                                                        {  
+                                                            if($fila[0]==4)
+                                                            {
+                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
+
                                                             }
                                                             else
                                                             {
-                                                                echo "<input type='checkbox' name='diaS[]' value='$semana[$i]'/> $semana2[$i]<br/>";
-                                                            }  
+                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
+                                                            }
+
                                                         }
-                                                        echo"</div>";
-                                                    } 
-                                                ?>
-
-                                            </div>
-
-                                            <div class="form-group col-lg-5">
-                                                <span >
-                                                    Turno
-                                                </span>
-                                                <?php
-                                                    $nombre=$_SESSION['name'];
-                                                    $contra=$_SESSION['con'];
-                                                    require("../Acceso/global.php");  
                                                     
-                                                    $sql="select * from turno";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
+                                                    }//fin del while
+                                                    echo  //El id= empresa del div sirve para ocultar estos elementos
+                                                    "<div id='empresa' class='form-group col-lg-12'>
+                                                    <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð&,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
+                                                    <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
+                                                    <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
+                                                    </div>";
+                                                }
+                                            ?> <!--FIN PHP -->
+
+                                        </div>
+
+                                        <div class="form-group col-lg-7">
+                                            <?php 
+                                                $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');//campos de la bd
+                                                $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos'); //dias de la semana
+                                                echo"<div class='form-group col-lg-4'>
+                                                <span> Días de trabajo</span><br>";
+                                                for ($i=0;$i<8;$i++)
+                                                {
+                                                    if($id4[$i]==1)
                                                     {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]' checked/><label for='$semana[$i]'> $semana2[$i]</label><br/>";  
                                                     }
                                                     else
                                                     {
-                                                        echo "<select name='turno' id='turno' class='form-control' onchange='verDiasSexta()' >";
-                                                        while($fila=mysqli_fetch_array($query))
-                                                        {
-                                                            if($id4[8]==$fila[0])
-                                                            {
-                                                                echo "<option value='".$fila[0]." " .$fila[3]."'selected>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
-                                                            }
-                                                            else
-                                                            {
-                                                                echo "<option value='".$fila[0]." " .$fila[3]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
-                                                            }
-
-                                                        }
-                                                        echo "</select>";
-                                                    }
-                                                    mysqli_close($con);
-                                                ?> <!--FIN PHP -->
-                                            </div>
+                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]'/><label for='$semana[$i]'> $semana2[$i]</label><br/>";
+                                                    }  
+                                                }
+                                                echo "</div";
+                                            ?> 
                                         </div>
-                                    </div>
+
+                                        <div id='dias_sexta' class='form-group col-lg-3'>
+                                            
+                                        </div>
+                                        <input type="hidden" id='sexta' value="<?php echo $id; ?>">
+                                        <div class="form-group col-lg-5">
+                                            <span >
+                                                Turno
+                                            </span>
+                                            <?php
+                                                $sql="select * from turno";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    echo "<select name='turno' id='turno' class='form-control'>";
+                                                    while($fila=mysqli_fetch_array($query))
+                                                    {
+                                                        if($id4[8]==$fila[0])
+                                                        {
+                                                            echo "<option value='".$fila[0]." " .$fila[3]."'selected>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "<option value='".$fila[0]." " .$fila[3]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
+                                                        }
+                                                    }
+                                                    echo "</select>";
+                                                }
+                                            ?> <!--FIN PHP -->
+                                        </div>
+                                    </div>       
                                 </div>
-                          
-                        
 
-
-                                <div class="card" >
+                                <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">
-                                            Inicio de servicio laboral
-                                        </span>
+                                        <span>Inicio de servicio laboral </span>
                                     </div>
                                     <div class="card-body card-block">
-                                        <div class="row col-md-12">
-                                            <div class="form-group col-lg-9">
-                                                <span id="MainContent_lbCategoria">
-                                                    Fecha de alta del trabajador (Según su FM1) 
-                                                </span>
-                                                <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id5[0]?>" required  min="1930-01-01" />
-                                            </div>
-                                        </div>
+                                       <div class="form-group col-lg-12">
+                                             <span>Fecha de alta del trabajador (Según su FM1) </span>
+                                             <input name="fecha_alta" type="date" class="form-control" value="<?php echo $id5[0]?>" required  min="1930-01-01" />
+                                       </div>      
                                     </div>
                                 </div>
-                            </div> <!--FIN_ROW1-->
-    
 
-                        <div class="card-footer">
-                            <div class="dropdown">
-                                <input type="submit" name="Aceptar" value="Guardar" class="btn btn-primary btn-sm" />
+                                </div>
+                                <div class="card-footer">
+                                     <input type="submit" name="Aceptar" value="Guardar" class="btn btn-primary btn-sm" />
+                                </div>
                             </div>
-                        </div> <!-- FIN Card Footer-->
+                        </div>  
+                    </form>
 
-                    </div> <!--FIN DIV animated fadeIn-->
-                </div> <!--FIN DIV content mt-3--> 
-            </form>  <!-- FIN DEL FORM -->
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Información</strong>
-                        </div>
-                        <div class="card-body">
-                            <table id='' class='table table-striped table-bordered display'>
-                                <thead>
-                                <th>Número de trabajador</th>
-								<th>Nombre</th>
-								<th>Apellido Paterno</th>
-								<th>Apellido Materno</th> 
-                                <th>Departamento</th> 
-								<th>Categoría</th> 
-								<th>Tipo de empleado</th> 
-                                <th>Acción</th>  
-                                </thead>
-                                <tbody>
-                                    <?php
-                                        $nombre=$_SESSION['name'];
-                                        $contra=$_SESSION['con'];
-                                        require("../Acceso/global.php");  
-    
-                                        $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
-                                        inner join tipo b on b.idtipo = a.tipo_tipo";
-                                        $query= mysqli_query($con, $sql);
-                                        if(!$query)
-                                        {
-                                            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                        }
-                                        else
-                                        {
-                                            while($resul=mysqli_fetch_array($query))
-                                            {
-                                                echo "<tr>";
-                                                echo "<td>" . $resul[0] . "</td>"; 
-												echo "<td>" . $resul[1] . "</td>";
-												echo "<td>" . $resul[2] . "</td>";
-												echo "<td>" . $resul[3] . "</td>";
-												echo "<td>" . $resul[4] . "</td>";
-                                                echo "<td>" . $resul[5] . "</td>";
-                                                echo "<td>" . $resul[6] . "</td>";
-                                                echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
-                                                echo "</tr>";
-                                            }
-                                        }
-                                
-                                    ?> <!--FIN PHP -->
-                                </tbody> <!--/tbody-->
-                            </table> <!--/table-->
-                        </div><!--/card body-->
-                    </div><!--/card-->
-                </div><!--/col- md-12-->
-            </div><!-- FIN ROW-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Información</strong>
+                                </div>
+                                <div class="card-body">
+                                    <table id='' class='table table-striped table-bordered display'>
+                                        <thead>
+                                        <th>Número de trabajador</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido Paterno</th>
+                                        <th>Apellido Materno</th> 
+                                        <th>Departamento</th> 
+                                        <th>Categoría</th> 
+                                        <th>Tipo de empleado</th> 
+                                        <th>Acción</th>  
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
+                                                inner join tipo b on b.idtipo = a.tipo_tipo";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                }
+                                                else
+                                                {
+                                                    while($resul=mysqli_fetch_array($query))
+                                                    {
+                                                        echo "<tr>";
+                                                        echo "<td>" . $resul[0] . "</td>"; 
+                                                        echo "<td>" . $resul[1] . "</td>";
+                                                        echo "<td>" . $resul[2] . "</td>";
+                                                        echo "<td>" . $resul[3] . "</td>";
+                                                        echo "<td>" . $resul[4] . "</td>";
+                                                        echo "<td>" . $resul[5] . "</td>";
+                                                        echo "<td>" . $resul[6] . "</td>";
+                                                        echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "</tr>";
+                                                    }
+                                                }
+                                            ?> <!--FIN PHP -->
+                                        </tbody> <!--/tbody-->
+                                    </table> <!--/table-->
+                                </div><!--/card body-->
+                            </div><!--/card-->
+                        </div><!--/col- md-12-->
+                    </div><!-- FIN ROW-->
+                </div> <!--FIN DIV animated fadeIn-->
+            </div> <!--FIN DIV content mt-3--> 
 
             <script type="text/javascript">
                 $(document).ready(function() {
@@ -899,13 +674,12 @@ session_start();
                             },
                             //'csv',
                             'excel',
-                            //'pdf',
+                            'pdf',
                             //{ extend: 'print', text: 'Imprimir' },
                         ]
                     });
                 });
             </script>
-
         </div>
         <!-- FIN-Right Panel ------------------------------------------------------------------------------------------------>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -921,5 +695,5 @@ session_start();
             });
         </script>
     </body>
-
+    <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

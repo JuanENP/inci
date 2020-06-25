@@ -5,6 +5,7 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php"); 
+        $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
     {
@@ -25,6 +26,7 @@ session_start();
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -100,21 +102,16 @@ session_start();
                                         
                                     }
                                 ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
-                </div>
-                <!-- /.navbar-collapse -->
+                </div><!-- /.navbar-collapse -->
             </nav>
         </aside>
-        <!-- /#left-panel -->
-
-        <!-- Left Panel -->
-
         <!-- Right Panel -->
 
         <div id="right-panel" class="right-panel">
-
             <!-- Header-->
             <header id="header" class="header">
 
@@ -132,7 +129,7 @@ session_start();
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="../php/update/password.php"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
@@ -201,34 +198,32 @@ session_start();
                                                 <th>Nombre</th>
                                                 <th>Acciones</th>
                                             </thead>
-                
-                                                <tbody>
-                                                    <!--PONER AQUÍ EL contenido LA TABLA-->
-                                                    <?php
-                                                        require("_encript.php");
-                                                        $sql="select * from categoria";
-                                                        $query= mysqli_query($con, $sql);
-                                                        if(!$query)
-                                                        {
-                                                          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                        }
-                                                        else
-                                                        {
-                                                          while($resul=mysqli_fetch_array($query))
-                                                          {
-                                                            echo "<tr>";
-                                                            echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                            echo utf8_encode("<td>" . $resul[1] . "</td>");
-                                                            echo "<td><a href='../php/eliminar-cat.php?ff0_lo=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                            echo "<a href='../php/editar-cat.php?id=".generaURL($resul[0])."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
-                                                            echo "</tr>";
-                                                          }
-                                                        }
-                                                    ?> <!--FIN PHP -->
-                                                </tbody>
-                                            </table>
-                                        </span>
-                                    </div>
+                                            <tbody>
+                                                <?php
+                                                    require("_encript.php");
+                                                    $sql="select * from categoria";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    }
+                                                    else
+                                                    {
+                                                      while($resul=mysqli_fetch_array($query))
+                                                      {
+                                                        echo "<tr>";
+                                                        echo utf8_encode("<td>" . $resul[0] . "</td>");
+                                                        echo utf8_encode("<td>" . $resul[1] . "</td>");
+                                                        echo "<td><a href='../php/eliminar-cat.php?ff0_lo=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo "<a href='../php/editar-cat.php?id=".generaURL($resul[0])."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "</tr>";
+                                                      }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,5 +291,5 @@ session_start();
             });
         </script>
     </body>
-  
+    <?php require("../ht/modalCambiarPass.php"); ?>
  </html>

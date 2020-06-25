@@ -1,5 +1,3 @@
-$(buscar_datos2());
-
 function buscar_datos2(consulta2) {
     $.ajax({
             url: 'buscar-trabajador2.php',
@@ -21,7 +19,5 @@ $(document).on('keyup', '#caja_busqueda2', function() {
     var valor2 = $(this).val();
     if (valor2 != "") {
         buscar_datos2(valor2);
-    } else {
-        buscar_datos2();
     }
 });

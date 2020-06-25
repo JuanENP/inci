@@ -1,16 +1,16 @@
 <?php
 session_start();
-$nombre=$_SESSION['name'];
-$contra=$_SESSION['con'];
-//si la variable de sesión no existe, entonces no es posible entrar al panel. 
-//Lo redirigimos al index.html para que inicie sesión
-if($nombre==null || $nombre=='')
-{
-    header("Location: ../index.html");
-    die();
-}
-require("Acceso/global.php");
-
+    $nombre=$_SESSION['name'];
+    $contra=$_SESSION['con'];
+    //si la variable de sesión no existe, entonces no es posible entrar al panel. 
+    //Lo redirigimos al index.html para que inicie sesión
+    if($nombre==null || $nombre=='')
+    {
+        header("Location: ../index.html");
+        die();
+    }
+    require("Acceso/global.php");
+    $ubicacion='php/update/modificarPass.php';//sirve para indicarle la ruta del form modalCambiarPass
 ?>
 
 <!doctype html>
@@ -104,7 +104,7 @@ require("Acceso/global.php");
                                         
                                     }
                                 ?>
-                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
+                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                         <!-- SIRVE PARA CAMBIAR LAS OPCIONES DEL MENÚ REPOSITORIO DEL EMPLEADO -->
@@ -143,17 +143,14 @@ require("Acceso/global.php");
                                 <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
                                 <a class="nav-link" href="php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
-
-
 
             <!--Load the AJAX API-->
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -470,7 +467,5 @@ require("Acceso/global.php");
             });
         </script>
     </body>
-    <?php
-    require("ht/modalCambiarPass.php"); 
-    ?>
-    </html>
+    <?php require("ht/modalCambiarPass.php");  ?>
+</html>

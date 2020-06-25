@@ -417,7 +417,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				//Si el arreglo tiene datos, imprimir el reporte
 				if($contador>0)
 				{
-					$tipo="COMISIONES ACTIVAS FORÁNEOS";
+					$tipo="COMISIONES INACTIVAS FORÁNEOS";
 					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
 					$_SESSION['fecha'] = $dia_mes;
 					$_SESSION['anio'] = $anio;
@@ -525,7 +525,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 			else //Sino es obtener las comisiones inactivas
 			{
-				inactivasInt();
+				inactivasExt();
 				foreach($datos as $fila)
 				{
 					$contador++;
@@ -653,8 +653,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 						$nomArchivo="Vinieron.php";
 						$nomPdf="Vinieron.pdf";
 						imprimepdf($nomArchivo,$nomPdf);
-
-					
 					}
 					else
 					{
@@ -2740,6 +2738,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
 		global $datos;
+
 		global $contador_d;
 		$total=0;
 		comisionesActivas();
@@ -3810,7 +3809,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			{
 				while($resul=mysqli_fetch_array($query))
 				{
-				
 					$datos[$contador_d][0]=$resul[0];//numero
 					$datos[$contador_d][1]=$resul[1];//nombre
 					$datos[$contador_d][2]=$resul[2];//depto
@@ -3893,16 +3891,24 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
     {
         alert(cadena);
         history.back();
-    }
+	}
+	
 	function nodatos()
 	{
 		alert('No hay datos');
 		history.back();
 		exit();
 	}
+
 	function opcion()
 	{
 		alert('Seleccione una opción');
+		history.back();
+	}
+
+	function imprime(texto)
+	{
+		alert(texto);
 		history.back();
 	}
 </script>
