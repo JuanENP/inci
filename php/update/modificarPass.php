@@ -88,7 +88,7 @@ session_start();
         }
         else
         {
-            echo mysqli_errno($con).": ".mysqli_error($con);
+            echo 'Actualizar en user '. mysqli_errno($con).": ".mysqli_error($con);
             exit();
         }
     }
@@ -102,7 +102,7 @@ session_start();
         }
         else
         {
-            echo mysqli_errno($con).": ".mysqli_error($con);
+            echo 'Actualizar en mail '. mysqli_errno($con).": ".mysqli_error($con);
             exit();
         }
     }

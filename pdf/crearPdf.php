@@ -485,7 +485,6 @@ date_default_timezone_set('America/Mexico_City');
 				}
 			}
 		}
-
     }//fin de RevisarFechas
 
 ?>

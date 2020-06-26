@@ -82,7 +82,7 @@ session_start();
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="ht/dispositivos.html">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="ht/dispositivos.php">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
@@ -324,83 +324,6 @@ session_start();
                                     <div class="chart-wrapper mt-4">
                                         <div id="incidencias"></div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Fecha Reporte</span>
-                                </div>
-
-                                <div class="card-body card-block">
-                                    <div class="row col-md-12">
-                                        <div class="form-group col-lg-3">
-                                            <span id="MainContent_lbfcinicial">Fecha Inicial</span><input name="ctl00$MainContent$txtFechaInicial" type="date" id="MainContent_txtFechaInicial" class="form-control" required="" />
-                                        </div>
-                                        <div class="form-group col-lg-3">
-                                            <span id="MainContent_lblfcfinal">Fecha Final</span><input name="ctl00$MainContent$txtFechaFinal" type="date" id="MainContent_txtFechaFinal" class="form-control" required="" />
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-12">
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbTrabajador">Trabajador</span>
-                                            <select name="ctl00$MainContent$DropDownListTrabajadores" id="MainContent_DropDownListTrabajadores" class="form-control select2" required="">
-												<!--Aquí iban todos los trabajadores y su número de empleado
-												     en forma de option, dah :D-->
-
-											</select>
-                                        </div>
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbDepto">Departamento</span>
-                                            <select name="ctl00$MainContent$DropDownListDepartamentos" id="MainContent_DropDownListDepartamentos" class="form-control select2" required="">
-											<!--Aquí iban los departamentos-->
-
-											</select>
-                                        </div>
-                                        <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbCategoria">Categoria</span>
-                                            <select name="ctl00$MainContent$DropDownListCategorias" id="MainContent_DropDownListCategorias" class="form-control select2" required="">
-												<!--Aquí iban las categorías de los empleados-->
-											</select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card-footer">
-                                    <div class="dropdown">
-                                        <input type="submit" name="ctl00$MainContent$btnBuscar" value="Ejecutar" id="MainContent_btnBuscar" class="btn btn-primary btn-sm" />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Reporte Asistencia Retardos</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_DataTable"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Reporte Asistencia Faltas</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_Reporte_Faltas"></span>
                                 </div>
                             </div>
                         </div>
