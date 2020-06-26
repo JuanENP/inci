@@ -13,21 +13,25 @@ session_start();
     }
     $valorTurno=$_POST['consulta'];
     $numero=$_POST['consulta2'];
+    $tipo=$_POST['consulta3'];
 
     $salida="";
     $separa=explode(' ',$valorTurno);
     $t_horas=$separa[1];
+
     $sexta=consultaSexta($numero);  //revisar si el trabajador tiene sexta
     $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');//campos de la bd
     $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos'); //dias de la semana
+        
+    //Si el tipo de empleado es de base, es decir el #2, podrá tener sexta
 
-    if(($t_horas!=="06:00:00") && ($t_horas!=="06:30:00"))
+    if(($t_horas!=="06:00:00") && ($t_horas!=="06:30:00")) 
     {
         echo "";
     }
     else
     {
-        if((($t_horas=="06:00:00")||($t_horas=="06:30:00")) && ($sexta!==null))
+        if((($t_horas=="06:00:00")||($t_horas=="06:30:00")) && ($sexta !== null) && ($tipo==2))
         {
             $salida.="<span> Días de sexta </span><br>";
             for ($i=0;$i<8;$i++)
@@ -45,20 +49,25 @@ session_start();
         }
         else
         {
-
-            $salida.="<span> Días de sexta</span><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='lunes'id='lun'/> <label for='lun'> Lunes</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='martes' id='mar'/> <label for='mar'> Martes</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='miercoles'id='mie'/> <label for='mie'> Miércoles</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='jueves' id='jue'/> <label for='jue'> Jueves</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='viernes'id='vie'/> <label for='vie'> Viernes</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='sabado' id='sab'/> <label for='sab'> Sábado</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='domingo' id='dom'/> <label for='dom'> Domingo</label><br>";
-            $salida.="<input type='checkbox' name='diaS[]' value='dias_festivos' id='dfe'/> <label for='dfe'> Días festivos</label><br>";
-            echo $salida;
+            if($tipo==2)
+            {
+                $salida.="<span> Días de sexta</span><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='lunes'id='lun'/> <label for='lun'> Lunes</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='martes' id='mar'/> <label for='mar'> Martes</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='miercoles'id='mie'/> <label for='mie'> Miércoles</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='jueves' id='jue'/> <label for='jue'> Jueves</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='viernes'id='vie'/> <label for='vie'> Viernes</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='sabado' id='sab'/> <label for='sab'> Sábado</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='domingo' id='dom'/> <label for='dom'> Domingo</label><br>";
+                $salida.="<input type='checkbox' name='diaS[]' value='dias_festivos' id='dfe'/> <label for='dfe'> Días festivos</label><br>";
+                echo $salida;
+            }
+            else
+            {
+                echo "";
+            }
         }
     }
-        
     
     
     function consultaSexta($myid)
@@ -85,4 +94,5 @@ session_start();
             return null;
         }
     }
+
 ?>

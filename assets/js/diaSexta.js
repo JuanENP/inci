@@ -1,9 +1,9 @@
-function actualiza(consulta,consulta2) {
+function actualiza(consulta,consulta2,consulta3) {
     $.ajax({
             url: '_clickSexta.php',
             type: 'POST',
             dataType: 'html',
-            data: { consulta: consulta,consulta2: consulta2 },
+            data: { consulta: consulta,consulta2: consulta2,consulta3: consulta3 },
         })
         .done(function(respuesta) {
             $("#dias_sexta").html(respuesta);
@@ -19,6 +19,7 @@ $("#turno").click (function() {
     // var valor = $(this).val();
     var valor = document.getElementById('turno').value;
     var valor2 = document.getElementById('sexta').value;
-    actualiza(valor,valor2);
+    var valor3= document.mio.tipo.value;
+    actualiza(valor,valor2,valor3);
  })
 });

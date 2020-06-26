@@ -173,6 +173,7 @@ session_start();
                     inicial(numTrabajador);
                 }); 
             }
+
         </script>
     </head>
 
@@ -239,13 +240,10 @@ session_start();
         <!-- Right Panel ------------------------------------------------------------------------------------------------------>
         <div id="right-panel" class="right-panel">
             <header id="header" class="header">
-
                 <div class="header-menu">
-
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
 
@@ -285,7 +283,7 @@ session_start();
 
             <div class="content mt-3">
                 <div class="animated fadeIn">
-                    <form id="f1" method="POST" action="../php/update/trabajadores.php">
+                    <form id="f1" name="mio" method="POST" action="../php/update/trabajadores.php">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card">
@@ -503,7 +501,6 @@ session_start();
                                                     </div>";
                                                 }
                                             ?> <!--FIN PHP -->
-
                                         </div>
 
                                         <div class="form-group col-lg-7">
@@ -530,8 +527,8 @@ session_start();
                                         <div id='dias_sexta' class='form-group col-lg-3'>
                                             
                                         </div>
+                                        <input type="hidden" id='sexta' value="<?php echo $id; ?>"><!--número de trabajador-->
 
-                                        <input type="hidden" id='sexta' value="<?php echo $id; ?>">
                                         <div class="form-group col-lg-5">
                                             <span >
                                                 Turno
