@@ -695,7 +695,7 @@ session_start();
         global $con;
         $nombre_host=gethostname();
         //GUARDAR EN LA BITACORA DE Guardia
-        if((mysqli_query($con,"call inserta_bitacora_guardias('$operacion',$id_new,'$fechaRegistro_new','$fechaGuardia_new',
+        if((mysqli_query($con,"call inserta_bitacora_guardias('$operacion','$id_new','$fechaRegistro_new','$fechaGuardia_new',
         '$solicitante_new','$suplente_new','$he_new','$hs_new','$quincena_new','$id_old','$fechaRegistro_old','$fechaGuardia_old',
         '$solicitante_old','$suplente_old','$he_old','$hs_old','$quincena_old','$nombre_host')")))
         {
@@ -703,12 +703,29 @@ session_start();
         }
         else
         {
-            echo mysqli_errno($con) . ": " . mysql_error($con) . "\n";
+            $error="";
+            $er1=mysqli_errno($con);
+            $err1="$er1";
+            $er2=mysqli_error($con);
+            $err2="$er2";
+
+            //Hacer UN EXPLODE DE ERR2
+            $divide=explode("'",$err2);
+            $tamDivide=count($divide);//saber el tamaño del array
+            if($tamDivide>0)//si el array posee datos
+            {
+                $err2="";
+                for($i=0;$i<$tamDivide;$i++)
+                {
+                    $err2.=$divide[$i];
+                }
+            }
+
             $sql="DELETE FROM guardias WHERE (idguardias = '$id_new')";
             hazAlgoEnBDSinRetornarAlgo($sql);
 
             echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
-            ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
+            ' Esta operación NO se ha guardado, REINTENTE. $err1 : $err2'); </script>";
             exit();
         }
     }//FIN de insertaEnBitacoraGuardia
