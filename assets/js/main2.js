@@ -14,10 +14,9 @@ function buscar_datos2(consulta2) {
         });
 }
 
-
 $(document).on('keyup', '#caja_busqueda2', function() {
     var valor2 = $(this).val();
-    if (valor2 != "") {
+    if (valor2 !== "") {
         buscar_datos2(valor2);
     }
 });

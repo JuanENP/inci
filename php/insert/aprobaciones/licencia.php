@@ -106,7 +106,9 @@
                                 $correcto=insertaEnBD($sql,$ok,$error,0);
                                 //correcto obtiene el último ID que se insertó
                                 $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
-                                insertaEnBitacoraEspecial($ok,$num,$ClaveLicencia,$fecha,$fechaf,"-",$duracion,$correcto);
+                                insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                "-","-","-",$num,$correcto);
                             }
                             else
                             {
@@ -134,7 +136,9 @@
                                 $correcto=insertaEnBD($sql,$ok,$error,0);
                                 //correcto obtiene el último ID que se insertó
                                 $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
-                                insertaEnBitacoraEspecial($ok,$num,$ClaveLicencia,$fecha,$fechaf,"-",$duracion,$correcto);
+                                insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                                $ClaveLicencia,"-","$duracion","-","-","-","-",
+                                "-","-","-",$num,$correcto);
                             }
                         }
                     }
