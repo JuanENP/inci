@@ -73,7 +73,7 @@ session_start();
         }
         else
         {
-            echo "<script language= javascript type= text/javascript> alert('Datos incorrectos'); history.back();</script >";
+            echo "<script language= javascript type= text/javascript> alert('No ha digitado correctamente su contraseña actual, verifique'); history.back();</script >";
             exit();
         }
     }

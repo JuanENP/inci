@@ -299,42 +299,42 @@ session_start();
                                             <span>
                                                 Número de empleado
                                             </span>
-                                            <input name="num" type="number" id="MainContent_txtCategoria" class="form-control" value="<?php echo $id2[0]?>" required/>
+                                            <input name="num" type="number"  class="form-control" value="<?php echo $id2[0]?>" required/>
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Nombre
                                             </span>
-                                            <input name="nom" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
+                                            <input name="nom" type="text"  class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Apellido paterno
                                             </span>
-                                            <input name="a_pat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
+                                            <input name="a_pat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Apellido materno
                                             </span>
-                                            <input name="a_mat" type="text" id="MainContent_txtNombre" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
+                                            <input name="a_mat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Fecha de nacimiento
                                             </span>
-                                            <input name="cumple" type="date" value="<?php echo $id3[0]?>" id="MainContent_txtNombre" class="form-control" required="" min="1930-01-01"/>
+                                            <input name="cumple" type="date" value="<?php echo $id3[0]?>"   class="form-control" required="" min="1930-01-01"/>
                                         </div>
 
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Fecha de onomástico
                                             </span>
-                                            <input name="ono" type="date" value="<?php echo $id3[1]?>" id="MainContent_txtNombre" class="form-control"  min="1930-01-01"/>
+                                            <input name="ono" type="date" value="<?php echo $id3[1]?>"   class="form-control"  min="1930-01-01"/>
                                         </div>
                                         <?php 
                                             if($genero[0]=='M')
@@ -530,6 +530,7 @@ session_start();
                                         <div id='dias_sexta' class='form-group col-lg-3'>
                                             
                                         </div>
+                                        
                                         <input type="hidden" id='sexta' value="<?php echo $id; ?>">
                                         <div class="form-group col-lg-5">
                                             <span >

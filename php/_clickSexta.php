@@ -13,6 +13,7 @@ session_start();
     }
     $valorTurno=$_POST['consulta'];
     $numero=$_POST['consulta2'];
+
     $salida="";
     $separa=explode(' ',$valorTurno);
     $t_horas=$separa[1];
@@ -54,27 +55,9 @@ session_start();
         }
         else
         {
-            if($sexta!==null)
-            {
-                $salida="";
-                $salida.="<span> Días de sexta </span><br>";
-                for ($i=0;$i<8;$i++)
-                {
-                    if($sexta[$i]==1)
-                    {
-                        $salida.="<input type='checkbox' name='diaS[]' id='s.' '.$semana[$i]' value='$semana[$i]' checked/><label for='s.' '.$semana[$i]'> $semana2[$i]</label><br/>";  
-                    }
-                    else
-                    {
-                        $salida.="<input type='checkbox' name='diaS[]'  id='s.' '.$semana[$i]' value='$semana[$i]'/><label for='s.' '.$semana[$i]'> $semana2[$i]</label><br/>";
-                    }  
-                }
-                echo $salida;
-            }
-            else
-            {
-                $salida='';
-            }
+
+            $salida='';
+        
         }
     
     

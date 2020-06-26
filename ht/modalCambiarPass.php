@@ -13,7 +13,7 @@
     }
 ?>
 <script>
-    function mostrarPasswordActual($x)
+    function mostrarPasswordActual()
     {
         
         var cambio = document.getElementById("txtPassword");
@@ -62,7 +62,7 @@
                                 <form method="post" action="<?php echo $ubicacion;?>" >
                                     <label> Usuario</label>
                                     <div class="input-group">
-                                        <input type="text" name="numControl" Class="form-control" disabled="disabled" value="<?php echo$nombre;?>">
+                                        <input type="text" name="numControl" Class="form-control" disabled="disabled" value="<?php echo $nombre;?>">
                                     </div>
                                     <label>Correo electrónico</label>
                                     <div class="input-group">
