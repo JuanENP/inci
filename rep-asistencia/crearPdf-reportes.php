@@ -204,11 +204,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					$nomArchivo="vacaciones.php";
 					$nomPdf="Reporte-de-vacaciones.pdf";
 					imprimepdf($nomArchivo,$nomPdf);
-			
 				}
 				else
 				{
-
 					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
@@ -2634,7 +2632,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	}//fin function 
 	function inactivasExt()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
