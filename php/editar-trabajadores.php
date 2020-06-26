@@ -516,11 +516,11 @@ session_start();
                                                 {
                                                     if($id4[$i]==1)
                                                     {
-                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]' checked/><label for='$semana[$i]'> $semana2[$i]</label><br/>";  
+                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]' checked/> <label for='$semana[$i]'> $semana2[$i]</label><br/>";  
                                                     }
                                                     else
                                                     {
-                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]'/><label for='$semana[$i]'> $semana2[$i]</label><br/>";
+                                                        echo "<input type='checkbox' name='dia[]' id='$semana[$i]' value='$semana[$i]'/> <label for='$semana[$i]'> $semana2[$i]</label><br/>";
                                                     }  
                                                 }
                                                 echo "</div";
@@ -530,7 +530,7 @@ session_start();
                                         <div id='dias_sexta' class='form-group col-lg-3'>
                                             
                                         </div>
-                                        
+
                                         <input type="hidden" id='sexta' value="<?php echo $id; ?>">
                                         <div class="form-group col-lg-5">
                                             <span >

@@ -24,11 +24,11 @@ session_start();
         {
             if($sexta[$i]==1)
             {
-                $salida.="<input type='checkbox' name='diaS[]' id='$semana[$i]' value='$semana[$i]' checked/><label for='$semana[$i]'> $semana2[$i]</label><br/>";  
+                $salida.="<input type='checkbox' name='diaS[]' id='$semana[$i].'s'.' value='$semana[$i]' checked/> <label for='$semana[$i].'s'.'> $semana2[$i]</label><br/>";  
             }
             else
             {
-                $salida.="<input type='checkbox' name='diaS[]'  id='$semana[$i]' value='$semana[$i]'/><label for='$semana[$i]'> $semana2[$i]</label><br/>";
+                $salida.="<input type='checkbox' name='diaS[]'  id='$semana[$i].'s'.' value='$semana[$i]'/> <label for='$semana[$i].'s'.'> $semana2[$i]</label><br/>";
             }  
         }
         echo $salida;
