@@ -93,11 +93,36 @@ session_start();
                         $('body').toggleClass('open');
                     }
                 );
+
+                $(function() {
+                    $('#noblanco').on('keypress', function(e) {
+                        if (e.which == 32)
+                        {
+                            alert("Evite usar espacios en blanco para el usuario.");
+                            return false;
+                        }
+                    });
+                });
             });
 
             function imprime(texto)
             {
                 alertify.alert(texto);
+            }
+
+            function Vcon()
+            {
+                var cambio = document.getElementById("unico");
+                if(cambio.type == "password")
+                {
+                    cambio.type = "text";
+                    $("#span_con").text("Ocultar");//cambiar el texto 
+                }
+                else
+                {
+                    cambio.type = "password";
+                    $("#span_con").text("Ver");//cambiar el texto 
+                }
             }
         </script>
     </head>
@@ -226,23 +251,29 @@ session_start();
                     <div class="row"> 
                         <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="fu"  autocomplete="off">   
                             <div class="col-lg-12">                        
-                              <div class="card">
+                                <div class="card">
                                     <div class="card-header">
                                         <span id="MainContent_lbtitulo">Nuevo Usuario</span>
                                     </div>
+
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
-                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" class="form-control" required/>
+                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required/>
                                        </div>
+
                                         <div class="form-group col-lg-12">
-                                            <span id="">Contraseña</span><input name="contra" type="text" class="form-control" required/>
+                                            <label>Contraseña</label>
+                                            <div class="input-group">
+                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required> <button onclick="Vcon();"><span id="span_con">Ver</span></button>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="card-footer">
                                             <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm"/>
                                     </div>
-                               </div>
-                           </div> 
+                                </div>
+                            </div> 
                         </form>
                     </div>  
                          
@@ -263,7 +294,7 @@ session_start();
                                                 <!--PONER AQUÍ EL contenido LA TABLA-->
                                                 <?php
                                                     require("_encript.php");
-                                                    $sql="SELECT user FROM mysql.user where user!='root' and user!='pma'";
+                                                    $sql="SELECT user FROM mysql.user where user!='biometric'  and user!='pma' and user!='root'";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
