@@ -9,7 +9,7 @@ if (($_SESSION["name"]) && ($_SESSION["con"]))
 }
 else
 {
-    header("Location: ../index.html");
+    header("Location: ../index.php");
     die();
 }
 ?>

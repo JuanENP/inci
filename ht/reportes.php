@@ -12,7 +12,7 @@ date_default_timezone_set('America/Mexico_City');
     }
     else
     {
-        header("Location: ../index.html");
+        header("Location: ../index.php");
         die();
     }
 ?>

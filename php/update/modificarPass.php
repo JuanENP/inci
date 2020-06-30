@@ -28,7 +28,7 @@ session_start();
     }
     else
     {
-        header("Location: ../../index.html");
+        header("Location: ../../index.php");
         die();
     }
 
@@ -45,7 +45,7 @@ session_start();
         {
             $passActualizada=actualizarPassword($nombre,$nuevaContra);
             $mailActualizado=actualizarMail($mail,$nombre);
-            echo "<script language= javascript type= text/javascript> alert('Datos actualizados correctamente, inicie sesión nuevamente');location.href='../../index.html';</script >";    
+            echo "<script language= javascript type= text/javascript> alert('Datos actualizados correctamente, inicie sesión nuevamente');location.href='../../index.php';</script >";    
         }
     }
     else

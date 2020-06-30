@@ -29,26 +29,30 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
     <script>
-        function mostrarPasswordActual($x)
-        {
-            
+        function mostrarPasswordActual($x) {
+
             var cambio = document.getElementById("txtpassword");
-            if(cambio.type == "password")
-            {
+            if (cambio.type == "password") {
                 cambio.type = "text";
-                $('#A').removeClass('fa fa-eye-slash').addClass('fa fa-eye');//El ide del icono es A
-            }
-            else
-            {
+                $('#A').removeClass('fa fa-eye-slash').addClass('fa fa-eye'); //El ide del icono es A
+            } else {
                 cambio.type = "password";
-                $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash');//El ide del icono es N
+                $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash'); //El ide del icono es N
             }
-            
+
         }
     </script>
 </head>
 
 <body class="bg-dark">
+
+    <?php
+        if(isset($_POST["txtusuario"]) && $_POST["txtpassword"])
+        {
+            require ("php/login.php");
+        }
+    ?>
+
     <div class="sufee-login d-flex align-content-center flex-wrap">
         <div class="container">
             <div class="login-content">
@@ -59,7 +63,7 @@
                     </a>
                 </div>
                 <div class="login-form">
-                    <form method="post" action="php/login.php" id="form1" autocomplete="off">
+                    <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="form1" autocomplete="off">
                         <div class="form-group">
                             <label>Usuario</label>
                             <input name="txtusuario" id="txtusuario" type="text" class="form-control" required autofocus/>
@@ -67,7 +71,7 @@
                         <div class="form-group">
                             <label>Contraseña</label>
                             <div class="input-group">
-                                <input name="txtpassword" id="txtpassword" type="Password" Class="form-control"  required >
+                                <input name="txtpassword" id="txtpassword" type="Password" Class="form-control" required>
                                 <div class="input-group-append">
                                     <button id="show_password" class="btn btn-primary" type="button" onclick="mostrarPasswordActual();"> <span class="fa fa-eye-slash icon" id="A" ></span> </button>
                                 </div>
@@ -79,7 +83,7 @@
                             <!-- <input type="submit" name="resetSubmit" value="¿Olvidaste la contraseña?"> -->
                         </div>
                     </form>
-                   <a href="mail/recuperarPass.php" class="passOlvidada">¿Olvidaste la contraseña?</a>
+                    <a href="mail/recuperarPass.php" class="passOlvidada">¿Olvidaste la contraseña?</a>
                 </div>
             </div>
         </div>

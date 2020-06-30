@@ -1,15 +1,14 @@
 <?php
-session_start();  
-
+session_start();
   error_reporting(0);//desactivar advertencias que solo aparecen cuando el usuario intenta abrir este archivo sin antes loguearse
   $nombre= $_POST['txtusuario'];
   $contra= $_POST['txtpassword'];
-  include("../Acceso/global.php");
+  include("Acceso/global.php");
   $verCampo='';//Ver el campo de correo y/o contraseña
-  $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE user = '$nombre' AND password = PASSWORD('$contra')") or die();
+  $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE User = '$nombre' AND password = PASSWORD('$contra')") or die();
   $resul=mysqli_num_rows($ejecu);
 
- if($resul==1) //si encontró algún dato en la tabla
+  if($resul==1) //si encontró algún dato en la tabla
   {
     $resul=mysqli_fetch_array($ejecu);
     $us=$resul[0];//usuario
@@ -81,11 +80,6 @@ session_start();
   {
     //echo $us;
     mysqli_close($con);
-    header("Location: ../index.html");
+    header("Location: ../index.php");
   }
 ?>
- 
-
-
-
-

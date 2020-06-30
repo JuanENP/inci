@@ -15,7 +15,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
     }
     else
     {
-        header("Location: ../index.html");
+        header("Location: ../index.php");
         die();
     }
 
