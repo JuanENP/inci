@@ -1,15 +1,16 @@
 <?php
 session_start(); 
-    date_default_timezone_set('America/Mexico_City');
+   // date_default_timezone_set('America/Mexico_City');
     if (($_SESSION["name"]) && ($_SESSION["con"]))
     {
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php"); 
+        require('../php/buscar_info_trabajador.php');
     }
     else
     {
-        header("Location: ../index.html");
+        header("Location: ../index.php");
         die();
     }
 ?>
@@ -22,7 +23,7 @@ session_start();
     }
     function errordato(x)
     {
-        mensaje='Datos incorrectos en '+x;
+        mensaje='Error al insertar datos en la tabla '+x+', verifique con el administrador de sistemas.';
         alert(mensaje);
         history.back();
         exit();
@@ -37,6 +38,47 @@ session_start();
     </script>
 
 <?php
+    $salida="";
+    if(empty($_POST['num']))
+    {
+        $salida.="Debe escribir un número de trabajador. ";
+    }
+    if(empty($_POST['nom']))
+    {
+        $salida.="Debe escribir el nombre. ";
+    }
+    if(empty($_POST['a_pat']))
+    {
+        $salida.="Debe escribir el apellido paterno. ";
+    }
+    if(empty($_POST['a_mat']))
+    {
+        $salida.="Debe escribir el apellido materno. ";
+    }
+    if(empty($_POST['cat']))
+    {
+        $salida.="Debe seleccionar una categoria. ";
+    }
+    if(empty($_POST['depto']))
+    {
+        $salida.="Debe seleccionar un departamento. ";
+    }
+    if(empty($_POST['tipo']))
+    {
+        $salida.="Debe seleccionar un tipo de trabajador. ";
+    }
+    if(empty($_POST['turno']))
+    {
+        $salida.="Debe seleccionar un turno. ";
+    }
+    if(empty($_POST['cumple']))
+    {
+        $salida.="Debe seleccionar una fecha de cumpleaños ";
+    }
+    if(empty($_POST['fecha_alta']))
+    {
+        $salida.="Debe seleccionar la fecha de alta del trabajador ";
+    }
     $numero=$_POST['num'];
     $nombre=$_POST['nom'];
     $a_pat=$_POST['a_pat'];
@@ -45,15 +87,24 @@ session_start();
     $depto=$_POST['depto'];
     $tipo=$_POST['tipo'];
     $t_turno=$_POST['turno'];
-    //El turno se separa
     $separa=explode(" ",$t_turno);
     $turno=$separa[0];
     $t_horas=$separa[1];
     $cumple=$_POST['cumple'];
     $valores=explode('-',$cumple);
+    $respuesta=esMayorEdad($cumple);
+    if($respuesta==false)
+    { 
+        $salida.="El trabajador debe ser mayor de edad. ";
+    }
     $fecha_alta=$_POST['fecha_alta'];
     $valores2=explode('-',$fecha_alta);
-    $salida="";
+    $resp=compararAnio($valores2[0]);
+    if($resp==false)
+    {
+        $salida.="El año de alta del trabajador debe ser menor o igual al año actual. ";
+    }
+
     $existeSexta=0;
     if (empty($_POST['dia']))
     {
@@ -130,10 +181,6 @@ session_start();
         }
     }
 
-
-
-
- 
     //Aqui consulto si existe ese numero de trabajador 
     $ejecu="select * from trabajador where numero_trabajador = '$numero'";
     $codigo=mysqli_query($con,$ejecu);
@@ -146,7 +193,6 @@ session_start();
     }   
     else
     {
-        
         if(strlen($valores[0])>4)
         {
             $salida.="El año de nacimiento es incorrecto.";
@@ -155,15 +201,14 @@ session_start();
         {
             $salida.="El año de la fecha de alta es incorrecto.";
         }
-       
-        //Si es foráneo
+        //Si es comisionado foráneo
         if($tipo==4)
         {
             $empresa=$_POST['emp'];
             $f_ini=$_POST['f_ini'];
             $f_fin=$_POST['f_fin'];
-            $empresa_validar=trim($empresa);
-            if(empty($empresa_validar))
+            $empresa = trim($empresa);
+            if(empty($empresa))
             {
                 $salida.="No ha escrito el nombre de la empresa.";
             }
@@ -177,12 +222,10 @@ session_start();
             $valores_fin=explode('-',$f_fin);
             if(strlen($valores_fin[0])>4)
             {
-            $salida.="El año de fin es incorrecto.";
+                $salida.="El año de fin es incorrecto.";
             }
-
             $date1= new DateTime($f_ini);
             $date2= new DateTime($f_fin);
-
             $interval = $date1->diff($date2);
             $totDias=$interval->format('%a');//los días que durará la comisión
             //si el periodo de comisión es superior a 165 días (5 meses y medio)
@@ -190,7 +233,6 @@ session_start();
             {
                 $salida.="No se puede comisionar más de 5 meses y medio.";
             }
-
             $fecha_hoy=date("Y-m-d");//la fecha de hoy
             $fecha_ac = strtotime($fecha_hoy);
             $fecha_in = strtotime($f_ini);
@@ -204,11 +246,10 @@ session_start();
                 $salida.="La comisión empieza hoy y no puede registrarse debido a que se requiere mínimo un día de anticipación.";
             }
         }//fin if-si es comisionado foráneo
-      
 
         if(empty($salida))
         {
-          //significa que no ocurrio ningun error y prosigues
+          //Si salida vacía, significa que no ocurrio ningun error 
           $semana = array(0,0,0,0,0,0,0,0);
           $num=count($dias);
           for($n=0;$n<$num;$n++)
@@ -246,15 +287,17 @@ session_start();
                     $semana[7]=1;
                }
             }
+            
+            
 
-            if($tipo==4)
+            if($tipo==4)//Si el trabajador es comisionado foráneo
             { 
                 mysqli_autocommit($con, FALSE);
                 if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero')")))
                 {
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
-                    $tabla='trabajador';
+                    $tabla='trabajador, línea 296';
                     echo "<script> errordato('$tabla');</script>";
                 }
                 else
@@ -263,7 +306,7 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        $tabla='acceso';
+                        $tabla='acceso, línea 305';
                         echo "<script> errordato('$tabla');</script>";
                     }
                     else
@@ -273,7 +316,7 @@ session_start();
                         { 
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            $tabla='cumpleaños u onomástico';
+                            $tabla='cumpleaños u onomástico, línea 315';
                             echo "<script> errordato('$tabla');</script>";
                         }
                         else
@@ -282,47 +325,44 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                $tabla='tiempo de servicio';
+                                $tabla='tiempo de servicio, línea 324';
                                 echo "<script> errordato('$tabla');</script>";
                             }
                             else
                             {
-                                $empresa = trim($empresa);
-                                if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','17','$empresa',$totDias)")))
+                                if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','CS','$empresa',$totDias)")))
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    $tabla='especial';
+                                    $tabla='especial, línea 334';
                                     echo "<script> errordato('$tabla');</script>";
                                 }
                                 else
                                 {
-
-                                    mysqli_commit($con);
+                                   // mysqli_commit($con);
                                     // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
                                     $sql="SELECT descripcion  FROM trabajador inner join tipo on idtipo=tipo_tipo and tipo_tipo=$tipo";
-                                    $query= mysqli_query($con, $sql) or die();
+                                    $query= mysqli_query($con, $sql) or die('Error al seleciconar la descriipcion del tipo de trabjador, línea 345, verifique con el administrador de sistemas.');
                                     $fila=mysqli_fetch_array($query);
                                     $descripcion_tipo=$fila[0];
-    
+                                    //Nombre del equipo
                                     $nombre_host= gethostname();
                                     //GUARDAR EN LA BITACORA DE TRABAJADOR
-                                    if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','-','-','-','-','-','-','-', '$nombre_host')")))
+                                    if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado', '$numero', '$nombre', '$a_pat', '$a_mat', '$depto', '$cat', '$descripcion_tipo', '$genero', '-', '-', '-', '-', '-', '-', '-', '-', '$nombre_host')")))
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        $tabla='bitácora de trabajador';
+                                        $tabla='bitácora de trabajador, línea 352';
                                         echo "<script> errordato('$tabla');</script>";
                                     }
                                     else
                                     {
-                                    
                                         //GUARDAR EN LA BITACORA DE CUMPLE_ONO
                                         if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Guardado','$cumple','$ono','-','-','$numero', '$nombre_host')")))
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            $tabla='bitácora de cumple u onomástico';
+                                            $tabla='bitácora de cumpleaños u onomástico, línea 362';
                                             echo "<script> errordato('$tabla');</script>";
                                         }
                                         else
@@ -331,36 +371,96 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                $tabla='bitácora de acceso';
+                                                $tabla='bitácora de acceso, línea 371';
                                                 echo "<script> errordato('$tabla');</script>";
                                             }
                                             else
                                             {
-                                                //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
-                                                if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
+                                                if($existeSexta==1)
                                                 {
-                                                    mysqli_rollback($con);
-                                                    mysqli_autocommit($con, TRUE); 
-                                                    $tabla='bitácora de tiempo de servicio';
-                                                    echo "<script> errordato('$tabla');</script>";
-                                                }
-                                                else
-                                                {
-                                                    //GUARDAR EN LA BITACORA DE ESPECIAL
-                                                    if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','17','$empresa',$totDias,'','','','','-','-','','$numero','$nombre_host',-1)")))
+                                                    //GUARDAR LA SEXTA
+                                                    if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        $tabla='bitácora de especial';
-                                                        echo "<script> errordato('$tabla');</script>"; 
+                                                        $tabla='sexta, línea 383';
+                                                        echo "<script> errordato('$tabla');</script>";
                                                     }
                                                     else
-                                                    {   mysqli_commit($con);
-                                                        mysqli_autocommit($con, TRUE);
-                                                        $tipo='comisionado';
-                                                        echo "<script> correcto('$tipo');</script>";
-                                                    }  
-                                                }                       
+                                                    {
+                                                        //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
+                                                        {
+                                                            mysqli_rollback($con);
+                                                            mysqli_autocommit($con, TRUE); 
+                                                            $tabla='bitácora de tiempo de servicio, línea 393';
+                                                            echo "<script> errordato('$tabla');</script>";
+                                                        }
+                                                        else
+                                                        {
+                                                            //GUARDAR EN LA BITACORA DE ESPECIAL
+                                                            if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','CS','$empresa',$totDias,'-','-','-','-','-','-','-','$numero','$nombre_host',-1)")))
+                                                            {
+                                                                mysqli_rollback($con);
+                                                                mysqli_autocommit($con, TRUE); 
+                                                                $tabla='bitácora de especial, línea 403';
+                                                                echo "<script> errordato('$tabla');</script>"; 
+                                                            }
+                                                            else
+                                                            {   //GUARDAR EN LA BITACORA SEXTA
+                                                                if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
+                                                                {
+                                                                    mysqli_rollback($con);
+                                                                    mysqli_autocommit($con, TRUE); 
+                                                                    $tabla='bitácora de sexta, línea 412';
+                                                                    echo "<script> errordato('$tabla');</script>";
+                                                                }
+                                                                else
+                                                                {   $res=insertaUsuario($numero);
+                                                                    if($res==true)
+                                                                    {
+                                                                        mysqli_commit($con);
+                                                                        mysqli_autocommit($con, TRUE);
+                                                                        $tipo='comisionado';
+                                                                        echo "<script> correcto('$tipo');</script>";
+                                                                    }
+                                                                }   
+                                                            }
+                                                        } 
+                                                    }
+                                                }
+                                                else //Guardar si no tiene sexta 
+                                                {
+                                                    //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
+                                                    if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
+                                                    {
+                                                        mysqli_rollback($con);
+                                                        mysqli_autocommit($con, TRUE); 
+                                                        $tabla='bitácora de tiempo de servicio, línea 436';
+                                                        echo "<script> errordato('$tabla');</script>";
+                                                    }
+                                                    else
+                                                    {
+                                                        //GUARDAR EN LA BITACORA DE ESPECIAL
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_especial('Guardado','$f_ini','$f_fin','-','-','CS','$empresa',$totDias,'-','-','-','-','-','-','-','$numero','$nombre_host',-1)")))
+                                                        {
+                                                            mysqli_rollback($con);
+                                                            mysqli_autocommit($con, TRUE); 
+                                                            $tabla='bitácora de especial, línea 446';
+                                                            echo "<script> errordato('$tabla');</script>"; 
+                                                        }
+                                                        else
+                                                        {   $res=insertaUsuario($numero);
+                                                            if($res==true)
+                                                            {
+                                                                mysqli_commit($con);
+                                                                mysqli_autocommit($con, TRUE);
+                                                                $tipo='comisionado';
+                                                                echo "<script> correcto('$tipo');</script>";
+                                                            }
+                                                        }  
+                                                    } 
+                                                }                      
                                             }
                                         }
                                     }
@@ -370,14 +470,14 @@ session_start();
                     }
                 }
             }//fin-if comisionado foráneo
-          else
-            {
+            else
+            {  //Si el empleado es de base, confianza o eventual, guardar los siguientes datos:
                 mysqli_autocommit($con, FALSE);
                 if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero')")))
                 {
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE);
-                    $tabla='trabajador';
+                    $tabla='trabajador, línea 477';
                     echo "<script> errordato('$tabla');</script>";
                 }
                 else
@@ -386,7 +486,7 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        $tabla='acceso';
+                        $tabla='acceso, línea 486';
                         echo "<script> errordato('$tabla');</script>";
                     }
                     else
@@ -395,7 +495,7 @@ session_start();
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            $tabla='cumpleaños u onomástico';
+                            $tabla='cumpleaños u onomástico, línea 495';
                             echo "<script> errordato('$tabla');</script>";
                         }
                         else
@@ -404,38 +504,35 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                $tabla='tiempo de servicio';
+                                $tabla='tiempo de servicio, línea 504';
                                 echo "<script> errordato('$tabla');</script>";
                             }                            
                             else
                             {  
-
-                                mysqli_commit($con);
-                               
+                               // mysqli_commit($con);
                                 // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
                                 $sql="SELECT descripcion  FROM trabajador inner join tipo on idtipo=tipo_tipo and tipo_tipo=$tipo";
-                                $query= mysqli_query($con, $sql) or die();
+                                $query= mysqli_query($con, $sql) or die('Error al obtener la descripción del tipo de trabajador, línea 508, verifique con el administrador de sistemas.');
                                 $fila=mysqli_fetch_array($query);
                                 $descripcion_tipo=$fila[0];
-
+                                //Nombre del equipo
                                 $nombre_host= gethostname();
                                 //GUARDAR EN LA BITACORA DE TRABAJADOR
-                                if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','-','-','-','-','-','-','-', '$nombre_host')")))
+                                if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Guardado', '$numero', '$nombre', '$a_pat', '$a_mat', '$depto', '$cat', '$descripcion_tipo', '$genero', '-', '-', '-', '-', '-', '-', '-', '-', '$nombre_host')")))
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    $tabla='bitácora de trabajador';
+                                    $tabla='bitácora de trabajador, línea 522';
                                     echo "<script> errordato('$tabla');</script>";
                                 }
                                 else
                                 {
-                                
                                     //GUARDAR EN LA BITACORA DE CUMPLE_ONO
                                     if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Guardado','$cumple','$ono','-','-','$numero', '$nombre_host')")))
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        $tabla='bitácora cumple u onomástico ';
+                                        $tabla='bitácora cumple u onomástico, línea 532';
                                         echo "<script> errordato('$tabla');</script>";
                                     }
                                     else
@@ -444,18 +541,19 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            $tabla='bitácora de acceso';
+                                            $tabla='bitácora de acceso, línea 541';
                                             echo "<script> errordato('$tabla');</script>";
                                         }
                                         else
                                         {
+                                            //Si el empleado tiene sexta 
                                             if($existeSexta==1)
-                                            {
+                                            {    //Guardar la sexta
                                                 if(!(mysqli_query($con,"Insert into sexta values ('','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]',$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    $tabla='sexta';
+                                                    $tabla='sexta, línea 553';
                                                     echo "<script> errordato('$tabla');</script>";
                                                 }
                                                 else
@@ -465,35 +563,53 @@ session_start();
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        $tabla='bitácora de tiempo de servicio';
+                                                        $tabla='bitácora de tiempo de servicio, línea 563';
                                                         echo "<script> errordato('$tabla');</script>";
                                                     }
                                                     else
-                                                    {   mysqli_commit($con);
-                                                        mysqli_autocommit($con, TRUE);
-                                                        $tipo='';
-                                                        echo "<script> correcto('$tipo');</script>";
+                                                    {    //GUARDAR EN BITACORA SEXTA                                                              
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
+                                                        {
+                                                            mysqli_rollback($con);
+                                                            mysqli_autocommit($con, TRUE); 
+                                                            $tabla='bitácora de sexta, línea 572';
+                                                            echo "<script> errordato('$tabla');</script>";
+                                                        }
+                                                        else
+                                                        {   $res=insertaUsuario($numero);
+                                                            if($res==true)
+                                                            {
+                                                                mysqli_commit($con);
+                                                                mysqli_autocommit($con, TRUE);
+                                                                $tipo='';
+                                                                echo "<script> correcto('$tipo');</script>";
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-                                            else
+                                            else //SI EL EMPLEADO NO TIENE SEXTA
                                             {
                                                 //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
                                                 if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Guardado','$fecha_alta','-','$numero', '$nombre_host')")))
                                                 {
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    $tabla='bitácora de tiempo de servicio';
+                                                    $tabla='bitácora de tiempo de servicio, línea 595';
                                                     echo "<script> errordato('$tabla');</script>";
                                                 }
                                                 else
-                                                {   mysqli_commit($con);
-                                                    mysqli_autocommit($con, TRUE);
-                                                    $tipo='';
-                                                    echo "<script> correcto('$tipo');</script>";
+                                                {   $res=insertaUsuario($numero);
+                                                    if($res==true)
+                                                    {
+                                                        mysqli_commit($con);
+                                                        mysqli_autocommit($con, TRUE);
+                                                        $tipo='';
+                                                        echo "<script> correcto('$tipo');</script>";
+                                                    }
                                                 }
                                             }    
-                                       }        
+                                        }        
                                     }            
                                 }
                             }
@@ -501,11 +617,11 @@ session_start();
                     }
                 }
             }
-
         }//fin de if (empty(salida))
         else
         {
-          echo "<script> error($salida); history.back();</script>";
+          echo "<script> error($salida); </script>";
         }
-    }
+    } 
 ?>
+

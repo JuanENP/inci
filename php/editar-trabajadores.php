@@ -9,19 +9,19 @@ session_start();
     }
     else
     {
-        header("Location: ../index.html");
+        header("Location: ../index.php");
         die();
     }
-    //obtener el id que se mandó acá
+    //El id es el número del trabajador seleccionado y es necesario por si se debe actualizar el número de trabajador
     $id=$_GET['id'];
-    $_SESSION['anterior_num']=$id;
+    $_SESSION['anterior_num']=$id;//
 
     //Seleccionar el tipo de trabajador
     $sql="select tipo_tipo from trabajador where numero_trabajador = '".$id."'";
     $query= mysqli_query($con, $sql);
     if(!$query)
     {
-      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+      die("<br>" . "Error en la línea 24: " . mysqli_errno($con) . " : " . mysqli_error($con). ", verifique con el administrador de sistemas");
     }
     else
     { 
@@ -35,21 +35,11 @@ session_start();
             $id3=consultaCumple($id);
             $id4=consultaAcceso($id);
             $id5=consultaTServicio($id);
-            //Consultar todo de la tabla especial
-            $sql="select fecha_inicio,fecha_fin,empresa from especial where trabajador_trabajador = $id";
-            $query= mysqli_query($con, $sql);
-            if(!$query)
-            {
-                die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-            }
-            else
-            { 
-                $resul=mysqli_fetch_array($query);
-                 //FECHA INICIO, FECHA FIN, EMPRESAS
-                $fecha_inicio = $resul[1];
-                $fecha_fin = $resul[2];
-                $empresa = $resul[8];
-            } 
+            $especial=consultaEspecial($id);
+            //FECHA INICIO, FECHA FIN, EMPRESAS
+            $fecha_inicio = $especial[1];
+            $fecha_fin = $especial[2];
+            $empresa = $especial[8];
             $genero=consultaGenero($id);   
         }
         else //SINO ES TRABAJADOR COMISIONADO
@@ -172,6 +162,11 @@ session_start();
                     var numTrabajador=document.getElementById("sexta").value;
                     inicial(numTrabajador);
                 }); 
+            }
+        
+            function mayus(e) 
+            {
+                e.value = e.value.toUpperCase();
             }
 
         </script>
@@ -297,28 +292,28 @@ session_start();
                                             <span>
                                                 Número de empleado
                                             </span>
-                                            <input name="num" type="number"  class="form-control" value="<?php echo $id2[0]?>" required/>
+                                            <input name="num" type="number"  class="form-control" value="<?php echo $id2[0]?>" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Nombre
                                             </span>
-                                            <input name="nom" type="text"  class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" />
+                                            <input name="nom" type="text"  class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð ]{2,48}"  title="Ingrese solo letras" required value="<?php echo $id2[1]; ?>" onkeyup="mayus(this);" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Apellido paterno
                                             </span>
-                                            <input name="a_pat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" />
+                                            <input name="a_pat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð ]{2,48}" title="Ingrese solo letras" required value="<?php  echo$id2[2]; ?>" onkeyup="mayus(this);" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
                                             <span>
                                                 Apellido materno
                                             </span>
-                                            <input name="a_mat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" />
+                                            <input name="a_mat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð ]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" onkeyup="mayus(this);" />
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
@@ -403,7 +398,6 @@ session_start();
                                                         {
                                                             echo "<option value='".$fila[0]."'>". $fila[0] . " " .$fila[1]."</option>";
                                                         }
-                                                    
                                                     }
                                                     echo "</select>";
                                                 }    
@@ -460,7 +454,6 @@ session_start();
                                                             if($id2[6]==1)
                                                             {
                                                                 echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-
                                                             }
                                                             if($id2[6]==2)
                                                             {
@@ -469,36 +462,55 @@ session_start();
                                                             if($id2[6]==3)
                                                             {
                                                                 echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-
                                                             }
-                                                        
                                                             if($id2[6]==4)
                                                             {
                                                                 echo "<br> <input type='radio' name='tipo' id='radio_foraneo' value='".$fila[0]."' onclick='oculta(0)'checked >". $fila[1] . " ". "</input>";
-
                                                             }
                                                         }
                                                         else
                                                         {  
                                                             if($fila[0]==4)
                                                             {
-                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
+                                                                echo "<br> <input type='radio' name='tipo' id='radio_foraneo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
 
                                                             }
                                                             else
                                                             {
                                                                 echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
+                                                                /*if($fila[0]==1)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+                                                                }
+                                                                if($fila[0]==2)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='radio_base' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+                                                                }
+                                                                if($fila[0]==3)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
+                                                                }*/
                                                             }
-
                                                         }
-                                                    
                                                     }//fin del while
-                                                    echo  //El id= empresa del div sirve para ocultar estos elementos
-                                                    "<div id='empresa' class='form-group col-lg-12'>
-                                                    <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð&,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
-                                                    <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
-                                                    <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
-                                                    </div>";
+                                                    if(!empty($empresa))
+                                                    {
+                                                        echo  //El id= empresa del div sirve para ocultar estos elementos
+                                                        "<div id='empresa' class='form-group col-lg-12'>
+                                                        <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' value='$empresa' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
+                                                        <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini'value='$fecha_inicio'  class='form-control' name='f_ini' min='2020-01-01'>
+                                                        <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin' value='$fecha_fin'  class='form-control' name='f_fin'min='2020-01-01'>
+                                                        </div>";
+                                                    }
+                                                    else
+                                                    {
+                                                        echo  //El id= empresa del div sirve para ocultar estos elementos
+                                                        "<div id='empresa' class='form-group col-lg-12'>
+                                                        <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
+                                                        <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
+                                                        <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
+                                                        </div>";
+                                                    }
                                                 }
                                             ?> <!--FIN PHP -->
                                         </div>

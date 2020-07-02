@@ -161,7 +161,7 @@ session_start();
             <div class="content mt-3">
                 <div class="animated fadeIn">
                    <div class="row"> 
-                       <form method="post" action="../../ht/inserta-cat.php" id="form2">   
+                       <form method="post" action="../ht/inserta-cat.php" id="form2">   
                             <div class="col-lg-12">                        
                               <div class="card">
                                     <div class="card-header">

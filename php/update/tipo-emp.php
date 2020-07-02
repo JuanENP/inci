@@ -18,6 +18,12 @@ session_start();
         alert("Actualizado correctamente");
         location.href="../../ht/tipoempleado.php";
     }
+
+    function imprime(texto)
+    {
+        alert(texto);
+        history.back();
+    }
 </script>
 
 <?php
@@ -36,12 +42,13 @@ session_start();
         $query= mysqli_query($con, $sql) or die();
         $resul=mysqli_fetch_array($query);
         $nombre_tipo=$resul[1];
+
         mysqli_autocommit($con, FALSE);
         if(!(mysqli_query($con,"update tipo SET  descripcion = '".$nuevo."' WHERE (idtipo = '".$id."')")))
         {
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
-            echo "alert('Datos incorrectos en tipo de empleado); history.back();";
+            echo "<script> imprime('Datos incorrectos al actualizar el tipo de empleado, error línea 51, verifique con el administrador de sistemas'); </script>";
         }
         else
         {   $nombre_host= gethostname();
@@ -50,7 +57,7 @@ session_start();
             {
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
-                echo "alert('Datos incorrectos en bitacora tiempo de servicio); history.back();";
+                echo "<script> imprime('Datos incorrectos al insertar en bitacora tipo de empleado, error línea 60, verifique con el administrador de sistemas'); </script>";
             }
             else
             {
