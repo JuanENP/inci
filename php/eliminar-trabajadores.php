@@ -8,7 +8,7 @@ session_start();
   }
   else
   {
-      header("Location: ../index.html");
+      header("Location: ../index.php");
       die();
   }
   //obtener el id que se mandó acá

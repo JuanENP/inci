@@ -28,21 +28,26 @@
         function mostrarPasswordActual()
         {   
             var cambio = document.getElementById("txtpassword");
-            if(cambio.type == "password")
-            {
+            if (cambio.type == "password") {
                 cambio.type = "text";
-                $('#A').removeClass('fa fa-eye-slash').addClass('fa fa-eye');//El ide del icono es A
-            }
-            else
-            {
+                $('#A').removeClass('fa fa-eye-slash').addClass('fa fa-eye'); //El ide del icono es A
+            } else {
                 cambio.type = "password";
-                $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash');//El ide del icono es N
+                $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash'); //El ide del icono es N
             }
         }
     </script>
 </head>
 
 <body class="bg-dark">
+
+    <?php
+        if(isset($_POST["txtusuario"]) && $_POST["txtpassword"])
+        {
+            require ("php/login.php");
+        }
+    ?>
+
     <div class="sufee-login d-flex align-content-center flex-wrap">
         <div class="container">
             <div class="login-content">
@@ -53,7 +58,7 @@
                     </a>
                 </div>
                 <div class="login-form">
-                    <form method="post" action="php/login.php" id="form1" autocomplete="off">
+                    <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="form1" autocomplete="off">
                         <div class="form-group">
                             <label>Usuario</label>
                             <input name="txtusuario" id="txtusuario" type="text" class="form-control" required autofocus/>
@@ -61,7 +66,7 @@
                         <div class="form-group">
                             <label>Contraseña</label>
                             <div class="input-group">
-                                <input name="txtpassword" id="txtpassword" type="Password" Class="form-control"  required >
+                                <input name="txtpassword" id="txtpassword" type="Password" Class="form-control" required>
                                 <div class="input-group-append">
                                     <button id="show_password" class="btn btn-primary" type="button" onclick="mostrarPasswordActual();"> <span class="fa fa-eye-slash icon" id="A" ></span> </button>
                                 </div>
@@ -73,7 +78,7 @@
                             <!-- <input type="submit" name="resetSubmit" value="¿Olvidaste la contraseña?"> -->
                         </div>
                     </form>
-                   <a href="mail/recuperarPass.php" class="passOlvidada">¿Olvidaste la contraseña?</a>
+                    <a href="mail/recuperarPass.php" class="passOlvidada">¿Olvidaste la contraseña?</a>
                 </div>
             </div>
         </div>

@@ -1,9 +1,28 @@
 <?php
         if((!empty($_POST["nom"]) && !empty($_POST["contra"])) && ($_POST["nom"]!="" || $_POST["contra"]!=""))
         {
+            
             $n=$_POST['nom'];
             $c=$_POST['contra'];
-            insertaUsuario($n,$c);
+
+            $cadena =str_replace(' ', '', $n);
+            $n=$cadena;
+
+            if(strlen($n)>3)
+            {
+                if(strlen($c)>3)
+                {
+                    insertaUsuario($n,$c);  
+                }
+                else
+                {
+                    echo "<script> imprime('La contraseña debe ser de mínimo 4 dígitos y sin espacios en blanco, verifique'); </script>";
+                }
+            }
+            else
+            {
+                echo "<script> imprime('El nombre de usuario debe contener mínimo 4 caracteres y sin espacios en blanco, verifique.'); </script>";
+            }
         }
         else
         {

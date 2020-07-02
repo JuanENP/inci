@@ -91,7 +91,7 @@ session_start();
     }
     else
     {
-        header("Location: ../../index.html");
+        header("Location: ../../index.php");
         die();
     }
 //    echo"<script language= javascript type= text/javascript> alert('$opcion');history.back();</script>";
@@ -118,7 +118,7 @@ session_start();
                     require('../insert/mail.php');
                     $resultado=guardarMail($mail);
                     $resultado2=actualizarPassword($nombre,$nuevaContra);  
-                    echo"<script language= javascript type= text/javascript> alert('Datos guardados, debe iniciar sesión nuevamente'); location.href='../../index.html';</script>";  
+                    echo"<script language= javascript type= text/javascript> alert('Datos guardados, debe iniciar sesión nuevamente'); location.href='../../index.php';</script>";  
         
                 }
 
@@ -137,7 +137,7 @@ session_start();
                 else
                 {   
                     $resultado=actualizarPassword($nombre,$nuevaContra);            
-                    echo"<script language= javascript type= text/javascript> alert('Contraseña actualizada correctamente, inicie sesión nuevamente'); location.href='../../index.html';</script>"; 
+                    echo"<script language= javascript type= text/javascript> alert('Contraseña actualizada correctamente, inicie sesión nuevamente'); location.href='../../index.php';</script>"; 
                 }
             }// fin if==2
             else

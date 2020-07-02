@@ -6,10 +6,10 @@ session_start();
     require("../Acceso/global.php");
     $ubicacion='update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     //si la variable de sesión no existe, entonces no es posible entrar al panel. 
-    //Lo redirigimos al index.html para que inicie sesión
+    //Lo redirigimos al index.php para que inicie sesión
     if($nombre==null || $nombre=='')
     {
-        header("Location: ../index.html");
+        header("Location: ../index.php");
         die();
     }
     //obtener el id que se mandó acá

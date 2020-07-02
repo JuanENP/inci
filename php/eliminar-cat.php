@@ -3,11 +3,11 @@ session_start();
   $nombre=$_SESSION['name'];
   $contra=$_SESSION['con'];
   //si la variable de sesión no existe, entonces no es posible entrar al panel. 
-  //Lo redirigimos al index.html para que inicie sesión
+  //Lo redirigimos al index.php para que inicie sesión
   if($nombre==null || $nombre=='')
   {
-      header("Location: ../index.html");
-      die();
+    header("Location: ../index.php");
+    die();
   }
   else
   {
