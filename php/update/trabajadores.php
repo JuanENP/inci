@@ -364,7 +364,7 @@ session_start();
             {
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
-                echo "<script type=\"text/javascript\">alert('Error al actualizar los datos del trabajador, línea 231, verifique con el administrador de sistemas.'); history.back();</script>";
+                echo "<script type=\"text/javascript\">alert('Error al actualizar los datos del trabajador, línea 363, verifique con el administrador de sistemas.'); history.back();</script>";
             }
             else
             {   
@@ -372,7 +372,7 @@ session_start();
                 {
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
-                    echo "<script type=\"text/javascript\">alert('Error al actualizar los días de trabajo o el turno, línea 288, verifique con el administrador de sistemas'); history.back();</script>";    
+                    echo "<script type=\"text/javascript\">alert('Error al actualizar los días de trabajo o el turno, línea 371, verifique con el administrador de sistemas.'); history.back();</script>";    
                 }
                 else
                 { 
@@ -380,7 +380,7 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "<script type=\"text/javascript\">alert('Error al actualizar el cumpleaños u onomástico del trabajador, línea 291, verifique con el administrador de sistemas'); history.back();</script>";            
+                        echo "<script type=\"text/javascript\">alert('Error al actualizar el cumpleaños u onomástico del trabajador, línea 379, verifique con el administrador de sistemas.'); history.back();</script>";            
                     }
                     else
                     {
@@ -388,7 +388,7 @@ session_start();
                         {
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
-                            echo "<script type=\"text/javascript\">alert('Error al actualizar el tiempo de servicio, línea 299, verifique con el administrador de sistemas. '); history.back(); </script>";
+                            echo "<script type=\"text/javascript\">alert('Error al actualizar el tiempo de servicio, línea 387, verifique con el administrador de sistemas. '); history.back(); </script>";
                         }
                         else
                         {   
@@ -396,7 +396,7 @@ session_start();
                             {
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "<script type=\"text/javascript\">alert('Error al actualizar la comisión del trabajador, línea 307, verifique con el administrador de sistemas.'); history.back();</script>";
+                                echo "<script type=\"text/javascript\">alert('Error al actualizar la comisión del trabajador, línea 395, verifique con el administrador de sistemas.'); history.back();</script>";
                             }
                             else
                             {     
@@ -405,7 +405,7 @@ session_start();
                                 {
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
-                                    echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora trabajador, línea 317, verifique con el administrador de sistemas.'); history.back();</script>";
+                                    echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora trabajador, línea 404, verifique con el administrador de sistemas.'); history.back();</script>";
                                 }
                                 else
                                 {                                       
@@ -414,7 +414,7 @@ session_start();
                                     {
                                         mysqli_rollback($con);
                                         mysqli_autocommit($con, TRUE); 
-                                        echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora cumpleaños u onomástico, línea 326, verifique con el administrador de sistemas.'); history.back();</script>";
+                                        echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora cumpleaños u onomástico, línea 413, verifique con el administrador de sistemas.'); history.back();</script>";
                                     }
                                     else
                                     {  
@@ -423,7 +423,7 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora acceso, línea 355,verifique con el administrador de sistemas.'); history.back();</script>";
+                                            echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora acceso, línea 422,verifique con el administrador de sistemas.'); history.back();</script>";
                                         }
                                         else
                                         {
@@ -432,21 +432,21 @@ session_start();
                                             {
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
-                                                echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora tiempo de servicio, línea 344, verifique con el administrador de sistemas.'); history.back();</script>";
+                                                echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora tiempo de servicio, línea 431, verifique con el administrador de sistemas.'); history.back();</script>";
                                             }
                                             else
                                             {
                                                 //GUARDAR EN LA BITACORA DE ESPECIAL
                                                 if(!(mysqli_query($con,"call inserta_bitacora_especial('Actualizado', '$f_ini', '$f_fin', '-', '-', 'CS', '$empresa', '$totDias', '$f_ini_anterior', '$f_fin_anterior', '-', '-', '$clave_especial_anterior', '$empresa_anterior', '$duracion_anterior', '$numero', '$nombre_host', '-1')")))
                                                 { 
-                                                    //echo "<br>" . "Error, línea 407: " . mysqli_errno($con) . " : " . mysqli_error($con)." verifique con el administrador de sistemas";
+                                                    //echo "<br>" . "Error, línea 440: " . mysqli_errno($con) . " : " . mysqli_error($con)." verifique con el administrador de sistemas";
                                                     mysqli_rollback($con);
                                                     mysqli_autocommit($con, TRUE); 
-                                                    echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora especial, línea 353,verifique con el administrador de sistemas.'); history.back();</script>";  
+                                                    echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora especial, línea 440,verifique con el administrador de sistemas.'); history.back();</script>";  
                                                 }
                                                 else
-                                                {   
-                                                    if($existeSexta==1)//Si el trabajador tiene selecionado un turno con sexta
+                                                {   //Si el trabajador tiene selecionado un turno con sexta
+                                                    if($existeSexta==1)
                                                     {
                                                         $result=tieneSexta($numero);
                                                         if($result==false) //Si el trabajador no tiene una sexta registrada, será necesario guardar la sexta
@@ -456,8 +456,7 @@ session_start();
                                                             {
                                                                 mysqli_rollback($con);
                                                                 mysqli_autocommit($con, TRUE); 
-                                                                $tabla='sexta, línea 383';
-                                                                echo "<script> errordato('$tabla');</script>";
+                                                                echo "<script type=\"text/javascript\">alert('Error al guardar la sexta del trabajador, línea 455,verifique con el administrador de sistemas.'); history.back();</script>";  
                                                             }
                                                             else
                                                             {   //Guardar en bitacora sexta
@@ -465,8 +464,7 @@ session_start();
                                                                 {
                                                                     mysqli_rollback($con);
                                                                     mysqli_autocommit($con, TRUE); 
-                                                                    $tabla='bitácora de sexta, línea 412';
-                                                                    echo "<script> errordato('$tabla');</script>";
+                                                                    echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora especial, línea 463,verifique con el administrador de sistemas.'); history.back();</script>";  
                                                                 }
                                                                 else
                                                                 {  //Si todo está correcto, guardar todo
@@ -484,7 +482,7 @@ session_start();
                                                             {
                                                                 mysqli_rollback($con);
                                                                 mysqli_autocommit($con, TRUE); 
-                                                                echo "<script type=\"text/javascript\">alert('Error al actualizar los datos de la sexta del trabajador, línea 449, verifique con el administrador de sistemas'); history.back();</script>";    
+                                                                echo "<script type=\"text/javascript\">alert('Error al actualizar los datos de la sexta del trabajador, línea 481, verifique con el administrador de sistemas.'); history.back();</script>";    
                                                             }
                                                             else
                                                             {
@@ -492,8 +490,7 @@ session_start();
                                                                 {
                                                                     mysqli_rollback($con);
                                                                     mysqli_autocommit($con, TRUE); 
-                                                                    $tabla='bitácora de sexta, línea 412';
-                                                                    echo "<script> errordato('$tabla');</script>";
+                                                                    echo "<script type=\"text/javascript\">alert('Error al guardar los datos en bitácora sexta, línea 489, verifique con el administrador de sistemas.'); history.back();</script>";    
                                                                 }
                                                                 else
                                                                 {
@@ -503,14 +500,50 @@ session_start();
                                                                 }
                                                             }
                                                         }
-                                                    }//fin if(existeSexta==1)
-                                                    else
-                                                    {
-                                                        mysqli_commit($con);
-                                                        mysqli_autocommit($con, TRUE);
-                                                        echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
                                                     }
-                                                }// fin else especial
+                                                    else//Si el trabajador no tiene seleccionado un turno con sexta
+                                                    {
+                                                       //Pero si el trabajador ya tiene registrado un turno con sexta en la tabla sexta y va a cambiar a otro turno que no tiene sexta, será necesario eliminar su sexta
+                                                        $result=tieneSexta($numero);
+                                                        if(($result!==false) && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
+                                                        { 
+                                                            if(!(mysqli_query($con,"DELETE FROM sexta WHERE idsexta = '$result[0]';")))
+                                                            {
+                                                                $error="Error al eliminar la sexta del trabajador, línea 510, verifique con el administrador de sistemas.";
+                                                                echo "<script> alert('$error'); </script>";
+                                                                mysqli_rollback($con);
+                                                                mysqli_autocommit($con, TRUE); 
+                                                            
+                                                            }
+                                                            else
+                                                            { 
+                                                                if(!(mysqli_query($con,"call inserta_bitacora_sexta('Eliminado','-','-','-', '-', '-', '-', '-', '-','-','-','-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')")))
+                                                                {
+                    
+                                                                    $error="Error al insertar en la bitácora sexta, línea 520, verifique con el administrador de sistemas.";
+                                                                    //echo "Error, línea 669: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas";
+                                                                    echo "<script> alert('$error'); </script>";
+                                                                    mysqli_rollback($con);
+                                                                    mysqli_autocommit($con, TRUE); 
+                                            
+                                                                }
+                                                                else
+                                                                {
+                                                                    mysqli_commit($con);
+                                                                    mysqli_autocommit($con, TRUE);
+                                                                    echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
+                                                                
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        { 
+                                                            mysqli_commit($con);
+                                                            mysqli_autocommit($con, TRUE);
+                                                            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
+                                                        }    
+                                                    }
+                                                }
                                             }
                                         }   
                                     }
@@ -555,7 +588,6 @@ session_start();
                         }
                         else
                         {  
-                            //mysqli_commit($con);
                             //GUARDAR EN LA BITACORA DE TRABAJADOR
                             if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Actualizado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','$genero','$anterior_num','$nombre_anterior','$a_paterno_anterior','$a_materno_anterior','$depto_anterior','$categoria_anterior','$descripcion_tipo','$genero_anterior', '$nombre_host')")))
                             {
@@ -588,40 +620,38 @@ session_start();
                                         {
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
-                                            echo "<script type=\"text/javascript\">alert('Error al guardar en tiempo de servicio, línea 437, verifique con el administrador de sistemas.'); history.back();</script>";
+                                            echo "<script type=\"text/javascript\">alert('Error al guardar en tiempo de servicio, línea 585, verifique con el administrador de sistemas.'); history.back();</script>";
                                         }
                                         else
-                                        {
-                                            if($existeSexta==1)//Si el trabajador tiene selecionado un turno con sexta
+                                        {   //Si el trabajador tiene selecionado un turno con sexta
+                                            if($existeSexta==1)
                                             {
                                                 $result=tieneSexta($numero);
                                                 if($result==false) //Si el trabajador no tiene una sexta registrada, será necesario guardar la sexta
                                                 {
-                                                        //Guardar la sexta 
-                                                        if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
+                                                    //Guardar la sexta 
+                                                    if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
+                                                    {
+                                                        mysqli_rollback($con);
+                                                        mysqli_autocommit($con, TRUE); 
+                                                        echo "<script type=\"text/javascript\">alert('Error al guardar la sexta del trabajdor, línea 599, verifique con el administrador de sistemas.'); history.back();</script>";
+                                                    }
+                                                    else
+                                                    {   //Guardar en bitacora sexta
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
                                                         {
                                                             mysqli_rollback($con);
                                                             mysqli_autocommit($con, TRUE); 
-                                                            $tabla='sexta, línea 383';
-                                                            echo "<script> errordato('$tabla');</script>";
+                                                            echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora sexta, línea 607, verifique con el administrador de sistemas.'); history.back();</script>";
                                                         }
                                                         else
-                                                        {   //Guardar en bitacora sexta
-                                                            if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
-                                                            {
-                                                                mysqli_rollback($con);
-                                                                mysqli_autocommit($con, TRUE); 
-                                                                $tabla='bitácora de sexta, línea 412';
-                                                                echo "<script> errordato('$tabla');</script>";
-                                                            }
-                                                            else
-                                                            {  //Si todo está correcto, guardar todo
-                                                                mysqli_commit($con);
-                                                                mysqli_autocommit($con, TRUE);
-                                                                echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
+                                                        {  //Si todo está correcto, guardar todo
+                                                            mysqli_commit($con);
+                                                            mysqli_autocommit($con, TRUE);
+                                                            echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
 
-                                                            }
                                                         }
+                                                    }
                                                 }
                                                 else
                                                 { //Si el trabajador ya tiene registrada una sexta, solo se actualizará
@@ -630,7 +660,7 @@ session_start();
                                                     {
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
-                                                        echo "<script type=\"text/javascript\">alert('Error al actualizar los datos de la sexta del trabajador, línea 449, verifique con el administrador de sistemas'); history.back();</script>";    
+                                                        echo "<script type=\"text/javascript\">alert('Error al actualizar los datos de la sexta del trabajador, línea 625, verifique con el administrador de sistemas'); history.back();</script>";    
                                                     }
                                                     else
                                                     {
@@ -638,11 +668,10 @@ session_start();
                                                         {
                                                             mysqli_rollback($con);
                                                             mysqli_autocommit($con, TRUE); 
-                                                            $tabla='bitácora de sexta, línea 412';
-                                                            echo "<script> errordato('$tabla');</script>";
+                                                            echo "<script type=\"text/javascript\">alert('Error al guardar los datos en la bitácora sexta, línea 633, verifique con el administrador de sistemas'); history.back();</script>";    
                                                         }
                                                         else
-                                                        { //Si el empleado tiene registrado un turno con un total de horas de "06:00:00" o "06:30:00" pero seleccionó un turno con un total de horas diferentes y es de base o comisionado foráneo, se deberá eliminar su sexta registrada
+                                                        { 
 
                                                             mysqli_commit($con);
                                                             mysqli_autocommit($con, TRUE);
@@ -650,26 +679,27 @@ session_start();
                                                         }
                                                     }
                                                 }
-                                            }//fin if(existeSexta==1)
-                                            else
+                                            }
+                                            else //Si el trabajador no tiene un turno con sexta
                                             {
+                                                //Pero trabajador ya tiene un turno con sexta registrada y va a cambiar a otro turno que no tiene sexta, será necesario eliminar su sexta
                                                 $result=tieneSexta($numero);
                                                 if(($result!==false) && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
                                                 { 
                                                     if(!(mysqli_query($con,"DELETE FROM sexta WHERE idsexta = '$result[0]';")))
                                                     {
-                                                        $error="Error al eliminar la sexta del trabajador, línea 285";
-                                                        echo "<script> imprime('$error'); </script>";
+                                                        $error="Error al eliminar la sexta del trabajador, línea 285, verifique con el aministrador de sistemas";
+                                                        echo "<script> alert('$error'); </script>";
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
                                                       
                                                     }
                                                     else
-                                                    { //call checada6.inserta_bitacora_sexta('Eliminado', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '1', '1', '1', '1', '1', '0', '1', '0', 'T1', '1515', '0', '0', 'Toshiba');
-                                                       if(!(mysqli_query($con,"call inserta_bitacora_sexta('Eliminado','-','-','-', '-', '-', '-', '-', '-','-','-','-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')")))
+                                                    { 
+                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Eliminado','-','-','-', '-', '-', '-', '-', '-','-','-','-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')")))
                                                         {
-                                                            //echo "call inserta_bitacora_sexta('Eliminado','l-','m-','mi-', 'ju-', 'vi-', 'sa-', 'do-', 'di-','v-','d-','t-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')";
-                                                            $error="Error al insertar en la bitácora sexta, línea 298";
+                                                           
+                                                            $error="Error al insertar en la bitácora sexta, línea 298, verifique con el administrador de sistemas.";
                                                             //echo "Error, línea 669: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas";
                                                             echo "<script> alert('$error'); </script>";
                                                             mysqli_rollback($con);
@@ -681,7 +711,7 @@ session_start();
                                                            mysqli_commit($con);
                                                            mysqli_autocommit($con, TRUE);
                                                            echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
-                                                          //  echo "<script type=\"text/javascript\">alert('$result+ $t_horas_turno+ $tipo'); history.back();</script>"; 
+                                                        
                                                         }
                                                     }
                                                 }
@@ -690,7 +720,7 @@ session_start();
                                                     mysqli_commit($con);
                                                     mysqli_autocommit($con, TRUE);
                                                     echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
-                                                    //echo "<script type=\"text/javascript\">alert('$result $t_horas_turno $tipo'); history.back();</script>"; 
+                                                
                                                 }
                                             }
                                         }

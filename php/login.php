@@ -39,12 +39,12 @@ session_start();
       
       if(empty($verCampo))
       {
-        header("Location: ../ht/repositorio.php");  
+        header("Location: ht/repositorio.php");  
       }
       else
       {
         $_SESSION['verCampo']=$verCampo;
-        header("Location: ../mail/primer_acceso.php"); 
+        header("Location: mail/primer_acceso.php"); 
       }
        
     }
@@ -66,12 +66,12 @@ session_start();
 
       if(empty($verCampo))
       {
-        header("Location: ../panel_control.php"); 
+        header("Location: panel_control.php"); 
       }
       else
       {
         $_SESSION['verCampo']=$verCampo;
-        header("Location: ../mail/primer_acceso.php");  
+        header("Location: mail/primer_acceso.php");  
       }
       
     }
@@ -80,6 +80,6 @@ session_start();
   {
     //echo $us;
     mysqli_close($con);
-    header("Location: ../index.php");
+    header("Location: index.php");
   }
 ?>

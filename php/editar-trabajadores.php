@@ -125,7 +125,11 @@ session_start();
                 {
                     document.getElementById('empresa').style.display="none";//ocultar
                 }
-                
+
+                var valor = document.getElementById('turno').value;
+                var valor2 = document.getElementById('sexta').value;
+                var valor3= document.mio.tipo.value;
+                actualiza(valor,valor2,valor3);
             }
 
             function inicial(consulta) {
@@ -142,6 +146,7 @@ session_start();
                     console.log("error");
                 });
             }
+
 
             function inicio()
             {
@@ -383,7 +388,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 391: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {   
@@ -413,7 +418,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 417: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas. ");
                                                 }
                                                 else
                                                 {
@@ -443,7 +448,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 447: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -477,19 +482,7 @@ session_start();
                                                             }
                                                             else
                                                             {
-                                                                echo "<br> <input type='radio' name='tipo'  value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
-                                                                /*if($fila[0]==1)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                                }
-                                                                if($fila[0]==2)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_base' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                                }
-                                                                if($fila[0]==3)
-                                                                {
-                                                                    echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                                }*/
+                                                                echo "<br> <input type='radio' name='tipo' value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
                                                             }
                                                         }
                                                     }//fin del while
@@ -550,11 +543,11 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 542: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas. ");
                                                 }
                                                 else
                                                 {
-                                                    echo "<select name='turno' id='turno' class='form-control'>";
+                                                    echo "<select name='turno' id='turno' class='form-control'  >";
                                                     while($fila=mysqli_fetch_array($query))
                                                     {
                                                         if($id4[8]==$fila[0])
@@ -613,17 +606,19 @@ session_start();
                                         </thead>
                                         <tbody>
                                             <?php
+                                                require("../ht/_encript.php");
                                                 $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
                                                 inner join tipo b on b.idtipo = a.tipo_tipo";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 609: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
                                                     while($resul=mysqli_fetch_array($query))
                                                     {
+                                                        $encript=generaURL($resul[0]);
                                                         echo "<tr>";
                                                         echo "<td>" . $resul[0] . "</td>"; 
                                                         echo "<td>" . $resul[1] . "</td>";
@@ -632,7 +627,7 @@ session_start();
                                                         echo "<td>" . $resul[4] . "</td>";
                                                         echo "<td>" . $resul[5] . "</td>";
                                                         echo "<td>" . $resul[6] . "</td>";
-                                                        echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
                                                         echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                         echo "</tr>";
                                                     }
@@ -700,7 +695,37 @@ session_start();
                 $('#menuToggle').on('click', function(event) {
                     $('body').toggleClass('open');
                 });
+
+                $(function() {
+                    $('#turno').on('keyup', function(e) {
+                        if (e.which == 38 || e.which == 40)
+                        {
+                            var valor = document.getElementById('turno').value;
+                            var valor2 = document.getElementById('sexta').value;
+                            var valor3= document.mio.tipo.value;
+                            actualiza(valor,valor2,valor3);
+                        }
+                    });
+
+                });
+
             });
+
+            function preguntar(elemento,ruta,id)
+            {
+                var miID=elemento.id;
+                eliminar=confirm("¿Deseas eliminar este registro?");
+                if (eliminar)
+                //Redireccionamos si das a aceptar
+                {
+                    window.location.href='../php/eliminar-trabajadores.php?jhgtp09='+miID+'';
+                    
+                }
+                else
+                {
+                    exit();
+                }
+            }
         </script>
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>

@@ -449,17 +449,19 @@ session_start();
                                             </thead>
                                             <tbody>
                                                 <?php 
+                                                    require("_encript.php");
                                                     $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
                                                     inner join tipo b on b.idtipo = a.tipo_tipo";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
-                                                        die("<br>" . "Error, línea 452: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
+                                                        die("<br>" . "Error, línea 458: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
                                                     }
                                                     else
                                                     {
                                                         while($resul=mysqli_fetch_array($query))
                                                         {
+                                                            $encript=generaURL($resul[0]);
                                                             echo "<tr>";
                                                             echo "<td>" .  $resul[0] . "</td>"; 
                                                             echo "<td>" .  $resul[1] . "</td>";
@@ -468,7 +470,7 @@ session_start();
                                                             echo "<td>" .  $resul[4] . "</td>";
                                                             echo "<td>" .  $resul[5] . "</td>";
                                                             echo "<td>" .  $resul[6] . "</td>";
-                                                            echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
                                                             echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                             echo "</tr>";
                                                         }
@@ -524,7 +526,24 @@ session_start();
                         ]
                     });
                 });
+                function preguntar(elemento,ruta,id)
+                {
+                    var miID=elemento.id;
+                    eliminar=confirm("¿Deseas eliminar este registro?");
+                    if (eliminar)
+                    //Redireccionamos si das a aceptar
+                    {
+                        window.location.href='../php/eliminar-trabajadores.php?jhgtp09='+miID+'';
+                        
+                    }
+                    else
+                    {
+                        exit();
+                    }
+                }
             </script>
+
+
         </div>
         <!-- /#right-panel -->
 

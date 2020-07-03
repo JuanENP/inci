@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
   if (($_SESSION["name"]) && ($_SESSION["con"]))
   {
@@ -12,7 +12,8 @@ session_start();
       die();
   }
   //obtener el id que se mandó acá
-  $id=$_GET['id'];
+  $encriptado=$_GET['jhgtp09'];
+  $id=base64_decode($encriptado);
   $sql="DELETE FROM trabajador WHERE numero_trabajador = '".$id."'";
   $query= mysqli_query($con, $sql);
   if(!$query)
@@ -23,5 +24,5 @@ session_start();
   {
     mysqli_close($con); 
     echo"<script>alert('Eliminado correctamente'); location.href='../ht/trabajadores.php';</script>";
-  }  
+  } 
 ?>
