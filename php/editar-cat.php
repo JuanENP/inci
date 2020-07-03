@@ -13,7 +13,7 @@ session_start();
         die();
     }
     //obtener el id que se mandó acá
-    $cadena=$_GET['id'];
+    $cadena=$_GET['loskDCDFd'];
     $id = base64_decode($cadena); // Decode
     
     //Función que busca la categoría con el ID
@@ -65,6 +65,8 @@ session_start();
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
         <link rel="stylesheet" href="../assets/scss/style.css" />
+        <link rel="stylesheet" href="../assets/css/alertify.core.css" />
+        <link rel="stylesheet" href="../assets/css/alertify.default.css" />
         <link href="../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
 
@@ -75,6 +77,7 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script src="../assets/js/alertify.min.js"></script>
 
     </head>
 
@@ -198,13 +201,15 @@ session_start();
                                         <span id="MainContent_lbtitulo">Categoría existente</span>
                                     </div>
                                     <input type="hidden" name="old_id" value="<?php echo $id2[0]?>">
+                                    <input type="hidden" name="old_nom" value="<?php echo $id2[1]?>">
+
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
                                             <span id="MainContent_lbCategoria">Categoría</span>
-                                            <input type="text" id="id-cat" name="idcat" value="<?php echo $id2[0]?>" class="form-control" required="" />
+                                            <input type="text" id="id-cat" name="idcat" value="<?php echo $id2[0]?>" class="form-control" required/>
                                        </div>
                                         <div class="form-group col-lg-12">
-                                            <span id="MainContent_lbNombre">Nombre</span><input type="text" id="nom-cat" name="nomcat" value="<?php echo $id2[1]?>" class="form-control" required="" />
+                                            <span id="MainContent_lbNombre">Nombre</span><input type="text" id="nom-cat" name="nomcat" value="<?php echo $id2[1]?>" class="form-control" required/>
                                         </div>
                                     </div>
                                     <div class="card-footer">
@@ -236,6 +241,7 @@ session_start();
                                             <tbody>
                                                 <!--PONER AQUÍ EL contenido LA TABLA-->
                                                 <?php
+                                                    require("../ht/_encript.php");
                                                     $sql="select * from categoria";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
@@ -246,11 +252,12 @@ session_start();
                                                     {
                                                       while($resul=mysqli_fetch_array($query))
                                                       {
+                                                        $encript=generaURL($resul[0]);
                                                         echo "<tr>";
                                                         echo  "<td>" . $resul[0] . "</td>";
                                                         echo  "<td>" . $resul[1] . "</td>";
-                                                        echo "<td><a href='../php/eliminar-cat.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                        echo " <a href='../php/editar-cat.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo "<a href='editar-cat.php?loskDCDFd=".generaURL($resul[0])."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                         echo "</tr>";
                                                       }
                                                     }
@@ -320,6 +327,23 @@ session_start();
                     $('body').toggleClass('open');
                 });
             });
+
+            function preguntar(elemento)
+            {
+                var miID=elemento.id;
+                
+                alertify.confirm("¿Deseas eliminar este registro?", function(e)
+                {
+                    if(e)
+                    {
+                        window.location.href="eliminar-cat.php?ff0_lo="+miID+"";
+                    }
+                    else
+                    {    
+                        exit();
+                    }
+                });
+            }
         </script>
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>
