@@ -13,6 +13,7 @@ session_start();
     }
 
     $numero=$_POST['consulta'];//numero del empleado seleccionado
+    
     $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');//campos de la bd
     $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos'); //dias de la semana
     $sexta=consultaSexta($numero);  
@@ -42,24 +43,19 @@ session_start();
     {
         global $con;
         //Consultar todo de la tabla acceso
-        $sql="select idsexta, lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '$myid'";
-        if($query=mysqli_query($con, $sql))
+        $sql="select lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '$myid'";
+        $query=mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas==1)
         {
-            $filas=mysqli_num_rows($query);
-            if($filas>0)
-            {
-                $resul=mysqli_fetch_array($query);
-                return
-                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8]];
-            }
-            else
-            {
-                return null;
-            }
+            $resul=mysqli_fetch_array($query);
+            return
+            [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7]];
         }
         else
         {
             return null;
         }
+
     }
 ?>

@@ -23,7 +23,8 @@ session_start();
     $semana = array('lunes','martes','miercoles','jueves','viernes','sabado','domingo','dias_festivos');//campos de la bd
     $semana2 = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo','Días festivos'); //dias de la semana
         
-    //Si el tipo de empleado es de base, es decir el #2, podrá tener sexta
+    //Si el tipo de empleado es de base, es decir el #2, podrá tener sexta. 
+    //Si el trabajador es de tipo #4 o comisionado foráneo también podrá tener sexta
 
     if(($t_horas!=="06:00:00") && ($t_horas!=="06:30:00")) 
     {
@@ -31,7 +32,7 @@ session_start();
     }
     else
     {
-        if((($t_horas=="06:00:00")||($t_horas=="06:30:00")) && ($sexta !== null) && ($tipo==2))
+        if((($t_horas=="06:00:00")||($t_horas=="06:30:00")) && ($sexta !== null) && ($tipo==2 || $tipo==4))
         {
             $salida.="<span> Días de sexta </span><br>";
             for ($i=0;$i<8;$i++)
@@ -49,7 +50,7 @@ session_start();
         }
         else
         {
-            if($tipo==2)
+            if($tipo==2 || $tipo==4)
             {
                 $salida.="<span> Días de sexta</span><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='lunes'id='lun'/> <label for='lun'> Lunes</label><br>";
@@ -74,25 +75,20 @@ session_start();
     {
         global $con;
         //Consultar todo de la tabla acceso
-        $sql="select idsexta, lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '$myid'";
-        if($query=mysqli_query($con, $sql))
+        $sql="select lunes, martes, miercoles, jueves, viernes, sabado,domingo, dia_festivo from sexta where trabajador_trabajador = '$myid'";
+        $query=mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas==1)
         {
-            $filas=mysqli_num_rows($query);
-            if($filas>0)
-            {
-                $resul=mysqli_fetch_array($query);
-                return
-                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8]];
-            }
-            else
-            {
-                return null;
-            }
+            $resul=mysqli_fetch_array($query);
+            return
+            [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7]];
         }
         else
         {
             return null;
         }
+
     }
 
 ?>

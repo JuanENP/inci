@@ -19,9 +19,7 @@ session_start();
         alert("Esta categoría ya existe");
         location.href="./../ht/categoria.php";
     }
-</script>
 
-<script type="text/javascript">
     function Correcto()
     {
         alert("Guardado correctamente");

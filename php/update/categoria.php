@@ -19,6 +19,11 @@ session_start();
         location.href="../../ht/categoria.php";
         //window.close();
     }
+    function imprime(texto)
+    {
+        alert(texto);
+        history.back();
+    }
 </script>
 
 <?php
@@ -39,6 +44,7 @@ actualizar($idcat, $nomcat,$old_id,$old_nom);
             echo "Error en bitácora categoria.".mysqli_errno($con) . ": " . mysql_error($con) . " history.back();";
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
+            echo "<script> imprime('Datos incorrectos al actualizar la categoría, error línea 48, verifique con el administrador de sistemas'); </script>";
         }
         else
         {
@@ -48,6 +54,7 @@ actualizar($idcat, $nomcat,$old_id,$old_nom);
                 echo "Error en bitácora categoria.".mysqli_errno($con) . ": " . mysql_error($con) . " history.back();";
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
+                echo "<script> imprime('Datos incorrectos al insertar en bitacora categoría, error línea 58, verifique con el administrador de sistemas'); </script>";
             }
             else
             {

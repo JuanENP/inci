@@ -116,6 +116,11 @@ session_start();
                 }
             }
 
+            function mayus(e) 
+            {
+                e.value = e.value.toUpperCase();
+            }
+
         </script>
     </head>
 
@@ -168,7 +173,6 @@ session_start();
                                     if($nombre=="AdministradorGod")
                                     {
                                         echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
-                                        
                                     }
                                 ?>
                                  <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
@@ -236,7 +240,7 @@ session_start();
                             <div class="col-lg-12">                        
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo"> Datos personales</span>
+                                        <span> Datos personales</span>
                                     </div>
                                     <div class="card-body card-block">
 
@@ -244,13 +248,13 @@ session_start();
                                             <span >Número de empleado</span><input name="num" type="number" id="MainContent_txtNomEmpl" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
                                        </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð]{2,48}"  title="Ingrese solo letras" required />
+                                            <span >Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}"  title="Ingrese solo letras" onkeyup="mayus(this);" required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtPat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span >Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtPat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras" onkeyup="mayus(this);" required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð]{2,48}" title="Ingrese solo letras" required />
+                                            <span >Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras" onkeyup="mayus(this);" required />
                                         </div>
 
                                         <div class="form-group col-lg-3">
@@ -275,40 +279,36 @@ session_start();
                                 </div>
                                 <div class="card">
                                     <div class="card-header">
-                                            <span id="MainContent_lbtitulo"> Puesto de trabajo</span>
+                                            <span> Puesto de trabajo</span>
                                     </div>
                                     <div class="card-body card-block">
                                        <div class="form-group col-lg-5">
-                                            <span id="MainContent_lbCategoria">Departamento</span>
+                                            <span>Departamento</span>
                                             <?php 
-                                                    $sql="select * from depto";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                $sql="select * from depto";
+                                                $query= mysqli_query($con, $sql);
+                                                if(!$query)
+                                                {
+                                                    die("<br>" . "Error, línea 288: " . mysqli_errno($con) . " : " . mysqli_error($con).",no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
+                                                }
+                                                else
+                                                {
+                                                    echo "<select name='depto' class='form-control' >";
+                                                    while($fila=mysqli_fetch_array($query)){
+                                                        echo "<option value='".$fila[0]."'>". $fila[0] . " " . $fila[1]."</option>";
                                                     }
-                                                    else
-                                                    {
-                                                        echo "<select name='depto' class='form-control' >";
-                                                        while($fila=mysqli_fetch_array($query)){
-                                                            echo "<option value='".$fila[0]."'>". $fila[0] . " " . $fila[1]."</option>";
-                                                        }
-                                                        echo "</select>";
-                                                    }
-                                                    mysqli_close($con);
+                                                    echo "</select>";
+                                                }
                                             ?> <!--FIN PHP -->
                                        </div>
                                         <div class="form-group col-lg-5">
-                                            <span id="MainContent_lbNombre">Categoría</span>
+                                            <span  >Categoría</span>
                                             <?php
-                                                $nombre=$_SESSION['name'];
-                                                $contra=$_SESSION['con'];
-                                                require("../Acceso/global.php"); 
                                                 $sql="select * from categoria";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 307: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -319,20 +319,16 @@ session_start();
                                                     }
                                                     echo "</select>";
                                                 }
-                                                mysqli_close($con);
                                             ?> <!--FIN PHP -->
                                         </div>
                                         <div class="form-group col-lg-5">
-                                            <span id="MainContent_lbNombre">Tipo de empleado</span>
+                                            <span  >Tipo de empleado</span>
                                             <?php
-                                                $nombre=$_SESSION['name'];
-                                                $contra=$_SESSION['con'];
-                                                require("../Acceso/global.php"); 
                                                 $sql="select * from tipo";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                    die("<br>" . "Error, línea 327: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo de empleado, verifique con el adminsitrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -361,12 +357,11 @@ session_start();
                                                     <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
                                                     </div>";
                                                 }
-                                                mysqli_close($con);
                                             ?> <!--FIN PHP -->
                                         </div>
                                         <div class="form-group col-lg-7">
                                             <div class="form-group col-lg-4">
-                                            <span id="MainContent_lbNombre"> Días de trabajo</span>
+                                            <span> Días de trabajo</span>
                                             <br>
 						    				<input type="checkbox" name="dia[]" value="lunes" id="lu"/> <label for="lu">Lunes</label><br>
 						    				<input type="checkbox" name="dia[]" value="martes" id="ma"/> <label for="ma">Martes</label><br>
@@ -396,14 +391,11 @@ session_start();
                                         <div class="form-group col-lg-5">
                                             <span>Turno</span>
                                             <?php  
-                                                $nombre=$_SESSION['name'];
-                                                $contra=$_SESSION['con'];
-                                                require("../Acceso/global.php");
                                                 $sql="select * from turno";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                  die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                  die("<br>" . "Error, línea 394: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -412,21 +404,19 @@ session_start();
                                                         echo "<option value='".$fila[0]." " .$fila[3]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
                                                     }
                                                     echo "</select>";
-
                                                 }
-                                                mysqli_close($con);
                                             ?> <!--FIN PHP -->
                                         </div>   
                                     </div>
                                 </div>
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">Inicio de servicio laboral </span>
+                                        <span>Inicio de servicio laboral </span>
                                     </div>
                                     <div class="card-body card-block">
                                        <div class="form-group col-lg-5">
-                                            <span id="MainContent_lbCategoria">Fecha de alta del trabajador (Según su FM1) </span>
-                                            <input name="fecha_alta" type="date" id="MainContent_txtCategoria" class="form-control" required  min="1930-01-01" />
+                                            <span>Fecha de alta del trabajador (Según su FM1) </span>
+                                            <input name="fecha_alta" type="date" class="form-control" required  min="1930-01-01" />
                                        </div>      
                                     </div>
                                 </div>
@@ -459,20 +449,19 @@ session_start();
                                             </thead>
                                             <tbody>
                                                 <?php 
-                                                    $nombre=$_SESSION['name'];
-                                                    $contra=$_SESSION['con'];
-                                                    require("../Acceso/global.php");
+                                                    require("_encript.php");
                                                     $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
                                                     inner join tipo b on b.idtipo = a.tipo_tipo";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
-                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        die("<br>" . "Error, línea 458: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
                                                     }
                                                     else
                                                     {
                                                         while($resul=mysqli_fetch_array($query))
                                                         {
+                                                            $encript=generaURL($resul[0]);
                                                             echo "<tr>";
                                                             echo "<td>" .  $resul[0] . "</td>"; 
                                                             echo "<td>" .  $resul[1] . "</td>";
@@ -481,7 +470,7 @@ session_start();
                                                             echo "<td>" .  $resul[4] . "</td>";
                                                             echo "<td>" .  $resul[5] . "</td>";
                                                             echo "<td>" .  $resul[6] . "</td>";
-                                                            echo "<td><a href='../php/eliminar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
                                                             echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                             echo "</tr>";
                                                         }
@@ -537,7 +526,24 @@ session_start();
                         ]
                     });
                 });
+                function preguntar(elemento,ruta,id)
+                {
+                    var miID=elemento.id;
+                    eliminar=confirm("¿Deseas eliminar este registro?");
+                    if (eliminar)
+                    //Redireccionamos si das a aceptar
+                    {
+                        window.location.href='../php/eliminar-trabajadores.php?jhgtp09='+miID+'';
+                        
+                    }
+                    else
+                    {
+                        exit();
+                    }
+                }
             </script>
+
+
         </div>
         <!-- /#right-panel -->
 

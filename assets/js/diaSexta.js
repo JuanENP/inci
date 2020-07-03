@@ -15,11 +15,12 @@ function actualiza(consulta,consulta2,consulta3) {
 
 $(document).ready(function()
 {
-$("#turno").click (function() {
-    // var valor = $(this).val();
-    var valor = document.getElementById('turno').value;
-    var valor2 = document.getElementById('sexta').value;
-    var valor3= document.mio.tipo.value;
-    actualiza(valor,valor2,valor3);
- })
+    $("#turno").click (function() {
+        // var valor = $(this).val();
+        var valor = document.getElementById('turno').value;
+        var valor2 = document.getElementById('sexta').value;
+        var valor3= document.mio.tipo.value;
+        actualiza(valor,valor2,valor3);
+    })
 });
+

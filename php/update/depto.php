@@ -18,8 +18,11 @@ session_start();
     {
         alert("Actualizado correctamente");
         location.href="../../ht/departamentos.php";
-        //window.close();
-        //Si quieres usar instrucciones php, salte del script y coloca la apertura y cierre de php, escribe dentro de ellas de forma normal
+    }
+    function imprime(texto)
+    {
+        alert(texto);
+        history.back();
     }
 </script>
 
@@ -42,20 +45,28 @@ actualizar($idcat, $nomcat,$old_id);
         {
             $nombre_depto=$resul[1];
         }
-
-        $sql="update depto SET iddepto = '".$id."', nombre = '".$nom."' WHERE (iddepto = '".$id_viejo."');";
-        $query= mysqli_query($con, $sql);
-        if(!$query)
+        mysqli_autocommit($con, FALSE);
+        if(!(mysqli_query($con,"update depto SET iddepto = '".$id."', nombre = '".$nom."' WHERE (iddepto = '".$id_viejo."');")))
         {
-          die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+            echo "<script> imprime('Datos incorrectos al actualizar el departamento, error línea 53, verifique con el administrador de sistemas'); </script>";
         }
         else
         {
             $nombre_host= gethostname();
-            $sql="call inserta_bitacora_depto('Actualizado','$id','$nom', '$id_viejo', '$nombre_depto','$nombre_host')";
-            $query= mysqli_query($con, $sql) or die();
-         
-            echo "<script> Alerta(); </script>";
+            if(!(mysqli_query($con,"call inserta_bitacora_depto('Actualizado','$id','$nom', '$id_viejo', '$nombre_depto','$nombre_host')")))
+            {
+                mysqli_rollback($con);
+                mysqli_autocommit($con, TRUE); 
+                echo "<script> imprime('Datos incorrectos al insertar en bitacora categoría, error línea 58, verifique con el administrador de sistemas'); </script>";
+            }
+            else
+            {
+                mysqli_commit($con);
+                mysqli_autocommit($con, TRUE);
+                echo "<script> Alerta(); </script>";
+            }
         }
     }
 ?>

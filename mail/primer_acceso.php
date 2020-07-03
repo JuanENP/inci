@@ -122,7 +122,7 @@ session_start();
                     <div class="login-logo">
                         <img src="../images/LOGO_ISSSTE.png"></img>
                         <a href="#">
-                            <span>Hola <?php echo $nom_apellido?></span>
+                            <span>¡Bienvenido(a) <?php echo $nom_apellido?>!</span>
                         </a>
                     </div>
                     <div class="login-form">

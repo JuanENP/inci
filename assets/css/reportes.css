@@ -2,19 +2,17 @@
 {
     width: 300px !important;
     height: 50px !important;
+    margin-bottom: 20px;
 }
-
 i.fa
 {
     padding-right: 10px;
     /* padding-left: 5px; */
 }
 
-/* -------------- */
-
-  
-  /* Modal Content */
-  .modal-content {
+    /* Modal Content */
+.modal-content 
+{
     
     background-color: #fefefe;
     margin: 400;
@@ -23,19 +21,22 @@ i.fa
     width: 300px !important;
     height: auto !important;
 }
-
-  
+ 
     /* The Close Button */
-  .close {
+.close
+{
     color: #aaaaaa;
     float: right;
     font-size: 28px;
-    font-weight: bold; }
+    font-weight: bold; 
+}
   
-  .close:hover, .close:focus {
+.close:hover, .close:focus 
+{
     color: #000;
     text-decoration: none;
-    cursor: pointer; }
+    cursor: pointer; 
+}
 /* ------------- */
 .mimodalejemplo .modal 
 {
@@ -49,6 +50,7 @@ i.fa
     overflow: auto;
     background-color: rosybrown;
 }
+
 #modal
 {
     background-color: white;
@@ -58,6 +60,7 @@ i.fa
     border-radius: 10px;
     width: 80%;
 }
+
 #modal span
 {
     cursor: pointer;
@@ -72,9 +75,14 @@ i.fa
     font-weight: 800;
     margin: 0;
 }
-body {font-family: Arial, Helvetica, sans-serif;}
 
-table { 
+body 
+{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table 
+{ 
     font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size: 12px;   
     /* margin: 45px;      */
@@ -83,26 +91,30 @@ table {
     border-collapse: collapse; 
     border-spacing:50px; /*Define el espacio entre los bordes (en pixels)*/
     text-align: center;
-   }
+}
 
-th {     
+th 
+{     
     font-size: 13px;     
     font-weight: normal;     
     padding: 8px;     
     background: #b9c9fe;
     border-top: 4px solid #aabcfe;    
     border-bottom: 1px solid #fff; 
-    color: rgb(12, 12, 12); }
+    color: rgb(12, 12, 12); 
+}
 
-td {    
+td 
+{    
     padding: 8px;     
     background: #e8edff;     
     border-bottom: 1px solid #fff;
     color: rgb(12, 12, 12);   
     border: 1px solid; 
- }
+}
 
-tr:hover td { 
+tr:hover td 
+{ 
     background: #d0dafd; 
     color: #339; 
 }
