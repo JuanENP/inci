@@ -21,8 +21,6 @@
         require("../Acceso/global.php");
         $asisten_hoy=[];
         $aumenta=0;
-        
-        
         //seleccionar el valor del ultimo id seleccionado
         $sql=" SELECT Valor FROM _posicion where idposicion=6";
         $query= mysqli_query($con, $sql);
@@ -54,6 +52,15 @@
             //Actualizar en posicion el ultimo id seleccionado
             $sql2="UPDATE _posicion SET Valor = $posicion  WHERE (idposicion = 6)";
             $query2= mysqli_query($con, $sql2);
+            if(!$query2)
+            {
+                $er1=mysqli_errno($con);
+                $er2=mysqli_error($con);
+                $hacer='actualizar';
+                $tabla='_posicion';
+                $línea='53';
+                error($er1,$er2,$hacer,$tabla,$línea);
+            }
             return $asisten_hoy;
         }
         else
@@ -99,6 +106,15 @@
                         {  
                             $sql2="UPDATE vienen_hoy SET observar_s = 0 WHERE (idvienen_hoy = $idvienen);";
                             $query2= mysqli_query($con, $sql2);
+                            if(!$query2)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='vienen hoy';
+                                $línea='107';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                             
                             //Concatener la fecha de hoy con su hora de salida 
                             $hora_salida=$f_hoy . ' ' . $salida;
@@ -135,15 +151,30 @@
         if($mt=='')
         {
             $mt="-";
-            mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
-            mysqli_close($con); 
-
+            $query=mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
+            if(!$query)
+            {
+                $er1=mysqli_errno($con);
+                $er2=mysqli_error($con);
+                $hacer='insertar';
+                $tabla='incidencia';
+                $línea='154';
+                error($er1,$er2,$hacer,$tabla,$línea);
+            }
         }
         else
-        {//ma_d guarda la palabra antes o despues
+        {   //ma_d guarda la palabra antes o despues
             $mt=$mt . " minutos " . $ma_d;
             mysqli_query($con,"insert into incidencia values(' ', '$mt', '$inc', $id_asis);");
-            mysqli_close($con); 
+            if(!$query)
+            {
+                $er1=mysqli_errno($con);
+                $er2=mysqli_error($con);
+                $hacer='insertar';
+                $tabla='incidencia';
+                $línea='168';
+                error($er1,$er2,$hacer,$tabla,$línea);
+            }
         }    
     }
     
@@ -234,8 +265,17 @@
             {
                 $numero_empleado=$resul2[0];
                 //Insertar una falta
-                $sql3="INSERT INTO falta VALUES ('','$f_hoy', '$idquincena', '$numero_empleado')";
+                $sql3="INSERT INTO falta VALUES ('','$f_hoy', '$idquincena', '$numero_empleado','10')";
                 $query3= mysqli_query($con, $sql3);
+                if(!$query3)
+                {
+                    $er1=mysqli_errno($con);
+                    $er2=mysqli_error($con);
+                    $hacer='insertar';
+                    $tabla='falta';
+                    $línea='149';
+                    error($er1,$er2,$hacer,$tabla,$línea);
+                }
             }
         }
     }
@@ -292,4 +332,25 @@
         }
     }
 
+    function error($er1,$er2,$accion,$nomTabla,$numLinea)
+    {
+        $error="";
+        $err1="$er1";
+        $err2="$er2";
+        //Hacer UN EXPLODE DE ERR2
+        $divide=explode("'",$err2);
+        $tamDivide=count($divide);//saber el tamaño del array
+        if($tamDivide>0)//si el array posee datos
+        {
+            $err2="";
+            for($i=0;$i<$tamDivide;$i++)
+            {
+                $err2.=$divide[$i];
+            }
+        }
+
+        $error="Error al $accion en la tabla $nomTabla. $err1 : $err2. Línea de error: $numLinea. Tarea asisten.";
+        echo"<script> console.error('$error'); </script>";
+        exit();
+    }
 ?>

@@ -76,7 +76,7 @@
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.html">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.html">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="reportes.html">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
                                 <li><i class="fa fa-chain"></i><a href="especiales.php">Especiales</a></li>
                             </ul>
                         </li>

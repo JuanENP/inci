@@ -25,7 +25,7 @@ ob_start();
             {
                 $f_fin=$_SESSION['f_fin'];
             }  
-        }     
+        }    
     }
     else
     {
@@ -49,7 +49,7 @@ ob_start();
                 <img src= "../images/pdf/logo-cuadrado.jpg" class="logo_superior">
             </div>
             <div id="p1">
-                <p><?php echo$nombre?></p>
+                <p><?php echo $nombre?></p>
                 <p>COORDINACIÓN DE RECURSOS HUMANOS</p>
                 <p>JEFATURA DE INCIDENCIAS</p>
             </div> 
@@ -60,8 +60,8 @@ ob_start();
 
         </div>
         <div id="p3">
-            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    
-            <p>FECHA: <u> <?php echo$fecha?>   </u>  AÑO: <u> <?php echo$anio ?></p>   
+            <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo $descripcion ?> </u></p>    
+            <p>FECHA: <u> <?php echo $fecha?>   </u>  AÑO: <u> <?php echo $anio ?></p>   
 
         </div>
         <table class="tabla_datos">
@@ -79,13 +79,13 @@ ob_start();
 
                    for($i=0;$i<$contador;$i++)
                     {  
-                        echo"<tr>";
+                        echo "<tr>";
                         echo "<td>".$reporte[$i][0]."</td>";
                         echo "<td>".$reporte[$i][1]."</td>";
                         echo "<td>".$reporte[$i][2]."</td>";
                         echo "<td>".$reporte[$i][3]."</td>";
                         echo "<td>".$reporte[$i][4]."</td>";
-                        echo"</tr>";
+                        echo "</tr>";
                     }
                 ?>
             </tbody>

@@ -21,12 +21,23 @@
         require("../Acceso/global.php");
         $asisten_hoy=[];
         $aumenta=0;
-        
+        $posUltimoRegistroAsistencia=5;
+
         //seleccionar el valor del ultimo id seleccionado
-        $sql=" SELECT Valor FROM _posicion where idposicion=5";
+        $sql=" SELECT Valor FROM _posicion where idposicion=$posUltimoRegistroAsistencia";
         $query= mysqli_query($con, $sql);
-        $resul=mysqli_fetch_array($query);
-        $valor=$resul[0];
+        $fila=mysqli_num_rows($query);
+        if($query)
+        {
+            $resul=mysqli_fetch_array($query);
+            $valor=$resul[0];
+        }
+        else
+        {
+            $error='Error en la línea 37, ocurrido en la tarea asisten porque  no existe el idposición '.$posUltimoRegistroAsistencia.' de la tabla _posición, verifique con el administrador de sistemas. ';
+            echo $error;
+            exit();
+        }
         
         //Seleccionar a todos los que vinieron hoy
         $sql1="select d.fecha_entrada,a.numero_trabajador,d.id from trabajador a
@@ -50,10 +61,19 @@
                 $aumenta++;
                 //echo $ultimo_id=$asisten_hoy[$aumenta][3];
             } 
+            
             //Actualizar en posicion el ultimo id seleccionado
-            $sql2="UPDATE _posicion SET Valor = $posicion  WHERE (idposicion = 5)";
-            $query2= mysqli_query($con, $sql2);
-           
+            $sql2="UPDATE _posicion SET Valor = $posicion  WHERE (idposicion = $posUltimoRegistroAsistencia)";
+            $query2= mysqli_query($con, $sql2); 
+            if(!$query2)
+            {
+                $er1=mysqli_errno($con);
+                $er2=mysqli_error($con);
+                $hacer='actualizar';
+                $tabla='_posicion';
+                $línea='66';
+                error($er1,$er2,$hacer,$tabla,$línea);
+            }
             return $asisten_hoy;
         }
         else
@@ -129,11 +149,18 @@
         global $contra;
         require("../Acceso/global.php"); 
         $mt=$mt . " minutos " . $ma_d;
-        mysqli_query($con,"insert into incidencia values('', '$mt', '$inc', $id_asis);");
-        mysqli_close($con);     
+        $query=mysqli_query($con,"insert into incidencia values('', '$mt', '$inc', $id_asis);");
+        if(!$query2)
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $hacer='insertar';
+            $tabla='incidencia';
+            $línea='152';
+            error($er1,$er2,$hacer,$tabla,$línea);
+        }   
     }
 
-    
     /*Calcula los minutos antes o despues de la hora de checar entrada*/
     function minA_minD ($fechaO, $fechaLL, $id_asis)
     {
@@ -194,5 +221,27 @@
                 }
             }
         }
+    }
+
+    function error($er1,$er2,$accion,$nomTabla,$numLinea)
+    {
+        $error="";
+        $err1="$er1";
+        $err2="$er2";
+        //Hacer UN EXPLODE DE ERR2
+        $divide=explode("'",$err2);
+        $tamDivide=count($divide);//saber el tamaño del array
+        if($tamDivide>0)//si el array posee datos
+        {
+            $err2="";
+            for($i=0;$i<$tamDivide;$i++)
+            {
+                $err2.=$divide[$i];
+            }
+        }
+
+        $error="Error al $accion en la tabla $nomTabla. $err1 : $err2. Línea de error: $numLinea. Tarea asisten.";
+        echo"<script> console.error('$error'); </script>";
+        exit();
     }
 ?>

@@ -48,7 +48,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$quincena=$separa[0];//Número de quincena
 		$f_ini=$separa[1];//fecha inicio de quincena
 		$f_fin=$separa[2];//fecha fin de quincena
-
 		$fila=array();
 		$reporte=array();
 		$ultimo_r=0;
@@ -79,7 +78,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			$nomArchivo="unico.php";
 			$nomPdf="Reporte-de-incidencias.pdf";
 			imprimepdf($nomArchivo,$nomPdf);
-		
 		}
 		else
 		{
@@ -282,7 +280,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	if($operacion=="asistencia")
 	{
-
 		//Ver si la fecha de inicio no está vacia
 		if (!(empty($_POST['fecha'])))
 		{
@@ -309,7 +306,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			$fecha_actual=strtotime($hoy);
 			$fecha_elegida = strtotime($fecha); //fecha en yyyy-mm-dd
 
-			if($fecha_elegida!=$fecha_actual)
+			if($fecha_elegida !== $fecha_actual)
 			{
 				$dato=array();
 				$conta=0;
@@ -852,13 +849,14 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						$salida.="El año de la fecha de inicio es incorrecto.";
+						$salida.="El año de la fecha de inicio es incorrecto. ";
 					}
 				}
 				else
 				{	
-					$salida.=" Debe escribir una fecha de inicio.";
+					$salida.=" Debe escribir una fecha de inicio. ";
 				}
+
 				//Si la fecha de fin está vacia
 				if (!(empty($_POST['fin-f'])))
 				{
@@ -870,12 +868,12 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					}
 					else
 					{
-						$salida.="El año de la fecha de fin es incorrecto.";
+						$salida.="El año de la fecha de fin es incorrecto. ";
 					}
 				}
 				else
 				{   
-					$salida.=" Debe escribir una fecha de fin.";
+					$salida.=" Debe escribir una fecha de fin. ";
 				}
 				
 				if(empty($salida))
@@ -932,12 +930,12 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                     }
                     else
                     {
-                        $salida.=" Debe escribir un número de empleado que exista";
+                        $salida.=" Debe escribir un número de empleado que exista. ";
                     }
 				}
 				else
 				{   
-					$salida.=" Debe escribir un número de empleado";
+					$salida.=" Debe escribir un número de empleado. ";
                 }
                 
 				//Ver si la fecha de inicio no está vacia
@@ -1088,7 +1086,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$datos=array();
 		$contador_d=0;
 		$contador=0;
-
 		//Ver si la fecha de inicio no está vacia
 		if (!(empty($_POST['ini-c'])))
 		{
@@ -1129,7 +1126,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		if(empty($salida))
 		{
 			cumpleOno();
-			
+			asort($datos);		
+				
 			//Calcula la cantidad de filas del arreglo
 			foreach($datos as $fila)
 			{
@@ -1807,7 +1805,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
             return true;
 		}
 
-    }
+	}
+	
 	function retardos()
 	{
 		$nombre=$_SESSION['name'];
@@ -1818,7 +1817,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		global $ultimo_r;
 		global $reporte;
 		
-		//seleccionamos a los empleados que tinen incidencias sin justificar
+		//seleccionamos a los empleados que tinen incidencias sin justificar y que sean de base o comisionados foraneos
 		$sql="SELECT a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
 		c.clave_incidencia_clave_incidencia, b.fecha_entrada,b.fecha_salida 
 		FROM trabajador a
@@ -1826,6 +1825,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		inner join incidencia c on b.id=c.asistencia_asistencia
 		where
 		b.quincena_quincena=$quincena 
+		and (a.tipo_tipo=2 || a.tipo_tipo=4)
 		and (c.clave_incidencia_clave_incidencia='01' 
 		or c.clave_incidencia_clave_incidencia='02'
 		or c.clave_incidencia_clave_incidencia='03' 
@@ -1853,7 +1853,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		//si total es igual a cero significa que no hay datos
 		if($resul==0)
 		{  
-			
 			// echo "<script language='javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
 			// exit();
 		} 
@@ -1861,33 +1860,35 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			$fila[0]=$resul[0];//numero
-			$fila[1]=$resul[1];//nom
-			$fila[2]=$resul[2];//clave 
-			$entrada=$resul[3];//fecha-entrada
-			$separar=explode(' ',$entrada);//Separar la fecha de entrada de la hora de entrada
-			$f_entrada=$separar[0];//obtener solo la fecha de entrada
-			$separar2=explode('-',$f_entrada);//Separar la fecha de entrada para obtener solo el día
-			$dia_entrada=$separar2[2]; 
-			if($dia_entrada=="00")//Si el día de la entrada está en ceros, significa que deberá guardarse el día de salida
-			{
-				$salida=$resul[4];//fecha-entrada
-				$separar=explode(' ',$salida);//Separar la fecha de entrada de la hora de entrada
-				$f_salida=$separar[0];//obtener solo la fecha de entrada
-				$separar2=explode('-',$f_salida);//Separar la fecha de entrada para obtener solo el día
-				$dia_salida=$separar2[2]; 
-				$fila[3]=$dia_salida;//dia-salida
-			}
-			else
-			{
-				//Sino debera guardarse el día de entrada 
-				$fila[3]=$dia_entrada;//dia-entrada
-			}
-			$reporte[$ultimo_r]=$fila;
-			$ultimo_r++;
+				$fila[0]=$resul[0];//numero
+				$fila[1]=$resul[1];//nom
+				$fila[2]=$resul[2];//clave 
+				$entrada=$resul[3];//fecha-entrada
+				$separar=explode(' ',$entrada);//Separar la fecha de entrada de la hora de entrada
+				$f_entrada=$separar[0];//obtener solo la fecha de entrada
+				$separar2=explode('-',$f_entrada);//Separar la fecha de entrada para obtener solo el día
+				$dia_entrada=$separar2[2]; 
+				if($dia_entrada=="00")//Si el día de la entrada está en ceros, significa que deberá guardarse el día de salida
+				{
+					$salida=$resul[4];//fecha-entrada
+					$separar=explode(' ',$salida);//Separar la fecha de entrada de la hora de entrada
+					$f_salida=$separar[0];//obtener solo la fecha de entrada
+					$separar2=explode('-',$f_salida);//Separar la fecha de entrada para obtener solo el día
+					$dia_salida=$separar2[2]; 
+					$fila[3]=$dia_salida;//dia-salida
+				}
+				else
+				{
+					//Sino debera guardarse el día de entrada 
+					$fila[3]=$dia_entrada;//dia-entrada
+				}
+				
+				$reporte[$ultimo_r]=$fila;
+				$ultimo_r++;
 			}//Fin while
 		}//fin else
 	}
+
 	function faltas()
 	{
 		$nombre=$_SESSION['name'];
@@ -1901,7 +1902,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave,b.fecha
 		FROM trabajador a 
-		INNER JOIN falta b on a.numero_trabajador=b.trabajador_trabajador AND quincena=$quincena
+		INNER JOIN falta b on a.numero_trabajador=b.trabajador_trabajador 
+		AND quincena=$quincena
+		AND (a.tipo_tipo=2 || a.tipo_tipo=4)
 		AND NOT EXISTS 
 		(SELECT c.idjustificar_falta
 		FROM justificar_falta c where b.idfalta=c.falta_falta)
@@ -1933,6 +1936,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function pulir()
 	{
 		global $reporte;
@@ -1974,6 +1978,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+	
 	function buscarxfecha()
 	{
 		
@@ -2061,7 +2066,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	function buscarxnumero()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2101,18 +2105,19 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	}//fin function xnumero
 
 	function vienen_hoy()
-	{
-						
+	{					
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
 		global $dato;
 		global $conta;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n
-		from trabajador a inner join vienen_hoy b
-		on a.numero_trabajador=b.trabajador_trabajador 
-		order by a.numero_trabajador;";  
+		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, a.depto_depto,a.categoria_categoria,c.turno_turno,d.entrada, d.salida
+		from trabajador a 
+        inner join vienen_hoy b on a.numero_trabajador=b.trabajador_trabajador 
+        inner join acceso c on a.numero_trabajador=c.trabajador_trabajador 
+        inner join turno d on c.turno_turno=d.idturno
+		order by a.depto_depto,a.categoria_categoria,d.entrada,d.salida,a.numero_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -2126,16 +2131,21 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			while($resul=mysqli_fetch_array($query))
 			{
 			
-				$dato[$conta][0]=$resul[0];//numero
+				$dato[$conta][0]=$resul[0];//numero trabajador
 				$dato[$conta][1]=$resul[1];//nombre
+				$dato[$conta][2]=$resul[2];//depto
+				$dato[$conta][3]=$resul[3];//categoria
+				$dato[$conta][4]=$resul[4];//turno
+				$dato[$conta][5]=$resul[5];//hora entrada
+				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
 				
 			}
 		}
 	}
+
 	function vienenxacceso() 
 	{
-	
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2144,12 +2154,11 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		global $conta;
 
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n
+		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.turno_turno,c.entrada, c.salida
 		from trabajador a
-		inner join acceso b 
-		where a.numero_trabajador=b.trabajador_trabajador
-		and b.$diaSemana=1 and b.t_dias<=3
-		order by a.numero_trabajador;";  
+		inner join acceso b on a.numero_trabajador=b.trabajador_trabajador
+        inner join turno c on b.turno_turno=c.idturno
+		and b.$diaSemana =1 and b.t_dias<=3;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -2163,16 +2172,21 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			while($resul=mysqli_fetch_array($query))
 			{
 			
-				$dato[$conta][0]=$resul[0];//numero
+				$dato[$conta][0]=$resul[0];//numero trabajador
 				$dato[$conta][1]=$resul[1];//nombre
+				$dato[$conta][2]=$resul[2];//depto
+				$dato[$conta][3]=$resul[3];//categoria
+				$dato[$conta][4]=$resul[4];//turno
+				$dato[$conta][5]=$resul[5];//hora entrada
+				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
 				//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
-	}//fin function 
+	}
+
 	function vienenxsexta()
-	{
-						
+	{				
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2180,12 +2194,11 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		global $dato;
 		global $conta;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n
+		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, a.depto_depto,a.categoria_categoria,b.turno_turno,c.entrada, c.salida
 		from trabajador a
-		inner join sexta b 
-		where a.numero_trabajador=b.trabajador_trabajador
-		and b.$diaSemana=1 and b.validez=1 and b.t_dias<=2 
-		order by a.numero_trabajador;";  
+		inner join sexta b on a.numero_trabajador=b.trabajador_trabajador
+		inner join turno c on b.turno_turno=c.idturno
+		and b.$diaSemana=1 and b.validez=1 and b.t_dias<=2;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -2198,19 +2211,24 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
-				$dato[$conta][0]=$resul[0];//numero
+				$dato[$conta][0]=$resul[0];//numero trabajador
 				$dato[$conta][1]=$resul[1];//nombre
+				$dato[$conta][2]=$resul[2];//depto
+				$dato[$conta][3]=$resul[3];//categoria
+				$dato[$conta][4]=$resul[4];//turno
+				$dato[$conta][5]=$resul[5];//hora entrada
+				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
 				
 			}
 		}
 	}
+
 	function asistenciaxfecha()
 	{
 		vienenxacceso();
 		vienenxsexta();
-		
+
 		global $dato;	
         tiene_guardia();
         tiene_comision();
@@ -2432,7 +2450,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	//QUIEN TIENE COMISIONES
 	function activasFora()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2482,8 +2499,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	
 
 	function inactivasFora()
-	{
-		
+	{	
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2533,7 +2549,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	function activasInt()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2580,9 +2595,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}//fin function 
+
 	function inactivasInt()
-	{
-		
+	{	
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2630,6 +2645,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}
 
 	}//fin function 
+
 	function inactivasExt()
 	{
 		$nombre=$_SESSION['name'];
@@ -2681,7 +2697,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 
 	function activasExt()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -2760,7 +2775,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	
 	function comisionesActivas()
 	{
-		
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -3183,9 +3197,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha_cumple
 		from trabajador a 
 		inner join cumple_ono b on a.numero_trabajador=b.trabajador_trabajador
-		and ((MONTH(fecha_cumple) = $mes_ini AND DAY(fecha_cumple) >= $dia_ini) OR (MONTH(fecha_cumple) = $mes_fin AND DAY(fecha_cumple) <= $dia_fin))
-		and validez=0
-		order by fecha_cumple;";  
+		and  ((MONTH(fecha_cumple) = $mes_ini AND DAY(fecha_cumple) >= $dia_ini) AND (MONTH(fecha_cumple) = $mes_fin AND DAY(fecha_cumple) <= $dia_fin))
+		and validez=0";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 
@@ -3198,13 +3211,12 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
 				$datos[$contador_d][3]=$resul[3];//categoria
-				$fecha=$resul[4];//fecha
-				$separa=explode('-',$fecha);
+				$fecha_cum=$resul[4];//fecha cumpleaños
+				$separa=explode('-',$fecha_cum);
 				$datos[$contador_d][4]=$anio_ini.'-'.$separa[1].'-'.$separa[2];//fecha
 				$contador_d++;
 			}
@@ -3214,9 +3226,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$sql2="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha_ono
 		from trabajador a 
 		inner join cumple_ono b on a.numero_trabajador=b.trabajador_trabajador
-		and  ((MONTH(fecha_ono) = $mes_ini AND DAY(fecha_ono) >= $dia_ini) OR (MONTH(fecha_ono) = $mes_fin AND DAY(fecha_ono) <= $dia_fin))
-		and validez=1
-		order by fecha_cumple;";  
+		and  ((MONTH(fecha_ono) = $mes_ini AND DAY(fecha_ono) >= $dia_ini) AND (MONTH(fecha_ono) = $mes_fin AND DAY(fecha_ono) <= $dia_fin))
+		and validez=1";  
 		$query2= mysqli_query($con, $sql2) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul2=mysqli_num_rows($query2);
 	
@@ -3234,7 +3245,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				$datos[$contador_d][1]=$resul2[1];//nombre
 				$datos[$contador_d][2]=$resul2[2];//depto
 				$datos[$contador_d][3]=$resul2[3];//categoria
-				$datos[$contador_d][4]=$resul2[4];//fecha
+				$fecha_ono=$resul2[4];//fecha
+				$separa=explode('-',$fecha_ono);
+				$datos[$contador_d][4]=$anio_ini.'-'.$separa[1].'-'.$separa[2];//fecha
 				$contador_d++;
 			}
 		}
@@ -3307,6 +3320,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}//fin else
 	}
+
 	function guardiasXnumero()
 	{
 		$nombre=$_SESSION['name'];
@@ -3395,6 +3409,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}//fin else
 	}
+
 	function infoSuplente($num_suplente)
 	{
 		$nombre=$_SESSION['name'];
@@ -3416,7 +3431,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			return $resul2[0];
 		}//fin else
 	}
-
 
 	//Quienes tienen sextas
 	function todosSexta()
@@ -3469,9 +3483,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function vienenSexta()
 	{
-
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
@@ -3508,6 +3522,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	//Quienes tienen licencias
 	function licenciasqueNoempiezan()
 	{
@@ -3570,6 +3585,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function licenciasActivas()
 	{
 		$nombre=$_SESSION['name'];
@@ -3629,6 +3645,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function licenciasXvencer()
 	{
 		$nombre=$_SESSION['name'];
@@ -3656,6 +3673,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function licenciasVencidas()
 	{
 		$nombre=$_SESSION['name'];
@@ -3714,6 +3732,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}
 		}
 	}
+
 	function pase_salida($x)
 	{
 		$nombre=$_SESSION['name'];
@@ -3850,7 +3869,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
         $minutos = (strtotime($fecha_i)-strtotime($fecha_f))/60;
         $minutos = abs($minutos); $minutos = floor($minutos);
         return $minutos;
-    }
+	}
+	
 	function calcularDuracionEntreDosFechas($tipo, $fecha_inicio, $fecha_final)
     {
         /*Tipo=0 Se compararán las dos fechas elegidas

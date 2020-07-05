@@ -577,7 +577,7 @@ session_start();
                     {
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
-                        echo "<script type=\"text/javascript\">alert('Error al actualizar el cumpleaños u onomástico del trabajador, línea 393, verifique con el administrador de sistemas'); history.back();</script>";                        }
+                        echo "<script type=\"text/javascript\">alert('Error al actualizar el cumpleaños u onomástico del trabajador, línea 393, verifique con el administrador de sistemas'); history.back();</script>";}
                     else
                     {
                         if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where (idtiempo_servicio=$idtiempo_servicio)")))
