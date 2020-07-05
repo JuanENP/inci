@@ -10,15 +10,9 @@
     $diaactual=$dias[date("w")];//guardar el día actual para su posterior uso
     $f_hoy=date("Y-m-d");//guardar la fecha actual
 
-
-    //POSICIÓN ACTUAL DE LOS REGISTROS DE ASISTENCIA
     $nombre="biometric";
     $contra="5_w**/pQxcmk.";
     require("../Acceso/global.php");
-    $sql="SELECT Valor FROM _posicion where idposicion=4;";
-    $query= mysqli_query($con, $sql);
-    $resul=mysqli_fetch_array($query);
-    $pos=$resul[0]; 
 
     //TODOS LOS EMPLEADOS QUE TIENEN SEXTA VENGAN O NO VENGAN HOY
     function sexta()
@@ -38,18 +32,18 @@
         $filas=mysqli_num_rows($query1);
         if($filas>0)
         {
-        while($resul=mysqli_fetch_array($query1))
-        {
-            $sexta[$aumenta][0]=$resul[0]; 
-            $sexta[$aumenta][1]=$resul[1];
-            $sexta[$aumenta][2]=$resul[2];
-            $sexta[$aumenta][3]=$resul[3];
-            $sexta[$aumenta][4]=$resul[4];
-            $sexta[$aumenta][5]=$resul[5];
-            $sexta[$aumenta][6]=$resul[6];
-            $sexta[$aumenta][7]=$resul[7];
-            $aumenta++;
-        }
+            while($resul=mysqli_fetch_array($query1))
+            {
+                $sexta[$aumenta][0]=$resul[0]; 
+                $sexta[$aumenta][1]=$resul[1];
+                $sexta[$aumenta][2]=$resul[2];
+                $sexta[$aumenta][3]=$resul[3];
+                $sexta[$aumenta][4]=$resul[4];
+                $sexta[$aumenta][5]=$resul[5];
+                $sexta[$aumenta][6]=$resul[6];
+                $sexta[$aumenta][7]=$resul[7];
+                $aumenta++;
+            }
             return $sexta;
         }
         else
@@ -58,7 +52,7 @@
         }
     } // FIN TODOS LOS EMPLEADOS QUE TIENEN SEXTA VENGAN O NO VENGAN HOY
     
-        //SI EL EMPLEADO VIENE HOY EN ACCESO Y TIENE SEXTA
+    //SI EL EMPLEADO VIENE HOY EN ACCESO Y TIENE SEXTA
     function viene_hoy_y_tiene_sexta($numero_empleado)
     {
         global $diaactual;
@@ -153,9 +147,27 @@
                     //Actualizar validez a 1 y total de días de sexta a 0
                     $sql2="UPDATE sexta SET validez = 1, t_dias=0 WHERE (idsexta = $idsexta);";
                     $query2= mysqli_query($con, $sql2);
+                    if(!$query2)
+                    {
+                        $er1=mysqli_errno($con);
+                        $er2=mysqli_error($con);
+                        $hacer='actualizar';
+                        $tabla='sexta';
+                        $línea='148';
+                        error($er1,$er2,$hacer,$tabla,$línea);
+                    }
                     //Actualizar total de días de acceso a 4
                     $sql3="UPDATE acceso SET  t_dias=4 WHERE (idacceso = $idacceso)";
                     $query3= mysqli_query($con, $sql3);
+                    if(!$query3)
+                    {
+                        $er1=mysqli_errno($con);
+                        $er2=mysqli_error($con);
+                        $hacer='actualizar';
+                        $tabla='acceso';
+                        $línea='160';
+                        error($er1,$er2,$hacer,$tabla,$línea);
+                    }
                     
                 }//FIN 1. TIENE SEXTA Y  TOTAL DE DÍAS DE ACCESO = 3
 
@@ -182,6 +194,15 @@
                             //Actualizar el total de dias de sexta a 3
                             $sql7="UPDATE sexta SET t_dias=3 WHERE (idsexta = $idsexta_v_s)";
                             $query7= mysqli_query($con, $sql7);
+                            if(!$query7)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='sexta';
+                                $línea='195';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
 
                         //3. SI TOTAL DE DIAS DE SEXTA = 3
@@ -190,8 +211,26 @@
                             //Actualizar el total de dias de acceso a 0 y validez de sexta y total de dias de sexta a 0
                             $sql5="UPDATE acceso SET t_dias=0 WHERE (idacceso = $idacceso_v_s)";
                             $query5= mysqli_query($con, $sql5);
+                            if(!$query5)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='acceso';
+                                $línea='212';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                             $sql6="UPDATE sexta SET validez=0,t_dias=0 WHERE (idsexta = $idsexta_v_s)";
                             $query6= mysqli_query($con, $sql6);
+                            if(!$query6)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='sexta';
+                                $línea='223';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
 
                         //2. QUIENES VIENEN HOY Y TOTAL DE DÍAS DE ACCESO < 3
@@ -209,6 +248,15 @@
                             $t_dias_v_s=$t_dias_acceso_v_s+1;
                             $sql4="UPDATE acceso SET t_dias=$t_dias_v_s WHERE (idacceso = $idacceso_v_s)";
                             $query4= mysqli_query($con, $sql4);
+                            if(!$query4)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='acceso';
+                                $línea='249';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
                     }
                     else
@@ -228,6 +276,15 @@
                             $t_dias_v_s=$t_dias_acceso_v_s+1;
                             $sql4="UPDATE acceso SET t_dias=$t_dias_v_s WHERE (idacceso = $idacceso_v_s)";
                             $query4= mysqli_query($con, $sql4);
+                            if(!$query4)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='acceso';
+                                $línea='277';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
                         //3. SI TOTAL DE DIAS DE SEXTA = 3
                         if($t_dias_sexta_v_s==3)
@@ -235,8 +292,27 @@
                             //Actualizar el total de dias de acceso a 0 y validez de sexta y total de dias de sexta a 0
                             $sql5="UPDATE acceso SET t_dias=0 WHERE (idacceso = $idacceso_v_s)";
                             $query5= mysqli_query($con, $sql5);
+                            if(!$query5)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='acceso';
+                                $línea='293';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
+
                             $sql6="UPDATE sexta SET validez=0,t_dias=0 WHERE (idsexta = $idsexta_v_s)";
                             $query6= mysqli_query($con, $sql6);
+                            if(!$query6)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='sexta';
+                                $línea='305';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
                             //4.SI TOTAL DE DIAS DE SEXTA = 2
                         if($t_dias_sexta_v_s==2)
@@ -244,6 +320,15 @@
                             //Actualizar el total de dias de sexta a 3
                             $sql7="UPDATE sexta SET t_dias=3 WHERE (idsexta = $idsexta_v_s)";
                             $query7= mysqli_query($con, $sql7);
+                            if(!$query7)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='sexta';
+                                $línea='321';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }
                         }
                     }//Fin else 
                 }//Fin del if vienen_hoy_y_tienen_sexta
@@ -264,9 +349,18 @@
                     $t_dias_sexta=$t_dias_sexta+1;
                     $sql8="UPDATE sexta SET t_dias=$t_dias_sexta WHERE (idsexta = $idsexta)";
                     $query8= mysqli_query($con, $sql8);
+                    if(!$query8)
+                    {
+                        $er1=mysqli_errno($con);
+                        $er2=mysqli_error($con);
+                        $hacer='actualizar';
+                        $tabla='sexta';
+                        $línea='350';
+                        error($er1,$er2,$hacer,$tabla,$línea);
+                    }
                 }
-            }//fin del for
-        }//fin del if $datos _sexta
+            }
+        }
     }//FIN REVISAR EL ORDEN DE LOS DÍAS DE ACCESO Y SEXTA DE LOS EMPLEADOS QUE VIENEN HOY
 
     //SELECCIONAR A TODOS LOS EMPLEADOS QUE VIENEN HOY Y SU TOTAL DE DÍAS SEA -1
@@ -344,7 +438,8 @@
             {
                 while($resul=mysqli_fetch_array($query))
                 {
-                     $deben_hoy[$j][0]=$resul[0];
+                    $suplente=$resul[0];
+                    $deben_hoy[$j][0]=$suplente;
                 }         
             }
         }
@@ -549,14 +644,14 @@
             { 
                 while($resul=mysqli_fetch_array($query))
                 {
-                $hora_entrada_especial=$resul[0];
-                $hora_salida_especial=$resul[1];
-                //Guardar la hora de entrada  y salida de especial  en el array deben hoy, en lugar de la anterior hora de entrada
-                $hora_entrada_deben=$hora_entrada_especial;
-                $deben_hoy[$j][1]=$hora_entrada_deben; 
+                    $hora_entrada_especial=$resul[0];
+                    $hora_salida_especial=$resul[1];
+                    //Guardar la hora de entrada  y salida de especial  en el array deben hoy, en lugar de la anterior hora de entrada
+                    $hora_entrada_deben=$hora_entrada_especial;
+                    $deben_hoy[$j][1]=$hora_entrada_deben; 
 
-                $hora_salida_deben=$hora_salida_especial;
-                $deben_hoy[$j][2]=$hora_salida_deben;    
+                    $hora_salida_deben=$hora_salida_especial;
+                    $deben_hoy[$j][2]=$hora_salida_deben;    
                 }//fin del while
             } //fin del if  
         }//fin del for
@@ -589,7 +684,8 @@
             $filas=mysqli_num_rows($query);
             //Si la consulta arroja 1 valor, significa que el empleado no asistirá 
             if($filas>0)
-            { $resul=mysqli_fetch_array($query);
+            {   
+                $resul=mysqli_fetch_array($query);
                 //En el array deben_hoy formatear observar_e y observar_s  a cero
                 $observar_e="0";
                 $deben_hoy[$j][3]=$observar_e;
@@ -622,6 +718,38 @@
             //-------------------------------------//
             $sql2="INSERT INTO vienen_hoy VALUES ('','$num_deben', '$hora_entrada_deben','$hora_salida_deben',$observar_e,$observar_s);";
             $query2= mysqli_query($con, $sql2);
+            if(!$query2)
+            {
+                $er1=mysqli_errno($con);
+                $er2=mysqli_error($con);
+                $hacer='insertar';
+                $tabla='vienen_hoy';
+                $línea='719';
+                error($er1,$er2,$hacer,$tabla,$línea);
+            }
         }// fin for
     }//Fin guarda_deben_hoy
+
+
+    function error($er1,$er2,$accion,$nomTabla,$numLinea)
+    {
+        $error="";
+        $err1="$er1";
+        $err2="$er2";
+        //Hacer UN EXPLODE DE ERR2
+        $divide=explode("'",$err2);
+        $tamDivide=count($divide);//saber el tamaño del array
+        if($tamDivide>0)//si el array posee datos
+        {
+            $err2="";
+            for($i=0;$i<$tamDivide;$i++)
+            {
+                $err2.=$divide[$i];
+            }
+        }
+
+        $error="Error al $accion en la tabla $nomTabla. $err1 : $err2. Línea de error: $numLinea. Tarea vienen_hoy.";
+        echo"<script> console.error('$error'); </script>";
+        exit();
+    }
 ?>

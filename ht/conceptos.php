@@ -1,9 +1,23 @@
+<?php
+session_start();
+date_default_timezone_set('America/Mexico_City'); 
+    if (($_SESSION["name"]) && ($_SESSION["con"]))
+    {
+        $nombre=$_SESSION['name'];
+        $contra=$_SESSION['con'];
+        require("../Acceso/global.php"); 
+        $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
+        $dia_actual=date('Y-m-d');
+    }
+    else
+    {
+        header("Location: ../index.php");
+        die();
+    }
+?>
 <!doctype html>
-<form method="post" action="./cat-conceptos" id="form1">
-    <!--[if gt IE 8]><!-->
+ 
     <html class="no-js" lang="">
-    <!--<![endif]-->
-
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -12,6 +26,7 @@
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -46,7 +61,7 @@
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                    <a class="navbar-brand" href="#">Control de Asistecia</a>
+                    <a class="navbar-brand" href="#">Control de Asistencia</a>
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
 
@@ -59,15 +74,15 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-crosshairs"></i><a href="categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="departamentos.html">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="tipoempleado.html">Tipo Empleado</a></li>
+                                <li><i class="fa fa-sitemap"></i><a href="departamentos.php">Departamentos</a></li>
+                                <li><i class="fa fa-male"></i><a href="tipoempleado.php">Tipo Empleado</a></li>
                                 <li><i class="fa fa-users"></i><a href="trabajadores.php">Personal</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="dispositivos.html">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="dispositivos.php">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
@@ -76,13 +91,20 @@
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="#">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="conceptos.php">Tipo de Incidencias</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-users"></i><a href="usuarios.php">Usuarios</a></li>
+                                <?php 
+                                    if($nombre=="AdministradorGod")
+                                    {
+                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
+                                        
+                                    }
+                                ?>
+                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -114,30 +136,22 @@
                         <div class="user-area dropdown float-right">
 
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="user-avatar rounded-circle" src="images/admin.png" alt="User">
+                                <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
                             <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="updatePassword.aspx"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                                <a class="nav-link" href="Logout.aspx"><i class="fa fa-power-off"></i> Salir</a>
+                                <a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a>
+                                <a class="nav-link" href="../php/logout.php"><i class="fa fa-power-off"></i> Salir</a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
-            <!-- Header-->
-
-
-
             <div class="breadcrumbs">
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Catálogo de Incidencias</h1>
+                            <h1>Asistencias del día <?php echo $dia_actual; ?> del personal</h1>
                         </div>
                     </div>
                 </div>
@@ -145,8 +159,8 @@
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Catálogos</a></li>
-                                <li class="active">Incidencias</li>
+                                <!-- <li><a href="#">Catálogos</a></li> -->
+                                <!-- <li class="active">Incidencias</li> -->
                             </ol>
                         </div>
                     </div>
@@ -155,38 +169,112 @@
 
             <div class="content mt-3">
                 <div class="animated fadeIn">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-
-
+                    <!--  
+                        <div class="row">
+                            <form method="post" action="./../ht/inserta-concepto.php">
+                                <div class="col-lg-12">
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <span id="MainContent_lbtitulo">Nueva Incidencia</span>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <div class="form-group col-lg-6">
+                                                <span id="MainContent_lbConcepto">Clave</span><input name="ctl00$MainContent$txtConcepto" type="text" maxlength="3" id="MainContent_txtConcepto" class="form-control" required="" />
+                                            </div>
+                                            <div class="form-group col-lg-6">
+                                                <span id="MainContent_lbNombre">Nombre</span><input name="ctl00$MainContent$txtNombre" type="text" maxlength="100" id="MainContent_txtNombre" class="form-control" required="" />
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <input type="submit" name="ctl00$MainContent$btnAgregar" value="Agregar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="col-lg-6">
+                    -->
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Nueva Incidencia</span>
+                                    <strong class="card-title">Información</strong>
                                 </div>
+                                <div class="card-body">
+                                    <span id="MainContent_DataTable">
+                                        <table id='' class='table table-striped table-bordered display'>
+                                            <thead>
+                                                <th>Clave</th>
+                                                <th>Descripción</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                    $sql="select * from clave_incidencia";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con).", línea 219, no hay datos en la tabla clave incidencia, verifique con el administrador de sistemas.");
+                                                    }
+                                                    else
+                                                    {
+                                                        while($resul=mysqli_fetch_array($query))
+                                                        {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $resul[0] . "</td>";
+                                                            echo "<td>" . $resul[1] . "</td>";
+                                                            //echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            //echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                            echo "</tr>";
+                                                        }
+                                                    }
 
-                                <div class="card-body card-block">
-                                    <div class="form-group col-lg-6">
-                                        <span id="MainContent_lbConcepto">Clave</span><input name="ctl00$MainContent$txtConcepto" type="text" maxlength="3" id="MainContent_txtConcepto" class="form-control" required="" />
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <span id="MainContent_lbNombre">Nombre</span><input name="ctl00$MainContent$txtNombre" type="text" maxlength="100" id="MainContent_txtNombre" class="form-control" required="" />
-                                    </div>
+                                                    $sql="select * from clave_especial";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con).", línea 238, no hay datos en la tabla clave especial, verifique con el administrador de sistemas.");
+                                                    }
+                                                    else
+                                                    {
+                                                        while($resul=mysqli_fetch_array($query))
+                                                        {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $resul[0] . "</td>";
+                                                            echo "<td>" . $resul[1] . "</td>";
+                                                            //echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            //echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                            echo "</tr>";
+                                                        }
+                                                    }
+                                                    $sql="select * from clave_justificacion";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
+                                                    {
+                                                        die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con).", línea 256, no hay datos en la tabla clave justificación, verifique con el administrador de sistemas.");
+                                                    }
+                                                    else
+                                                    {
+                                                        while($resul=mysqli_fetch_array($query))
+                                                        {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $resul[0] . "</td>";
+                                                            echo "<td>" . $resul[1] . "</td>";
+                                                            //echo "<td><a href='../php/eliminar-depto.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                            //echo " <a href='../php/editar-depto.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                            echo "</tr>";
+                                                        }
+                                                    }
+                                                ?> <!--FIN PHP -->
+                                            </tbody>
+                                        </table>
+                                    </span>
                                 </div>
-                                <div class="card-footer">
-                                    <input type="submit" name="ctl00$MainContent$btnAgregar" value="Agregar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" />
-
-                                </div>
-
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- .animated -->
-            </div>
-            <!-- .content -->
+                </div><!-- .animated -->
+            </div><!-- .content -->
 
             <script type="text/javascript">
                 $(document).ready(function() {
@@ -223,7 +311,7 @@
                             },
                             //'csv',
                             'excel',
-                            //'pdf',
+                            'pdf',
                             //{ extend: 'print', text: 'Imprimir' },
                         ]
                     });
@@ -247,6 +335,4 @@
             });
         </script>
     </body>
-
-    </html>
-</form>
+</html>

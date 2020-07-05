@@ -57,16 +57,25 @@ ob_start();
                 <tr>
                     <td>N.E.</td>
                     <td>NOMBRE</td>
+                    <td>DEPTO</td>
+                    <td>CATEGORÍA</td>
+                    <td>TURNO</td>
+                    <td>ENTRADA</td>
+                    <td>SALIDA</td>
                 </tr>
             </thead>
             <tbody>
                 
                 <?php        
-
                     for($i=0;$i<$contador;$i++)
                     {   echo"<tr>";
                         echo "<td>".$reporte[$i][0]."</td>";
                         echo "<td>".$reporte[$i][1]."</td>";
+                        echo "<td>".$reporte[$i][2]."</td>";
+                        echo "<td>".$reporte[$i][3]."</td>";
+                        echo "<td>".$reporte[$i][4]."</td>";
+                        echo "<td>".$reporte[$i][5]."</td>";
+                        echo "<td>".$reporte[$i][6]."</td>";
                         echo"</tr>";
                     }
                 ?>

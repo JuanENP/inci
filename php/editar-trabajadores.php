@@ -42,7 +42,7 @@ session_start();
             $empresa = $especial[8];
             $genero=consultaGenero($id);   
         }
-        else //SINO ES TRABAJADOR COMISIONADO
+        else //SINO NO ES TRABAJADOR COMISIONADO
         {
             $id2=consultaTrabajador($id);
             $id3=consultaCumple($id);
@@ -612,7 +612,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 609: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
+                                                    die("<br>" . "Error, línea 610: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -719,7 +719,6 @@ session_start();
                 //Redireccionamos si das a aceptar
                 {
                     window.location.href='../php/eliminar-trabajadores.php?jhgtp09='+miID+'';
-                    
                 }
                 else
                 {
