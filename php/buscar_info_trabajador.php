@@ -63,7 +63,7 @@
     {
         global $con;
         //Consultar todo de la tabla acceso
-        $sql="select * from tiempo_servicio where trabajador_trabajador = '".$myid."'";
+        $sql="select * from tiempo_servicio where trabajador_trabajador = '$myid'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {

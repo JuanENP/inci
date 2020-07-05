@@ -591,9 +591,11 @@ session_start();
                             //GUARDAR EN LA BITACORA DE TRABAJADOR
                             if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Actualizado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','$genero','$anterior_num','$nombre_anterior','$a_paterno_anterior','$a_materno_anterior','$depto_anterior','$categoria_anterior','$descripcion_tipo','$genero_anterior', '$nombre_host')")))
                             {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora trabajador, línea 594, $er1: $er2'); history.back();</script>";
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
-                                echo "<script type=\"text/javascript\">alert('Error al guardar en bitácora trabajador, línea 410, verifique con el administrador de sistemas.'); history.back();</script>";
                             }
                             else
                             {
