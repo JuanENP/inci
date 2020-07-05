@@ -2280,7 +2280,7 @@ header .form-inline .search-form.close {
 }
 
 .login-form {
-    background: #ffffff;
+    background: white;
     padding: 30px 30px 20px;
     border-radius: 2px;
 }
@@ -2308,7 +2308,7 @@ header .form-inline .search-form.close {
 }
 
 .login-form label {
-    color: #878787;
+    color: #352F2D;
     text-transform: uppercase;
 }
 

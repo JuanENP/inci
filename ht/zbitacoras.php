@@ -5,11 +5,6 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php");
-        if($nombre!="AdministradorGod")
-        {
-            echo "<script> alert('Usted no posee privilegios suficientes para elegir esta opción.'); history.back(); </script>";
-            exit();
-        }
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
@@ -19,28 +14,12 @@ session_start();
     }
 ?>
 <!doctype html>
-
-    <script type="text/javascript">
-        var theForm = document.forms['form1'];
-        if (!theForm) {
-            theForm = document.form1;
-        }
-
-        function __doPostBack(eventTarget, eventArgument) {
-            if (!theForm.onsubmit || (theForm.onsubmit() != false)) 
-            {
-                theForm.__EVENTTARGET.value = eventTarget;
-                theForm.__EVENTARGUMENT.value = eventArgument;
-                theForm.submit();
-            }
-        }
-    </script>
-    <html lang="es" class="no-js">
+    <html class="no-js" lang="es">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Usuarios
+        Bitácoras
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -72,11 +51,14 @@ session_start();
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/jquery.min.js"></script>
+        <script src="../assets/js/main.js"></script>
+        <script src="../assets/js/main2.js"></script>
         <script src="../assets/js/alertify.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
         <script src="../assets/js/plugins.js"></script>
         <script src="../assets/js/jquery-ui.js"></script>
+        <script src="../assets/js/tablasBitacoras.js"></script>
 
         <script type="text/javascript">
             $(document).ready(function() 
@@ -92,44 +74,15 @@ session_start();
                         $('body').toggleClass('open');
                     }
                 );
-
-                $(function() {
-                    $('#noblanco').on('keypress', function(e) {
-                        if (e.which == 32)
-                        {
-                            alert("Evite usar espacios en blanco para el usuario.");
-                            return false;
-                        }
-                    });
-                });
             });
-
-            function imprime(texto)
-            {
-                alertify.alert(texto);
-            }
-
-            function Vcon()
-            {
-                var cambio = document.getElementById("unico");
-                if(cambio.type == "password")
-                {
-                    cambio.type = "text";
-                    $("#span_con").text("Ocultar");//cambiar el texto 
-                }
-                else
-                {
-                    cambio.type = "password";
-                    $("#span_con").text("Ver");//cambiar el texto 
-                }
-            }
-        </script>
+        </script> 
     </head>
 
     <body>
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
+
                 <div class="navbar-header">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
@@ -141,15 +94,15 @@ session_start();
                 <div id="main-menu" class="main-menu collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
+                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control</a>
                         </li>
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-crosshairs"></i><a href="../ht/categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="../ht/departamentos.php">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="../ht/tipoempleado.php">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="../ht/trabajadores.php">Personal</a></li>
+                                <li><i class="fa fa-crosshairs"></i><a href="categoria.php">Categorias</a></li>
+                                <li><i class="fa fa-sitemap"></i><a href="departamentos.html">Departamentos</a></li>
+                                <li><i class="fa fa-male"></i><a href="tipoempleado.html">Tipo Empleado</a></li>
+                                <li><i class="fa fa-users"></i><a href="trabajadores.php">Personal</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
@@ -164,35 +117,28 @@ session_start();
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
-                           </ul>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
+                            </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
+                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                                 <?php 
                                     if($nombre=="AdministradorGod")
                                     {
-                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
-                                        
+                                        echo "<li><i class='fa fa-book'></i><a href='ht/zbitacoras.php'>Bitácoras</a></li>"; 
+                                        echo "<li><i class='fa fa-picture-o'></i><a href='ht/cambiar-logo-principal.php'>Logo página principal</a></li>";
+                                        echo "<li><i class='fa fa-users'></i><a href='ht/usuarios.php'>Usuarios</a></li>";                 
                                     }
                                 ?>
-                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
-                </div>
-                <!-- /.navbar-collapse -->
-            </nav>
-        </aside>
-        <!-- FIN DE ASIDE_left-panel -->
-
-        <?php
-            if(isset($_POST["nom"]) && $_POST["contra"])
-            {
-                require ("../php/insert/usuario.php");
-            }
-        ?>
+                </div> <!--FIN menu-principal-->
+                
+            </nav> <!-- FIN navbar-collapse -->
+        </aside> <!-- FIN DE ASIDE_left-panel -->
 
         <!-- Right Panel -->
         <div id="right-panel" class="right-panel">
@@ -205,7 +151,6 @@ session_start();
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
 
@@ -229,7 +174,7 @@ session_start();
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Usuarios</h1>
+                            <h1>Bitácoras</h1>
                         </div>
                     </div>
                 </div>
@@ -237,89 +182,66 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Asistencia</a></li>
-                                <li class="active">Usuarios</li>
+                                <li><a href="#">Sistema</a></li>
+                                <li class="active">Bitácoras</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="content mt-3">
-                <div class="animated fadeIn">
-                    <div class="row"> 
-                        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="fu"  autocomplete="off">   
-                            <div class="col-lg-12">                        
+            <form id="f1" method="POST" action="<?php echo $_SERVER["PHP_SELF"]?>">
+                <div class="content mt-3">
+                    <div class="animated fadeIn">
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">Nuevo Usuario</span>
-                                    </div>
-
-                                    <div class="card-body card-block">                          
-                                       <div class="form-group col-lg-12">
-                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required/>
-                                       </div>
-
-                                        <div class="form-group col-lg-12">
-                                            <label>Contraseña</label>
-                                            <div class="input-group">
-                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required> <button onclick="Vcon();"><span id="span_con">Ver</span></button>
-                                            </div>
-                                        </div>
+                                        <span id="MainContent_lbtitulo">
+                                            Bitácoras de:
+                                        </span>
                                     </div>
                                     
-                                    <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm"/>
-                                    </div>
+                                    <div class="card-body card-block">
+                                        <div class="form-1-2">
+                                            <input type="radio" name="opcion" value="acc" id="bit-acceso" class="bt" checked> <label for="bit-acceso">Acceso (días y turnos del trabajador)</label> 
+                                        </div> 
+                                    </div> 
+                                        
                                 </div>
-                            </div> 
-                        </form>
-                    </div>  
-                         
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Información</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_DataTable">
-                                        <table id='' class="table table-striped table-bordered display">
-                                            <thead>
-                                                <th>Usuarios</th>
-                                                <th>Acción</th>
-                                            </thead>
-                                            <tbody>
-                                                <!--PONER AQUÍ EL contenido LA TABLA-->
-                                                <?php
-                                                    require("_encript.php");
-                                                    $sql="SELECT user FROM mysql.user where user!='biometric'  and user!='pma' and user!='root'";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                    }
-                                                    else
-                                                    {
-                                                      while($resul=mysqli_fetch_array($query))
-                                                      {
-                                                        echo "<tr>";
-                                                        echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                        echo "<td><a href='../php/delete/usuario.php?5dF0_sp=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
-                                                        echo "</tr>";
-                                                      }
-                                                    }
-                                                ?> <!--FIN PHP -->
-                                            </tbody>
-                                        </table>
-                                    </span>
-                                </div>
-                            </div>  
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div> <!--FIN DIV CLASS ROW_NUEVA APROBACION-->
+
+                        <div class="card-footer">
+                            <div class="dropdown">
+                                <input type="submit" name="ver" value="VER" class="btn btn-primary btn-sm" />
+                            </div>
+                        </div>
+
+                    </div> <!--FIN DIV animated fadeIn-->
+                </div> <!--FIN DIV content mt-3--> 
+            </form>  <!-- FIN DEL FORM -->
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Información</strong>
+                        </div>
+                        <div class="card-body">
+                            <span id="info">
+                                <!--Información de la bitácora-->
+                            </span>
                         </div>
                     </div>
                 </div>
-            </div><!-- .animated -->
-        </div> <!-- FIN right-panel -->
+            </div>
+
+        </div> <!-- FIN right-panel -->       
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

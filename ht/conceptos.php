@@ -1,11 +1,13 @@
 <?php
 session_start();
+date_default_timezone_set('America/Mexico_City'); 
     if (($_SESSION["name"]) && ($_SESSION["con"]))
     {
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php"); 
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
+        $dia_actual=date('Y-m-d');
     }
     else
     {
@@ -146,10 +148,10 @@ session_start();
             </header>
             <!-- /header -->
             <div class="breadcrumbs">
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Catálogo de Incidencias</h1>
+                            <h1>Asistencias del día <?php echo $dia_actual; ?> del personal</h1>
                         </div>
                     </div>
                 </div>

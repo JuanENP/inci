@@ -33,8 +33,8 @@
         {
             global $con;
             $sql="create user '$nombreUsuario'@'localhost' identified by '$contrasenaUsuario'"; 
-            $sql2="grant all privileges on checada6.* to $nombreUsuario@localhost"; 
-            $sql3="grant all privileges on mysql.user to $nombreUsuario@localhost";
+            $sql2="grant all privileges on checada6.* to '$nombreUsuario'@localhost"; 
+            $sql3="grant all privileges on mysql.user to '$nombreUsuario'@localhost";
             $sqlFlush="flush privileges";//despues del 2 y del 3
 
             mysqli_autocommit($con, FALSE);//quitar el autocommit hasta que todo haya resultado correcto

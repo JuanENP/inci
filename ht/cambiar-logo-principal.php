@@ -40,7 +40,7 @@ session_start();
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <title>
-            Usuarios
+            Logo index
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,6 +79,7 @@ session_start();
         <script src="../assets/js/jquery-ui.js"></script>
 
         <script type="text/javascript">
+
             $(document).ready(function() 
             {
                 setTimeout(function() 
@@ -92,36 +93,11 @@ session_start();
                         $('body').toggleClass('open');
                     }
                 );
-
-                $(function() {
-                    $('#noblanco').on('keypress', function(e) {
-                        if (e.which == 32)
-                        {
-                            alert("Evite usar espacios en blanco para el usuario.");
-                            return false;
-                        }
-                    });
-                });
             });
 
             function imprime(texto)
             {
-                alertify.alert(texto);
-            }
-
-            function Vcon()
-            {
-                var cambio = document.getElementById("unico");
-                if(cambio.type == "password")
-                {
-                    cambio.type = "text";
-                    $("#span_con").text("Ocultar");//cambiar el texto 
-                }
-                else
-                {
-                    cambio.type = "password";
-                    $("#span_con").text("Ver");//cambiar el texto 
-                }
+                alertify.alert(texto, function(e){});
             }
         </script>
     </head>
@@ -164,20 +140,20 @@ session_start();
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
                            </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
                             <ul class="sub-menu children dropdown-menu">
+                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                                 <?php 
                                     if($nombre=="AdministradorGod")
                                     {
+                                        echo "<li><i class='fa fa-picture-o'></i><a href='ht/cambiar-logo-principal.php'>Logo página principal</a></li>";
                                         echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
-                                        
                                     }
                                 ?>
-                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodal"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -186,13 +162,6 @@ session_start();
             </nav>
         </aside>
         <!-- FIN DE ASIDE_left-panel -->
-
-        <?php
-            if(isset($_POST["nom"]) && $_POST["contra"])
-            {
-                require ("../php/insert/usuario.php");
-            }
-        ?>
 
         <!-- Right Panel -->
         <div id="right-panel" class="right-panel">
@@ -229,7 +198,7 @@ session_start();
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Usuarios</h1>
+                            <h1>Cambiar logo de la página principal de inicio de sesión</h1>
                         </div>
                     </div>
                 </div>
@@ -237,8 +206,8 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Asistencia</a></li>
-                                <li class="active">Usuarios</li>
+                                <li><a href="#">Sistema</a></li>
+                                <li class="active">Cambiar logo principal</li>
                             </ol>
                         </div>
                     </div>
@@ -248,75 +217,27 @@ session_start();
             <div class="content mt-3">
                 <div class="animated fadeIn">
                     <div class="row"> 
-                        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="fu"  autocomplete="off">   
+                        <form method="post" action="../php/insert/imagenPrincipal.php" enctype="multipart/form-data" id="fu" autocomplete="off">   
                             <div class="col-lg-12">                        
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">Nuevo Usuario</span>
+                                        <span id="MainContent_lbtitulo">CAMBIAR LA IMAGEN DE LA PÁGINA DE INICIO DE SESIÓN</span>
                                     </div>
 
                                     <div class="card-body card-block">                          
-                                       <div class="form-group col-lg-12">
-                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required/>
-                                       </div>
-
-                                        <div class="form-group col-lg-12">
-                                            <label>Contraseña</label>
-                                            <div class="input-group">
-                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required> <button onclick="Vcon();"><span id="span_con">Ver</span></button>
-                                            </div>
+                                        <div class="form-group col-lg-5" id="imagen">
+                                            <span id="">Seleccione la imagen</span>
+                                            <input type="file" name="archivo[]" id="myfile" required>
                                         </div>
                                     </div>
                                     
                                     <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm"/>
+                                            <input type="submit" name="guardar" value="Actualizar logo" class="btn btn-primary btn-sm"/>
                                     </div>
                                 </div>
                             </div> 
                         </form>
                     </div>  
-                         
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Información</strong>
-                                </div>
-                                <div class="card-body">
-                                    <span id="MainContent_DataTable">
-                                        <table id='' class="table table-striped table-bordered display">
-                                            <thead>
-                                                <th>Usuarios</th>
-                                                <th>Acción</th>
-                                            </thead>
-                                            <tbody>
-                                                <!--PONER AQUÍ EL contenido LA TABLA-->
-                                                <?php
-                                                    require("_encript.php");
-                                                    $sql="SELECT user FROM mysql.user where user!='biometric'  and user!='pma' and user!='root'";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                      die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
-                                                    }
-                                                    else
-                                                    {
-                                                      while($resul=mysqli_fetch_array($query))
-                                                      {
-                                                        echo "<tr>";
-                                                        echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                        echo "<td><a href='../php/delete/usuario.php?5dF0_sp=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
-                                                        echo "</tr>";
-                                                      }
-                                                    }
-                                                ?> <!--FIN PHP -->
-                                            </tbody>
-                                        </table>
-                                    </span>
-                                </div>
-                            </div>  
-                        </div>
-                    </div>
                 </div>
             </div><!-- .animated -->
         </div> <!-- FIN right-panel -->
