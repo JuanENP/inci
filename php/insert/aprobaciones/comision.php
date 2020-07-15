@@ -136,7 +136,20 @@
                 else
                 {
                     //Insertar la comisión
-                    if($clave_especial=="17"){$totDias=1;}
+                    if($clave_especial=="17")
+                    {
+                        //Se requieren mínimo 48 H de anticipación en esta clave:
+                        $duracionClave17=calcularDuracionEntreDosFechas(1,$fecha,"");
+                        $duracionClave17=$duracionClave17-1;
+                        if($duracionClave17<2)
+                        {
+                            echo "<script> imprime('La comisión Sindical equivalente a un día debe ser solicitada con ' +
+                            ' 48 h de antelación o más. Esta comisión iniciará en $duracionClave17 días. No es posible' + 
+                            ' guardar esta comisión. Sustento: CICA clave 17.'); </script>";
+                            exit();
+                        }
+                        $totDias=1;
+                    }
                     $sql8=" INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '$hora_e', '$hora_s', '0', '$num', '$clave_especial','$empresa','$totDias')";
                     $ok= "<script> imprime('Comisión agregada correctamente'); </script>";
                     $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";

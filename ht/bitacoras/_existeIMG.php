@@ -1,0 +1,36 @@
+<?php
+/*Este bloque de código evalúa si la imagen dada existe en la ruta*/
+//Esta ruta es cuando estamos en el archivo _bitacoras
+$rutaImg="../documents/$img";
+$existe=0;
+$extension="";
+if(file_exists($rutaImg.".jpg"))
+{
+    $existe=1;
+    $extension=".jpg";
+}
+else
+{
+    if(file_exists($rutaImg.".jpeg"))
+    {
+        $existe=1;
+        $extension=".jpeg";
+    }
+    else
+    {
+        if(file_exists($rutaImg.".png"))
+        {
+            $existe=1;
+            $extension=".png";
+        }
+        else
+        {
+            if(file_exists($rutaImg.".pjpeg"))
+            {
+                $existe=1;
+                $extension=".pjpeg";
+            }
+        }
+    }
+}
+?>

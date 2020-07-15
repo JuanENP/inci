@@ -2,7 +2,7 @@
     if($eventNoComunes=="no" && $okFechas=="no")
     {
         //Mostrar TODA la bitácora
-        $sql="SELECT * FROM bitacora_acceso";
+        $sql="SELECT * FROM bitacora_cumple_ono";
         $query=mysqli_query($con, $sql);
         if(!$query)
         {
@@ -16,8 +16,8 @@
                 <thead>
                     <tr>
                     <th colspan='3'></th>
-                    <th colspan='9' style='background: #D03E3E;'>Actualizado/borrado</th>
-                    <th colspan='9' style='background: #D0D26E;'>Anterior</th>
+                    <th colspan='2' style='background: #D03E3E;'>Actualizado/borrado</th>
+                    <th colspan='2' style='background: #D0D26E;'>Anterior</th>
                     <th colspan='3'></th>
                     </tr>
                     
@@ -25,24 +25,10 @@
                         <td>Usuario</td>
                         <td>Host Origen</td>
                         <td>Operación</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
                         <td>Trabajador</td>
                         <td>Nombre máquina</td>
                         <td>Fecha</td>
@@ -63,20 +49,6 @@
                                 <td>".$fila[8]."</td>
                                 <td>".$fila[9]."</td>
                                 <td>".$fila[10]."</td>
-                                <td>".$fila[11]."</td>
-                                <td>".$fila[12]."</td>
-                                <td>".$fila[13]."</td>
-                                <td>".$fila[14]."</td>
-                                <td>".$fila[15]."</td>
-                                <td>".$fila[16]."</td>
-                                <td>".$fila[17]."</td>
-                                <td>".$fila[18]."</td>
-                                <td>".$fila[19]."</td>
-                                <td>".$fila[20]."</td>
-                                <td>".$fila[21]."</td>
-                                <td>".$fila[22]."</td>
-                                <td>".$fila[23]."</td>
-                                <td>".$fila[24]."</td>
                             </tr>";
                 }
                 $tabla.="</tbody></table>";
@@ -93,7 +65,7 @@
     if($eventNoComunes=="no" && $okFechas=="si")
     {
         //Mostrar TODA la bitácora
-        $sql="SELECT * FROM bitacora_acceso where fecha between '$finicio' AND '$ffin'";
+        $sql="SELECT * FROM bitacora_cumple_ono where fecha between '$finicio' AND '$ffin'";
         $query=mysqli_query($con, $sql);
         if(!$query)
         {
@@ -107,8 +79,8 @@
                 <thead>
                     <tr>
                     <th colspan='3'></th>
-                    <th colspan='9' style='background: #D03E3E;'>Actualizado/borrado</th>
-                    <th colspan='9' style='background: #D0D26E;'>Anterior</th>
+                    <th colspan='2' style='background: #D03E3E;'>Actualizado/borrado</th>
+                    <th colspan='2' style='background: #D0D26E;'>Anterior</th>
                     <th colspan='3'></th>
                     </tr>
                     
@@ -116,24 +88,10 @@
                         <td>Usuario</td>
                         <td>Host Origen</td>
                         <td>Operación</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
                         <td>Trabajador</td>
                         <td>Nombre máquina</td>
                         <td>Fecha</td>
@@ -154,20 +112,6 @@
                                 <td>".$fila[8]."</td>
                                 <td>".$fila[9]."</td>
                                 <td>".$fila[10]."</td>
-                                <td>".$fila[11]."</td>
-                                <td>".$fila[12]."</td>
-                                <td>".$fila[13]."</td>
-                                <td>".$fila[14]."</td>
-                                <td>".$fila[15]."</td>
-                                <td>".$fila[16]."</td>
-                                <td>".$fila[17]."</td>
-                                <td>".$fila[18]."</td>
-                                <td>".$fila[19]."</td>
-                                <td>".$fila[20]."</td>
-                                <td>".$fila[21]."</td>
-                                <td>".$fila[22]."</td>
-                                <td>".$fila[23]."</td>
-                                <td>".$fila[24]."</td>
                             </tr>";
                 }
                 $tabla.="</tbody></table>";
@@ -183,7 +127,7 @@
         
     if($eventNoComunes=="si" && $okFechas=="no")
     {
-        $sql="SELECT * FROM bitacora_acceso where operacion='Actualizado' or operacion='Eliminado'";
+        $sql="SELECT * FROM bitacora_cumple_ono where operacion='Actualizado' or operacion='Eliminado'";
         $query=mysqli_query($con, $sql);
         if(!$query)
         {
@@ -197,8 +141,8 @@
                 <thead>
                     <tr>
                     <th colspan='3'></th>
-                    <th colspan='9' style='background: #D03E3E;'>Actualizado/borrado</th>
-                    <th colspan='9' style='background: #D0D26E;'>Anterior</th>
+                    <th colspan='2' style='background: #D03E3E;'>Actualizado/borrado</th>
+                    <th colspan='2' style='background: #D0D26E;'>Anterior</th>
                     <th colspan='3'></th>
                     </tr>
                     
@@ -206,24 +150,10 @@
                         <td>Usuario</td>
                         <td>Host Origen</td>
                         <td>Operación</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
                         <td>Trabajador</td>
                         <td>Nombre máquina</td>
                         <td>Fecha</td>
@@ -244,20 +174,6 @@
                                 <td>".$fila[8]."</td>
                                 <td>".$fila[9]."</td>
                                 <td>".$fila[10]."</td>
-                                <td>".$fila[11]."</td>
-                                <td>".$fila[12]."</td>
-                                <td>".$fila[13]."</td>
-                                <td>".$fila[14]."</td>
-                                <td>".$fila[15]."</td>
-                                <td>".$fila[16]."</td>
-                                <td>".$fila[17]."</td>
-                                <td>".$fila[18]."</td>
-                                <td>".$fila[19]."</td>
-                                <td>".$fila[20]."</td>
-                                <td>".$fila[21]."</td>
-                                <td>".$fila[22]."</td>
-                                <td>".$fila[23]."</td>
-                                <td>".$fila[24]."</td>
                             </tr>";
                 }
                 $tabla.="</tbody></table>";
@@ -273,7 +189,7 @@
         
     if($eventNoComunes=="si" && $okFechas=="si")
     {
-        $sql="SELECT * FROM bitacora_acceso where (operacion='Actualizado' or operacion='Eliminado')
+        $sql="SELECT * FROM bitacora_cumple_ono where (operacion='Actualizado' or operacion='Eliminado')
         and (fecha between '$finicio' AND '$ffin')";
         $query=mysqli_query($con, $sql);
         if(!$query)
@@ -288,8 +204,8 @@
                 <thead>
                     <tr>
                     <th colspan='3'></th>
-                    <th colspan='9' style='background: #D03E3E;'>Actualizado/borrado</th>
-                    <th colspan='9' style='background: #D0D26E;'>Anterior</th>
+                    <th colspan='2' style='background: #D03E3E;'>Actualizado/borrado</th>
+                    <th colspan='2' style='background: #D0D26E;'>Anterior</th>
                     <th colspan='3'></th>
                     </tr>
                     
@@ -297,24 +213,10 @@
                         <td>Usuario</td>
                         <td>Host Origen</td>
                         <td>Operación</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
-                        <td>Lunes</td>
-                        <td>Martes</td>
-                        <td>Miércoles</td>
-                        <td>Jueves</td>
-                        <td>Viernes</td>
-                        <td>Sábado</td>
-                        <td>Domingo</td>
-                        <td>Días Festivo</td>
-                        <td>Turno</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
+                        <td>Cumpleaños</td>
+                        <td>Onomástico</td>
                         <td>Trabajador</td>
                         <td>Nombre máquina</td>
                         <td>Fecha</td>
@@ -335,20 +237,6 @@
                                 <td>".$fila[8]."</td>
                                 <td>".$fila[9]."</td>
                                 <td>".$fila[10]."</td>
-                                <td>".$fila[11]."</td>
-                                <td>".$fila[12]."</td>
-                                <td>".$fila[13]."</td>
-                                <td>".$fila[14]."</td>
-                                <td>".$fila[15]."</td>
-                                <td>".$fila[16]."</td>
-                                <td>".$fila[17]."</td>
-                                <td>".$fila[18]."</td>
-                                <td>".$fila[19]."</td>
-                                <td>".$fila[20]."</td>
-                                <td>".$fila[21]."</td>
-                                <td>".$fila[22]."</td>
-                                <td>".$fila[23]."</td>
-                                <td>".$fila[24]."</td>
                             </tr>";
                 }
                 $tabla.="</tbody></table>";
