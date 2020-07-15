@@ -5,7 +5,7 @@ ob_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php");
-        $hoy =$_SESSION['dia_mes'];
+        $hoy=$_SESSION['dia_mes'];
         $municipio =$_SESSION['municipio'];
         $estado=$_SESSION['estado']; 
         $abrev_estado=$_SESSION['abrevia_estado'];
@@ -18,7 +18,6 @@ ob_start();
         $ent  =$_SESSION['ent']; 
         $sal  =$_SESSION['sal']; 
         $motivo  =$_SESSION['motivo']; 
-        $fecha =$_SESSION['fecha'];
         $posibleHoraSalida=$_SESSION['posibleHoraSalida'];
         $nombre=$nom." ".$a_pat. " ".$a_mat;
         $horario=$ent."-".$sal;
@@ -59,7 +58,7 @@ ob_start();
             
             <div id="p3">
             <p>SE HA CONCEDIDO PERMISO A: <?php echo $nombre?>
-            <p>PARA SALIR EL DÍA <?php echo strtoupper($fecha).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
+            <p>PARA SALIR EL DÍA <?php echo strtoupper($hoy).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
             <p>PARA: <?php echo strtoupper($motivo)?></p>
             <p>CATEGORÍA: <?php echo $des?> </p>
             <p>HORARIO: <?php echo $horario?> </p><br>

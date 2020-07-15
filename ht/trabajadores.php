@@ -15,9 +15,7 @@ session_start();
 ?>
 
 <!doctype html>
-<!--[if gt IE 8]><!-->
 <html class="no-js" lang="es">
-    <!--<![endif]-->
 
     <head>
         <meta meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
@@ -36,25 +34,42 @@ session_start();
         <link rel="stylesheet" href="../assets/css/themify-icons.css" />
         <link rel="stylesheet" href="../assets/css/flag-icon.min.css" />
         <link rel="stylesheet" href="../assets/css/cs-skin-elastic.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
-        />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"/>
         <link rel="stylesheet" href="../assets/scss/style.css" />
         <link href="../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
-
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
-
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script src="../assets/js/diaSexta.js"></script>
+
         <script>
             function inicio()
             {
-                document.getElementById('empresa').style.display="none";//ocultar
-                document.getElementById('dias_sexta').style.display="none";//ocultar
+                ruta='../php/_clickSexta.php';
+                $(document).ready(function()
+                {   
+                    //Guarda el valor del radio de tipo trabajador
+                    var rad= $("input[name='tipo']:checked").val();
+                    //Si el tipo de trabajador es 1.confianza, 2.base, 3.eventual
+                    if(rad==1 || rad==2 || rad==3)
+                    {
+                        document.getElementById('empresa').style.display="none";//ocultar empresa
+                    }
+                    else
+                    {
+                        document.getElementById('empresa').style.display="block";//ver empresa
+                    }
+
+                var valor = document.getElementById('turno').value;
+                var valor2 = document.getElementById('sexta').value;//numero trabajador
+                var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
+                actualiza(valor,valor2,valor3);
+                }); 
             }
+
             function noCopy()
             {
                 var myInput = document.getElementById('MainContent_txtNomEmpl');
@@ -95,25 +110,11 @@ session_start();
                 {
                     document.getElementById('empresa').style.display="none";//ocultar
                 }
-                
-            }
-
-            function verDiasSexta()
-            {
-                var valor = document.getElementById("turno").value;/*Es el valor del value del select del turno*/
-                // alert(valor);
-                //Separamos el value debido a que en el se obtiene el id, h entrada, h salida y total horas
-                var  array = valor . split(" ");
-                // alert(array[3]);
-                //Si la hora de entrada del turno es igual a  6 h o 6 h y media, podrán tener sexta
-                if((array[1]=="06:00:00")||(array[1]=="06:30:00"))
-                {
-                    document.getElementById('dias_sexta').style.display="block";//ver
-                }
-                else
-                {
-                    document.getElementById('dias_sexta').style.display="none";//ocultar   
-                }
+                var valor = document.getElementById('turno').value;
+                var valor2 = document.getElementById('sexta').value;//numero trabajador
+                var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
+                actualiza(valor,valor2,valor3);
+                        
             }
 
             function mayus(e) 
@@ -164,6 +165,7 @@ session_start();
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
+                            
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -185,12 +187,9 @@ session_start();
         <!-- /#left-panel -->
 
         <div id="right-panel" class="right-panel">
-
             <!-- Header-->
             <header id="header" class="header">
-
                 <div class="header-menu">
-
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
@@ -209,7 +208,6 @@ session_start();
                         </div>
                     </div>
                 </div>
-
             </header>
             <!-- /header -->
 
@@ -225,8 +223,8 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <!-- <li><a href="#">Catálogos</a></li> -->
-                                <!-- <li class="active">Tipos de empleados</li> -->
+                                <li><a href="trabajadores.php">Nuevo</a></li>
+                                <li class="active">Catálogo de empleados</li>
                             </ol>
                         </div>
                     </div>
@@ -235,51 +233,58 @@ session_start();
         
             <div class="content mt-3">
                 <div class="animated fadeIn">
-                    <form method="post" action="inserta-trabajadores.php" id="form2"> 
+                    <form method="post" name="nomForm" action="inserta-trabajadores.php" id="form2"> 
                         <div class="row">     
-                            <div class="col-lg-12">                        
+                            <div class="col-lg-12">  
+
                                 <div class="card">
                                     <div class="card-header">
                                         <span> Datos personales</span>
                                     </div>
-                                    <div class="card-body card-block">
 
+                                    <div class="card-body card-block">
                                        <div class="form-group col-lg-3">
                                             <span >Número de empleado</span><input name="num" type="number" id="MainContent_txtNomEmpl" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
                                        </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}"  title="Ingrese solo letras" onkeyup="mayus(this);" required />
+                                            <span >Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}"  title="Ingrese solo letras"  required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtPat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras" onkeyup="mayus(this);" required />
+                                            <span >Apellido paterno</span><input name="a_pat" type="text" id="MainContent_txtPat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras"  required />
                                         </div>
                                         <div class="form-group col-lg-3">
-                                            <span >Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras" onkeyup="mayus(this);" required />
+                                            <span >Apellido materno</span><input name="a_mat" type="text" id="MainContent_txtMat" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}" title="Ingrese solo letras"  required />
                                         </div>
 
-                                        <div class="form-group col-lg-3">
+                                        <div class="form-group col-lg-4">
                                             <span >Fecha de nacimiento</span><input name="cumple" type="date" id="MainContent_txtCum" class="form-control" required="" min="1930-01-01"/>
                                         </div>
-                                        <div class="form-group col-lg-3">
-                                            <span>Fecha de onomástico</span><input name="ono" type="date" id="MainContent_txtOno" class="form-control"  min="1930-01-01"/>
+                                        <div class="form-group col-lg-4">
+                                            <span>Fecha de onomástico (opcional)</span><input name="ono" type="date" id="MainContent_txtOno" class="form-control"  min="1930-01-01"/>
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <span>Día de descanso del trabajador:</span><br>
+                                            <input type="radio" name="cumpleOno" value="cum" id="cumple"> <label for="cumple">Cumpleaños &nbsp</label> <!--&nbsp sirve para dar espacios entre palabras  -->
+                                            <input type="radio" name="cumpleOno" value="ono" id="ono"> <label for="ono">Onomástico</label><br>
                                         </div>
                                         
                                         <div class="form-group  col-lg-5">
                                             <span>Género:</span><br>
                                             <label class="radio-inline">
-                                            <input type="radio" id="h" name="genero" value="M">
-                                            <label for="h">Masculino </label><br>
+                                                <input type="radio" id="h" name="genero" value="M">
+                                                <label for="h">Masculino &nbsp</label>
                                             </label> 
                                             <label class="radio-inline">
-                                            <input type="radio" id="m" name="genero" value="F">
-                                            <label for="m"> Femenino</label><br>
+                                                <input type="radio" id="m" name="genero" value="F" >
+                                                <label for="m"> Femenino</label>
                                             </label> 
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="card">
                                     <div class="card-header">
-                                            <span> Puesto de trabajo</span>
+                                        <span> Puesto de trabajo</span>
                                     </div>
                                     <div class="card-body card-block">
                                        <div class="form-group col-lg-5">
@@ -289,7 +294,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 288: " . mysqli_errno($con) . " : " . mysqli_error($con).",no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
+                                                    die("<br>" . "Error, línea 293: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -301,14 +306,15 @@ session_start();
                                                 }
                                             ?> <!--FIN PHP -->
                                        </div>
-                                        <div class="form-group col-lg-5">
-                                            <span  >Categoría</span>
+
+                                        <div class="form-group col-lg-7">
+                                            <span>Categoría</span>
                                             <?php
                                                 $sql="select * from categoria";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 307: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas.");
+                                                    die("<br>" . "Error, línea 313: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -322,33 +328,33 @@ session_start();
                                             ?> <!--FIN PHP -->
                                         </div>
                                         <div class="form-group col-lg-5">
-                                            <span  >Tipo de empleado</span>
+                                            <span>Tipo de empleado</span>
                                             <?php
                                                 $sql="select * from tipo";
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 327: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo de empleado, verifique con el adminsitrador de sistemas.");
+                                                    die("<br>" . "Error, línea 333: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo de empleado, verifique con el adminsitrador de sistemas.");
                                                 }
                                                 else
                                                 {
                                                     while($fila=mysqli_fetch_array($query))
-                                                    {
-                                                        if($fila[1]=="COMISIONADO FORÁNEO")
+                                                    {   //se valida el id del tipo: 1.Confianza, 2.Base, 3.Eventual, 4.Comisionao foráneo
+                                                        if($fila[0]=="4")
                                                         {
                                                             echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(0)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                         }
                                                         else
-                                                        {   if($fila[1]=="EVENTUAL")
+                                                        {  
+                                                            if($fila[0]=="3")
                                                             {  
-                                                                echo "<br> <input type='radio' name='tipo' id='".$fila[0]."'  value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                echo "<br><input type='radio' name='tipo' id='".$fila[0]."'  value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                             }
                                                             else 
                                                             {  
-                                                                echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                echo "<br><input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                             }
                                                         }
-
                                                     }
                                                     echo  //El id= empresa del div sirve para ocultar estos elementos
                                                     "<div id='empresa' class='form-group col-lg-12'>
@@ -361,31 +367,19 @@ session_start();
                                         </div>
                                         <div class="form-group col-lg-7">
                                             <div class="form-group col-lg-4">
-                                            <span> Días de trabajo</span>
-                                            <br>
-						    				<input type="checkbox" name="dia[]" value="lunes" id="lu"/> <label for="lu">Lunes</label><br>
-						    				<input type="checkbox" name="dia[]" value="martes" id="ma"/> <label for="ma">Martes</label><br>
-						    				<input type="checkbox" name="dia[]" value="miercoles"id="mi"/> <label for="mi">Miércoles</label><br>
-						    				<input type="checkbox" name="dia[]" value="jueves" id="ju"/> <label for="ju">Jueves</label><br>
-						    				<input type="checkbox" name="dia[]" value="viernes"id="vi"/> <label for="vi">Viernes</label><br>
-						    				<input type="checkbox" name="dia[]" value="sabado" id="sa"/> <label for="sa">Sábado</label><br>
-						    				<input type="checkbox" name="dia[]" value="domingo" id="do"/> <label for="do">Domingo</label><br>
-                                            <input type="checkbox" name="dia[]" value="dias_festivos" id="df"/> <label for="df">Días festivos</label>
-                                            <br>
+                                                <span> Días de trabajo</span><br>
+                                                <input type="checkbox" name="dia[]" value="lunes" id="lu"/> <label for="lu">Lunes</label><br>
+                                                <input type="checkbox" name="dia[]" value="martes" id="ma"/> <label for="ma">Martes</label><br>
+                                                <input type="checkbox" name="dia[]" value="miercoles"id="mi"/> <label for="mi">Miércoles</label><br>
+                                                <input type="checkbox" name="dia[]" value="jueves" id="ju"/> <label for="ju">Jueves</label><br>
+                                                <input type="checkbox" name="dia[]" value="viernes"id="vi"/> <label for="vi">Viernes</label><br>
+                                                <input type="checkbox" name="dia[]" value="sabado" id="sa"/> <label for="sa">Sábado</label><br>
+                                                <input type="checkbox" name="dia[]" value="domingo" id="do"/> <label for="do">Domingo</label><br>
+                                                <input type="checkbox" name="dia[]" value="dias_festivos" id="df"/> <label for="df">Días festivos</label> <br>
                                             </div>
                                             <div id='dias_sexta' class='form-group col-lg-3'>
-                                                <span id='MainContent_lbNombre'> Días de sexta</span>
-                                                <br>
-                                                <input type='checkbox' name='diaS[]' value='lunes'id="lun"/> <label for="lun">Lunes</label><br>
-                                                <input type='checkbox' name='diaS[]' value='martes' id="mar"/> <label for="mar">Martes</label><br>
-                                                <input type='checkbox' name='diaS[]' value='miercoles'id="mie"/> <label for="mie">Miércoles</label><br>
-                                                <input type='checkbox' name='diaS[]' value='jueves' id="jue"/> <label for="jue">Jueves</label><br>
-                                                <input type='checkbox' name='diaS[]' value='viernes'id="vie"/> <label for="vie">Viernes</label><br>
-                                                <input type='checkbox' name='diaS[]' value='sabado' id="sab"/> <label for="sab">Sábado</label><br>
-                                                <input type='checkbox' name='diaS[]' value='domingo' id="dom"/> <label for="dom">Domingo</label><br>
-                                                <input type='checkbox' name='diaS[]' value='dias_festivos' id="dfe"/> <label for="dfe">Días festivos</label>
-                                                <br>
                                             </div>
+                                            <input type="hidden" id='sexta' value="<?php echo $numero; ?>"><!--número de trabajador-->
                                         </div>
                                                     
                                         <div class="form-group col-lg-5">
@@ -395,11 +389,11 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                  die("<br>" . "Error, línea 394: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas.");
+                                                  die("<br>" . "Error, línea 388: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
-                                                    echo "<select name='turno' id='turno' class='form-control' onchange='verDiasSexta()'>";
+                                                    echo "<select name='turno' id='turno' class='form-control'>";
                                                     while($fila=mysqli_fetch_array($query)){ 
                                                         echo "<option value='".$fila[0]." " .$fila[3]."'>". $fila[0] . " " .$fila[1]. " - " .$fila[2]."</option>";
                                                     }
@@ -455,7 +449,7 @@ session_start();
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
-                                                        die("<br>" . "Error, línea 458: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
+                                                        die("<br>" . "Error, línea 447: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
                                                     }
                                                     else
                                                     {

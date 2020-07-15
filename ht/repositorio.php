@@ -198,37 +198,35 @@ session_start();
 
                     <div class="row">
                         <div class="col-lg-12">
-
-
                         </div>
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span id="MainContent_lbtitulo">Seleccione el documento que desee: </span>
+                            <form method="post" action="../pdf/crearPdf.php" id="form2">
+                                <div class="card">
+                                    <div class="card-header">
+                                       <b><span id="MainContent_lbtitulo">Seleccione el documento que desee: </span></b>
+                                    </div>
+                                    <div class="card-body card-block"> 
+                                        <div>                               
+                                            <label for="jus-omi"><input type="radio" id="jus-omi" name="formato" class="form-input" value="1" onclick='oculta(1)'/> Justificación de omisión de entrada &nbsp</label>
+                                            <label for="jus-omi-sal"><input type="radio" id="jus-omi-sal" name="formato" class="form-input" value="2" onclick='oculta(1)'/> Justificación de omisión de salida &nbsp</label>
+                                            <label for="jus-ret"><input type="radio" id="jus-ret" name="formato" class="form-input" value="3" onclick='oculta(1)' /> Justificación de retardo &nbsp</label>
+                                            <label for="ps"><input type="radio" id="ps" name="formato" class="form-input" value="4" onclick='oculta(0)' /> Pase de salida</label>
+                                        </div>   
+                                        <div class="col-mg-10">
+                                            <div id="causa">
+                                               <b><span>Deseo solicitar un pase de salida para: </span></b><br><input type='text' class='form-control' name='motivo'>
+                                                <!-- <span>Fecha en la que deseo usar mi pase de salida: </span> <br> <input type='date' class='form-control' name='fecha'><br> -->
+                                            </div>
+                                            <div id="fecha">
+                                               <b><span>Fecha que deseo justificar: </span></b><br><input type='date' class='form-control' name='f-justifica'>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body card-block">
-                                    <form method="post" action="../pdf/crearPdf.php" id="form2">
-                                    <!-- BUSCAR CUANTAS JUSTIFICACIONES DE OMISION TENGO -->
-                                    <!-- BUSCAR CUANTAS JUSTIFICACIONES DE RETARDO TENGO -->
-                                    <!-- BUSCAR CUANTOS PASES DE SALIDA TENGO -->
-                                
-                                        <label for="jus-omi"><input type="radio" id="jus-omi" name="formato" class="form-input" value="1" onclick='oculta(1)'/> Justificación de omisión de entrada</label><br>
-                                        <label for="jus-omi-sal"><input type="radio" id="jus-omi-sal" name="formato" class="form-input" value="2" onclick='oculta(1)'/> Justificación de omisión de salida</label><br>
-                                        <label for="jus-ret"><input type="radio" id="jus-ret" name="formato" class="form-input" value="3" onclick='oculta(1)' /> Justificación de retardo</label><br>
-                                        <label for="ps"><input type="radio" id="ps" name="formato" class="form-input" value="4" onclick='oculta(0)' /> Pase de salida</label><br>
-                                        <div id="causa">
-                                            <span>Deseo solicitar un pase de salida para: </span> <br> <input type='text' class='form-control' name='motivo'>
-                                            <span>Fecha en la que deseo usar mi pase de salida: </span> <br> <input type='date' class='form-control' name='fecha'><br>
-                                        </div>
-                                        <div id="fecha">
-                                            <span>Fecha que deseo justificar: </span> <br> <input type='date' class='form-control' name='f-justifica'><br>
-                                        </div>
-                                        <div id="descargar">
-                                            <input class="btn btn-primary black-background white" name="descargar" type="submit" value="Descargar" />
-                                        </div>
-                                    </form>
+                                <div id="descargar">
+                                    <input class="btn btn-primary black-background white" name="descargar" type="submit" value="Descargar" />
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div><!-- .animated --> 
                 </div><!-- .content -->

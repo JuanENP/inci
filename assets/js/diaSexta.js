@@ -1,6 +1,6 @@
 function actualiza(consulta,consulta2,consulta3) {
     $.ajax({
-            url: '_clickSexta.php',
+            url: ruta,
             type: 'POST',
             dataType: 'html',
             data: { consulta: consulta,consulta2: consulta2,consulta3: consulta3 },
@@ -16,10 +16,10 @@ function actualiza(consulta,consulta2,consulta3) {
 $(document).ready(function()
 {
     $("#turno").click (function() {
-        // var valor = $(this).val();
+
         var valor = document.getElementById('turno').value;
-        var valor2 = document.getElementById('sexta').value;
-        var valor3= document.mio.tipo.value;
+        var valor2 = document.getElementById('sexta').value;//numero trabajador
+        var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
         actualiza(valor,valor2,valor3);
     })
 });

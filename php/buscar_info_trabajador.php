@@ -35,7 +35,7 @@
             $resul=mysqli_fetch_array($query);
             //retornar este array
             return
-            [ $resul[1],$resul[2],$resul[0]];
+            [ $resul[1],$resul[2],$resul[0],$resul[3]];//fecha cumple, fecha ono, id, validez
         }
     
     }
@@ -152,6 +152,7 @@
             return false;
         }
     }
+
     function compararAnio($anioAlta)
     {  
         $anioActual=date('Y');
@@ -171,10 +172,9 @@
     {
         global $con;
         $contrasenaUsuario='9999';
-        $sql="create user '$nombreUsuario'@'localhost' identified by '$contrasenaUsuario'"; 
-        $sql2="grant all privileges on checada6.* to '$nombreUsuario'@localhost"; 
-        $sql3="grant all privileges on mysql.user to '$nombreUsuario'@localhost";
-        $sqlFlush="flush privileges";//despues del 2 y del 3
+        $sql="CREATE USER '$nombreUsuario'@'localhost' IDENTIFIED BY '$contrasenaUsuario';"; 
+        $sql2="GRANT ALL PRIVILEGES ON *.* TO '$nombreUsuario'@'localhost' WITH GRANT OPTION;"; 
+        //$sqlFlush="FLUSH PRIVILEGES;";//despues del 2 
 
         mysqli_autocommit($con, FALSE);//quitar el autocommit hasta que todo haya resultado correcto
         if(!(mysqli_query($con,$sql)))
@@ -186,7 +186,7 @@
             $err2="$er2";
             //Hacer UN EXPLODE DE ERR2
             $divide=explode("'",$err2);
-            $tamDivide=count($divide);//saber el tama�o del array
+            $tamDivide=count($divide);//saber el tamaño del array
             if($tamDivide>0)//si el array posee datos
             {
                 $err2="";
@@ -196,54 +196,46 @@
                 }
             }
 
-            $error="Error in create. $err1 : $err2. Este error suele surgir cuando el usuario que intenta registrar ya existe, verifique. En caso de que no sea ese el problema contacte al administrador. L�neas de error: 16, 41 y 42.";
-            echo "<script> imprime('$error'); </script>";
+            $error="Error in create. $err1 : $err2. Este error suele surgir cuando el usuario que intenta registrar ya existe, verifique. En caso de que no sea ese el problema contacte al administrador. Línea de error:680.";
+            echo "<script> error('$error'); </script>";
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
             return false;
         }
         else
         {
-            if(!(mysqli_query($con,$sql2)))
+           /* if(!(mysqli_query($con,$sqlFlush)))
             {
-                echo "error in grant 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                $error="error in flush 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                echo "<script> error('$error'); </script>";
                 mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE); 
+                mysqli_autocommit($con, TRUE);
                 return false;
             }
             else
+            */
             {
-                if(!(mysqli_query($con,$sqlFlush)))
+                if(!(mysqli_query($con,$sql2)))
                 {
-                    echo "error in flush 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                    $error="error in grant 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                    echo "<script> error('$error'); </script>";
                     mysqli_rollback($con);
-                    mysqli_autocommit($con, TRUE);
-                    return false; 
+                    mysqli_autocommit($con, TRUE); 
                 }
                 else
                 {
-                    if(!(mysqli_query($con,$sql3)))
+                   /* if(!(mysqli_query($con,$sqlFlush)))
                     {
-                        echo "error in grant 2".mysqli_errno($con) . ": " . mysqli_error($con);
+                        $error="error in flush 2 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                        echo "<script> error('$error'); </script>";
                         mysqli_rollback($con);
-                        mysqli_autocommit($con, TRUE); 
-                        return false;
+                        mysqli_autocommit($con, TRUE);
                     }
-                    else
+                    else*/
                     {
-                        if(!(mysqli_query($con,$sqlFlush)))
-                        {
-                            echo "error in flush 2 ".mysqli_errno($con) . ": " . mysqli_error($con);
-                            mysqli_rollback($con);
-                            mysqli_autocommit($con, TRUE); 
-                            return false;
-                        }
-                        else
-                        {
-                            mysqli_commit($con);
-                            mysqli_autocommit($con, TRUE);
-                            return true;
-                        }
+                        //mysqli_commit($con);
+                        //mysqli_autocommit($con, TRUE);
+                        return true;
                     }
                 }
             }
@@ -277,4 +269,33 @@
             }
         }
     }
+
+    function consultaMail($myid)
+    {
+        global $con;
+        //Consultar todo de la tabla cumpleaños de tal trabajador
+        $sql="select idmail from mail where trabajador_trabajador = '".$myid."'";
+        $query= mysqli_query($con, $sql);
+        if(!$query)
+        {
+            die("<br>" . "Error, línea 31: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
+        }
+        else
+        { 
+            $filas=mysqli_num_rows($query);
+            if($filas==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return $resul[0];
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+    
+    }
+
 ?>

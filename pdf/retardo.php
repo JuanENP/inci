@@ -51,11 +51,12 @@ ob_start();
         </div>
 
         <div id="p2">
-        <b><p>C. Carlos J.Gutierrez</p>
-        <p>Coordinador de Recursos Humanos</p>
-        <p>Presente</p></b>
+        <p><b>C. Carlos J.Gutierrez</b></p>
+        <p><b>Coordinador de Recursos Humanos</b></p>
+        <p><b>Presente</b></p></b>
         <br><br> <br> 
         </div>
+        
         <div id="p2-2">
         <p>Me permito solicitar su valiosa intervención para que se le justifique el retardo del día <?php echo $fecha?>, del C. <b><?php echo $nombre?></b>, con No.
         de Empleado <b><?php echo $num?></b>, Categoría: <b><?php echo $des?></b>, para que no se afecte su salario y estímulos correspondientes. </p>
@@ -66,12 +67,12 @@ ob_start();
         
         <div id="p3">
         
-        <br> <br> <br>
+        <br><br><br>
         <h3>Atentamente</h3>
         <br> <br>
         <b>Ing. Hipolito Melchor Gutierrez</b><br>
         <b>Coordinador de Mantenimiento</b>
-        <br> <br> <br><br> <br>
+        <br><br><br>
         </div>
         
         <div id="p4">

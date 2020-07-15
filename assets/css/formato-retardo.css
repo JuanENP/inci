@@ -5,7 +5,7 @@ html
 body
 {
     font-family: Arial;
-    font-size:13px;
+    font-size:14px;
     margin: 100mm 8mm 2mm 100mm;
 }
 
@@ -72,5 +72,6 @@ img.logo_inferior
 {
     width: 700px; height: 100px;
     /* margin-left:75px; */
-   padding-top: 20px;
+   /* padding-top: 20px; */
+   padding-left: 70px;
 }

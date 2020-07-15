@@ -119,6 +119,15 @@
                         {  
                             $sql2="UPDATE vienen_hoy SET observar_e = 0 WHERE (idvienen_hoy = $idvienen);";
                             $query2= mysqli_query($con, $sql2);
+                            if(!$query2)
+                            {
+                                $er1=mysqli_errno($con);
+                                $er2=mysqli_error($con);
+                                $hacer='actualizar';
+                                $tabla='vienen_hoy';
+                                $línea='122';
+                                error($er1,$er2,$hacer,$tabla,$línea);
+                            }  
 
                             //Concatener la fecha de hoy con su hora de entrada 
                             $hora_entrada=$f_hoy . ' ' . $entrada;
@@ -150,13 +159,13 @@
         require("../Acceso/global.php"); 
         $mt=$mt . " minutos " . $ma_d;
         $query=mysqli_query($con,"insert into incidencia values('', '$mt', '$inc', $id_asis);");
-        if(!$query2)
+        if(!$query)
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
             $hacer='insertar';
             $tabla='incidencia';
-            $línea='152';
+            $línea='161';
             error($er1,$er2,$hacer,$tabla,$línea);
         }   
     }
@@ -202,20 +211,8 @@
                     else
                     {
                         if(minutosTranscurridos($fechaO, $fechaLL) >=60)
-                        {
-                            //'18', 'OMISIÓN DE ENTRADA EN EL REGISTRO DE ASISTENCIA A LA JORNADA LABORAL'
-                            // '20', 'OMISIÓN DE ENTRADA Y/O SALIDA AL TURNO OPCIONAL O PERCEPCIÓN ADICIONAL EN EL REGISTRO DE ASISTENCIA.'
-                            /*
-                            //Si el empleado tiene  turno opcional o percepcion adicional
-                            {
-                                //inserta($mt,"tarde",'20',$id_asis);
-                            } 
-                            else
-                            {
-                                //inserta($mt,"",'18',$id_asis);
-                            } 
-                            */
-                            inserta($mt,"tarde",'18',$id_asis);
+                        { //CLAVE 24--> Registro extemporáneo de tolerancia a la entrada de la jornada ordinaria.
+                            inserta($mt,"tarde",'24',$id_asis);
                         }
                     }
                 }
