@@ -832,16 +832,14 @@ date_default_timezone_set('America/Mexico_City');
                                             <div class="col-md-12 label ">
                                                 <div class="radios">
                                                 <label for="">REPORTE DE VACACIONES</label><br><br>
-                                                <label for="">Seleccione cómo desea que busquemos:</label>
+                                                <span>Seleccione cómo desea que busquemos:</span>
                                                 <p></p>
-                                                <label for="rango"> Por rango de fechas
-                                                <input type="radio" name="opcion" value="rango" id="rango" onclick="oculta(1)"></label>
+                                                <label for="rango"><input type="radio" name="opcion" value="rango" id="rango" onclick="oculta(1)"> Por rango de fechas
+                                               </label>
                                                 <p></p>
-                                                <label for="todos"> Todos los empleados en una quincena
-                                                <input type="radio" name="opcion" value="todos" id="todos" onclick="oculta(2)"></label>
+                                                <label for="todos"><input type="radio" name="opcion" value="todos" id="todos" onclick="oculta(2)"> Por quincena</label>
                                                 <p></p>
-                                                <label for="numero"> Por un número de empleado en específico 
-                                                <input type="radio" name="opcion" value="numero" id="numero" onclick="oculta(3)"></label>
+                                                <label for="numero"><input type="radio" name="opcion" value="numero" id="numero" onclick="oculta(3)"> Por número de empleado</label>
                                                 <p></p>
                                                 </div>
                                                 <div class="form-1-2">
@@ -889,7 +887,7 @@ date_default_timezone_set('America/Mexico_City');
                                                 
                                                 <div class="form-1-2" >
                                                     <div id=numeros>
-                                                        <label for="">Ingrese un numéro de trabajador: </label>
+                                                        <label for="">Ingrese un número de empleado: </label>
                                                         <input type="text" class="form-control" name="num">
                                                     
                                                     </div>
@@ -996,7 +994,7 @@ date_default_timezone_set('America/Mexico_City');
 
                                                 <div class="form-1-2" >
                                                     <div id=numero-vinieron>
-                                                        <label for="">Ingrese un numéro de trabajador: </label>
+                                                        <label for="">Ingrese un numéro de empleado: </label>
                                                         <input type="text" class="form-control" name="num-v">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="ini-v">
@@ -1067,7 +1065,7 @@ date_default_timezone_set('America/Mexico_City');
 
                                                 <div class="form-1-2" >
                                                     <div id=numero-faltaron>
-                                                        <label for="">Ingrese un numéro de trabajador: </label>
+                                                        <label for="">Ingrese un numéro de empleado: </label>
                                                         <input type="text" class="form-control" name="num-f">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="ini-f">
@@ -1155,7 +1153,7 @@ date_default_timezone_set('America/Mexico_City');
                                                 </div> 
                                                 <div class="form-1-2" >
                                                     <div id=numero-guardias>
-                                                        <label for="">Ingrese un numéro de trabajador: </label>
+                                                        <label for="">Ingrese un numéro de empleado: </label>
                                                         <input type="text" class="form-control" name="num-g">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="in-g">
@@ -1253,18 +1251,11 @@ date_default_timezone_set('America/Mexico_City');
                                                     <p>Seleccione una opción:</p>
                                                     <p></p>
                                                     <label for="hoy"> 
-                                                    <input type="radio" name="opcion-p" value="hoy" id="hoy" >
-                                                    Pases de salida de hoy </label>
+                                                    <input type="radio" name="opcion-p" value="hoy" id="hoy"> Pases de salida de hoy </label>
                                                     <p></p>
                                                     <label for="vencido">
-                                                    <input type="radio" name="opcion-p" value="vencido" id="vencido" >
-                                                    Pases de salida vencidos</label>
+                                                    <input type="radio" name="opcion-p" value="vencido" id="vencido"> Pases de salida vencidos</label>
                                                     <p></p>
-                                                    <label for="antes"> 
-                                                    <input type="radio" name="opcion-p" value="antes" id="antes" >
-                                                    Pases de salida próximos </label>
-                                                    <p></p>
-
                                                 </div>
                                             </div>  
                                             <!--Sirve para enviar que reporte queremos-->

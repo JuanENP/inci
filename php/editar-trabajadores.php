@@ -42,7 +42,7 @@ session_start();
             $empresa = $especial[8];
             $genero=consultaGenero($id);   
         }
-        else //SINO NO ES TRABAJADOR COMISIONADO
+        else
         {
             $id2=consultaTrabajador($id);
             $id3=consultaCumple($id);
@@ -128,7 +128,7 @@ session_start();
 
                 var valor = document.getElementById('turno').value;
                 var valor2 = document.getElementById('sexta').value;
-                var valor3= document.mio.tipo.value;
+                 var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
                 actualiza(valor,valor2,valor3);
             }
 
@@ -150,6 +150,7 @@ session_start();
 
             function inicio()
             {
+                ruta='_clickSexta.php';
                 $(document).ready(function()
                 {   
                     //Guarda el valor del radio de tipo trabajador
@@ -217,6 +218,7 @@ session_start();
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.html">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
+                           
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -283,7 +285,7 @@ session_start();
 
             <div class="content mt-3">
                 <div class="animated fadeIn">
-                    <form id="f1" name="mio" method="POST" action="../php/update/trabajadores.php">
+                    <form id="f1" name="nomForm" method="POST" action="../php/update/trabajadores.php">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card">
@@ -321,20 +323,46 @@ session_start();
                                             <input name="a_mat" type="text"   class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð ]{2,48}" title="Ingrese solo letras" required value="<?php echo $id2[3]; ?>" onkeyup="mayus(this);" />
                                         </div>
                                         
-                                        <div class="form-group col-lg-3">
+                                        <div class="form-group col-lg-4">
                                             <span>
                                                 Fecha de nacimiento
                                             </span>
                                             <input name="cumple" type="date" value="<?php echo $id3[0]?>"   class="form-control" required="" min="1930-01-01"/>
                                         </div>
 
-                                        <div class="form-group col-lg-3">
+                                        <div class="form-group col-lg-4">
                                             <span>
                                                 Fecha de onomástico
                                             </span>
                                             <input name="ono" type="date" value="<?php echo $id3[1]?>"   class="form-control"  min="1930-01-01"/>
                                         </div>
-                                        <?php 
+                                        <?php
+                                            //validez de cumpleOno
+                                            if($id3[3]==0)
+                                            {
+                                                echo "<div class='form-group col-lg-4'>
+                                                        <span>Día de descanso del trabajador:</span><br>
+                                                        <input type='radio' name='cumpleOno' value='cum' id='cumple'checked> 
+                                                        <label for='cumple'>Cumpleaños &nbsp</label>
+                                                        <input type='radio' name='cumpleOno' value='ono' id='ono'> 
+                                                        <label for='ono'>Onomástico</label><br>
+                                                </div>";
+                                            }
+                                            else
+                                            {
+                                                if($id3[3]==1)
+                                                {
+                                                    echo "<div class='form-group col-lg-4'>
+                                                            <span>Día de descanso del trabajador:</span><br>
+                                                            <input type='radio' name='cumpleOno' value='cum' id='cumple'> 
+                                                            <label for='cumple'>Cumpleaños &nbsp</label>
+                                                            <input type='radio' name='cumpleOno' value='ono' id='ono' checked> 
+                                                            <label for='ono'>Onomástico</label><br>
+                                                        </label> 
+                                                    </div>";
+                                                }
+                                            }
+
                                             if($genero[0]=='M')
                                             {
                                                 echo"
@@ -388,7 +416,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 391: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
+                                                    die("<br>" . "Error, línea 415: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla departamento, verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {   
@@ -418,7 +446,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 417: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas. ");
+                                                    die("<br>" . "Error, línea 445: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla categoría, verifique con el administrador de sistemas. ");
                                                 }
                                                 else
                                                 {
@@ -444,67 +472,80 @@ session_start();
                                                 Tipo de empleado
                                             </span>
                                             <?php
-                                                $sql="select * from tipo";
-                                                $query= mysqli_query($con, $sql);
-                                                if(!$query)
+                                                if($id2[6]==4)
                                                 {
-                                                    die("<br>" . "Error, línea 447: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo, verifique con el administrador de sistemas.");
+                                                    echo "<br> <input type='radio' name='tipo' id='4' value='4' onclick='oculta(0)'checked></input><label for='4'>COMISIONADO FORÁNEO</label>";
                                                 }
                                                 else
                                                 {
-                                                    while($fila=mysqli_fetch_array($query))
+                                                    $sql="select * from tipo";
+                                                    $query= mysqli_query($con, $sql);
+                                                    if(!$query)
                                                     {
-                                                        if($id2[6]==$fila[0])
-                                                        {  
-                                                            if($id2[6]==1)
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' id='radio_confianza' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                            }
-                                                            if($id2[6]==2)
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' id='radio_base' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                            }
-                                                            if($id2[6]==3)
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' id='radio_eventual' value='".$fila[0]."' onclick='oculta(1)' checked>". $fila[1] . " ". "</input>";
-                                                            }
-                                                            if($id2[6]==4)
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' id='radio_foraneo' value='".$fila[0]."' onclick='oculta(0)'checked >". $fila[1] . " ". "</input>";
-                                                            }
-                                                        }
-                                                        else
-                                                        {  
-                                                            if($fila[0]==4)
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' id='radio_foraneo'  value='".$fila[0]."' onclick='oculta(0)'>". $fila[1] . " ". "</input>";
-
-                                                            }
-                                                            else
-                                                            {
-                                                                echo "<br> <input type='radio' name='tipo' value='".$fila[0]."' onclick='oculta(1)'>". $fila[1] . " ". "</input>";
-                                                            }
-                                                        }
-                                                    }//fin del while
-                                                    if(!empty($empresa))
-                                                    {
-                                                        echo  //El id= empresa del div sirve para ocultar estos elementos
-                                                        "<div id='empresa' class='form-group col-lg-12'>
-                                                        <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' value='$empresa' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
-                                                        <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini'value='$fecha_inicio'  class='form-control' name='f_ini' min='2020-01-01'>
-                                                        <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin' value='$fecha_fin'  class='form-control' name='f_fin'min='2020-01-01'>
-                                                        </div>";
+                                                        die("<br>" . "Error, línea 485: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tipo, verifique con el administrador de sistemas.");
                                                     }
                                                     else
                                                     {
-                                                        echo  //El id= empresa del div sirve para ocultar estos elementos
-                                                        "<div id='empresa' class='form-group col-lg-12'>
-                                                        <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
-                                                        <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
-                                                        <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
-                                                        </div>";
-                                                    }
+                                                        while($fila=mysqli_fetch_array($query))
+                                                        {                                                        
+                                                            if($id2[6]==$fila[0])
+                                                            {  
+                                                                
+                                                                if($id2[6]==1)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'>".$fila[1]."</label>";
+                                                                }
+                                                                if($id2[6]==2)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'>".$fila[1]."</label>";
+                                                                }
+                                                                if($id2[6]==3)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                }
+                                                            }
+                                                            else
+                                                            {  
+                                                                if($fila[0]==1)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'>".$fila[1]."</label>";
+                                                                }
+                                                                if($fila[0]==2)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'>".$fila[1]."</label>";
+                                                                }
+                                                                if($fila[0]==3)
+                                                                {
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                }
+                                                            }
+                                                            
+                                                        }
+                                                        
+                                                    }//fin del while
+                                                    
                                                 }
+                                                if(!empty($empresa))
+                                                {
+                                                    echo  //El id= empresa del div sirve para ocultar estos elementos
+                                                    "<div id='empresa' class='form-group col-lg-12'>
+                                                    <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' value='$empresa' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
+                                                    <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini'value='$fecha_inicio'  class='form-control' name='f_ini' min='2020-01-01'>
+                                                    <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin' value='$fecha_fin'  class='form-control' name='f_fin'min='2020-01-01'>
+                                                    </div>";
+                                                }
+                                                else
+                                                {
+                                                    echo  //El id= empresa del div sirve para ocultar estos elementos
+                                                    "<div id='empresa' class='form-group col-lg-12'>
+                                                    <br> <span>Empresa de origen: </span> <br> <input type='text' class='form-control' name='emp' pattern='[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUÝZZÑßÇÆC?ð& ,''.0-9]{2,48}' title='Ingresar letras, números, solo caracteres: &, '', . ' >
+                                                    <br> <span>Fecha de inicio de la comisión: </span> <br> <input type='date' id='f_ini' class='form-control' name='f_ini' min='2020-01-01'>
+                                                    <br> <span>Fecha de fin de la comisión: </span> <br> <input type='date' id='f_fin'  class='form-control' name='f_fin'min='2020-01-01'>
+                                                    </div>";
+                                                }
+                                                
+
+                                            
                                             ?> <!--FIN PHP -->
                                         </div>
 
@@ -543,7 +584,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 542: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas. ");
+                                                    die("<br>" . "Error, línea 583: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla turno, verifique con el administrador de sistemas. ");
                                                 }
                                                 else
                                                 {
@@ -612,7 +653,7 @@ session_start();
                                                 $query= mysqli_query($con, $sql);
                                                 if(!$query)
                                                 {
-                                                    die("<br>" . "Error, línea 610: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
+                                                    die("<br>" . "Error, línea 651: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
                                                 }
                                                 else
                                                 {
@@ -702,7 +743,7 @@ session_start();
                         {
                             var valor = document.getElementById('turno').value;
                             var valor2 = document.getElementById('sexta').value;
-                            var valor3= document.mio.tipo.value;
+                            var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
                             actualiza(valor,valor2,valor3);
                         }
                     });
