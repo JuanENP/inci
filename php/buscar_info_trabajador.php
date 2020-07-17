@@ -7,7 +7,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-            die("<br>" . "Error línea 11 al consultar trabajador: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            die("<br>" . "Error línea 6 al consultar trabajador: " . mysqli_errno($con) . " : " . mysqli_error($con));
         }
         else
         { 
@@ -28,7 +28,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-            die("<br>" . "Error, línea 31: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
+            die("<br>" . "Error, línea 27: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
         }
         else
         { 
@@ -104,8 +104,7 @@
         // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
         $sql="SELECT descripcion  FROM trabajador inner join tipo on idtipo=tipo_tipo and tipo_tipo=$numTipo;";
         $query= mysqli_query($con, $sql);
-        $filas=mysqli_num_rows($query);
-        if($filas>0)
+        if($query)
         {
             $fila=mysqli_fetch_array($query);
             return $fila[0];
@@ -113,6 +112,23 @@
         else
         {
             die("<br>" . "Error, línea 105: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
+        }
+    }
+
+    function describeTipoEmpleado($numTipo)
+    {
+        global $con;
+        // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
+        $sql="select descripcion from tipo where idtipo=$numTipo;";
+        $query= mysqli_query($con, $sql);
+        if($query)
+        {
+            $fila=mysqli_fetch_array($query);
+            return $fila[0];
+        }
+        else
+        {
+            die("<br>" . "Error, línea 122: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
         }
     }
 
@@ -124,7 +140,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-             die("<br>" . "Error, línea 123: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en tabla especial, verifique con el administrador de sistemas");
+             die("<br>" . "Error, línea 139: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en tabla especial, verifique con el administrador de sistemas");
         }
         else
         { 
@@ -200,7 +216,6 @@
             echo "<script> error('$error'); </script>";
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
-            return false;
         }
         else
         {
@@ -246,27 +261,20 @@
     {
         global $con;
         //Consultar todo de la tabla acceso
-        $sql="SELECT *  FROM sexta WHERE trabajador_trabajador='".$myid."'";
+        $sql="SELECT * FROM sexta WHERE trabajador_trabajador='".$myid."'";
         $query= mysqli_query($con, $sql);
-        if(!$query)
+        $fila=mysqli_num_rows($query);
+        if($fila==0)
         {
-            //die("<br>" . "Error, línea 261: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en tabla sexta, verifique con el administrador de sistemas");
             return false;
         }
         else
         { 
-            $fila=mysqli_num_rows($query);
-            if($fila==1)
-            {
-                $resul=mysqli_fetch_array($query);
-                //retornar este array
-                return
-                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9],$resul[10],$resul[11],$resul[12]];    
-            }
-            else
-            {
-                return false;
-            }
+            $resul=mysqli_fetch_array($query);
+            //retornar este array
+            return
+            [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9],$resul[10],$resul[11]];    
+
         }
     }
 
@@ -278,7 +286,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-            die("<br>" . "Error, línea 31: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
+            die("<br>" . "Error, línea 283: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
         }
         else
         { 

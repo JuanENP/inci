@@ -118,10 +118,9 @@
                             
                             //Concatener la fecha de hoy con su hora de salida 
                             $hora_salida=$f_hoy . ' ' . $salida;
-                            //echo$hora_salida," ", $salida_asistencia," ", $idasistencia," ",$numero;
+                        
                             //Calcular si la persona tiene una incidencia en la salida
                             minA_minD($hora_salida, $salida_asistencia, $idasistencia,$numero);
-                            
                         }//fin if numero de empleados iguales
                     }//fin for
                 } //fin while
@@ -141,7 +140,7 @@
     }
     
         
-    /*Inserta datos en la tabla incidencia*/ 
+    /*Inserta datos en la tabla incidencia y la bitacora incidencias*/ 
     function inserta($mt, $ma_d, $inc,$id_asis)
     { 
         global $nombre;

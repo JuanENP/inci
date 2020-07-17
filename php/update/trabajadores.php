@@ -79,6 +79,10 @@ session_start();
 
     $anterior_num=$_SESSION['anterior_num'];//anterior numero de empleado
     $numero=$_POST['num'];
+    $nuevoNumeroEmpleado='';
+    $sextaRegistrada='no'; //Sirve para validar que el trabajador tenga o no tenga una sexta registrada en la bd
+    $existeSexta=0;//Verificar que el usuario haya seleccionado un turno con sexta
+
     //Validar si el número de empleado sigue siendo el mismo o se si se actualizará
     if($numero !== $anterior_num)
     {   
@@ -98,16 +102,15 @@ session_start();
             $numero=$numero;
         }  
     }
-    
+
     $nombre=$_POST['nom'];
     $a_pat=$_POST['a_pat'];
     $a_mat=$_POST['a_mat'];
     $cat=$_POST['cat'];
     $depto=$_POST['depto'];
     $tipo=$_POST['tipo'];
-    $existeSexta=0;
-    $nuevoNumeroEmpleado='';//servirá para saber si el numero de trabajador se va a actualizar y por tal motivo tambien se deberá actualizar la cuenta el trabajdor
-
+    $t_dias=-1; //Servirá para guardar el total de días en acceso si el empleado no tiene sexta
+    
     $todoturno=$_POST['turno'];
     $separa=explode(' ',$todoturno);
     $turno=$separa[0];
@@ -265,50 +268,60 @@ session_start();
         }
     }//fin if-si es comisionado foráneo
 
-    //Seleccionar los días de sexta en caso de que el trabajador tenga sexta
-    if (!(empty($_POST['diaS'])))
-    {  
-        $diasSexta=$_POST['diaS'];
-        $existeSexta=1;
-        $semana2 = array(0,0,0,0,0,0,0,0);
-        $num2=count($diasSexta);
-        for($n=0;$n<$num2;$n++)
-        {
-            if($diasSexta[$n]=="lunes")
-            {  
-                $semana2[0]=1;
-            }
-            if($diasSexta[$n]=="martes")
-            {  
-                $semana2[1]=1;
-            }
-            if($diasSexta[$n]=="miercoles")
-            {  
-                $semana2[2]=1;
-            }
-            if($diasSexta[$n]=="jueves")
-            {  
-                $semana2[3]=1;
-            }
-            if($diasSexta[$n]=="viernes")
-            {  
-                $semana2[4]=1;
-            }
-            if($diasSexta[$n]=="sabado")
-            {  
-                $semana2[5]=1;
-            }
-            if($diasSexta[$n]=="domingo")
-            {  
-                $semana2[6]=1;
-            }
-            if($diasSexta[$n]=="dias_festivos")
-            {  
-                $semana2[7]=1;
-            }
-        }
-    }
+    //-------------------Datos necesarios para guardar en las bitácoras-----------------------//
+    $fila=consultaTrabajador($anterior_num);
+    $nombre_anterior=$fila[1];
+    $a_paterno_anterior=$fila[2];
+    $a_materno_anterior=$fila[3];
+    $depto_anterior=$fila[4];
+    $categoria_anterior=$fila[5];
+    $tipo_anterior=$fila[6];
+    $genero_anterior=$fila[7];
+    
+    $fila=consultaCumple($anterior_num);
+    $cumple_anterior=$fila[0];
+    $ono_anterior=$fila[1];
+    $idcumple_ono=$fila[2];
+    $validezCumpleOno_anterior=$fila[3];
 
+    $fila=consultaAcceso($anterior_num);
+    $lunes_anterior=$fila[0];
+    $martes_anterior=$fila[1];
+    $miercoles_anterior=$fila[2];
+    $jueves_anterior=$fila[3];
+    $viernes_anterior=$fila[4];
+    $sabado_anterior=$fila[5];
+    $domingo_anterior=$fila[6];
+    $dias_festivos_anterior=$fila[7];
+    $turno_anterior=$fila[8];
+    
+    $fila=consultaTServicio($anterior_num);
+    $idtiempo_servicio=$fila[1];
+    $fecha_alta_anterior=$fila[0];
+
+    $fila=describeTipoEmpleado($tipo_anterior);
+    $descripcion_tipo_anterior=$fila;
+
+    $fila=describeTipoEmpleado($tipo);
+    $descripcion_tipo_nueva=$fila;
+
+    $result=tieneSexta($numero);
+    if($result !== false ) //Si el trabajador tiene una sexta registrada
+    {  
+        $sextaRegistrada='si'; 
+        $idSexta= $result[0];
+        $lunes_anteriorS = $result[1];
+        $martes_anteriorS=$result[2];
+        $miercoles_anteriorS=$result[3];
+        $jueves_anteriorS=$result[4];
+        $viernes_anteriorS=$result[5];
+        $sabado_anteriorS=$result[6];
+        $domingo_anteriorS=$result[7];
+        $dias_festivos_anteriorS=$result[8];
+        $validez_anteriorS=$result[9];
+        $t_dias_anteriorS=$result[10];
+        $turno_anteriorS=$result[11];
+    }
     //Si salida está vacio significa que no ocurrió algún error
     if(empty($salida))
     {
@@ -350,56 +363,341 @@ session_start();
                 $semana[7]=1;
             }
         }
-        //Datos necesarios para guardar en las bitácoras//
-        $fila=consultaTrabajador($anterior_num);
-        $nombre_anterior=$fila[1];
-        $a_paterno_anterior=$fila[2];
-        $a_materno_anterior=$fila[3];
-        $depto_anterior=$fila[4];
-        $categoria_anterior=$fila[5];
-        $tipo_anterior=$fila[6];
-        $genero_anterior=$fila[7];
-    
-        $fila=consultaCumple($anterior_num);
-        $cumple_anterior=$fila[0];
-        $ono_anterior=$fila[1];
-        $idcumple_ono=$fila[2];
-        $validezCumpleOno_anterior=$fila[3];
 
-        $fila=consultaAcceso($anterior_num);
-        $lunes_anterior=$fila[0];
-        $martes_anterior=$fila[1];
-        $miercoles_anterior=$fila[2];
-        $jueves_anterior=$fila[3];
-        $viernes_anterior=$fila[4];
-        $sabado_anterior=$fila[5];
-        $domingo_anterior=$fila[6];
-        $dias_festivos_anterior=$fila[7];
-        $turno_anterior=$fila[8];
- 
-        $fila=consultaTServicio($anterior_num);
-        $idtiempo_servicio=$fila[1];
-        $fecha_alta_anterior=$fila[0];
+        //Seleccionar los días de sexta en caso de que el trabajador tenga sexta
+        if (!(empty($_POST['diaS'])))
+        {  
+            $diasSexta=$_POST['diaS'];
+            $existeSexta=1;
+            $semana2 = array(0,0,0,0,0,0,0,0);
+            $num2=count($diasSexta);
+            for($n=0;$n<$num2;$n++)
+            {
+                if($diasSexta[$n]=="lunes")
+                {  
+                    $semana2[0]=1;
+                }
+                if($diasSexta[$n]=="martes")
+                {  
+                    $semana2[1]=1;
+                }
+                if($diasSexta[$n]=="miercoles")
+                {  
+                    $semana2[2]=1;
+                }
+                if($diasSexta[$n]=="jueves")
+                {  
+                    $semana2[3]=1;
+                }
+                if($diasSexta[$n]=="viernes")
+                {  
+                    $semana2[4]=1;
+                }
+                if($diasSexta[$n]=="sabado")
+                {  
+                    $semana2[5]=1;
+                }
+                if($diasSexta[$n]=="domingo")
+                {  
+                    $semana2[6]=1;
+                }
+                if($diasSexta[$n]=="dias_festivos")
+                {  
+                    $semana2[7]=1;
+                }
+            }
+        }
 
-        $fila=describeTipoTrabajador($anterior_num,$tipo_anterior);
-        $descripcion_tipo=$fila;
-                  
-        //Si el tipo de empleado es comisionado foráneo 
+        //Si el trabajador es comisionado foráneo
         if($tipo==4)
-        { 
+        {
             mysqli_autocommit($con, FALSE);
-            if(!(mysqli_query($con,"Update trabajador SET numero_trabajador='$numero', nombre='$nombre',apellido_paterno='$a_pat',apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo, genero='$genero' WHERE numero_trabajador='$anterior_num'")))
+            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero);
+            $actualizarComisionEnEspecial=actualizarComisionEnEspecial($f_ini,$f_fin,$empresa,$totDias,$idespecial);
+            //Si el trabajador seleccionó un turno con sexta
+            if($existeSexta==1)
+            {   //Ver si tiene una sexta registrada en la tabla sexta
+                if($sextaRegistrada=='no') //si no tiene una sexta registrada será necesario guardar la sexta
+                {
+                    $InsertarSexta=Sexta('1',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$numero,'');
+                    $t_dias=0;// El total de días se guadará en acceso a los trabajadores que tengan sexta
+                }
+                else
+                { //$sextaRegistrada=='si'
+                    $t_dias=0;// El total de días se guadará en acceso a los trabajadores que tengan sexta
+                    $ActualizarSexta=Sexta('2',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$numero,'');
+                }
+            }
+            else//Si el trabajador no tiene seleccionado un turno con sexta
+            {
+                //Pero ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
+
+                if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
+                {
+                    $EliminarSexta=Sexta('3','-','-','-','-','-','-','-','-','-','-',$idSexta);
+                }                                        
+
+            }
+            
+            $actualizarAcceso=actualizarAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$numero,$t_dias);
+            $actualizarCumpleOno=actualizarCumpleOno($cumple,$ono,$validezCumpleOno,$idcumple_ono);
+            $actualizarTiempoServicio=actualizarTiempoServicio($fecha_alta,$idtiempo_servicio);
+            //Si el número de trabajador es actualizado
+            if($nuevoNumeroEmpleado =='si')
+            { 
+                //Será necesario actualizar su cuenta de mysql.user y su mail
+                $correcto=actualizarUserSiActualizaNumeroEmp($anterior_num);
+                $res=insertaUsuario($numero);   
+                $numeroActual = $numero;
+            }
+            else
+            {
+                $numeroActual='-';
+            } 
+               
+            if($nombre == $nombre_anterior){$nombre='-';}    
+            if($a_pat == $a_paterno_anterior){$a_pat='-';}  
+            if($a_mat == $a_materno_anterior){$a_mat='-';}   
+            if($depto == $depto_anterior){$depto='-';} 
+            if($cat == $categoria_anterior){$cat='-';}   
+            if($tipo == $tipo_anterior){$descripcion_tipo_nueva='-';} //en caso de ser diferentes en la bitacora se debe guardar $descripcion_tipo_anterior
+            if($genero == $genero_anterior){$genero='-';}
+
+            //Guardar en bitácoras
+            $bitacoraTrabajador=bitacoraTrabajador($numeroActual, $nombre, $a_pat, $a_mat, $depto, $cat, $descripcion_tipo_nueva, $genero, $anterior_num, $nombre_anterior, $a_paterno_anterior, $a_materno_anterior, $depto_anterior, $categoria_anterior, $descripcion_tipo_anterior, $genero_anterior, $nombre_host);
+            $bitacoraCumpleOno=bitacoraCumpleOno($cumple,$ono,$cumple_anterior,$ono_anterior,$numero,$nombre_host);
+            $bitacoraAcceso=bitacoraAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$lunes_anterior,$martes_anterior,$miercoles_anterior,$jueves_anterior,$viernes_anterior,$sabado_anterior,$domingo_anterior,$dias_festivos_anterior,$turno_anterior,$numero,$nombre_host);
+            $bitacoraTiempoServicio=bitacoraTiempoServicio($fecha_alta,$fecha_alta_anterior,$numero,$nombre_host);
+            $bitacoraEspecial=bitacoraEspecial($f_ini, $f_fin, $empresa, $totDias, $f_ini_anterior, $f_fin_anterior, $clave_especial_anterior, $empresa_anterior, $duracion_anterior, $numero, $nombre_host);
+           
+            //Si trabajador seleccionó un turno con sexta
+            if($existeSexta==1)
+            {
+                if($sextaRegistrada =='no') //pero el trabajador no tiene una sexta registrada, será necesario guardar la sexta tambien en la bitacora sexta
+                {
+                    $bitacoraSexta=bitacoraSexta('Guardado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,'-','-','-','-','-','-','-','-','-',$numero,$nombre_host);
+                   
+                }
+                else
+                {
+                    $bitacoraSexta=bitacoraSexta('Actualizado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$lunes_anteriorS,$martes_anteriorS,$miercoles_anteriorS,$jueves_anteriorS,$viernes_anteriorS,$sabado_anteriorS,$domingo_anteriorS,$dias_festivos_anteriorS,$turno_anteriorS,$numero,$nombre_host);
+                }
+            }
+            else//Si el trabajador no tiene seleccionado un turno con sexta
+            {
+                //Pero si el trabajador ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
+                if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
+                {
+                    $bitacoraSexta=bitacoraSexta('Eliminado','-','-','-','-','-','-','-','-','-',$lunes_anteriorS,$martes_anteriorS,$miercoles_anteriorS,$jueves_anteriorS,$viernes_anteriorS,$sabado_anteriorS,$domingo_anteriorS,$dias_festivos_anteriorS,$turno_anteriorS,$numero,$nombre_host);
+                }                                        
+            }
+            mysqli_commit($con);
+            mysqli_autocommit($con, TRUE);
+            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
+        }
+        else //Empleado Base, confianza o eventual 
+        {
+            mysqli_autocommit($con, FALSE);
+            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero);
+            //Si el trabajador seleccionó un turno con sexta
+            if($existeSexta==1)
+            {   //Ver si tiene una sexta registrada en la tabla sexta
+                if($sextaRegistrada=='no') //si no tiene una sexta registrada será necesario guardar la sexta
+                {
+                    $InsertarSexta=Sexta('1',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$numero,'');
+                    $t_dias=0;// El total de días se guadará en acceso a los trabajadores que tengan sexta
+                }
+                else
+                {   //$sextaRegistrada=='si'
+                    $t_dias=0;// El total de días se guadará en acceso a los trabajadores que tengan sexta
+                    $ActualizarSexta=Sexta('2',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$numero,'');
+                }
+            }
+            else//Si el trabajador no tiene seleccionado un turno con sexta
+            {
+                //Pero ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
+
+                if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
+                {
+                    $EliminarSexta=Sexta('3','-','-','-','-','-','-','-','-','-','-',$idSexta);
+                }                                        
+
+            }
+
+            $actualizarAcceso=actualizarAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$numero,$t_dias);
+            $actualizarCumpleOno=actualizarCumpleOno($cumple,$ono,$validezCumpleOno,$idcumple_ono);
+            $actualizarTiempoServicio=actualizarTiempoServicio($fecha_alta,$idtiempo_servicio);
+            //Si el número de trabajador es actualizado
+            if($nuevoNumeroEmpleado =='si')
+            { 
+                //Será necesario actualizar su cuenta de mysql.user y su mail
+                $correcto=actualizarUserSiActualizaNumeroEmp($anterior_num);
+                $res=insertaUsuario($numero);   
+                $numeroActual = $numero;
+            }
+            else
+            {
+                $numeroActual='-';
+            } 
+                
+            if($nombre == $nombre_anterior){$nombre='-';}    
+            if($a_pat == $a_paterno_anterior){$a_pat='-';}  
+            if($a_mat == $a_materno_anterior){$a_mat='-';}   
+            if($depto == $depto_anterior){$depto='-';} 
+            if($cat == $categoria_anterior){$cat='-';}   
+            if($tipo == $tipo_anterior){$descripcion_tipo_nueva='-';} //en caso de ser diferentes en la bitacora se debe guardar $descripcion_tipo_anterior
+            if($genero == $genero_anterior){$genero='-';}
+
+            //Guardar en bitácoras
+            $bitacoraTrabajador=bitacoraTrabajador($numeroActual, $nombre, $a_pat, $a_mat, $depto, $cat, $descripcion_tipo_nueva, $genero, $anterior_num, $nombre_anterior, $a_paterno_anterior, $a_materno_anterior, $depto_anterior, $categoria_anterior, $descripcion_tipo_anterior, $genero_anterior, $nombre_host);
+            $bitacoraCumpleOno=bitacoraCumpleOno($cumple,$ono,$cumple_anterior,$ono_anterior,$numero,$nombre_host);
+            $bitacoraAcceso=bitacoraAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$lunes_anterior,$martes_anterior,$miercoles_anterior,$jueves_anterior,$viernes_anterior,$sabado_anterior,$domingo_anterior,$dias_festivos_anterior,$turno_anterior,$numero,$nombre_host);
+            $bitacoraTiempoServicio=bitacoraTiempoServicio($fecha_alta,$fecha_alta_anterior,$numero,$nombre_host);
+        
+            //Si trabajador seleccionó un turno con sexta
+            if($existeSexta==1)
+            {
+                if($sextaRegistrada =='no') //pero el trabajador no tiene una sexta registrada, será necesario guardar la sexta tambien en la bitacora sexta
+                {
+                    $bitacoraSexta=bitacoraSexta('Guardado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,'-','-','-','-','-','-','-','-','-',$numero,$nombre_host);
+                }
+                else //en caso de que si tenga solo se actualizará la sexta
+                {
+                    $bitacoraSexta=bitacoraSexta('Actualizado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,$lunes_anteriorS,$martes_anteriorS,$miercoles_anteriorS,$jueves_anteriorS,$viernes_anteriorS,$sabado_anteriorS,$domingo_anteriorS,$dias_festivos_anteriorS,$turno_anteriorS,$numero,$nombre_host);
+                }
+            }
+            else//Si el trabajador no tiene seleccionado un turno con sexta
+            {
+                //Pero si el trabajador ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
+                if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
+                {
+                    $bitacoraSexta=bitacoraSexta('Eliminado','-','-','-','-','-','-','-','-','-',$lunes_anteriorS,$martes_anteriorS,$miercoles_anteriorS,$jueves_anteriorS,$viernes_anteriorS,$sabado_anteriorS,$domingo_anteriorS,$dias_festivos_anteriorS,$turno_anteriorS,$numero,$nombre_host);
+                }                                        
+            }
+            mysqli_commit($con);
+            mysqli_autocommit($con, TRUE);
+            echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
+        }
+    }//fin de if (empty(salida))
+    else
+    {
+        echo "<script> error('$salida'); history.back();</script>";
+    }
+
+    function actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero)
+    {
+        global $con;
+        if(!(mysqli_query($con,"Update trabajador SET numero_trabajador='$numero', nombre='$nombre',apellido_paterno='$a_pat', apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo, genero='$genero' WHERE numero_trabajador='$anterior_num'")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='412';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);            
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function actualizarAcceso($lun,$mar,$mie,$jue,$vie,$sab,$dom,$dia_fes,$turno,$numero,$t_dias)
+    {
+        global $con;
+        if(!(mysqli_query($con,"Update acceso SET lunes=$lun,martes=$mar,miercoles=$mie,jueves=$jue,viernes=$vie,sabado=$sab,domingo=$dom,dia_festivo=$dia_fes,turno_turno='$turno',t_dias=$t_dias WHERE trabajador_trabajador='$numero'")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='402';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function actualizarCumpleOno($cumple,$ono,$validezCumpleOno,$idcumple_ono)
+    {
+        global $con;
+        if(!(mysqli_query($con,"Update cumple_ono SET fecha_cumple='$cumple',fecha_ono='$ono', validez=$validezCumpleOno where (idcumple_ono=$idcumple_ono)")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='414';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);            
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function actualizarTiempoServicio($fecha_alta,$idtiempo_servicio)
+    {
+        global $con;
+        if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where idtiempo_servicio=$idtiempo_servicio")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='425';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function actualizarComisionEnEspecial($f_ini,$f_fin,$empresa,$totDias,$idespecial)
+    {
+        global $con;
+        if(!(mysqli_query($con,"Update especial SET fecha_inicio='$f_ini', fecha_fin='$f_fin',empresa='$empresa', duracion=$totDias where idespecial=$idespecial;")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='436';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function Sexta($opcion,$lun,$mar,$mie,$jue,$vie,$sab,$dom,$dia_fes,$turno,$numero,$idsexta)
+    {
+        global $con;
+        if($opcion == 1)
+        { 
+            if(!(mysqli_query($con,"Insert into sexta values ('',$lun,$mar,$mie,$jue,$vie,$sab,$dom,$dia_fes,0,0,'$turno','$numero')")))
             {
                 $er1=mysqli_errno($con);
                 $er2=mysqli_error($con);
-                $línea='391';
+                $línea='513';
                 error($er1,$er2,$línea);
                 mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE);            
+                mysqli_autocommit($con, TRUE);
             }
             else
-            {   
-                if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes=$semana[4],sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
+            {
+                return true;   
+            } 
+        }
+        else
+        {
+            if($opcion==2)
+            {
+                if(!(mysqli_query($con,"Update sexta SET lunes=$lun,martes=$mar,miercoles=$mie,jueves=$jue,viernes=$vie,sabado=$sab,domingo=$dom,dia_festivo=$dia_fes,validez=0,t_dias=0,turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
                 {
                     $er1=mysqli_errno($con);
                     $er2=mysqli_error($con);
@@ -407,497 +705,146 @@ session_start();
                     error($er1,$er2,$línea);
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE);
-  
                 }
                 else
-                { 
-                    if(!(mysqli_query($con,"Update cumple_ono SET fecha_cumple='$cumple',fecha_ono='$ono', validez=$validezCumpleOno where (idcumple_ono=$idcumple_ono)")))
-                    {
-                        $er1=mysqli_errno($con);
-                        $er2=mysqli_error($con);
-                        $línea='414';
-                        error($er1,$er2,$línea);
-                        mysqli_rollback($con);
-                        mysqli_autocommit($con, TRUE);            
-                    }
-                    else
-                    {
-                        if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where idtiempo_servicio=$idtiempo_servicio")))
-                        {
-                            $er1=mysqli_errno($con);
-                            $er2=mysqli_error($con);
-                            $línea='425';
-                            error($er1,$er2,$línea);
-                            mysqli_rollback($con);
-                            mysqli_autocommit($con, TRUE);
-                        }
-                        else
-                        {   
-                            if(!(mysqli_query($con,"Update especial SET fecha_inicio='$f_ini', fecha_fin='$f_fin',empresa='$empresa', duracion=$totDias where (idespecial=$idespecial)")))
-                            {
-                                $er1=mysqli_errno($con);
-                                $er2=mysqli_error($con);
-                                $línea='436';
-                                error($er1,$er2,$línea);
-                                mysqli_rollback($con);
-                                mysqli_autocommit($con, TRUE);
-                            }
-                            else
-                            {     
-                                //GUARDAR EN LA BITACORA DE TRABAJADOR
-                                if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Actualizado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','$genero','$anterior_num','$nombre_anterior','$a_paterno_anterior','$a_materno_anterior','$depto_anterior','$categoria_anterior','$descripcion_tipo','$genero_anterior','$nombre_host')")))
-                                {
-                                    $er1=mysqli_errno($con);
-                                    $er2=mysqli_error($con);
-                                    $línea='448';
-                                    error($er1,$er2,$línea);
-                                    mysqli_rollback($con);
-                                    mysqli_autocommit($con, TRUE);
-                                }
-                                else
-                                {                                       
-                                    //GUARDAR EN LA BITACORA DE CUMPLE_ONO
-                                    if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Actualizado','$cumple','$ono','$cumple_anterior','$ono_anterior','$numero', '$nombre_host')")))
-                                    {
-                                        $er1=mysqli_errno($con);
-                                        $er2=mysqli_error($con);
-                                        $línea='460';
-                                        error($er1,$er2,$línea);
-                                        mysqli_rollback($con);
-                                        mysqli_autocommit($con, TRUE);
-                                    }
-                                    else
-                                    {  
-                                        //GUARDAR EN LA BITACORA DE ACCESO
-                                        if(!(mysqli_query($con,"call inserta_bitacora_acceso('Actualizado','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$lunes_anterior','$martes_anterior','$miercoles_anterior','$jueves_anterior','$viernes_anterior','$sabado_anterior','$domingo_anterior','$dias_festivos_anterior','$turno','$numero','$nombre_host')")))
-                                        {
-                                            $er1=mysqli_errno($con);
-                                            $er2=mysqli_error($con);
-                                            $línea='472';
-                                            error($er1,$er2,$línea);
-                                            mysqli_rollback($con);
-                                            mysqli_autocommit($con, TRUE);
-                                        }
-                                        else
-                                        {
-                                            //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
-                                            if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Actualizado','$fecha_alta','$fecha_alta_anterior','$numero', '$nombre_host')")))
-                                            {
-                                                $er1=mysqli_errno($con);
-                                                $er2=mysqli_error($con);
-                                                $línea='484';
-                                                error($er1,$er2,$línea);
-                                                mysqli_rollback($con);
-                                                mysqli_autocommit($con, TRUE);
-                                            }
-                                            else
-                                            {
-                                                //GUARDAR EN LA BITACORA DE ESPECIAL
-                                                if(!(mysqli_query($con,"call inserta_bitacora_especial('Actualizado', '$f_ini', '$f_fin', '-', '-', 'CS', '$empresa', '$totDias', '$f_ini_anterior', '$f_fin_anterior', '-', '-', '$clave_especial_anterior', '$empresa_anterior', '$duracion_anterior', '$numero', '$nombre_host', '-1')")))
-                                                { 
-                                                    $er1=mysqli_errno($con);
-                                                    $er2=mysqli_error($con);
-                                                    $línea='496';
-                                                    error($er1,$er2,$línea);
-                                                    mysqli_rollback($con);
-                                                    mysqli_autocommit($con, TRUE);
-                                                }
-                                                else
-                                                {   //Si el trabajador tiene selecionado un turno con sexta
-                                                    if($existeSexta==1)
-                                                    {
-                                                        $result=tieneSexta($numero);
-                                                        if($result==false) //Si el trabajador no tiene una sexta registrada, será necesario guardar la sexta
-                                                        {
-                                                            //Guardar la sexta 
-                                                            if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
-                                                            {
-                                                                $er1=mysqli_errno($con);
-                                                                $er2=mysqli_error($con);
-                                                                $línea='513';
-                                                                error($er1,$er2,$línea);
-                                                                mysqli_rollback($con);
-                                                                mysqli_autocommit($con, TRUE);
-                                                            }
-                                                            else
-                                                            {   //Guardar en bitacora sexta
-                                                                if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
-                                                                {
-                                                                    $er1=mysqli_errno($con);
-                                                                    $er2=mysqli_error($con);
-                                                                    $línea='524';
-                                                                    error($er1,$er2,$línea);
-                                                                    mysqli_rollback($con);
-                                                                    mysqli_autocommit($con, TRUE);
-                                                                }
-                                                                else
-                                                                {  
-                                                                    if($nuevoNumeroEmpleado=='si')
-                                                                    { //Si el número de trabajador es actualizado, es necesario tambien actualizar su cuenta de mysql.user
-                                                                        $correcto=actualizarUserSiActualizaNumeroEmp($numero, $idmail);
-                                                                        $res=insertaUsuario($numero);
-                                                                        if($res==true)
-                                                                        {
-                                                                            mysqli_commit($con);
-                                                                            mysqli_autocommit($con, TRUE);
-                                                                            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                        }   
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        mysqli_commit($con);
-                                                                        mysqli_autocommit($con, TRUE);
-                                                                        echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        { //Si el trabajador ya tiene registrada una sexta, solo se actualizará
-
-                                                            if(!(mysqli_query($con,"Update sexta SET lunes=$semana2[0],martes=$semana2[1],miercoles=$semana2[2],jueves=$semana2[3],viernes=$semana2[4],sabado=$semana2[5],domingo=$semana2[6],dia_festivo=$semana2[7],validez=0,t_dias=0,turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
-                                                            {
-                                                                $er1=mysqli_errno($con);
-                                                                $er2=mysqli_error($con);
-                                                                $línea='558';
-                                                                error($er1,$er2,$línea);
-                                                                mysqli_rollback($con);
-                                                                mysqli_autocommit($con, TRUE);  
-                                                            }
-                                                            else
-                                                            {
-                                                                if(!(mysqli_query($con,"call inserta_bitacora_sexta('Actualizado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]', '$result[11]','$numero','$result[9]','$result[10]','$nombre_host')")))
-                                                                {
-                                                                    $er1=mysqli_errno($con);
-                                                                    $er2=mysqli_error($con);
-                                                                    $línea='569';
-                                                                    error($er1,$er2,$línea);
-                                                                    mysqli_rollback($con);
-                                                                    mysqli_autocommit($con, TRUE); 
-                                                                }
-                                                                else
-                                                                {
-                                                                    if($nuevoNumeroEmpleado=='si')
-                                                                    { //Si el número de trabajador es actualizado, es necesario tambien actualizar su cuenta de mysql.user
-                                                                        $correcto=actualizarUserSiActualizaNumeroEmp($numero, $idmail);
-                                                                        $res=insertaUsuario($numero);
-                                                                        if($res==true)
-                                                                        {
-                                                                            mysqli_commit($con);
-                                                                            mysqli_autocommit($con, TRUE);
-                                                                            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                        }
-                                                                            
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        mysqli_commit($con);
-                                                                        mysqli_autocommit($con, TRUE);
-                                                                        echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    else//Si el trabajador no tiene seleccionado un turno con sexta
-                                                    {
-                                                       //Pero si el trabajador ya tiene registrado un turno con sexta en la tabla sexta y va a cambiar a otro turno que no tiene sexta, será necesario eliminar su sexta
-                                                        $result=tieneSexta($numero);
-                                                        if(($result!==false) && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
-                                                        { 
-                                                            if(!(mysqli_query($con,"DELETE FROM sexta WHERE idsexta = '$result[0]';")))
-                                                            {
-                                                                $er1=mysqli_errno($con);
-                                                                $er2=mysqli_error($con);
-                                                                $línea='608';
-                                                                error($er1,$er2,$línea);
-                                                                mysqli_rollback($con);
-                                                                mysqli_autocommit($con, TRUE);
-                                                            
-                                                            }
-                                                            else
-                                                            { 
-                                                                if(!(mysqli_query($con,"call inserta_bitacora_sexta('Eliminado','-','-','-', '-', '-', '-', '-', '-','-','-','-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')")))
-                                                                {
-                                                                    $er1=mysqli_errno($con);
-                                                                    $er2=mysqli_error($con);
-                                                                    $línea='620';
-                                                                    error($er1,$er2,$línea);
-                                                                    mysqli_rollback($con);
-                                                                    mysqli_autocommit($con, TRUE);
-                                            
-                                                                }
-                                                                else
-                                                                {
-                                                                    mysqli_commit($con);
-                                                                    mysqli_autocommit($con, TRUE);
-                                                                    echo "<script type=\"text/javascript\">alert(\"Empleado comisionado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
-                                                                
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        { 
-                                                            mysqli_commit($con);
-                                                            mysqli_autocommit($con, TRUE);
-                                                            echo "<script type=\"text/javascript\">alert(\"Empleado comisionado guardado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                        }    
-                                                    }
-                                                }
-                                            }
-                                        }   
-                                    }
-                                }
-                            }
-                        }
-                    }
+                {
+                    return true;   
                 }
-            }
-        }//fin-if comisionado foráneo
-        else //Sino el tipo de empleado es diferente de comisionado foráneo
-        {                
-            mysqli_autocommit($con, FALSE);
-            if(!(mysqli_query($con,"Update trabajador SET numero_trabajador='$numero', nombre='$nombre',apellido_paterno='$a_pat',apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo WHERE numero_trabajador='$anterior_num'")))
-            {
-                $er1=mysqli_errno($con);
-                $er2=mysqli_error($con);
-                $línea='660';
-                error($er1,$er2,$línea);
-                mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE);
             }
             else
-            {   
-                if(!(mysqli_query($con,"Update acceso SET lunes=$semana[0],martes=$semana[1],miercoles=$semana[2],jueves=$semana[3],viernes=$semana[4],sabado=$semana[5],domingo=$semana[6],dia_festivo=$semana[7],turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
+            {
+                if($opcion==3)
                 {
-                    $er1=mysqli_errno($con);
-                    $er2=mysqli_error($con);
-                    $línea='671';
-                    error($er1,$er2,$línea);
-                    mysqli_rollback($con);
-                    mysqli_autocommit($con, TRUE);
-                }
-                else
-                { 
-                    if(!(mysqli_query($con,"Update cumple_ono SET fecha_cumple='$cumple',fecha_ono='$ono', validez=$validezCumpleOno where (idcumple_ono=$idcumple_ono)")))
+                    if(!(mysqli_query($con,"DELETE FROM sexta WHERE idsexta = $idsexta;")))
                     {
                         $er1=mysqli_errno($con);
                         $er2=mysqli_error($con);
-                        $línea='682';
+                        $línea='608';
                         error($er1,$er2,$línea);
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE);
                     }
                     else
                     {
-                        if(!(mysqli_query($con,"Update tiempo_servicio SET fecha_alta='$fecha_alta' where (idtiempo_servicio=$idtiempo_servicio)")))
-                        {
-                            $er1=mysqli_errno($con);
-                            $er2=mysqli_error($con);
-                            $línea='693';
-                            error($er1,$er2,$línea);
-                            mysqli_rollback($con);
-                            mysqli_autocommit($con, TRUE);                        
-                        }
-                        else
-                        {  
-                            //GUARDAR EN LA BITACORA DE TRABAJADOR
-                            if(!(mysqli_query($con,"call inserta_bitacora_trabajador('Actualizado','$numero','$nombre','$a_pat','$a_mat','$depto','$cat','$descripcion_tipo','$genero','$anterior_num','$nombre_anterior','$a_paterno_anterior','$a_materno_anterior','$depto_anterior','$categoria_anterior','$descripcion_tipo','$genero_anterior', '$nombre_host')")))
-                            {
-                                $er1=mysqli_errno($con);
-                                $er2=mysqli_error($con);
-                                $línea='705';
-                                error($er1,$er2,$línea);
-                                mysqli_rollback($con);
-                                mysqli_autocommit($con, TRUE);
-                            }
-                            else
-                            {
-                                //GUARDAR EN LA BITACORA DE CUMPLE_ONO
-                                if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Actualizado','$cumple','$ono','$cumple_anterior','$ono_anterior','$numero', '$nombre_host')")))
-                                {
-                                    $er1=mysqli_errno($con);
-                                    $er2=mysqli_error($con);
-                                    $línea='717';
-                                    error($er1,$er2,$línea);
-                                    mysqli_rollback($con);
-                                    mysqli_autocommit($con, TRUE);                                }
-                                else
-                                {  
-                                    //GUARDAR EN LA BITACORA DE ACCESO
-                                    if(!(mysqli_query($con,"call inserta_bitacora_acceso('Actualizado','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$lunes_anterior','$martes_anterior','$miercoles_anterior','$jueves_anterior','$viernes_anterior','$sabado_anterior','$domingo_anterior','$dias_festivos_anterior','$turno','$numero','$nombre_host')")))
-                                    {
-                                        $er1=mysqli_errno($con);
-                                        $er2=mysqli_error($con);
-                                        $línea='728';
-                                        error($er1,$er2,$línea);
-                                        mysqli_rollback($con);
-                                        mysqli_autocommit($con, TRUE);                                    }
-                                    else
-                                    {
-                                        //GUARDAR EN LA BITACORA DE TIEMPO SERVICIO
-                                        if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Actualizado','$fecha_alta','$fecha_alta_anterior','$numero', '$nombre_host')")))
-                                        {
-                                            $er1=mysqli_errno($con);
-                                            $er2=mysqli_error($con);
-                                            $línea='739';
-                                            error($er1,$er2,$línea);
-                                            mysqli_rollback($con);
-                                            mysqli_autocommit($con, TRUE);                                        }
-                                        else
-                                        {   //Si el trabajador tiene selecionado un turno con sexta
-                                            if($existeSexta==1)
-                                            {
-                                                $result=tieneSexta($numero);
-                                                if($result==false) //Si el trabajador no tiene una sexta registrada, será necesario guardar la sexta
-                                                {
-                                                    //Guardar la sexta 
-                                                    if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
-                                                    {
-                                                        $er1=mysqli_errno($con);
-                                                        $er2=mysqli_error($con);
-                                                        $línea='755';
-                                                        error($er1,$er2,$línea);
-                                                        mysqli_rollback($con);
-                                                        mysqli_autocommit($con, TRUE);                                                    }
-                                                    else
-                                                    {   //Guardar en bitacora sexta
-                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Guardado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','-', '-', '-', '-', '-', '-', '-', '-', '-','$numero','-','-','$nombre_host')")))
-                                                        {
-                                                            $er1=mysqli_errno($con);
-                                                            $er2=mysqli_error($con);
-                                                            $línea='765';
-                                                            error($er1,$er2,$línea);
-                                                            mysqli_rollback($con);
-                                                            mysqli_autocommit($con, TRUE);                                                        }
-                                                        else
-                                                        { 
-                                                            if($nuevoNumeroEmpleado=='si')
-                                                            { //Si el número de trabajador es actualizado, es necesario tambien actualizar su cuenta de mysql.user
-                                                                $correcto=actualizarUserSiActualizaNumeroEmp($numero, $idmail);
-                                                                $res=insertaUsuario($numero);
-                                                                if($res==true)
-                                                                {
-                                                                    mysqli_commit($con);
-                                                                    mysqli_autocommit($con, TRUE);
-                                                                    echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                //Si todo está correcto, guardar todo
-                                                                mysqli_commit($con);
-                                                                mysqli_autocommit($con, TRUE);
-                                                                echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                { //Si el trabajador ya tiene registrada una sexta, solo se actualizará
-                                                    
-                                                    if(!(mysqli_query($con,"Update sexta SET lunes=$semana2[0],martes=$semana2[1],miercoles=$semana2[2],jueves=$semana2[3],viernes=$semana2[4],sabado=$semana2[5],domingo=$semana2[6],dia_festivo=$semana2[7],validez=0,t_dias=0,turno_turno='$turno' WHERE trabajador_trabajador='$numero'")))
-                                                    {
-                                                        $er1=mysqli_errno($con);
-                                                        $er2=mysqli_error($con);
-                                                        $línea='799';
-                                                        error($er1,$er2,$línea);
-                                                        mysqli_rollback($con);
-                                                        mysqli_autocommit($con, TRUE);                                                    }
-                                                    else
-                                                    {
-                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Actualizado','$semana2[0]','$semana2[1]','$semana2[2]','$semana2[3]','$semana2[4]','$semana2[5]','$semana2[6]','$semana2[7]','$turno','0','0','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]', '$result[11]','$numero','$result[9]','$result[10]','$nombre_host')")))
-                                                        {
-                                                            $er1=mysqli_errno($con);
-                                                            $er2=mysqli_error($con);
-                                                            $línea='809';
-                                                            error($er1,$er2,$línea);
-                                                            mysqli_rollback($con);
-                                                            mysqli_autocommit($con, TRUE);                                                        }
-                                                        else
-                                                        { 
-                                                            if($nuevoNumeroEmpleado=='si')
-                                                            { //Si el número de trabajador es actualizado, es necesario tambien actualizar su cuenta de mysql.user
-                                                                $correcto=actualizarUserSiActualizaNumeroEmp($numero, $idmail);
-                                                                $res=insertaUsuario($numero);
-                                                                if($res==true)
-                                                                {
-                                                                    mysqli_commit($con);
-                                                                    mysqli_autocommit($con, TRUE);
-                                                                    echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                mysqli_commit($con);
-                                                                mysqli_autocommit($con, TRUE);
-                                                                echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else //Si el trabajador no tiene un turno con sexta
-                                            {
-                                                //Pero trabajador ya tiene un turno con sexta registrada y va a cambiar a otro turno que no tiene sexta, será necesario eliminar su sexta
-                                                $result=tieneSexta($numero);
-                                                if(($result!==false) && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
-                                                { 
-                                                    if(!(mysqli_query($con,"DELETE FROM sexta WHERE idsexta = '$result[0]';")))
-                                                    {
-                                                        $er1=mysqli_errno($con);
-                                                        $er2=mysqli_error($con);
-                                                        $línea='846';
-                                                        error($er1,$er2,$línea);
-                                                        mysqli_rollback($con);
-                                                        mysqli_autocommit($con, TRUE);
-                                                      
-                                                    }
-                                                    else
-                                                    { 
-                                                        if(!(mysqli_query($con,"call inserta_bitacora_sexta('Eliminado','-','-','-', '-', '-', '-', '-', '-','-','-','-','$result[1]', '$result[2]', '$result[3]', '$result[4]', '$result[5]', '$result[6]', '$result[7]', '$result[8]','$turno','$numero','$result[9]','$result[10]','$nombre_host')")))
-                                                        {
-                                                            $er1=mysqli_errno($con);
-                                                            $er2=mysqli_error($con);
-                                                            $línea='858';
-                                                            error($er1,$er2,$línea);
-                                                            mysqli_rollback($con);
-                                                            mysqli_autocommit($con, TRUE);
-                                    
-                                                        }
-                                                        else
-                                                        {
-                                                           mysqli_commit($con);
-                                                           mysqli_autocommit($con, TRUE);
-                                                           echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
-                                                        
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                { 
-                                                    mysqli_commit($con);
-                                                    mysqli_autocommit($con, TRUE);
-                                                    echo "<script type=\"text/javascript\">alert(\"Empleado actualizado correctamente\"); location.href='../../ht/trabajadores.php';</script>"; 
-                                                
-                                                }
-                                            }
-                                        }
-                                    }   
-                                }
-                            }
-                        }
+                        return true;   
                     }
                 }
             }
-        }//fin de else
-    }//fin de if (empty(salida))
-    else
-    {
-        echo "<script> error('$salida'); history.back();</script>";
+        }
     }
 
-    function actualizarUserSiActualizaNumeroEmp($numero, $idmail)
+    function bitacoraTrabajador($numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero, $numero_anterior, $nombre_anterior, $a_pat_anterior, $a_mat_anterior, $depto_anterior, $cat_anterior, $tipo_anterior, $genero_anterior, $nombre_host)
+    {
+      global $con;
+      $sql="call inserta_bitacora_trabajador('Actualizado','$numero', '$nombre', '$a_pat', '$a_mat', '$depto', '$cat', '$tipo', '$genero', '$numero_anterior', '$nombre_anterior', '$a_pat_anterior', '$a_mat_anterior', '$depto_anterior', '$cat_anterior', '$tipo_anterior', '$genero_anterior', '$nombre_host');"; 
+      mysqli_autocommit($con, FALSE);
+      if(!(mysqli_query($con,$sql)))
+      {
+        $er1=mysqli_errno($con);
+        $er2=mysqli_error($con);
+        $línea='704';
+        error($er1,$er2,$línea);
+        mysqli_rollback($con);
+        mysqli_autocommit($con, TRUE); 
+      }
+      else
+      {
+        return true;
+      } 
+    }
+
+    function bitacoraCumpleOno($cumple,$ono,$cumple_anterior,$ono_anterior,$numero,$nombre_host)
+    {
+        global $con;
+        if(!(mysqli_query($con,"call inserta_bitacora_cumple_ono('Actualizado','$cumple','$ono','$cumple_anterior','$ono_anterior','$numero', '$nombre_host')")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='547';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function bitacoraAcceso($lun,$mar,$mie,$jue,$vie,$sab,$dom,$dia_fes,$turno,$lunes_anterior,$martes_anterior,$miercoles_anterior,$jueves_anterior,$viernes_anterior,$sabado_anterior,$domingo_anterior,$dias_festivos_anterior,$turno_anterior,$numero,$nombre_host)
+    {
+        global $con;
+        //GUARDAR EN LA BITACORA DE ACCESO
+        if(!(mysqli_query($con,"call inserta_bitacora_acceso('Actualizado','$lun','$mar','$mie','$jue','$vie','$sab','$dom',$dia_fes,'$turno','$lunes_anterior','$martes_anterior','$miercoles_anterior','$jueves_anterior','$viernes_anterior','$sabado_anterior','$domingo_anterior','$dias_festivos_anterior','$turno_anterior','$numero','$nombre_host')")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='566';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function bitacoraTiempoServicio($fecha_alta,$fecha_alta_anterior,$numero,$nombre_host)
+    {
+        global $con;
+        if(!(mysqli_query($con,"call inserta_bitacora_tiempo_servicio('Actualizado','$fecha_alta','$fecha_alta_anterior','$numero', '$nombre_host')")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='583';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function bitacoraEspecial($f_ini, $f_fin, $empresa, $totDias, $f_ini_anterior, $f_fin_anterior, $clave_especial_anterior, $empresa_anterior, $duracion_anterior, $numero, $nombre_host)
+    {
+        global $con;
+        if(!(mysqli_query($con,"call inserta_bitacora_especial('Actualizado', '$f_ini', '$f_fin', ' ', '', 'CS', '$empresa', '$totDias', '$f_ini_anterior', '$f_fin_anterior', '', '', '$clave_especial_anterior', '$empresa_anterior', '$duracion_anterior', '$numero', '$nombre_host', '1')")))
+        { 
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='496';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function bitacoraSexta($operacion,$lun,$mar,$mie,$jue,$vie,$sab,$dom,$dia_fes,$turno,$lunes_anterior,$martes_anterior,$miercoles_anterior,$jueves_anterior,$viernes_anterior,$sabado_anterior,$domingo_anterior,$dias_festivos_anterior,$turno_anterior,$numero,$nombre_host)
+    {
+        global $con;
+        if(!(mysqli_query($con,"call inserta_bitacora_sexta('$operacion','$lun','$mar','$mie','$jue','$vie','$sab','$dom','$dia_fes','$turno','0','0','$lunes_anterior','$martes_anterior','$miercoles_anterior','$jueves_anterior','$viernes_anterior','$sabado_anterior','$domingo_anterior','$dias_festivos_anterior','$turno_anterior','$numero','0','0','$nombre_host');")))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='566';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
+        } 
+    }
+
+    function actualizarUserSiActualizaNumeroEmp($numero)
     {
         global $con;
 
@@ -915,23 +862,25 @@ session_start();
             $mail=consultaMail($numero);
             if($mail==true)
             {
-              $idmail=$mail;
-            }
-            if(!(mysqli_query($con,"DELETE FROM mail WHERE (idmail =  $idmail);")))
-            {
-                $er1=mysqli_errno($con);
-                $er2=mysqli_error($con);
-                $línea='653';
-                error($er1,$er2,$línea);
-                mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE); 
-            }
-            else
-            {
-                return true;
+                $idmail=$mail;
+                
+                if(!(mysqli_query($con,"DELETE FROM mail WHERE (idmail =  $idmail);")))
+                {
+                    $er1=mysqli_errno($con);
+                    $er2=mysqli_error($con);
+                    $línea='653';
+                    error($er1,$er2,$línea);
+                    mysqli_rollback($con);
+                    mysqli_autocommit($con, TRUE); 
+                }
+                else
+                {
+                    return true;
+                }
             }
         } 
     }
+
     function error($er1,$er2,$numLinea)
     {
         $error="";
@@ -951,6 +900,6 @@ session_start();
 
         $error="$err1 : $err2. Línea de error: $numLinea. Verifique con el administrador de sistemas";
         echo"<script>error('$error'); </script>";
+        exit();
     }
 ?>
-
