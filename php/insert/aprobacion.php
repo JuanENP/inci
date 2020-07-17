@@ -461,7 +461,7 @@ session_start();
                     }
                     else
                     {
-                        if($antiguedad>=41)
+                        if($antiguedad>20)
                         {
                             $diasPermitidos=36;
                         }

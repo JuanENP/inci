@@ -18,59 +18,119 @@ session_start();
         die();
     }
 
+    $eventNoComunes=$_POST['filtroComun'];//puede valer no (cuando no ha sido seleccionado) y si (cuando se seleccionó)
+    $okFechas="";
+    //para imprimir la tabla al final
+    $tabla="";
+
+    if(!empty($_POST['fini']))
+    {
+        //verificar si alguna de las fechas posee un formato incorrecto o no ha sido elegido
+        if($_POST['fini']=="undefined/undefined/" || $_POST['ffin']=="undefined/undefined/")
+        {
+            $okFechas="no";
+        }
+        else
+        {
+            $okFechas="si";
+
+            $finicio=$_POST['fini'];
+            $porciones = explode("/", $finicio);
+            $finicio=$porciones[2]."-".$porciones[1]."-".$porciones[0]." 00:00:00";
+
+            $ffin=$_POST['ffin'];
+            $porciones = explode("/", $ffin);
+            $ffin=$porciones[2]."-".$porciones[1]."-".$porciones[0]." 23:59:59";
+        }
+    }
+    else
+    {
+        $okFechas="no";
+    }
+
     if(!empty($_POST['opcion']))
     {
         $opcion=$_POST['opcion'];
-        //para imprimir la tabla al final
-        $tabla="";
+        //dependiendo de la opción se mostrará la bitácora correspondiente
 
-        //acceso
-        if($opcion="acc")
+        if($opcion=="acc")
         {
-            $sql="SELECT * FROM bitacora_acceso";
-            $query=mysqli_query($con, $sql);
-            if(!$query)
-            {
-              echo "error";
-            }
-            else
-            {
-                if(mysqli_num_rows($query)>0)
-                {
-                    $tabla.="<table border=1>
-                    <thead>
-                        <tr>
-                            <td>Usuario</td>
-                            <td>Host Origen</td>
-                            <td>Operación</td>
-                            <td>Lunes</td>
-                            <td>Martes</td>
-                        </tr>
-                    </thead>     
-                    <tbody>";
-            
-                    while ($fila = mysqli_fetch_array($query)) 
-                    {
-                        $tabla.="<tr>
-                                    <td>".$fila[1]."</td>
-                                    <td>".$fila[2]."</td>
-                                    <td>".$fila[3]."</td>
-                                    <td>".$fila[4]."</td>
-                                    <td>".$fila[5]."</td>
-                                </tr>";
-                    }
-                    $tabla.="</tbody></table>";
-                    echo $tabla;
-                }//Fin if num rows>0
-                else
-                {
-                    echo "No hay datos";
-                }
-
-            }
-            exit();
+            require("bitacoras/acceso.php");
         }
 
-        //
+        if($opcion=="cat")
+        {
+            require("bitacoras/categorias.php");
+        }
+
+        if($opcion=="cumple")
+        {
+            require("bitacoras/cumpleanos.php");
+        }
+
+        if($opcion=="depto")
+        {
+            require("bitacoras/depto.php");
+        }
+
+        if($opcion=="festivo")
+        {
+            require("bitacoras/festivo.php");
+        }
+
+        if($opcion=="especial")
+        {
+            require("bitacoras/especial.php");
+        }
+
+        if($opcion=="guard")
+        {
+            require("bitacoras/guardias.php");
+        }
+
+        //justificar-incidencias
+        if($opcion=="just-in")
+        {
+            require("bitacoras/justIN.php");
+        }
+
+        //justificar-faltas
+        if($opcion=="just-fal")
+        {
+            require("bitacoras/justFAL.php");
+        }
+
+        //pase de salida
+        if($opcion=="ps")
+        {
+            require("bitacoras/ps.php");
+        }
+
+        if($opcion=="sexta")
+        {
+            require("bitacoras/sexta.php");
+        }
+
+        if($opcion=="tservicio")
+        {
+            require("bitacoras/tservicio.php");
+        }
+
+        /*trabajadores*/
+        if($opcion=="trab")
+        {
+            require("bitacoras/trab.php");
+        }
+
+        if($opcion=="turno")
+        {
+            require("bitacoras/turno.php");
+        }
+
+        //vacaciones personal normal (que no sean de Radio)
+        if($opcion=="vaca")
+        {
+            require("bitacoras/vacacionesN.php");
+        }
     }
 ?>

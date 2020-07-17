@@ -39,6 +39,15 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php");
+
+        //extraer los anteriores campos
+        $query=mysqli_query($con,"select * from turno where idturno='$id_viejo'");
+        $resul=mysqli_fetch_array($query);
+        $id_old= $resul[0];
+        $he_old= $resul[1];
+        $hs_old=$resul[2];
+        $t_old=$resul[3];
+
         mysqli_autocommit($con, FALSE);
         $nombre_host= gethostname();
         if(!(mysqli_query($con,"update turno SET idturno = '".$id."', entrada = '".$fi."', salida='".$ff."', t_horas='$total_horas' WHERE (idturno = '".$id_viejo."');")))
@@ -49,15 +58,14 @@ session_start();
         }
         else
         {     
-            $ejecu="select * from turno where idturno = '$id_viejo'";
-            $codigo=mysqli_query($con,$ejecu);
-            $resul=mysqli_num_rows($codigo);
-            $id_anterior=$resul[0];
-            $fi_anterior=$resul[1];
-            $ff_anterior=$resul[2];
-            $t_horas_anterior=$resul[3];
+            //$id_old= "-"; $he_old= "-"; $hs_old="-"; $t_old="-";
+            //validar qué campos cambiaron
+            if($id_old==$id){$id="-";}
+            if($he_old==$fi){$fi="-";}
+            if($hs_old==$ff){$ff="-";}
+            if($t_old==$total_horas){$total_horas="-";}
 
-            if(!(mysqli_query($con,"call inserta_bitacora_turno('Actualizado','$id','$fi','$ff','$total_horas','$id_anterior','$fi_anterior', '$ff_anterior', '$t_horas_anterior', '$nombre_host')")))
+            if(!(mysqli_query($con,"call inserta_bitacora_turno('Actualizado','$id','$fi','$ff','$total_horas','$id_old','$he_old', '$hs_old', '$t_old', '$nombre_host')")))
             {
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
@@ -78,9 +86,5 @@ session_start();
         $f2 = new DateTime($horafin);
         $d = $f1->diff($f2);
         return $d->format('%H:%I:%S');
-    }
- 
-    
-
-    
+    } 
 ?>

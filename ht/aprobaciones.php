@@ -789,7 +789,7 @@ session_start();
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('div-es').style.display = "none";
                                     document.getElementById('suplente').style.display = "none";
-                                    document.getElementById('imagen').style.display = "none";
+                                    document.getElementById('imagen').style.display = "block";
                                     document.getElementById('fecf').style.display = "block";
                                     document.getElementById('fec').style.display = "block";
                                 }

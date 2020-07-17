@@ -23,7 +23,6 @@ session_start();
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="../assets/css/reportes.css" />
         <link rel="apple-touch-icon" href="apple-icon.png" />
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="stylesheet" href="../assets/css/normalize.css" />
@@ -74,11 +73,44 @@ session_start();
                         $('body').toggleClass('open');
                     }
                 );
+
+                $("#fife").on('change', function() 
+                {
+                    if ($(this).is(':checked')) 
+                    {
+                        // Hacer algo si el checkbox ha sido seleccionado
+                        document.getElementById('divFechas').style.display = "block";
+                    } else 
+                    {
+                        // Hacer algo si el checkbox ha sido deseleccionado
+                        document.getElementById('divFechas').style.display = "none";
+                    }
+                });
             });
+
+            function inicio()
+            {
+                var mibox = document.getElementById("fife"); //obtener el elemento checkBox y ver si está seleccionado
+                if ($(mibox).is(':checked')) 
+                {
+                    // Hacer algo si el checkbox ha sido seleccionado
+                    document.getElementById('divFechas').style.display = "block";
+                } else 
+                {
+                    // Hacer algo si el checkbox ha sido deseleccionado
+                    document.getElementById('divFechas').style.display = "none";
+                }
+            }
+
+            function mensaje1()
+            {
+                alert("Un 1 en un día indica que ese día trabajará esa persona. Un cero indica que no trabajará. Un 1 en validez"+
+                " indica que esta sexta es válida. Un 0 en validez indica que esa sexta no está válida.");
+            }
         </script> 
     </head>
 
-    <body>
+    <body onload="inicio()">
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
@@ -204,7 +236,25 @@ session_start();
                                     
                                     <div class="card-body card-block">
                                         <div class="form-1-2">
-                                            <input type="radio" name="opcion" value="acc" id="bit-acceso" class="bt" checked> <label for="bit-acceso">Acceso (días y turnos del trabajador)</label> 
+                                            <input type="radio" name="opcion" value="acc" id="bit-acceso" class="bt"> <label for="bit-acceso">Acceso (días y turnos de los trabajadores)</label><br>
+                                            <input type="radio" name="opcion" value="cat" id="bit-categoria" class="bt"> <label for="bit-categoria">Categorías</label><br>
+                                            <input type="radio" name="opcion" value="cumple" id="bit-cumple" class="bt"> <label for="bit-cumple">Cumpleaños y onomásticos</label><br>
+                                            <input type="radio" name="opcion" value="depto" id="bit-depto" class="bt"> <label for="bit-depto">Departamentos</label><br>
+                                            <input type="radio" name="opcion" value="festivo" id="bit-festivo" class="bt"> <label for="bit-festivo">Días festivos</label><br>
+                                            <input type="radio" name="opcion" value="especial" id="bit-especial" class="bt"> <label for="bit-especial">Especiales (comisiones, licencias, permisos)</label><br> 
+                                            <!-- <input type="radio" name="opcion" value="falta" id="bit-falta" class="bt"> <label for="bit-falta">Faltas</label><br> -->
+                                            <input type="radio" name="opcion" value="guard" id="bit-guardias" class="bt"> <label for="bit-guardias">Guardias</label><br>
+                                            <!-- <input type="radio" name="opcion" value="incid" id="bit-incidencias" class="bt"> <label for="bit-incidencias">Incidencias</label><br> -->
+                                            <input type="radio" name="opcion" value="just-in" id="bit-just-in" class="bt"> <label for="bit-just-in">Justificación de incidencias</label><br>
+                                            <input type="radio" name="opcion" value="just-fal" id="bit-just-fal" class="bt"> <label for="bit-just-fal">Justificación de faltas</label><br>
+                                            <input type="radio" name="opcion" value="ps" id="bit-ps" class="bt"> <label for="bit-ps">Pases de salida</label><br>
+                                            <input type="radio" name="opcion" value="sexta" id="bit-sexta" class="bt" onclick="mensaje1();"> <label for="bit-sexta">Sextas</label><br>
+                                            <input type="radio" name="opcion" value="tservicio" id="bit-tservicio" class="bt"> <label for="bit-tservicio">Tiempo de servicio</label><br>
+                                            <!-- <input type="radio" name="opcion" value="tipo" id="bit-tipo" class="bt"> <label for="bit-tipo">Tipos de empleado</label><br> -->
+                                            <input type="radio" name="opcion" value="trab" id="bit-trab" class="bt"> <label for="bit-trab">Trabajadores</label><br>
+                                            <input type="radio" name="opcion" value="turno" id="bit-turno" class="bt"> <label for="bit-turno">Turnos</label><br>
+                                            <input type="radio" name="opcion" value="vaca" id="bit-vaca" class="bt"> <label for="bit-vaca">Vacaciones</label> 
+                                            
                                         </div> 
                                     </div> 
                                         
@@ -213,13 +263,41 @@ session_start();
                         </div>
 
                         <div class="row">
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo">
+                                            Filtrar solo eventos no comunes
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="card-body card-block">
+                                        <div class="form-1-2">
+                                            <input type="checkbox" name="nocomun" value="s" id="si" class="bt2"> <label for="si">Si</label> 
+                                        </div> 
+                                    </div> 
+                                        
+                                </div>
+                            </div>    
+                        </div>
 
-                        </div> <!--FIN DIV CLASS ROW_NUEVA APROBACION-->
-
-                        <div class="card-footer">
-                            <div class="dropdown">
-                                <input type="submit" name="ver" value="VER" class="btn btn-primary btn-sm" />
-                            </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <span id="MainContent_lbtitulo">
+                                            Filtrar por rango de fechas <input type="checkbox" name="filfech" value="s" id="fife" class="bt2">
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="card-body card-block" id="divFechas">
+                                        <div class="form-1-2">
+                                            <input type="date" name="fechaInicio" id="fechaI" class="bt2"> -- <input type="date" name="fechaFin" id="fechaF" class="bt2">
+                                        </div> 
+                                    </div> 
+                                        
+                                </div>
+                            </div>    
                         </div>
 
                     </div> <!--FIN DIV animated fadeIn-->
