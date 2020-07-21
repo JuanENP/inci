@@ -1,16 +1,15 @@
 <?php
-    if ((!empty($_POST["num"])) && (!empty($_POST["fec"])))
+    if (!empty($_POST["num"]))
     {
         $num=$_POST["num"];
-        $fecha=$_POST["fec"];
+        $fecha=date("Y-m-d"); //la fecha actual
         $tipoEmpleado=tipoEmpleado($num);
-        $validarfechas=RevisarFechas(2,$fecha,"","del pase de salida","un pase de salidas","",0); 
         //Guardar con la clave PS, ojo :D
         $Clave="PS";
         if($tipoEmpleado=="BASE")
         {
             //ver que no tenga una PS en la quincena
-            $sql="SELECT idpase_salida from pase_salida where trabajador_trabajador='$num' and quincena_quincena='$quincena'";
+            $sql="SELECT idpase_salida from pase_salida where trabajador_trabajador='$num' and year(fecha_uso)=$anio and quincena_quincena='$quincena'";
             $filas=obtenerFilas($sql);
             if($filas==0)
             {

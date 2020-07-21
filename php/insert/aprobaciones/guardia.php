@@ -14,7 +14,7 @@
         //verificar que la fecha de guardia no sea hoy o un día anterior a hoy
         $validarfechas=RevisarFechas(2,$fechaGuardia,"","de la guardia","una guardia","",0);
         //ver que el solicitante no tenga ya registrada una guardia en esta quincena
-        $sql="select idguardias from guardias where trabajador_solicitante='$num' and quincena='$quincena'";
+        $sql="SELECT idguardias from guardias where year(fecha_guardia)=$anio and trabajador_solicitante='$num' and quincena='$quincena'";
         $filas=obtenerFilas($sql);
         if($filas==0)//no posee una guardia en esta quincena
         {

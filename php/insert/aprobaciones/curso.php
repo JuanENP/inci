@@ -30,13 +30,13 @@
             }
         }
         //fin verificacion de tipo de curso con horario distinto
-        //Saber cuantos días ya ha usado de este permiso, recordemos que son 12 por semestre
+        //Saber cuantos días ya ha usado de este permiso, recordemos que son 12 por semestre; $anio es el año actual
         if($mes>0 && $mes<=6)//de enero a junio
         {
             $sql="SELECT duracion, idespecial, fecha_inicio, fecha_fin FROM especial where 
             clave_especial_clave_especial='29'
-            and ((fecha_inicio>='2020-01-01' or fecha_inicio>='2020-06-31') 
-            or (fecha_fin>='2020-01-01' or fecha_fin>='2020-06-31'));";
+            and ((fecha_inicio>='$anio-01-01' or fecha_inicio>='$anio-06-31') 
+            or (fecha_fin>='$anio-01-01' or fecha_fin>='$anio-06-31'));";
         }
         else
         {
@@ -44,8 +44,8 @@
             {
                 $sql="SELECT duracion, idespecial, fecha_inicio, fecha_fin FROM especial where 
                 clave_especial_clave_especial='29'
-                and ((fecha_inicio>='2020-07-01' or fecha_inicio>='2020-12-31') 
-                or (fecha_fin>='2020-07-01' or fecha_fin>='2020-12-31'));";
+                and ((fecha_inicio>='$anio-07-01' or fecha_inicio>='$anio-12-31') 
+                or (fecha_fin>='$anio-07-01' or fecha_fin>='$anio-12-31'));";
             }
         }
         $diasUsados=sumaRegistrosDeConsulta($sql);

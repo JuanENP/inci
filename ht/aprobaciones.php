@@ -684,7 +684,6 @@ session_start();
                     document.getElementById('hs').style.display = "none";
                     document.getElementById('empresa').style.display = "none";
                     document.getElementById('clavelicencia').style.display = "none";
-                    document.getElementById('div-es').style.display = "none";
                     document.getElementById('prioridad').style.display = "none";
                     document.getElementById('div-curso1').style.display = "none";
                     document.getElementById('div-tol-lac').style.display = "none";
@@ -703,7 +702,6 @@ session_start();
                         $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
                         $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
                         document.getElementById('clavelicencia').style.display = "none";
-                        document.getElementById('div-es').style.display = "none";
                         document.getElementById('vacio_').style.display = "none";
                         document.getElementById('div-curso1').style.display = "none";
                         document.getElementById('div-tol-lac').style.display = "none";
@@ -732,7 +730,6 @@ session_start();
                             document.getElementById('he').style.display = "none";
                             document.getElementById('hs').style.display = "none";
                             document.getElementById('empresa').style.display = "none";
-                            document.getElementById('div-es').style.display = "none";
                             document.getElementById('prioridad').style.display = "none";
                             document.getElementById('div-curso1').style.display = "none";
                             document.getElementById('div-tol-lac').style.display = "none";
@@ -766,7 +763,6 @@ session_start();
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('suplente').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
-                                document.getElementById('div-es').style.display = "block";
                                 document.getElementById('fec').style.display = "block";
                             }
 
@@ -787,7 +783,6 @@ session_start();
                                     document.getElementById('div-tol-est').style.display = "none";
                                     document.getElementById('div-perm-go').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                    document.getElementById('div-es').style.display = "none";
                                     document.getElementById('suplente').style.display = "none";
                                     document.getElementById('imagen').style.display = "block";
                                     document.getElementById('fecf').style.display = "block";
@@ -808,7 +803,6 @@ session_start();
                                         document.getElementById('div-tol-est').style.display = "none";
                                         document.getElementById('div-perm-go').style.display = "none";
                                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                        document.getElementById('div-es').style.display = "none";
                                         document.getElementById('fecf').style.display = "none";
                                         document.getElementById('imagen').style.display = "none";
                                         document.getElementById('suplente').style.display = "block";
@@ -822,7 +816,8 @@ session_start();
                                         if (x == 6) 
                                         {
                                             $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
-                                            $("#spanFechaInicial").text("Fecha Inicial");//cambiar el texto del span de la fecha inicial
+                                            $("#spanFechaInicial").text("*La fecha siempre será la actual*");//cambiar el texto del span de la fecha inicial
+                                            document.getElementById('fec').style.display = "none";
                                             document.getElementById('tipo-com').style.display = "none";
                                             document.getElementById('fecf').style.display = "none";
                                             document.getElementById('he').style.display = "none";
@@ -830,7 +825,6 @@ session_start();
                                             document.getElementById('empresa').style.display = "none";
                                             document.getElementById('clavelicencia').style.display = "none";
                                             document.getElementById('prioridad').style.display = "none";
-                                            document.getElementById('div-es').style.display = "none";
                                             document.getElementById('vacio_').style.display = "none";
                                             document.getElementById('div-tol-lac').style.display = "none";
                                             document.getElementById('div-tol-est').style.display = "none";
@@ -839,7 +833,6 @@ session_start();
                                             document.getElementById('suplente').style.display = "none";
                                             document.getElementById('div-curso1').style.display = "none";
                                             document.getElementById('imagen').style.display = "none";
-                                            document.getElementById('fec').style.display = "block";
                                         }
                                         else
                                         {
@@ -854,7 +847,6 @@ session_start();
                                                 document.getElementById('empresa').style.display = "none";
                                                 document.getElementById('clavelicencia').style.display = "none";
                                                 document.getElementById('prioridad').style.display = "none";
-                                                document.getElementById('div-es').style.display = "none";
                                                 document.getElementById('vacio_').style.display = "none";
                                                 document.getElementById('div-tol-lac').style.display = "none";
                                                 document.getElementById('div-tol-est').style.display = "none";
@@ -879,7 +871,6 @@ session_start();
                                                     document.getElementById('empresa').style.display = "none";
                                                     document.getElementById('clavelicencia').style.display = "none";
                                                     document.getElementById('prioridad').style.display = "none";
-                                                    document.getElementById('div-es').style.display = "none";
                                                     document.getElementById('vacio_').style.display = "none";
                                                     document.getElementById('div-tol-lac').style.display = "none";
                                                     document.getElementById('div-tol-est').style.display = "none";
@@ -1489,13 +1480,13 @@ session_start();
                                                 <input name="fec" id="fec" type="text" class="form-control datepicker" autocomplete="off" readonly="readonly" style="background:white"/>
                                             </div>
 
-                                            <div class="form-group col-lg-3" id="div-es">
+                                            <!-- <div class="form-group col-lg-3" id="div-es">
                                                 <span id="">Omisión de:</span> <br>
                                                 <select name="eOs" id="eOs" class="form-control">
                                                     <option value="e" selected>Entrada</option>
                                                     <option value="s">Salida</option>
                                                 </select>
-                                            </div>
+                                            </div> -->
 
                                             <div class="form-group col-lg-3" id="fecf">
                                                 <span id="">Fecha Final</span>
