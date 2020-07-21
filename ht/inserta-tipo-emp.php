@@ -42,15 +42,15 @@ session_start();
      {
          if(!(mysqli_query($con,"Insert into tipo values ('','$descripcion')")))
          {
-         //Ocurrió algún error
-         echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
-         die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+            //Ocurrió algún error
+            echo "<script type=\"text/javascript\">alert(\"Error\");</script>";
+            die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
          }
          else
-         {
-            $nombre_host= gethostname();
-            $sql="call inserta_bitacora_tipo('Guardado','-','$descripcion','-', '-','$nombre_host')";
-            $query= mysqli_query($con, $sql) or die();
+         {  //Nota la bitacora tipo se guarda automaticamente
+            // $nombre_host= gethostname();
+            // $sql="call inserta_bitacora_tipo('Guardado','-','$descripcion','-', '-','$nombre_host')";
+            // $query= mysqli_query($con, $sql) or die();
             //Guardado correcto
             echo "<script> Correcto(); </script>";
          }

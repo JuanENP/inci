@@ -51,15 +51,17 @@ session_start();
             echo "<script> imprime('Datos incorrectos al actualizar el tipo de empleado, error línea 51, verifique con el administrador de sistemas'); </script>";
         }
         else
-        {   $nombre_host= gethostname();
+        {
+            //Nota la bitacota tipo se guarda automaticamente
+            //  $nombre_host= gethostname();
             //GUARDAR EN LA BITACORA DE TIPO
-            if(!(mysqli_query($con,"call inserta_bitacora_tipo('Actualizado','$nuevo', '$nombre_tipo','$nombre_host')")))
+           /* if(!(mysqli_query($con,"call inserta_bitacora_tipo('Actualizado','$nuevo', '$nombre_tipo','$nombre_host')")))
             {
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 
                 echo "<script> imprime('Datos incorrectos al insertar en bitacora tipo de empleado, error línea 60, verifique con el administrador de sistemas'); </script>";
             }
-            else
+            else*/
             {
                 mysqli_commit($con);
                 mysqli_autocommit($con, TRUE);
