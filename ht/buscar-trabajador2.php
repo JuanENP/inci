@@ -29,7 +29,7 @@ session_start();
             $salida2.="<select name='numSup' id='MainContent_DropDownListTrabajadores2' class='form-control' style='background-color: rgb(231, 237, 255); font-weight: bold; color: black;'>";
             while($resul2=mysqli_fetch_array($resultado2))
             {
-                $salida2.="<option value='".$resul2[0]."' style='background-color: rgb(231, 237, 255); font-weight: bold; color: black;'>". $resul2[0] . " " . utf8_encode($resul2[1]). " " . utf8_encode($resul2[2]) . " ". utf8_encode($resul2[3]) . " " ."</option>";
+                $salida2.="<option value='".$resul2[0]."' style='background-color: rgb(231, 237, 255); font-weight: bold; color: black;'>". $resul2[0] . " " . $resul2[1]. " " . $resul2[2] . " ". $resul2[3] . " " ."</option>";
             }
             $salida2.="</select>";
         }
