@@ -15,7 +15,7 @@ session_start();
     require("../../assets/js/alerts-justificacion.php");
     //******formatear a la zona horaria de la ciudad de México**********
     date_default_timezone_set('America/Mexico_City');
-    set_time_limit(600);//10 minutos máximo para la ejecución de un script
+    set_time_limit(60000);//1000 minutos máximo para la ejecución de un script
 
     if(empty($_POST["opcion"]))
     {
@@ -42,6 +42,8 @@ session_start();
             require '../../excel/PHPExcel/IOFactory.php';
             $objPHPExcel = PHPEXCEL_IOFactory::load($rutaArchivo);//cargar en memoria el archivo
             $objPHPExcel->setActiveSheetIndex(0);//seleccionar la hoja 1
+            $arrFinal=array();
+            $posFinal=0;
             cargaDeExcelABD();
 
         }
@@ -93,11 +95,18 @@ session_start();
                 $idVac=obtenerID_Vac($numero);
                 if($idVac!=0)
                 {
-                    $resultado=insertBD($numero,$diaI,$diaF,$diaSuel,$diaI2,$diaF2,$diaSuel2);
-                    if($resultado!=0)
+                    $resultado=insertBD($numero,$diaI,$diaF,$diaSuel,$diaI2,$diaF2,$diaSuel2,$idVac);
+                    if($resultado==1)
                     {
                         //no se pudo insertar este trabajador
                         array_push($errores,"No se insertaron los datos del trabajador con número $numero hágalo manualmente.");
+                    }
+                    else
+                    {
+                        if($resultado>2)
+                        {
+                            array_push($errores,"El trabajador con número $numero solo merece 2 periodos de $resultado días cada uno, verifique. (No se agregaron sus días de vacaciones.)");
+                        }
                     }
                 }
                 else
@@ -116,19 +125,20 @@ session_start();
             //echo $numero."***".$diaI."***".$diaF."***".$diaSuel."***".$diaI2."***".$diaF2."***".$diaSuel2."<br>";
         }
 
+        global $arrFinal;
         if(count($errores)>0)
         {
-            $salida="";
+            echo "Ocurrieron los siguiente errores: ";
             for($i=0;$i<count($errores);$i++)
             {
-                $salida.="<br>".$errores[$i];
+                echo "<br>".$errores[$i];
             }
-            $salida.="<br>";
-            echo "<script> imprime('Ocurrieron los siguientes errores: $salida. Los demás días de vacaciones de los demás trabajadores se guardaron de forma correcta.'); </script>";
+            echo "<script> alert('Los trabajadores que aparecen en los errores NO SE INSERTARON SUS DÍAS DE VACACIONES'
+            +'. Los días de los demás empleados fueron guardados de forma exitosa.'); </script>";
         }
         else
         {
-            echo "<script> imprime('Datos subidos de forma correcta.'); </script>";
+            echo "<script> imprime('Datos subidos de forma correcta. NO HUBO ERRORES.'); </script>";
         }
         exit;
     }
@@ -148,14 +158,17 @@ session_start();
         {
             if($filas==0)
             {
+                //arrojó consulta vacía
                 return 0;
             }
         }
     }
 
-    function insertBD($numero, $diaInicial, $diaFinal,$diaSuelto,$diaInicial2, $diaFinal2,$diaSuelto2)
+    function insertBD($numero, $diaInicial, $diaFinal,$diaSuelto,$diaInicial2, $diaFinal2,$diaSuelto2,$idVacacion)
     {
         global $con;
+        global $arrFinal;
+        global $posFinal;
         $rangoP1=0;
         $rangoP2=0;
         $suelto1=0;
@@ -271,23 +284,51 @@ session_start();
                 }
             }
         }
-        
-        echo "primer array:<br>";
-        for($i=0;$i<count($fechasAInsertar1);$i++)
+
+        /*Insertar en la BD, pero antes verificar cuántos días de vacaciones merece y retornar un 0 si todo es correcto*/
+
+        //tamaños de cada array
+        $t1=count($fechasAInsertar1);
+        $t2=count($fechasAInsertar2);
+
+        //Obtener la jornada de trabajo de esta persona
+        $dias_merecidos=obtenJornada($numero);
+
+        if($t1==$dias_merecidos && $t2==$dias_merecidos)
         {
-            echo $fechasAInsertar1[$i]."....";
-        }
-        echo "<br>";
+            //insertar días del periodo 1
+            for($i=0;$i<$t1;$i++)
+            {
+                $dia=$fechasAInsertar1[$i];
+                $sql="INSERT INTO dias_vacaciones (dia, periodo, tomado, vacaciones_vacaciones) VALUES ('$dia', 1, 0, $idVacacion)";
+                if(!$query=mysqli_query($con, $sql))
+                {
+                    echo "<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con));
+                    //ocurrió un error
+                    return 1;
+                }
+            }
 
-        echo "segundo array:<br>";
-        for($i=0;$i<count($fechasAInsertar2);$i++)
+            //insertar días del periodo 2
+            for($i=0;$i<$t2;$i++)
+            {
+                $dia=$fechasAInsertar2[$i];
+                $sql="INSERT INTO dias_vacaciones (dia, periodo, tomado, vacaciones_vacaciones) VALUES ('$dia', 2, 0, $idVacacion)";
+                if(!$query=mysqli_query($con, $sql))
+                {
+                    echo "<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con));
+                    //ocurrió un error
+                    return 1;
+                }
+            }
+
+            //todo fue exitoso
+            return 0;
+        }
+        else
         {
-            echo $fechasAInsertar2[$i]."....";
+            return $dias_merecidos;
         }
-        echo "<br>";echo "<br>";
-
-        //Insertar en la BD, pero antes verificar cuántos días de vacaciones merece y retornar un 0 si todo es correcto
-
     }
     //fin función insertBD
 
@@ -329,4 +370,41 @@ session_start();
         return $devolverFechas;
     }
     //fin de obtenDiasDeRango
+
+    function obtenJornada($numero)
+    {
+        global $con;
+        //ver si posee jornada de sab, dom, dia fest y de 12 H
+        $sql="SELECT a.idacceso FROM acceso a
+        inner join turno t on a.turno_turno=t.idturno and a.trabajador_trabajador='$numero'
+        and a.lunes=0 and a.martes=0 and a.miercoles=0 and a.jueves=0 and a.viernes=0
+        and a.sabado=1 and a.domingo=1 and a.dia_festivo=1 and t.t_horas='12:00:00'";
+        $query=mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas>0)
+        {
+            //dos periodos de vacaciones de 5 días laborales cada uno
+            return 5;
+        }
+
+        //ver si posee jornada de (sab, dia fest y de 24 H) o (dom, dia fest y de 24 H) 
+        $sql="SELECT a.trabajador_trabajador FROM acceso a
+        inner join turno t 
+        on a.turno_turno=t.idturno 
+        and a.trabajador_trabajador='49939'
+        and a.lunes=0 and a.martes=0 and a.miercoles=0 and a.jueves=0 and a.viernes=0
+        and ((a.sabado=1 and a.domingo=0) or (a.sabado=0 and a.domingo=1)) and a.dia_festivo=1
+        and t.t_horas='00:00:00'";
+        $query=mysqli_query($con, $sql);
+        $filas=mysqli_num_rows($query);
+        if($filas>0)
+        {
+            //dos periodos de vacaciones de 2 días laborales cada uno
+            return 2;
+        }
+
+        //dos periodos de vacaciones de 10 días laborales cada uno, en caso de que los if anteriores no ocurran
+        return 10;
+    }
+    //fin de obtenJornada
 ?>

@@ -162,8 +162,9 @@ session_start();
     function actualizarPassword($nuevoUsuario,$newPassword)
     {
         global $con;
-        $sql="ALTER USER '$nuevoUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
-        $query= mysqli_query($con, $sql) or die('Ocurrió un error al actualizar la contraseña');
+        $sql="ALTER USER USER() IDENTIFIED BY '$newPassword'";
+        $query= mysqli_query($con, $sql) or die("<br>" . "Error, línea 165: " . mysqli_errno($con) . " : " . mysqli_error($con).", ns");
+
         return 0;
     }
     
