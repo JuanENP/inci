@@ -28,7 +28,7 @@ session_start();
                     }
                     else
                     {
-                        echo"<script language= javascript type= text/javascript> alert('Error, contraseñas diferentes');history.back();</script>";
+                        echo"<script language= javascript type= text/javascript> alert('Error. LA NUEVA CONTRASEÑA Y LA CONFIRMACIÓN DE LA MISMA SON DIFERENTES.');history.back();</script>";
                         exit();   
                     }
                     
@@ -70,6 +70,7 @@ session_start();
             }
             
         }
+
         if(empty($_POST['nuevaContra']) && empty($_POST['confirmaContra']) && !empty($_POST['mail']))
         {  
             $correo=$_POST['mail'];
@@ -93,16 +94,14 @@ session_start();
     {
         header("Location: ../../index.php");
         die();
-    }
-//    echo"<script language= javascript type= text/javascript> alert('$opcion');history.back();</script>";
-
+    } 
     
-   /* if($opcion==0)
+    if($opcion==0)
     {
-        echo"<script language= javascript type= text/javascript> alert('Hay un error en los datos o hay campos vacíos');history.back();</script>";
+        echo"<script language= javascript type= text/javascript> alert('ERROR. NO DEBE DEJAR NINGÚN CAMPO VACÍO.');history.back();</script>";
         exit();
     }
-    else*/
+    else
     {
         if($opcion==1)
         {  
@@ -163,7 +162,7 @@ session_start();
     {
         global $con;
         $sql="ALTER USER '$nuevoUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
-        $query= mysqli_query($con, $sql) or die('Ocurrió un error interno al actualizar la contraseña');
+        $query= mysqli_query($con, $sql) or die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
         return 0;
     }
 ?>
