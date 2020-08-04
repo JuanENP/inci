@@ -163,9 +163,7 @@ session_start();
     {
         global $con;
         $sql="ALTER USER '$nuevoUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
-        $query= mysqli_query($con, $sql) or die('Ocurrió un error al actualizar la contraseña');
+        $query= mysqli_query($con, $sql) or die('Ocurrió un error interno al actualizar la contraseña');
         return 0;
     }
-    
-
 ?>

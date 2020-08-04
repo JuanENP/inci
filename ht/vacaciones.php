@@ -72,6 +72,11 @@ session_start();
                         $('body').toggleClass('open');
                     }
                 );
+
+                $('.btn-sm').on('click', function() {
+                    //Añadimos la imagen de carga en el contenedor
+                    $('#img-loading').html('<div class="loading"><img src="../images/loader.gif"/><br/>Estoy Procesando la información, sea paciente :)...</div>');
+                });
             });
 
             function oculta(x) 
@@ -107,6 +112,11 @@ session_start();
                         document.getElementById('individual').style.display = "block";
                     }
                 } 
+            }
+
+            function buttonDisabled(idbutton) 
+            {
+                document.getElementById(idbutton).style.display = "none";
             }
         </script> 
     </head>
@@ -289,7 +299,10 @@ session_start();
                         </div>
                         <br><br><br><br><br><br><br><br><br>
                         <div class="card-footer">
-                            <input type="submit" name="guardar" value="GUARDAR" class="btn btn-primary btn-sm"/>
+                            <input type="submit" name="guardar" value="GUARDAR" class="btn btn-primary btn-sm" id="final" onclick="buttonDisabled(this.id)"/>
+
+                            <div id="img-loading" class="col-lg-12">
+                            </div>
                         </div>
 
                     </div> <!--FIN DIV animated fadeIn-->
