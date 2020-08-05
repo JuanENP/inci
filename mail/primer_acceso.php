@@ -30,7 +30,8 @@ session_start();
     }
 ?>
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="es">
+
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -120,7 +121,8 @@ session_start();
                             <div id="mail"> 
                                 <div class="form-group">
                                     <label>Ingrese su dirección de correo electrónico </label>
-                                    <input name="mail"  type="email" class="form-control" />
+                                    <input name="mail"  type="email" class="form-control"/>
+                                
                                 </div>
                             </div>
                             <div id="cont">
