@@ -379,9 +379,8 @@ session_start();
     function obtenerFilas($Elquery)
     {
         global $con;
-        //obtener la hora entrada y hora salida del empleado
         $sql=$Elquery;
-        $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $query=mysqli_query($con, $sql) or die("<br>" . "Error obtenerFilas: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
         $Totfilas=mysqli_num_rows($query);
         return $Totfilas;
     }
@@ -674,6 +673,7 @@ session_start();
         '$clave_especial_new','$empresa_new','$duracion_new','$f_inicio_old','$f_fin_old','$he_old','$hs_old',
         '$clave_especial_old','$empresa_old','$duracion_old','$num','$nombre_host','$id')")))
         {
+            mysqli_close($con);
             echo $ok;
         }
         else
@@ -699,6 +699,7 @@ session_start();
         '$solicitante_new','$suplente_new','$he_new','$hs_new','$quincena_new','$id_old','$fechaRegistro_old','$fechaGuardia_old',
         '$solicitante_old','$suplente_old','$he_old','$hs_old','$quincena_old','$nombre_host')")))
         {
+            mysqli_close($con);
             echo $ok;
         }
         else
@@ -737,6 +738,7 @@ session_start();
         //GUARDAR EN LA BITACORA DE Guardia
         if((mysqli_query($con,"call inserta_bitacora_pase('$operacion','$fecha_uso','$num','$quincena','$host')")))
         {
+            mysqli_close($con);
             echo $ok;
         }
         else
@@ -760,6 +762,7 @@ session_start();
         if((mysqli_query($con,"call inserta_bitacora_justificar_falta('$operacion','$idjustFalta_new','$fecha_new',
         '$falta_falta_new','$idjustFalta_old','$fecha_old','$falta_falta_old','$host')")))
         {
+            mysqli_close($con);
             echo $ok;
         }
         else
@@ -772,4 +775,48 @@ session_start();
             exit();
         }
     }//FIN de insertaEnBitacoraJustificarFalta
+
+    function insertaEnBitacoraJustificacion($ok,$operacion,$idjust_new,$fecha_new,
+    $incid_incid_new,$cla_ju_cla_ju_new,$idjust_old,$fecha_old,$incid_incid_old,$cla_ju_cla_ju_old,$regresa)
+    {
+        /*
+            regresa indica si la función retornará algo o no
+            $regresa=1 : retornará algo
+            $regresa=0 : no retornará algo
+        */
+        global $con;
+        $host=gethostname();
+        //GUARDAR EN LA BITACORA DE justificar Falta
+        if((mysqli_query($con,"call inserta_bitacora_justificacion('$operacion','$idjust_new','$fecha_new',
+        '$incid_incid_new','$cla_ju_cla_ju_new','$idjust_old','$fecha_old','$incid_incid_old','$cla_ju_cla_ju_old','$host')")))
+        {
+            if($regresa==0)
+            {
+                mysqli_close($con);
+                echo $ok;
+            }
+            else
+            {
+                if($regresa==1)
+                {
+                    return true;
+                }
+                else
+                {
+                    echo "Parametro *regresa=$regresa* de la función insertaEnBitacoraJustificacion no admitido";
+                    exit();
+                }
+            }
+
+        }
+        else
+        {
+            echo mysqli_errno($con) . ": " . mysqli_error($con) . "\n";
+            $sql="DELETE FROM justificacion WHERE (idjustificacion = '$idjust_new')";
+            hazAlgoEnBDSinRetornarAlgo($sql);
+            echo "<script> imprime('Surgió un error al guardar en la bitácora.' +
+            ' Esta operación NO se ha guardado, REINTENTE.'); </script>";
+            exit();
+        }
+    }//FIN de insertaEnBitacoraJustificacion
 ?>

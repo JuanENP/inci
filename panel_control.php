@@ -76,9 +76,11 @@ session_start();
                                 <li><i class="fa fa-sitemap"></i><a href="ht/departamentos.php">Departamentos</a></li>
                                 <li><i class="fa fa-male"></i><a href="ht/tipoempleado.php">Tipo Empleado</a></li>
                                 <li><i class="fa fa-users"></i><a href="ht/trabajadores.php">Personal</a></li>
-
+                                <li><i class="menu-icon fa fa-bicycle"><a href="ht/vacaciones.php"></i>Normales</a></li>
+                                <li><i class="menu-icon fa fa-flask"><a href="ht/vacaciones-r.php"></i>Eman. Radio</a></li>
                             </ul>
                         </li>
+
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">

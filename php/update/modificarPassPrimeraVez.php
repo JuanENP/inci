@@ -11,12 +11,41 @@ session_start();
         //Guardar correo y actualizar contraseña
         if(!empty($_POST['mail'] && !empty($_POST['nuevaContra']) && !empty($_POST['confirmaContra'])))
         {   
-            $revisarMail=revisarMail($_POST['mail']);
-            $revisarPass=revisarPass($_POST['nuevaContra'],$_POST['confirmaContra']);
-            $opcion=1;
-            $mail= $_POST['mail'];
-            $nuevaContra=$_POST['nuevaContra'];
-            $confirmaContra=$_POST['nuevaContra'];
+            $correo=$_POST['mail'];
+            // filter_var regresa los datos filtrados
+            $correo = filter_var($correo, FILTER_VALIDATE_EMAIL);
+            // regresa false si no son válidos
+            if ($correo !== false) 
+            {
+                $mail=$_POST['mail'];
+                if(is_numeric($_POST['nuevaContra']) && is_numeric($_POST['confirmaContra']))
+                {
+                    
+                    $nuevaContra=$_POST['nuevaContra'];
+                    $confirmaContra=$_POST['confirmaContra'];
+                    if($nuevaContra==$confirmaContra)
+                    {
+                        $opcion=1;
+                    }
+                    else
+                    {
+                        echo"<script language= javascript type= text/javascript> alert('Error. LA NUEVA CONTRASEÑA Y LA CONFIRMACIÓN DE LA MISMA SON DIFERENTES.');history.back();</script>";
+                        exit();   
+                    }
+                    
+                }
+                else
+                {
+                    echo"<script language= javascript type= text/javascript> alert('La contraseñas deben ser numéricas');history.back();</script>";
+                    exit();
+                }
+                
+            } 
+            else 
+            {
+                echo"<script language= javascript type= text/javascript> alert(' La dirección de correo electrónico no es válida ');history.back();</script>";
+                exit();
+            }
         }
         else
         {
@@ -30,13 +59,27 @@ session_start();
             }
             else
             {
-                //Guardar solo el correo
-                if( !empty($_POST['mail']) && empty($_POST['nuevaContra']) && empty($_POST['confirmaContra']))
-                {  
-                    $revisarMail=revisarMail($_POST['mail']);
-                    $opcion=3;
-                    $mail=$_POST['mail'];
-                }
+                echo"<script language= javascript type= text/javascript> alert('La contraseñas deben ser numéricas');history.back();</script>";
+                exit();
+            }
+            
+        }
+
+        if(empty($_POST['nuevaContra']) && empty($_POST['confirmaContra']) && !empty($_POST['mail']))
+        {  
+            $correo=$_POST['mail'];
+            // filter_var regresa los datos filtrados
+            $Sicorreo = filter_var($correo, FILTER_VALIDATE_EMAIL);
+            // regresa false si no son válidos
+           if ($Sicorreo != false) 
+            {
+                $mail=$_POST['mail'];
+                $opcion=3;
+            } 
+            else 
+            {
+                echo"<script language= javascript type= text/javascript> alert(' La dirección de correo electrónico no es válida ');history.back();</script>";
+                exit();
             }
         }
     }
@@ -44,12 +87,11 @@ session_start();
     {
         header("Location: ../../index.php");
         die();
-    }
-    // echo"<script language= javascript type= text/javascript> alert('$opcion');history.back();</script>";
-
+    } 
+    
     if($opcion==0)
     {
-        echo"<script language= javascript type= text/javascript> alert('Error, verifique con el administrador de sistemas');history.back();</script>";
+        echo"<script language= javascript type= text/javascript> alert('ERROR. NO DEBE DEJAR NINGÚN CAMPO VACÍO.');history.back();</script>";
         exit();
     }
     else
@@ -90,55 +132,7 @@ session_start();
     {
         global $con;
         $sql="ALTER USER '$nuevoUsuario'@'localhost' IDENTIFIED BY '$newPassword';";
-        $query= mysqli_query($con, $sql);
-        if($query)
-        {
-            return true;
-        }
-        else
-        {
-            $er1=mysqli_errno($con);
-            $er2=mysqli_error($con);
-            $línea='85';
-            error($er1,$er2,$línea);
-        }
+        $query= mysqli_query($con, $sql) or die("<br>" . "Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+        return 0;
     }
-
-    function revisarMail($correo)
-    {
-        // filter_var regresa los datos filtrados
-        $Sicorreo = filter_var($correo, FILTER_VALIDATE_EMAIL);
-        // regresa false si no son válidos
-        if ($Sicorreo != false) 
-        {
-            return true;
-        } 
-        else 
-        {
-            echo"<script language= javascript type= text/javascript> alert(' La dirección de correo electrónico no es válida ');history.back();</script>";
-            exit();
-        }
-    }
-    function revisarPass($newPass,$confirmaPass)
-    {
-        if($newPass==$confirmaPass)
-        {
-            if($newPass !== '9999')//si comprobar si la contraseña ingresada es diferente a la que dimos por defecto
-            {
-                return true;
-            }
-            else
-            {
-                echo"<script language= javascript type= text/javascript> alert('Debe registrar una contraseña diferente a la contraseña por defecto'); history.back();</script>";    
-                exit();
-            }
-        }
-        else
-        {
-            echo"<script language= javascript type= text/javascript> alert('Error, las contraseñas son diferentes');history.back();</script>";
-            exit();   
-        }
-    }
-     
-
 ?>

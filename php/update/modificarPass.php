@@ -10,6 +10,13 @@ session_start();
         {
             $contraActual=$_POST['contraActual'];
             $nuevaContra=$_POST['nuevaContra'];
+
+            if($nuevaContra=="9999")
+            {
+                echo "<script language= javascript type= text/javascript> alert('LA NUEVA CONTRASEÑA QUE ELIGIÓ NO PUEDE SER IGUAL A 9999, ELIJA OTRA COMBINACIÓN.'); history.back();</script >";
+                exit();
+            }
+            
             $mail=$_POST['email'];
             //Comprobar si la estructura del correo es correcto
             $correo = filter_var($mail, FILTER_VALIDATE_EMAIL);
@@ -67,7 +74,7 @@ session_start();
             }
             else
             {
-                echo "<script language= javascript type= text/javascript> alert('Datos incorrectos'); history.back();</script >";
+                echo "<script language= javascript type= text/javascript> alert('No escribió su contraseña actual de forma correcta.'); history.back();</script >";
                 exit();
             }
         }

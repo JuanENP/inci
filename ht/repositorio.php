@@ -232,6 +232,7 @@ session_start();
                 </div><!-- .content -->
             </div>
 
+            <!-- inicio de modal -->
             <div class="modal fade" id="mimodalejemplo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content" id="modal" >
@@ -244,7 +245,7 @@ session_start();
                                     <form method="post" action="../php/update/modificarPass.php" autocomplete="off" >
                                         <label> Usuario</label>
                                         <div class="input-group">
-                                            <input type="text" name="numControl" Class="form-control" disabled="disabled" value="<?php echo$nombre;?>">
+                                            <input type="text" name="numControl" Class="form-control" value="<?php echo$nombre;?>" disabled>
                                         </div>
                                         <label>Correo electrónico</label>
                                         <div class="input-group">
@@ -278,6 +279,7 @@ session_start();
                     </div>
                 </div>
             </div>
+            <!-- fin modal -->
 
             <script type="text/javascript">
                 $(document).ready(function() {

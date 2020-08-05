@@ -108,6 +108,7 @@
         $query7=mysqli_query($con, $sql7) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
         $resul7=mysqli_fetch_array($query7);
         $filasval1= mysqli_num_rows($query7);
+        
         $sql7="SELECT b.idespecial from especial b where b.validez=0
         and (b.clave_especial_clave_especial='17' or b.clave_especial_clave_especial='61' or b.clave_especial_clave_especial='CS')
         and b.trabajador_trabajador = $num
