@@ -58,7 +58,7 @@ ob_start();
             
             <div id="p3">
             <p>SE HA CONCEDIDO PERMISO A: <?php echo $nombre?>
-            <p>PARA SALIR EL DÍA <?php echo strtoupper($hoy).', DE LAS '.$posibleHoraSalida.' A LAS '. $sal.' HRS '?></p>
+            <p>PARA SALIR EL DÍA <?php echo strtoupper($hoy).', ENTRE LAS '.$posibleHoraSalida.' Y LAS '. $sal.' HRS '?></p>
             <p>PARA: <?php echo strtoupper($motivo)?></p>
             <p>CATEGORÍA: <?php echo $des?> </p>
             <p>HORARIO: <?php echo $horario?> </p><br>
