@@ -8,6 +8,7 @@ session_start();
         require("../../Acceso/global.php"); 
         $nombre_host= gethostname();
         require('../buscar_info_trabajador.php');
+        $fecha_hoy=date("Y-m-d");//la fecha de hoy
     }
     else
     {
@@ -29,7 +30,6 @@ session_start();
         exit();
     }
 </script>
-
 <?php
     $salida="";
     if(empty($_SESSION['anterior_num']))
@@ -76,23 +76,22 @@ session_start();
     {
         $salida.="Debe seleccionar la fecha de alta del trabajador ";
     }
-
     $anterior_num=$_SESSION['anterior_num'];//anterior numero de empleado
-    $numero=$_POST['num'];
-    $nuevoNumeroEmpleado='';
+    $numero=$_POST['num']; //nuevo numero de empleado
+    $nuevoNumeroEmpleado='';//Servirá para validar si el numero de empleados se cambiará
+    $nip=$_POST['nip'];
     $sextaRegistrada='no'; //Sirve para validar que el trabajador tenga o no tenga una sexta registrada en la bd
     $existeSexta=0;//Verificar que el usuario haya seleccionado un turno con sexta
-
-    //Validar si el número de empleado sigue siendo el mismo o se si se actualizará
+    //Validar si el número de empleado se actualizará
     if($numero !== $anterior_num)
     {   
         $nuevoNumeroEmpleado='si';
         //Aqui consulto si existe ese nuevo numero de trabajador 
         $ejecu="select * from trabajador where numero_trabajador = '$numero'";
         $codigo=mysqli_query($con,$ejecu);
-        $consultar=mysqli_num_rows($codigo);
+        $filas=mysqli_num_rows($codigo);
         //si el trabajador existe avisame que ya existe
-        if($consultar==1)
+        if($filas==1)
         { 
             $salida="El número de trabajador ya existe, debe registrar otro número ";
             echo "<script> error('$salida');</script>";
@@ -102,20 +101,18 @@ session_start();
             $numero=$numero;
         }  
     }
-
-    $nombre=$_POST['nom'];
-    $a_pat=$_POST['a_pat'];
-    $a_mat=$_POST['a_mat'];
+    $nombre=strtoupper($_POST['nom']);
+    $a_pat=strtoupper($_POST['a_pat']);
+    $a_mat=strtoupper($_POST['a_mat']);
     $cat=$_POST['cat'];
     $depto=$_POST['depto'];
-    $tipo=$_POST['tipo'];
+    $tipo=$_POST['tipo'];  
     $t_dias=-1; //Servirá para guardar el total de días en acceso si el empleado no tiene sexta
-    
     $todoturno=$_POST['turno'];
     $separa=explode(' ',$todoturno);
     $turno=$separa[0];
     $t_horas_turno=$separa[1];
-
+    //Separa la fecha de cumpleaños
     $cumple=$_POST['cumple'];
     $valores=explode('-',$cumple);
     $respuesta=esMayorEdad($cumple);
@@ -131,14 +128,23 @@ session_start();
     else
     {
         $validezCumpleOno=$_POST['cumpleOno'];
-        if ($validezCumpleOno=='cum') //cumpleaños
+        if ($validezCumpleOno=='cum') //Si el trabajador descansará en su cumpleaños u en su onomástico
         {
             $validezCumpleOno='0';
         }
         else
-        { //onomástico
+        {   //onomástico
             $validezCumpleOno='1';
         }
+    }
+    
+    if (empty($_POST['t_opc']))
+    {
+        $salida.="Debe seleccionar si el empleado tiene o no tiene turno opcional. ";
+    }
+    else
+    {
+        $t_opc=$_POST['t_opc'];
     }
 
     $fecha_alta=$_POST['fecha_alta'];
@@ -152,6 +158,7 @@ session_start();
     if (empty($_POST['dia']))
     {
         $salida.="Debe seleccionar al menos un dia de trabajo. ";
+    
     }
     else
     {
@@ -189,7 +196,7 @@ session_start();
     {
         $salida.="El año de la fecha de alta es incorrecto. ";
     }
-           //Si es foráneo
+    //Si es foráneo
     if($tipo==4)
     {
         //Consultar los datos de la comision el trabajador desde la bd
@@ -200,7 +207,6 @@ session_start();
         $clave_especial_anterior=$fila[7];
         $empresa_anterior=$fila[8];
         $duracion_anterior=$fila[9]; 
-
         //datos recibidos desde editar-trabajadores.php
         $empresa=$_POST['emp'];
         $f_ini=$_POST['f_ini'];
@@ -236,6 +242,7 @@ session_start();
         $date2= new DateTime($f_fin);
         $interval = $date1->diff($date2);
         $totDias=$interval->format('%a');//los días que durará la comisión
+        $totDias=$totDias+1;
         //si el periodo de comisión es superior a 165 días (5 meses y medio)
         if($totDias>165)
         {
@@ -277,6 +284,7 @@ session_start();
     $categoria_anterior=$fila[5];
     $tipo_anterior=$fila[6];
     $genero_anterior=$fila[7];
+    $nip_anterior=$fila[8];
     
     $fila=consultaCumple($anterior_num);
     $cumple_anterior=$fila[0];
@@ -294,6 +302,7 @@ session_start();
     $domingo_anterior=$fila[6];
     $dias_festivos_anterior=$fila[7];
     $turno_anterior=$fila[8];
+    $idacceso_anterior=$fila[9];
     
     $fila=consultaTServicio($anterior_num);
     $idtiempo_servicio=$fila[1];
@@ -322,97 +331,133 @@ session_start();
         $t_dias_anteriorS=$result[10];
         $turno_anteriorS=$result[11];
     }
-    //Si salida está vacio significa que no ocurrió algún error
-    if(empty($salida))
+    //Validar el tipo de empleado para saber si tendrá una cuenta o no
+    if($tipo !== $tipo_anterior)
     {
-        //significa que no ocurrio ningun error y prosigues
-        $semana = array(0,0,0,0,0,0,0,0);
+        if($tipo == 3)//Si el tipo de empleado es eventual, no se deberá guardar una cuenta para el repositorio
+        {
+            $guardarUserRepositorio='no';
+        }
+        else
+        {
+            $guardarUserRepositorio='si';
+        }  
+    }
+    //Validar el tiempo de antiguedad del trabajador si es menor de 6 meses y 1 día no pude ser de base, comisionado foraneo o confianza
+    if($fecha_alta)
+    if($tipo == 1 || $tipo == 2 || $tipo == 4 )
+    {
+        $f_alta= new DateTime($fecha_alta);
+        $fHoy= new DateTime( $fecha_hoy);
+        $antiguedad= $f_alta->diff($fHoy);
+        $totDiasTrabajando=$antiguedad->format('%a');
+        $totDiasTrabajando=$totDiasTrabajando/365;
+        if($totDiasTrabajando <= 0.5)
+        {
+            $salida.="La antiguedad o tiempo de alta del trabajador debe ser mayor de 6 meses";
+        }
+    }
+    //significa que no ocurrio ningun error y prosigues
+    $semana = array(0,0,0,0,0,0,0,0);
+    if(isset($dias)) //validar si existe el total de días
+    {    
         $num=count($dias);
         for($n=0;$n<$num;$n++)
         {
-            if($dias[$n]=="lunes")
-            {  
-                $semana[0]=1;
-            }
-            if($dias[$n]=="martes")
-            {  
-                $semana[1]=1;
-            }
-            if($dias[$n]=="miercoles")
-            {  
-                $semana[2]=1;
-            }
-            if($dias[$n]=="jueves")
-            {  
-                $semana[3]=1;
-            }
-            if($dias[$n]=="viernes")
-            {  
-                $semana[4]=1;
-            }
-            if($dias[$n]=="sabado")
-            {  
-                $semana[5]=1;
-            }
-            if($dias[$n]=="domingo")
-            {  
-                $semana[6]=1;
-            }
-            if($dias[$n]=="dias_festivos")
-            {  
-                $semana[7]=1;
-            }
+            if($dias[$n]=="lunes"){$semana[0]=1;}
+            if($dias[$n]=="martes"){$semana[1]=1;}
+            if($dias[$n]=="miercoles"){$semana[2]=1;}
+            if($dias[$n]=="jueves"){$semana[3]=1;}
+            if($dias[$n]=="viernes"){$semana[4]=1;}
+            if($dias[$n]=="sabado"){$semana[5]=1;}
+            if($dias[$n]=="domingo"){$semana[6]=1;}
+            if($dias[$n]=="dias_festivos"){$semana[7]=1;}
         }
+    }
+    if($nip !== $nip_anterior)
+    {
+        $buscarSiExisteNip=buscarSiExisteNip($nip);
+        if($buscarSiExisteNip == true)
+        {
+            $salida.="El NIP ya existe, debe escribir uno diferente. ";
+        }
+    }
 
-        //Seleccionar los días de sexta en caso de que el trabajador tenga sexta
-        if (!(empty($_POST['diaS'])))
-        {  
-            $diasSexta=$_POST['diaS'];
-            $existeSexta=1;
-            $semana2 = array(0,0,0,0,0,0,0,0);
-            $num2=count($diasSexta);
-            for($n=0;$n<$num2;$n++)
+    //Seleccionar los días de sexta en caso de que el trabajador tenga sexta
+    if (!(empty($_POST['diaS'])))
+    {  
+        $diasSexta=$_POST['diaS'];
+        $existeSexta=1;
+        $semana2 = array(0,0,0,0,0,0,0,0);
+        $num2=count($diasSexta);
+        for($n=0;$n<$num2;$n++)
+        {
+            if($diasSexta[$n]=="lunes"){$semana2[0]=1;}
+            if($diasSexta[$n]=="martes"){$semana2[1]=1;}
+            if($diasSexta[$n]=="miercoles"){$semana2[2]=1;}
+            if($diasSexta[$n]=="jueves"){$semana2[3]=1;}
+            if($diasSexta[$n]=="viernes"){$semana2[4]=1;}
+            if($diasSexta[$n]=="sabado"){$semana2[5]=1;}
+            if($diasSexta[$n]=="domingo"){$semana2[6]=1;}
+            if($diasSexta[$n]=="dias_festivos"){$semana2[7]=1;}
+        }
+    }
+    //Sirve para saber el orden de los días de trabajo dela tabla acceso
+    $acceso=$semana[0].$semana[1].$semana[2].$semana[3].$semana[4].$semana[5].$semana[6].$semana[7];
+    $siguardar=""; //sirve para vildar si se guarda o no el turno opcional
+    $siguardarEnAF=""; //sirve para validar si se guardará el acceso festivo (tabla af)
+    $eliminarEnAF="";//sirve para validar si se eliminará el acceso festivo (tabla af)
+    if($t_opc=="si")
+    {
+        $validaTurnoOpcional=validaTurnoOpcional($numero, $cat, $t_horas_turno, $acceso);
+        if($validaTurnoOpcional == true)
+        {
+            $turnoOpc=consultaTurnoOpcional($numero);
+            if($turnoOpc==true) //Si ya existía en la tabla turno opcional (t_op) no se deberá guardar
             {
-                if($diasSexta[$n]=="lunes")
-                {  
-                    $semana2[0]=1;
-                }
-                if($diasSexta[$n]=="martes")
-                {  
-                    $semana2[1]=1;
-                }
-                if($diasSexta[$n]=="miercoles")
-                {  
-                    $semana2[2]=1;
-                }
-                if($diasSexta[$n]=="jueves")
-                {  
-                    $semana2[3]=1;
-                }
-                if($diasSexta[$n]=="viernes")
-                {  
-                    $semana2[4]=1;
-                }
-                if($diasSexta[$n]=="sabado")
-                {  
-                    $semana2[5]=1;
-                }
-                if($diasSexta[$n]=="domingo")
-                {  
-                    $semana2[6]=1;
-                }
-                if($diasSexta[$n]=="dias_festivos")
-                {  
-                    $semana2[7]=1;
-                }
+                $siguardar="no";
+            }
+            else //Sino guardarlo en la tabla t_op
+            {
+                $siguardar="si";
             }
         }
-
+    }
+    else //Si seleccionó en turno opcional no
+    {   //Buscar si el empleado estaba registrado en la tabla turno opcional
+        $turnoOpc=consultaTurnoOpcional($numero);
+        if($turnoOpc==true) //Si ya existía en la tabla turno opcional (t_op) no se deberá guardar
+        {
+            $siguardar="no";
+        }
+        //Si el empleado trabaja sabado. domingo y dia festivo y tiene un turno de 12 horas
+        if($t_horas_turno=="12:00:00" && $acceso=="00000111" && $tipo==2)
+        {  
+            //guardarlo en la tabla af si no existe en esa tabla
+            $buscarEnAF=buscarEnAF($numero);
+            if($buscarEnAF == null)
+            {
+                $siguardarEnAF='si';
+            }
+        }
+        else
+        {
+            $buscarEnAF=buscarEnAF($numero);//En acceso festivo
+            if($buscarEnAF !== null)
+            {
+                $eliminarEnAF='si';
+                $idaf=$buscarEnAF;//Id en la tabla af(acceso festivo)
+            }
+        }
+    }
+    //Si salida está vacio significa que no ocurrió algún error
+    if(empty($salida))
+    {
         //Si el trabajador es comisionado foráneo
         if($tipo==4)
         {
             mysqli_autocommit($con, FALSE);
-            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero);
+            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero,$nip);
             $actualizarComisionEnEspecial=actualizarComisionEnEspecial($f_ini,$f_fin,$empresa,$totDias,$idespecial);
             //Si el trabajador seleccionó un turno con sexta
             if($existeSexta==1)
@@ -431,14 +476,25 @@ session_start();
             else//Si el trabajador no tiene seleccionado un turno con sexta
             {
                 //Pero ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
-
                 if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
                 {
                     $EliminarSexta=Sexta('3','-','-','-','-','-','-','-','-','-','-',$idSexta);
                 }                                        
-
             }
-            
+
+            ///Si el turno opcional es si y no esta registrado en la tabla t_op, se deberá guardar
+            if($t_opc=="si" &&  $siguardar="si")
+            {
+                $guardado=insertaTurnoOpcional($numero);
+            }
+            else
+            {   //Si el turno es no, pero el numero está registrado en t_op, entonces se deberá eliminar de la tabla
+                if($t_opc=="no" &&  $siguardar="no")
+                {
+                    $eliminado=eliminarTurnoOpc($numero);
+                }
+            }
+
             $actualizarAcceso=actualizarAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$numero,$t_dias);
             $actualizarCumpleOno=actualizarCumpleOno($cumple,$ono,$validezCumpleOno,$idcumple_ono);
             $actualizarTiempoServicio=actualizarTiempoServicio($fecha_alta,$idtiempo_servicio);
@@ -454,7 +510,16 @@ session_start();
             {
                 $numeroActual='-';
             } 
-               
+            //Si existe en la tabla af (acceso festivo)
+            if($siguardarEnAF=='si')
+            {
+                $insertaEnAF=insertaEnAF($idacceso_anterior);
+            }
+            if($eliminarEnAF=='si')
+            {
+                $eliminarEnAF=eliminarEnAF($idaf);
+            }
+
             if($nombre == $nombre_anterior){$nombre='-';}    
             if($a_pat == $a_paterno_anterior){$a_pat='-';}  
             if($a_mat == $a_materno_anterior){$a_mat='-';}   
@@ -475,8 +540,7 @@ session_start();
             {
                 if($sextaRegistrada =='no') //pero el trabajador no tiene una sexta registrada, será necesario guardar la sexta tambien en la bitacora sexta
                 {
-                    $bitacoraSexta=bitacoraSexta('Guardado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,'-','-','-','-','-','-','-','-','-',$numero,$nombre_host);
-                   
+                    $bitacoraSexta=bitacoraSexta('Guardado',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],$turno,'-','-','-','-','-','-','-','-','-',$numero,$nombre_host);  
                 }
                 else
                 {
@@ -498,7 +562,7 @@ session_start();
         else //Empleado Base, confianza o eventual 
         {
             mysqli_autocommit($con, FALSE);
-            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero);
+            $actualizarTrabajador=actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero,$nip);
             //Si el trabajador seleccionó un turno con sexta
             if($existeSexta==1)
             {   //Ver si tiene una sexta registrada en la tabla sexta
@@ -516,12 +580,23 @@ session_start();
             else//Si el trabajador no tiene seleccionado un turno con sexta
             {
                 //Pero ya estaba registrado en la tabla sexta y va a cambiar a otro turno que no tiene sexta, su sexta será eliminada
-
                 if(($sextaRegistrada=='si') && ($t_horas_turno !=="06:00:00" || $t_horas_turno !=="06:30:00") && ($tipo==2 || $tipo==4))
                 {
                     $EliminarSexta=Sexta('3','-','-','-','-','-','-','-','-','-','-',$idSexta);
                 }                                        
+            }
 
+            ///Si el turno opcional es si y no esta registrado en la tabla t_op, se deberá guardar
+            if($t_opc=="si" &&  $siguardar="si")
+            {
+                $guardado=insertaTurnoOpcional($numero);
+            }
+            else
+            {   //Si el turno opcional es no, pero el numero está registrado en t_op, entonces se deberá eliminar de la tabla
+                if($t_opc=="no" &&  $siguardar="no")
+                {
+                    $eliminado=eliminarTurnoOpc($numero);
+                }
             }
 
             $actualizarAcceso=actualizarAcceso($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],$turno,$numero,$t_dias);
@@ -539,6 +614,15 @@ session_start();
             {
                 $numeroActual='-';
             } 
+            
+            if($siguardarEnAF=='si')
+            {
+                $insertaEnAF=insertaEnAF($idacceso_anterior);
+            }
+            if($eliminarEnAF=='si')
+            {
+                $eliminarEnAF=eliminarEnAF($idaf);
+            }
                 
             if($nombre == $nombre_anterior){$nombre='-';}    
             if($a_pat == $a_paterno_anterior){$a_pat='-';}  
@@ -584,14 +668,14 @@ session_start();
         echo "<script> error('$salida'); history.back();</script>";
     }
 
-    function actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero)
+    function actualizarTrabajador($anterior_num,$numero, $nombre, $a_pat, $a_mat, $depto, $cat, $tipo, $genero, $nip)
     {
         global $con;
-        if(!(mysqli_query($con,"Update trabajador SET numero_trabajador='$numero', nombre='$nombre',apellido_paterno='$a_pat', apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo, genero='$genero' WHERE numero_trabajador='$anterior_num'")))
+        if(!(mysqli_query($con,"Update trabajador SET numero_trabajador='$numero', nombre='$nombre',apellido_paterno='$a_pat', apellido_materno='$a_mat',depto_depto='$depto',categoria_categoria='$cat',tipo_tipo=$tipo, genero='$genero', nip='$nip' WHERE numero_trabajador='$anterior_num'")))
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='412';
+            $línea='700';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);            
@@ -609,7 +693,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='402';
+            $línea='718';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -627,7 +711,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='414';
+            $línea='736';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);            
@@ -645,7 +729,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='425';
+            $línea='754';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -663,7 +747,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='436';
+            $línea='772';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -683,7 +767,7 @@ session_start();
             {
                 $er1=mysqli_errno($con);
                 $er2=mysqli_error($con);
-                $línea='513';
+                $línea='792';
                 error($er1,$er2,$línea);
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE);
@@ -701,7 +785,7 @@ session_start();
                 {
                     $er1=mysqli_errno($con);
                     $er2=mysqli_error($con);
-                    $línea='402';
+                    $línea='810';
                     error($er1,$er2,$línea);
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE);
@@ -719,7 +803,7 @@ session_start();
                     {
                         $er1=mysqli_errno($con);
                         $er2=mysqli_error($con);
-                        $línea='608';
+                        $línea='828';
                         error($er1,$er2,$línea);
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE);
@@ -742,7 +826,7 @@ session_start();
       {
         $er1=mysqli_errno($con);
         $er2=mysqli_error($con);
-        $línea='704';
+        $línea='847';
         error($er1,$er2,$línea);
         mysqli_rollback($con);
         mysqli_autocommit($con, TRUE); 
@@ -760,7 +844,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='547';
+            $línea='869';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -779,7 +863,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='566';
+            $línea='888';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -797,7 +881,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='583';
+            $línea='906';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -815,7 +899,7 @@ session_start();
         { 
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='496';
+            $línea='924';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -833,7 +917,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='566';
+            $línea='942';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE);
@@ -852,7 +936,7 @@ session_start();
         {
             $er1=mysqli_errno($con);
             $er2=mysqli_error($con);
-            $línea='653';
+            $línea='961';
             error($er1,$er2,$línea);
             mysqli_rollback($con);
             mysqli_autocommit($con, TRUE); 
@@ -868,7 +952,7 @@ session_start();
                 {
                     $er1=mysqli_errno($con);
                     $er2=mysqli_error($con);
-                    $línea='653';
+                    $línea='977';
                     error($er1,$er2,$línea);
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
@@ -878,6 +962,24 @@ session_start();
                     return true;
                 }
             }
+        } 
+    }
+
+    function eliminarTurnoOpc($numero)
+    {
+        global $con;
+        if(!(mysqli_query($con,"DELETE FROM t_op WHERE (trabajador_trabajador = '$numero');")))
+        { 
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='997';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE);
+        }
+        else
+        {
+            return true;   
         } 
     }
 
@@ -897,7 +999,6 @@ session_start();
                 $err2.=$divide[$i];
             }
         }
-
         $error="$err1 : $err2. Línea de error: $numLinea. Verifique con el administrador de sistemas";
         echo"<script>error('$error'); </script>";
         exit();

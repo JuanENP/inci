@@ -10,18 +10,16 @@
     //echo "HOY ES ".$dias[date("w")] . "<br>";//esto es solo para ver si el día es correcto
     $diaactual=$dias[date("w")];//guardar el día actual para su posterior uso
     $f_hoy=date("Y-m-d");//guardar la fecha actual
-
+    $posUltimoRegistroAsistencia=5;
     
     //QUIENES ASISTIERON HOY (turno_entrada,fecha entrada, su numero empleado e id)
     function quienes_asistieron_hoy()
     {
+        global $con;
         global $f_hoy;
-        global $nombre;
-        global $contra;
-        require("../Acceso/global.php");
+        global $posUltimoRegistroAsistencia;
         $asisten_hoy=[];
         $aumenta=0;
-        $posUltimoRegistroAsistencia=5;
 
         //seleccionar el valor del ultimo id seleccionado
         $sql=" SELECT Valor FROM _posicion where idposicion=$posUltimoRegistroAsistencia";
@@ -34,9 +32,12 @@
         }
         else
         {
-            $error='Error en la línea 37, ocurrido en la tarea asisten porque  no existe el idposición '.$posUltimoRegistroAsistencia.' de la tabla _posición, verifique con el administrador de sistemas. ';
-            echo $error;
-            exit();
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $hacer='seleccionar el valor de la posición'.$posUltimoRegistroAsistencia;
+            $tabla='_posicion';
+            $línea='25';
+            error($er1,$er2,$hacer,$tabla,$línea);
         }
         
         //Seleccionar a todos los que vinieron hoy
@@ -45,7 +46,7 @@
         inner join turno c on b.turno_turno=c.idturno
         inner join asistencia d on a.numero_trabajador=d.trabajador_trabajador 
         and d.id > $valor
-        and Cast(d.fecha_entrada As Date) ='$f_hoy'
+        and d.fecha_entrada like '$f_hoy%'
         group by id;";
         $query1= mysqli_query($con, $sql1);
         $filas1=mysqli_num_rows($query1);
@@ -53,7 +54,6 @@
         {    
             while($resul1=mysqli_fetch_array($query1))
             {
-
                 $asisten_hoy[$aumenta][0]=$resul1[0];//fecha_entrada
                 $asisten_hoy[$aumenta][1]=$resul1[1];//numero de trabajador
                 $asisten_hoy[$aumenta][2]=$resul1[2];//id de asistencia
@@ -90,14 +90,9 @@
         global $contra;
         require("../Acceso/global.php");
         $datos=quienes_asistieron_hoy();
-        $cantidad=0;     
+        $cantidad=count($datos);     
         if($datos!=null)
         {
-            //Calcula la cantidad de filas que hay en $datos=quienes_asistieron_hoy();
-            foreach($datos as $fila)
-            {
-                $cantidad++;
-            }
             //Seleccionar a todos los empleados que vienen hoy
             $sql="SELECT idvienen_hoy,trabajador_trabajador,entrada FROM vienen_hoy where observar_e=-1 and observar_s=-1";
             $query= mysqli_query($con, $sql);
@@ -128,12 +123,10 @@
                                 $línea='122';
                                 error($er1,$er2,$hacer,$tabla,$línea);
                             }  
-
-                            //Concatener la fecha de hoy con su hora de entrada 
+                            //Concatenar la fecha de hoy con su hora de entrada 
                             $hora_entrada=$f_hoy . ' ' . $entrada;
                             //Calcular si la persona tiene una incidencia en la entrada
                             minA_minD($hora_entrada, $entrada_asistencia, $idasistencia);
-
                         }//fin if numero de empleados iguales
                     }//fin for
                 } //fin while
@@ -141,7 +134,6 @@
         }//fin if
     }//fin function
     
-
     /*Obtiene los minutos transcurridos entre dos fechas*/
     function minutosTranscurridos($fecha_i,$fecha_f)
     {
@@ -150,7 +142,6 @@
         return $minutos;
     }
 
-    
     /*Inserta datos en la tabla incidencia*/ 
     function inserta($mt, $ma_d, $inc,$id_asis)
     { //ma_d guarda la palabra antes o despues
@@ -165,7 +156,7 @@
             $er2=mysqli_error($con);
             $hacer='insertar';
             $tabla='incidencia';
-            $línea='161';
+            $línea='159';
             error($er1,$er2,$hacer,$tabla,$línea);
         }   
     }

@@ -32,9 +32,18 @@ session_start();
         if($tipo==4)
         {
             $id2=consultaTrabajador($id);
-            $id3=consultaCumple($id);
+            $consultaCumple=consultaCumple($id);
+            if($consultaCumple !== null)
+            {
+                $id3=$consultaCumple;
+            }
             $id4=consultaAcceso($id);
-            $id5=consultaTServicio($id);
+            $consultaTServicio=consultaTServicio($id);
+            if($consultaTServicio !== null)
+            {
+                $id5=$consultaTServicio;
+            }
+            $turnoOpc=consultaTurnoOpcional($id);
             $especial=consultaEspecial($id);
             //FECHA INICIO, FECHA FIN, EMPRESAS
             $fecha_inicio = $especial[1];
@@ -45,9 +54,18 @@ session_start();
         else
         {
             $id2=consultaTrabajador($id);
-            $id3=consultaCumple($id);
+            $consultaCumple=consultaCumple($id);
+            if($consultaCumple !== null)
+            {
+                $id3=$consultaCumple;
+            }
             $id4=consultaAcceso($id);
-            $id5=consultaTServicio($id);  
+            $consultaTServicio=consultaTServicio($id);  
+            if($consultaTServicio !== null)
+            {
+                $id5=$consultaTServicio;
+            }
+            $turnoOpc=consultaTurnoOpcional($id);
             $genero=consultaGenero($id);  
         }       
     }   
@@ -74,16 +92,16 @@ session_start();
         <link rel="stylesheet" href="../assets/css/cs-skin-elastic.css" />
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"/>
         <link rel="stylesheet" href="../assets/scss/style.css" />
-        <link href="../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
+        <!-- <link href="../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" /> -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
-
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/diaSexta.js"></script>
+        <link href="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" rel="stylesheet"></script>
+       <script src="../assets/js/tabla-trabajador.js"></script>
         <script>
             function noCopy()
             {
@@ -120,15 +138,26 @@ session_start();
                 if(x==0)
                 {
                     document.getElementById('empresa').style.display="block";//ver
+                    document.getElementById('tOp').style.display="block";//Ver el div de turno opcional
                 }
                 else
-                {
-                    document.getElementById('empresa').style.display="none";//ocultar
+                {   if(x==1)
+                    {
+                        document.getElementById('empresa').style.display="none";//ocultar
+                        document.getElementById('tOp').style.display="block";
+                    }
+                    else
+                    {
+                        if(x==2)
+                        {
+                            document.getElementById('empresa').style.display="none";//ocultar
+                            document.getElementById('tOp').style.display="none";//ocultar
+                        }
+                    } 
                 }
-
                 var valor = document.getElementById('turno').value;
                 var valor2 = document.getElementById('sexta').value;
-                 var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
+                var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
                 actualiza(valor,valor2,valor3);
             }
 
@@ -151,6 +180,7 @@ session_start();
             function inicio()
             {
                 ruta='_clickSexta.php';
+                rutaparaTablaTrab='generaTablaTrab.php'; //ruta para archivo tabla-trabajador.js
                 $(document).ready(function()
                 {   
                     //Guarda el valor del radio de tipo trabajador
@@ -165,9 +195,19 @@ session_start();
                         document.getElementById('empresa').style.display="block";//ver empresa
                     }
 
+                    if(rad==1 || rad==2 || rad==4)
+                    {
+                        document.getElementById('tOp').style.display="block";
+                    }
+                    else
+                    {
+                        document.getElementById('tOp').style.display="none";
+                    }
+
                     var numTrabajador=document.getElementById("sexta").value;
                     inicial(numTrabajador);
                 }); 
+                dibujarTabla("#.#");
             }
         
             function mayus(e) 
@@ -175,6 +215,17 @@ session_start();
                 e.value = e.value.toUpperCase();
             }
 
+            function PasarValorParaNip()
+            {   //Esta función asigna el nip tomando en cuenta los ultimos cuatro digitos del número de trabajador
+                var numeroEmpleado=document.getElementById("MainContent_txtNomEmpl").value;
+                var nip=numeroEmpleado.substr(-4);
+                document.getElementById("MainContent_txtNip").value = nip;
+            }
+            function buscarInfoTrabajador() 
+            {
+                valor=document.getElementById("buscador").value;
+                dibujarTabla(valor);
+            }  
         </script>
     </head>
 
@@ -216,9 +267,9 @@ session_start();
                             <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
-                                <li><i class="fa fa-files-o"></i><a href="../ht/reportes.html">Reportes</a></li>
+                                <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
-                           
+                                <li><i class="fa fa-shield"></i><a href="../ht/verAsistencias.php">Asistencias de hoy</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -295,11 +346,19 @@ session_start();
                                         </span>
                                    </div>
                                    <div class="card-body card-block">
-                                        <div class="form-group col-lg-3">
-                                            <span>
-                                                Número de empleado
-                                            </span>
-                                            <input name="num" type="number"  class="form-control" value="<?php echo $id2[0]?>" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
+                                        <div>
+                                            <div class="form-group col-lg-3">
+                                                <span>
+                                                    Número de empleado
+                                                </span>
+                                                <input name="num" type="number"  class="form-control" id="MainContent_txtNomEmpl" value="<?php echo $id2[0]?>" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" onkeyup="PasarValorParaNip();" required/>
+                                            </div>
+                                            <div class="form-group col-lg-3">
+                                                <span>
+                                                    NIP
+                                                </span>
+                                                <input name="nip" type="number"  class="form-control" id="MainContent_txtNip" value="<?php echo $id2[8]?>" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
+                                            </div>
                                         </div>
                                         
                                         <div class="form-group col-lg-3">
@@ -332,35 +391,46 @@ session_start();
 
                                         <div class="form-group col-lg-4">
                                             <span>
-                                                Fecha de onomástico
+                                                Fecha de onomástico (opcional)
                                             </span>
                                             <input name="ono" type="date" value="<?php echo $id3[1]?>"   class="form-control"  min="1930-01-01"/>
                                         </div>
                                         <?php
                                             //validez de cumpleOno
-                                            if($id3[3]==0)
+                                            if($consultaCumple !== null)
                                             {
-                                                echo "<div class='form-group col-lg-4'>
-                                                        <span>Día de descanso del trabajador:</span><br>
-                                                        <input type='radio' name='cumpleOno' value='cum' id='cumple'checked> 
-                                                        <label for='cumple'>Cumpleaños &nbsp</label>
-                                                        <input type='radio' name='cumpleOno' value='ono' id='ono'> 
-                                                        <label for='ono'>Onomástico</label><br>
-                                                </div>";
-                                            }
-                                            else
-                                            {
-                                                if($id3[3]==1)
+                                                if($id3[3]==0)
                                                 {
                                                     echo "<div class='form-group col-lg-4'>
                                                             <span>Día de descanso del trabajador:</span><br>
-                                                            <input type='radio' name='cumpleOno' value='cum' id='cumple'> 
+                                                            <input type='radio' name='cumpleOno' value='cum' id='cumple'checked> 
                                                             <label for='cumple'>Cumpleaños &nbsp</label>
-                                                            <input type='radio' name='cumpleOno' value='ono' id='ono' checked> 
+                                                            <input type='radio' name='cumpleOno' value='ono' id='ono'> 
                                                             <label for='ono'>Onomástico</label><br>
-                                                        </label> 
-                                                    </div>";
+                                                        </div>";
                                                 }
+                                                else
+                                                {
+                                                    if($id3[3]==1)
+                                                    {
+                                                        echo "<div class='form-group col-lg-4'>
+                                                                <span>Día de descanso del trabajador:</span><br>
+                                                                <input type='radio' name='cumpleOno' value='cum' id='cumple'> 
+                                                                <label for='cumple'>Cumpleaños &nbsp</label>
+                                                                <input type='radio' name='cumpleOno' value='ono' id='ono' checked> 
+                                                                <label for='ono'>Onomástico</label><br>
+                                                            </div>";
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                echo'
+                                                <div class="form-group col-lg-4">
+                                                <span>Día de descanso del trabajador:</span><br>
+                                                <input type="radio" name="cumpleOno" value="cum" id="cumple"> <label for="cumple">Cumpleaños &nbsp</label> <!--&nbsp sirve para dar espacios entre palabras  -->
+                                                <input type="radio" name="cumpleOno" value="ono" id="ono"> <label for="ono">Onomástico</label><br>
+                                                </div>';
                                             }
 
                                             if($genero[0]=='M')
@@ -407,6 +477,36 @@ session_start();
                                         </span>
                                     </div>
                                     <div class="card-body card-block">
+                                    <?php
+                                        if($turnoOpc==true)
+                                        {
+                                            echo'<div id="tOp" class="form-group col-lg-12">
+                                                    <span>Turno opcional:</span><br>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" id="si" name="t_opc" value="si"checked>
+                                                        <label for="si">Si &nbsp &nbsp &nbsp</label>
+                                                    </label> 
+                                                    <label class="radio-inline">
+                                                        <input type="radio" id="no" name="t_opc" value="no">
+                                                        <label for="no"> No &nbsp</label>
+                                                    </label> 
+                                                </div>';
+                                        }
+                                        else
+                                        {   echo'<div id="tOp" class="form-group col-lg-12">
+                                                    <span>Turno opcional:</span><br>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" id="si" name="t_opc" value="si">
+                                                        <label for="si">Si &nbsp &nbsp &nbsp</label>
+                                                    </label> 
+                                                    <label class="radio-inline">
+                                                        <input type="radio" id="no" name="t_opc" value="no" checked>
+                                                        <label for="no"> No &nbsp</label>
+                                                    </label> 
+                                                </div>';
+                                        }
+                                    ?>
+
                                         <div class="form-group col-lg-5">
                                             <span >
                                                 Departamento
@@ -501,7 +601,7 @@ session_start();
                                                                 }
                                                                 if($id2[6]==3)
                                                                 {
-                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(2)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                                 }
                                                             }
                                                             else
@@ -516,14 +616,11 @@ session_start();
                                                                 }
                                                                 if($fila[0]==3)
                                                                 {
-                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(1)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                    echo "<br> <input type='radio' name='tipo' id='".$fila[0]."' value='".$fila[0]."' onclick='oculta(2)'></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                                 }
                                                             }
-                                                            
                                                         }
-                                                        
                                                     }//fin del while
-                                                    
                                                 }
                                                 if(!empty($empresa))
                                                 {
@@ -613,8 +710,10 @@ session_start();
                                     </div>
                                     <div class="card-body card-block">
                                        <div class="form-group col-lg-12">
-                                             <span>Fecha de alta del trabajador (Según su FM1) </span>
-                                             <input name="fecha_alta" type="date" class="form-control" value="<?php echo $id5[0]?>" required  min="1930-01-01" />
+                                            <div class="form-group col-lg-5">
+                                                <span>Fecha de alta del trabajador (Según su FM1) </span>
+                                                <input name="fecha_alta" type="date" class="form-control" value="<?php echo $id5[0]?>" required  min="1930-01-01" />
+                                            </div>  
                                        </div>      
                                     </div>
                                 </div>
@@ -626,104 +725,29 @@ session_start();
                             </div>
                         </div>  
                     </form>
-
+                    <br><br>
+                    <div class="row"> 
+                        <div class="form-group col-lg-5">
+                            <input name="buc-tr"  id="buscador" type="text" class="form-control" placeholder="Buscar (todos los empleados escriba: todos)"/>
+                        </div>      
+                        <div class="card">
+                            <input type="submit" name="buscar" id="botonBuscar" value="Buscar" class="btn btn-sm btn-info" onclick="buscarInfoTrabajador()"/>
+                        </div>
+                    </div> 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
                                     <strong class="card-title">Información</strong>
                                 </div>
-                                <div class="card-body">
-                                    <table id='' class='table table-striped table-bordered display'>
-                                        <thead>
-                                        <th>Número de trabajador</th>
-                                        <th>Nombre</th>
-                                        <th>Apellido Paterno</th>
-                                        <th>Apellido Materno</th> 
-                                        <th>Departamento</th> 
-                                        <th>Categoría</th> 
-                                        <th>Tipo de empleado</th> 
-                                        <th>Acción</th>  
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                                require("../ht/_encript.php");
-                                                $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
-                                                inner join tipo b on b.idtipo = a.tipo_tipo";
-                                                $query= mysqli_query($con, $sql);
-                                                if(!$query)
-                                                {
-                                                    die("<br>" . "Error, línea 651: " . mysqli_errno($con) . " : " . mysqli_error($con).", verifique con el administrador de sistemas.");
-                                                }
-                                                else
-                                                {
-                                                    while($resul=mysqli_fetch_array($query))
-                                                    {
-                                                        $encript=generaURL($resul[0]);
-                                                        echo "<tr>";
-                                                        echo "<td>" . $resul[0] . "</td>"; 
-                                                        echo "<td>" . $resul[1] . "</td>";
-                                                        echo "<td>" . $resul[2] . "</td>";
-                                                        echo "<td>" . $resul[3] . "</td>";
-                                                        echo "<td>" . $resul[4] . "</td>";
-                                                        echo "<td>" . $resul[5] . "</td>";
-                                                        echo "<td>" . $resul[6] . "</td>";
-                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                        echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
-                                                        echo "</tr>";
-                                                    }
-                                                }
-                                            ?> <!--FIN PHP -->
-                                        </tbody> <!--/tbody-->
-                                    </table> <!--/table-->
+                                <div id="trabajadores" class="card-body">
+                                   
                                 </div><!--/card body-->
                             </div><!--/card-->
                         </div><!--/col- md-12-->
                     </div><!-- FIN ROW-->
                 </div> <!--FIN DIV animated fadeIn-->
             </div> <!--FIN DIV content mt-3--> 
-
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    setTimeout(function() {
-                        $(".alert").fadeOut(1500);
-                    }, 4000);
-                    $('table.display').DataTable({
-                        "language": {
-                            "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
-                            "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
-                            "infoEmpty": "Mostrando 0 registros de un total de 0",
-                            "infoFiltered": "(filtrados de un total de _MAX_ registros)",
-                            "loadingRecords": "Cargando...",
-                            "processing": "Procesando...",
-                            "search": "<span style='font-size:15px;'>Buscar:</span>",
-                            "searchPlaceholder": "Dato para buscar",
-                            "zeroRecords": "No se han encontrado coincidencias.",
-                            "paginate": {
-                                "first": "Primera",
-                                "last": "Última",
-                                "next": "Siguiente",
-                                "previous": "Anterior"
-                            },
-                            "aria": {
-                                "sortAscending": "Ordenación ascendente",
-                                "sortDescending": "Ordenación descendente"
-                            }
-                        },
-                        responsive: true,
-                        dom: 'Bfrtip',
-                        buttons: [{
-                                extend: 'copy',
-                                text: 'Copiar'
-                            },
-                            //'csv',
-                            'excel',
-                            'pdf',
-                            //{ extend: 'print', text: 'Imprimir' },
-                        ]
-                    });
-                });
-            </script>
         </div>
         <!-- FIN-Right Panel ------------------------------------------------------------------------------------------------>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -747,9 +771,17 @@ session_start();
                             actualiza(valor,valor2,valor3);
                         }
                     });
-
                 });
-
+               
+                $('#datos').DataTable( {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5'
+                    ]
+                });
             });
 
             function preguntar(elemento,ruta,id)

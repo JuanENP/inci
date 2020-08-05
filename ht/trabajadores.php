@@ -44,11 +44,17 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/diaSexta.js"></script>
-
-        <script>
+       <!-- <link href="https://code.jquery.com/jquery-3.3.1.js" rel="stylesheet"></script> -->
+       <!-- <link href="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" rel="stylesheet"></script> -->
+       <!-- <link href="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js" rel="stylesheet"></script> -->
+       <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js" rel="stylesheet"></script> -->
+       <link href="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" rel="stylesheet"></script>
+       <script src="../assets/js/tabla-trabajador.js"></script>
+      <script>
             function inicio()
             {
                 ruta='../php/_clickSexta.php';
+                rutaparaTablaTrab='../php/generaTablaTrab.php'; //ruta para archivo tabla-trabajador.js
                 $(document).ready(function()
                 {   
                     //Guarda el valor del radio de tipo trabajador
@@ -63,12 +69,28 @@ session_start();
                         document.getElementById('empresa').style.display="block";//ver empresa
                     }
 
-                var valor = document.getElementById('turno').value;
-                var valor2 = document.getElementById('sexta').value;//numero trabajador
-                var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
-                actualiza(valor,valor2,valor3);
+                    if(rad==1 || rad==2 || rad==4)
+                    {
+                        document.getElementById('tOp').style.display="block";
+                    }
+                    else
+                    {
+                        document.getElementById('tOp').style.display="none";
+                    }
+
+                    var valor = document.getElementById('turno').value;
+                    var valor2 = document.getElementById('sexta').value;//numero trabajador
+                    var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
+                    actualiza(valor,valor2,valor3);   
                 }); 
+                dibujarTabla("#.#");
             }
+
+            function buscarInfoTrabajador() 
+            {
+                valor=document.getElementById("buscador").value;
+                dibujarTabla(valor);
+            }   
 
             function noCopy()
             {
@@ -105,18 +127,36 @@ session_start();
                 if(x==0)
                 {
                     document.getElementById('empresa').style.display="block";//ver
+                    document.getElementById('tOp').style.display="block";//Ver el div de turno opcional
                 }
                 else
-                {
-                    document.getElementById('empresa').style.display="none";//ocultar
+                {   if(x==1)
+                    {
+                        document.getElementById('empresa').style.display="none";//ocultar
+                        document.getElementById('tOp').style.display="block";
+                    }
+                    else
+                    {
+                        if(x==2)
+                        {
+                            document.getElementById('empresa').style.display="none";//ocultar
+                            document.getElementById('tOp').style.display="none";//ocultar
+                        }
+                    } 
                 }
                 var valor = document.getElementById('turno').value;
                 var valor2 = document.getElementById('sexta').value;//numero trabajador
                 var valor3 = $("input[name='tipo']:checked").val();//nomForm= nombre del formulario; tipo = nombre de los elementos radiobuton
-                actualiza(valor,valor2,valor3);
-                        
+                actualiza(valor,valor2,valor3);  
             }
 
+            function PasarValorParaNip()
+            {   //Esta función asigna el nip tomando en cuenta los ultimos cuatro digitos del número de trabajador
+                var numeroEmpleado=document.getElementById("MainContent_txtNomEmpl").value;
+                var nip=numeroEmpleado.substr(-4);
+                document.getElementById("MainContent_txtNip").value = nip;
+            }
+    
             function mayus(e) 
             {
                 e.value = e.value.toUpperCase();
@@ -165,7 +205,7 @@ session_start();
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
-                            
+                                <li><i class="fa fa-shield"></i><a href="../ht/verAsistencias.php">Asistencias de hoy</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -243,9 +283,14 @@ session_start();
                                     </div>
 
                                     <div class="card-body card-block">
-                                       <div class="form-group col-lg-3">
-                                            <span >Número de empleado</span><input name="num" type="number" id="MainContent_txtNomEmpl" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" required/>
-                                       </div>
+                                        <div>
+                                            <div class="form-group col-lg-3">
+                                                <span>Número de empleado</span><input name="num" type="number" id="MainContent_txtNomEmpl" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" onkeyup="PasarValorParaNip();" required/>
+                                            </div>
+                                            <div class="form-group col-lg-3">
+                                                <span >NIP</span><input name="nip" type="number" id="MainContent_txtNip" class="form-control" min="0" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" placeholder="Necesario para biométrico" required/>
+                                            </div>
+                                        </div>
                                         <div class="form-group col-lg-3">
                                             <span >Nombre</span><input name="nom" type="text" id="MainContent_txtNom" class="form-control" pattern="[a-zA-ZàáâäãåacceèéêëeiìíîïlnòóôöõøùúûüuuÿýzzñçcšžÀÁÂÄÃÅACCEEÈÉÊËÌÍÎÏILNÒÓÔÖÕØÙÚÛÜUUŸÝZZÑßÇŒÆCŠŽ?ð ]{2,48}"  title="Ingrese solo letras"  required />
                                         </div>
@@ -264,7 +309,7 @@ session_start();
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <span>Día de descanso del trabajador:</span><br>
-                                            <input type="radio" name="cumpleOno" value="cum" id="cumple"> <label for="cumple">Cumpleaños &nbsp</label> <!--&nbsp sirve para dar espacios entre palabras  -->
+                                            <input type="radio" name="cumpleOno" value="cum" id="cumple" checked> <label for="cumple">Cumpleaños &nbsp</label> <!--&nbsp sirve para dar espacios entre palabras  -->
                                             <input type="radio" name="cumpleOno" value="ono" id="ono"> <label for="ono">Onomástico</label><br>
                                         </div>
                                         
@@ -287,6 +332,18 @@ session_start();
                                         <span> Puesto de trabajo</span>
                                     </div>
                                     <div class="card-body card-block">
+                                        <div id="tOp" class="form-group col-lg-12">
+                                            <span>Turno opcional:</span><br>
+                                            <label class="radio-inline">
+                                                <input type="radio" id="si" name="t_opc" value="si">
+                                                <label for="si">Si &nbsp &nbsp &nbsp</label>
+                                            </label> 
+                                            <label class="radio-inline">
+                                                <input type="radio" id="no" name="t_opc" value="no" checked>
+                                                <label for="no"> No &nbsp</label>
+                                            </label> 
+                                        </div>
+
                                        <div class="form-group col-lg-5">
                                             <span>Departamento</span>
                                             <?php 
@@ -307,7 +364,7 @@ session_start();
                                             ?> <!--FIN PHP -->
                                        </div>
 
-                                        <div class="form-group col-lg-7">
+                                        <div class="form-group col-lg-5">
                                             <span>Categoría</span>
                                             <?php
                                                 $sql="select * from categoria";
@@ -348,7 +405,7 @@ session_start();
                                                         {  
                                                             if($fila[0]=="3")
                                                             {  
-                                                                echo "<br><input type='radio' name='tipo' id='".$fila[0]."'  value='".$fila[0]."' onclick='oculta(1)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
+                                                                echo "<br><input type='radio' name='tipo' id='".$fila[0]."'  value='".$fila[0]."' onclick='oculta(2)' checked></input><label for='".$fila[0]."'> ".$fila[1]."</label>";
                                                             }
                                                             else 
                                                             {  
@@ -420,103 +477,45 @@ session_start();
                             </div> 
                         </div>
                     </form>
-                   
-                         
-                    <div class="row">
-                        <div class="col-md-12">
+                    <br><br>
+                    <div class="row"> 
+                        <div class="form-group col-lg-5">
+                            <input name="buc-tr"  id="buscador" type="text" class="form-control" placeholder="Buscar (todos los empleados escriba: todos)"/>
+                        </div>      
+                        <div class="card">
+                            <input type="submit" name="buscar" id="botonBuscar" value="Buscar" class="btn btn-sm btn-info" onclick="buscarInfoTrabajador()"/>
+                        </div>
+                       <!-- 
                             <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Información</strong>
+                                <button id="generaExcel" class="btn btn-sm btn-success ">Descargar Excel</button>
+                            </div>
+                        -->
+                    </div> 
+                    <div class="row" >
+                        <div class='col-md-12'>
+                            <div class='card'>
+                                <div class='card-header'>
+                                    <strong class='card-title'>Información</strong>
                                 </div>
-                                <div class="card-body">
-                                    <span id="MainContent_DataTable">
-                                        <table id='' class="table table-striped table-bordered display">
-                                            <thead>
-                                                <th>Número de trabajador</th>
-                                                <th>Nombre</th>
-                                                <th>Apellido Paterno</th>
-                                                <th>Apellido Materno</th> 
-                                                <th>Departamento</th> 
-                                                <th>Categoría</th> 
-                                                <th>Tipo de empleado</th>  
-                                                <th>Acción</th> 
-                                            </thead>
-                                            <tbody>
-                                                <?php 
-                                                    require("_encript.php");
-                                                    $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria,b.descripcion FROM trabajador a 
-                                                    inner join tipo b on b.idtipo = a.tipo_tipo";
-                                                    $query= mysqli_query($con, $sql);
-                                                    if(!$query)
-                                                    {
-                                                        die("<br>" . "Error, línea 447: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la base, verifique con el administrador de sistemas.");
-                                                    }
-                                                    else
-                                                    {
-                                                        while($resul=mysqli_fetch_array($query))
-                                                        {
-                                                            $encript=generaURL($resul[0]);
-                                                            echo "<tr>";
-                                                            echo "<td>" .  $resul[0] . "</td>"; 
-                                                            echo "<td>" .  $resul[1] . "</td>";
-                                                            echo "<td>" .  $resul[2] . "</td>";
-                                                            echo "<td>" .  $resul[3] . "</td>";
-                                                            echo "<td>" .  $resul[4] . "</td>";
-                                                            echo "<td>" .  $resul[5] . "</td>";
-                                                            echo "<td>" .  $resul[6] . "</td>";
-                                                            echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                            echo " <a href='../php/editar-trabajadores.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
-                                                            echo "</tr>";
-                                                        }
-                                                    }
-                                                ?> <!--FIN PHP -->
-                                            </tbody>
-                                        </table>
-                                    </span>
+                                <div  id="trabajadores" class='card-body'>
+                                 <!-- Aquí se muestra la  tabla de trabajadores -->
                                 </div>
                             </div>
-                        </div>
+                        </div>    
                     </div>
+
                 </div><!-- .animated -->
             </div><!-- .content -->
 
             <script type="text/javascript">
                 $(document).ready(function() {
-                    setTimeout(function() {
-                        $(".alert").fadeOut(1500);
-                    }, 4000);
-                    $('table.display').DataTable({
-                        "language": {
-                            "emptyTable": "<i>No hay datos disponibles en la tabla.</i>",
-                            "info": "Mostrando del _START_ al _END_ de _TOTAL_ ",
-                            "infoEmpty": "Mostrando 0 registros de un total de 0",
-                            "infoFiltered": "(filtrados de un total de _MAX_ registros)",
-                            "loadingRecords": "Cargando...",
-                            "processing": "Procesando...",
-                            "search": "<span style='font-size:15px;'>Buscar:</span>",
-                            "searchPlaceholder": "Dato para buscar",
-                            "zeroRecords": "No se han encontrado coincidencias.",
-                            "paginate": {
-                                "first": "Primera",
-                                "last": "Última",
-                                "next": "Siguiente",
-                                "previous": "Anterior"
-                            },
-                            "aria": {
-                                "sortAscending": "Ordenación ascendente",
-                                "sortDescending": "Ordenación descendente"
-                            }
-                        },
-                        responsive: true,
+                    $('#datos').DataTable( {
                         dom: 'Bfrtip',
-                        buttons: [{
-                                extend: 'copy',
-                                text: 'Copiar'
-                            },
-                            //'csv',
-                            'excel',
-                            'pdf',
-                            //{ extend: 'print', text: 'Imprimir' },
+                        buttons: [
+                            'copyHtml5',
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
                         ]
                     });
                 });
@@ -528,7 +527,6 @@ session_start();
                     //Redireccionamos si das a aceptar
                     {
                         window.location.href='../php/eliminar-trabajadores.php?jhgtp09='+miID+'';
-                        
                     }
                     else
                     {
@@ -536,13 +534,9 @@ session_start();
                     }
                 }
             </script>
-
-
         </div>
         <!-- /#right-panel -->
-
         <!-- Right Panel -->
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
         <script src="../assets/js/plugins.js"></script>
         <script type="text/javascript">

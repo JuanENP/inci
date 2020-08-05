@@ -34,8 +34,8 @@ session_start();
     {
         if((($t_horas=="06:00:00")||($t_horas=="06:30:00")) && ($sexta !== null) && ($tipo==2 || $tipo==4))
         {
-            $salida.="<span> Días de sexta </span><br>";
-            for ($i=0;$i<8;$i++)
+            $salida.="<span> Semana 2 de trabajo</span><br>";
+            for ($i=0;$i<7;$i++)
             {
                 if($sexta[$i]==1)
                 {
@@ -52,7 +52,7 @@ session_start();
         {
             if($tipo==2 || $tipo==4)
             {
-                $salida.="<span> Días de sexta</span><br>";
+                $salida.="<span> Semana 2 de trabajo</span><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='lunes'id='lun'/> <label for='lun'> Lunes</label><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='martes' id='mar'/> <label for='mar'> Martes</label><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='miercoles'id='mie'/> <label for='mie'> Miércoles</label><br>";
@@ -60,7 +60,7 @@ session_start();
                 $salida.="<input type='checkbox' name='diaS[]' value='viernes'id='vie'/> <label for='vie'> Viernes</label><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='sabado' id='sab'/> <label for='sab'> Sábado</label><br>";
                 $salida.="<input type='checkbox' name='diaS[]' value='domingo' id='dom'/> <label for='dom'> Domingo</label><br>";
-                $salida.="<input type='checkbox' name='diaS[]' value='dias_festivos' id='dfe'/> <label for='dfe'> Días festivos</label><br>";
+                // $salida.="<input type='checkbox' name='diaS[]' value='dias_festivos' id='dfe'/> <label for='dfe'> Días festivos</label><br>";
                 echo $salida;
             }
             else

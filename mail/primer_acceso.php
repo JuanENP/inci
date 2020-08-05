@@ -76,7 +76,6 @@ session_start();
                     cambio.type = "password";
                     $('#A').removeClass('fa fa-eye').addClass('fa fa-eye-slash');//El ide del icono es N
                 }
-                
             }
             function mostrarPasswordNueva()
             {
@@ -112,7 +111,7 @@ session_start();
                     document.getElementById('cont').style.display="block";
                     document.getElementById('mail').style.display="block";
                 }
-            }
+            } 
         </script>
     </head>
     <body class="bg-dark" >
@@ -122,7 +121,7 @@ session_start();
                     <div class="login-logo">
                         <img src="../images/LOGO_ISSSTE.png"></img>
                         <a href="#">
-                            <span>¡Bienvenido(a) <?php echo $nom_apellido?>!</span>
+                            <span>¡Bienvenido(a) <?php echo $nom_apellido?> !</span>
                         </a>
                     </div>
                     <div class="login-form">
@@ -131,7 +130,6 @@ session_start();
                                 <div class="form-group">
                                     <label>Ingrese su dirección de correo electrónico </label>
                                     <input name="mail"  type="email" class="form-control" autofocus/>
-                                
                                 </div>
                             </div>
                             <div id="cont">
@@ -141,8 +139,7 @@ session_start();
                                     <div class="input-group-append">
                                         <button id="show_password" class="btn btn-primary" type="button" onclick="mostrarPasswordActual();"> <span class="fa fa-eye-slash icon" id="A" ></span> </button>
                                     </div>
-                                </div>
-                                
+                                </div> 
                                 <label> Confirmar nueva contraseña</label>
                                 <div class="input-group">
                                     <input id="txtPassword2" type="Password" Class="form-control" name="confirmaContra" maxlength=4 minlength=4 pattern="[0-9]{4}"  title="Ingrese exactamente 4 números">
@@ -150,8 +147,7 @@ session_start();
                                         <button id="show_password2" class="btn btn-primary" type="button" onclick="mostrarPasswordNueva();"> <span class="fa fa-eye-slash icon" id="N"></span> </button>
                                     </div>
                                 </div>
-                            </div>
-                            <br>
+                            </div><br>
                             <div class="form-group">
                                 <input type="submit" name="guardar" value="Guardar" id="guardar" class="btn btn-success btn-flat m-b-30 m-t-30" />
                             </div>
