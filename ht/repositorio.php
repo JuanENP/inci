@@ -72,12 +72,27 @@ session_start();
                     document.getElementById('causa').style.display="none";//ocultar
                     document.getElementById('fecha').style.display="block";//ver
                 }
-   
             }
             function inicio()
             {
                 document.getElementById('causa').style.display="none";//ocultar
-                document.getElementById('fecha').style.display="none";//ocultar   
+                document.getElementById('fecha').style.display="none";//ocultar
+
+                //validar qué radio button está presionado   
+                var rad = $("input[name='formato']:checked").val();
+                if(rad=="1" || rad=="2" || rad=="3")
+                {
+                    document.getElementById('causa').style.display="none";//ocultar
+                    document.getElementById('fecha').style.display="block";//ver
+                }
+                else
+                {
+                    if(rad=="4")
+                    {
+                        document.getElementById('fecha').style.display="none";//ver
+                        document.getElementById('causa').style.display="block";//no ver
+                    }
+                }
             }
 
             function mostrarPasswordActual($x)

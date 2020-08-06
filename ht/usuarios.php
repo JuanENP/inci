@@ -95,13 +95,31 @@ session_start();
 
                 $(function() {
                     $('#noblanco').on('keypress', function(e) {
-                        if (e.which == 32)
+                        var keycode = e.keyCode || e.which;
+
+                        if (keycode == 13) 
                         {
-                            alert("Evite usar espacios en blanco para el usuario.");
-                            return false;
+                            // alert("Enter!");
+                            event.keyCode = 9;
+                        }
+                        else
+                        {
+                            if (keycode == 32)
+                            {
+                                alert("Evite usar espacios en blanco para el usuario.");
+                                return false;
+                            }
                         }
                     });
                 });
+
+                // $("#noblanco").on('keyup', function (e) {
+                // var keycode = e.keyCode || e.which;
+                //     if (keycode == 13) {
+                //         alert("Enter!");
+                //     }
+                // });
+
             });
 
             function imprime(texto)
@@ -257,19 +275,19 @@ session_start();
 
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
-                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required/>
+                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required tabindex = 1/>
                                        </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>Contraseña</label>
                                             <div class="input-group">
-                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required> <button onclick="Vcon();"><span id="span_con">Ver</span></button>
+                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required tabindex = 2> <button onclick="Vcon();" tabindex = 0><span id="span_con">Ver</span></button>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm"/>
+                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" tabindex = 3/>
                                     </div>
                                 </div>
                             </div> 
