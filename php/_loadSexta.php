@@ -20,8 +20,8 @@ session_start();
     if($sexta!==null)
     {
         $salida="";
-        $salida.="<span> Días de sexta </span><br>";
-        for ($i=0;$i<8;$i++)
+        $salida.="<span> Semana 2 de trabajo </span><br>";
+        for ($i=0;$i<7;$i++)
         {
             if($sexta[$i]==1)
             {

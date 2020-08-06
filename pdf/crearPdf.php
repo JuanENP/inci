@@ -46,8 +46,18 @@ date_default_timezone_set('America/Mexico_City');
 	}
 	else
 	{
-		$resul=mysqli_fetch_array($query);
-		$quincena=$resul[0];
+		$fila=mysqli_num_rows($query);
+		if($fila==1)
+		{
+			$resul=mysqli_fetch_array($query);
+			$quincena=$resul[0];
+		}
+		else
+		{
+			$error='No hay una quincena con validez 1 en la tabla quincena, favor de contactar e informárselo al administrador de sistemas.';
+			echo"<script>alert('$error'); history.back(); </script>";
+			exit();
+		}
 	}
 	/*FIN DE OBTENER QUINCENA ACTUAL*/
 
@@ -149,6 +159,12 @@ date_default_timezone_set('America/Mexico_City');
 				$_SESSION['municipio'] = $info[0];
 				$_SESSION['estado'] = $info[1];
 				$_SESSION['abrevia_estado'] = $info[2];
+			}
+			else
+			{
+				$error='No hay información del hospital registrada en la base de datos, favor de contactar e informárselo al administrador de sistemas.';
+				echo"<script>alert('$error'); history.back(); </script>";
+				exit();
 			}
 		
 			$_SESSION['dia_mes'] = $dia_mes  ;

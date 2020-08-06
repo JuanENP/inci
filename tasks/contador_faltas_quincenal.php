@@ -1,27 +1,14 @@
 <?php
-    date_default_timezone_set('America/Mexico_City');
-    set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo para ejecutar todo el script 
-    $nombre="biometric";
-    $contra="5_w**/pQxcmk.";
-    require("../Acceso/global.php");
-
-   //OBTENER QUE DÍA ES HOY
-   $dias = array("domingo","lunes","martes","miercoles","jueves","viernes","sabado");
-   //echo "HOY ES ".$dias[date("w")] . "<br>";//esto es solo para ver si el día es correcto
-   $diaactual=$dias[date("w")];//guardar el día actual para su posterior uso
-   $f_hoy=date("Y-m-d");//guardar la fecha actual
-
-    faltasPorQuincena();
+    $f_hoy=date("Y-m-d");//guardar la fecha actual
     /*  ARTÍCULO 25. CAUSAS DE BAJA DEL TRABAJADOR
         I. Por faltar más de cuatro días consecutivos a sus labores sin causa justificada; para estos efectos, 
         los días de descanso normal de la trabajadora o del trabajador y los establecidos en el Artículo 50 de estas Condiciones no serán tomados en cuenta;
-        II. Por acumular seis faltas, sin aviso ni causa justificada, en treinta días hábiles;
     */
+    faltasPorQuincena();
     function faltasPorQuincena()
-   {
+    {
         global $f_hoy;
         global $con;
-
         $sql1="select numero_trabajador from trabajador;";
         $query1= mysqli_query($con, $sql1);
         $filas=mysqli_num_rows($query1);
@@ -29,20 +16,53 @@
         {
             while($resul=mysqli_fetch_array($query1))
             {
-                $num=$resul[0];
-                $totalFaltas=contarfaltasQuincena($num);
-                if($totalFaltas !== null)
-                {  
-                    // cinco faltas distribuidas en una quincena ameritan dar de baja al empleado.
-                    //pendiente saber a que trabajdores son los dioses y no se le debe perjudicar con las faltas
-                    if($totalFaltas == 5) 
+                $numero=$resul[0];
+                //Revisar que el empleado no exista en la tabla baja
+                $yaEstaRegistrado=revisarSiYaEstaRegistradoEnBaja($numero);
+                if($yaEstaRegistrado !== true)
+                {
+                    //Revisar si su tipo de empleado es de base
+                    $tipoEmp=obtenerTipoDeEmpleado($numero);
+                    if($tipoEmp == 2)
                     {
-                        echo '<br>'.$num.'  '.$totalFaltas.'<br>';
-                        $realizado=insertarBaja($totalFaltas,'quincena',$num);
+                        //Revisar si el empleado si tiene 5 faltas consecutivas en la quincena guardarlo en la tabla baja, si la función arroja 1 deberá ser dado de baja
+                        $totalFaltas=revisarSiDarDeBajaAlTrabajador($numero);
+                        if($totalFaltas >= 5) 
+                        {  echo $numero;
+                            $realizado=insertarBaja($totalFaltas,'dias consecutivos en la quincena',$numero); 
+                        }  
                     }
                 }
-                
             }
+        }
+    }
+
+    function revisarSiYaEstaRegistradoEnBaja($numero)
+    {
+        global $con;
+        $sql1="SELECT idbajas from bajas where trabajador_trabajador='$numero';";
+        $query1= mysqli_query($con, $sql1);
+        $filas=mysqli_num_rows($query1);
+        if($filas==1)
+        {
+            return true;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    function obtenerTipoDeEmpleado($numero)
+    {
+        global $con;
+        $sql1="SELECT tipo_tipo from trabajador where numero_trabajador='$numero';";
+        $query1= mysqli_query($con, $sql1);
+        $filas=mysqli_num_rows($query1);
+        if($filas==1)
+        {
+            $resul=mysqli_fetch_array($query1);
+            return $resul[0];
         }
     }
 
@@ -50,13 +70,17 @@
     {
         global $f_hoy;
         global $con;
-        $sql1="select * from quincena where validez=1;";
+        //Obtener la quincena actual
+        $sql1="select idquincena from quincena where validez=1;";
         $query1= mysqli_query($con, $sql1);
         $filas=mysqli_num_rows($query1);
-        if($filas==1)
+        if($query1)
         {
-            $resul=mysqli_fetch_array($query1);
-            return[ $resul[0],$resul[1],$resul[2]];
+            if($filas==1)
+            {
+                $resul=mysqli_fetch_array($query1);
+                return $resul[0];
+            }
         }
         else
         {
@@ -69,27 +93,44 @@
         }
     }
 
-    function contarfaltasQuincena($numEmpleado)
+    function revisarSiDarDeBajaAlTrabajador($numero)
     {
         global $f_hoy;
         global $con;
+        $arregloFaltas=array();
+        $c=0;
+        $aumentaSiConsecutivo=1;
         $quincena=quincenaActual();
-        if($quincena !== null)
-        { 
-            $sql1="select count(idfalta) from falta where quincena=$quincena[0] and trabajador_trabajador='$numEmpleado'
-            and not exists (SELECT b.idjustificar_falta FROM justificar_falta b where b.falta_falta = a.idfalta);";
-            $query1= mysqli_query($con, $sql1) or die();
-            $filas=mysqli_num_rows($query1);
-            if($filas==1)
-            {
-                $resul=mysqli_fetch_array($query1);
-                return $resul[0];
+        //Obtener todas las faltas del trabajador
+        $sql1="select fecha from falta a where quincena=$quincena and trabajador_trabajador='$numero'
+        and not exists (SELECT b.idjustificar_falta FROM justificar_falta b where b.falta_falta = a.idfalta);";
+        $query1= mysqli_query($con, $sql1);
+        $filas=mysqli_num_rows($query1);
+        if($filas>0)
+        {
+            while($resul=mysqli_fetch_array($query1))
+            {   
+                $arregloFaltas[$c][0]=$resul[0];
+                $c++;
             }
-            else
-            {
-                return null;
-            }
+        } 
+        
+        $totalArregloFaltas=count($arregloFaltas);   
+        //Saber si son días consecutivos
+        for($i=0;$i<$totalArregloFaltas;$i++)
+        {   
+            $pivote=$arregloFaltas[$i][0]; 
+            $nuevoPivote=date("Y-m-d",strtotime($pivote."+ 1 days"));
+            for($j=$i+1;$j<$c;$j++)
+            { 
+                if($nuevoPivote==$arregloFaltas[$j][0])
+                {
+                    $aumentaSiConsecutivo++;
+                    $j=$c;
+                }
+            } 
         }
+        return $aumentaSiConsecutivo;
     }
 
     function insertarBaja($t_dias,$motivo,$numEmpleado)
@@ -97,7 +138,7 @@
         global $f_hoy;
         global $con;
         $quincena=quincenaActual();
-        $sql1="INSERT INTO bajas (fecha, t_dias, motivo, trabajador_trabajador, quincena, dias_para_baja, baja_definitiva) VALUES ('$f_hoy', $t_dias, '$motivo', '$numEmpleado','$quincena[0]','','NO');";
+        $sql1="INSERT INTO bajas (fecha, t_dias, motivo, trabajador_trabajador, quincena, baja_definitiva) VALUES ('$f_hoy', $t_dias, '$motivo', '$numEmpleado','$quincena','0');";
         $query1= mysqli_query($con, $sql1);
         if($query1)
         {
@@ -135,5 +176,4 @@
         echo"<script> console.error('$error'); </script>";
         exit();
     }
-
 ?>

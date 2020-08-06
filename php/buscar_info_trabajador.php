@@ -15,7 +15,7 @@
             //retornar este array
             return
             [
-                $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7]
+                $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],
             ];
         }
     }
@@ -31,11 +31,18 @@
             die("<br>" . "Error, línea 27: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
         }
         else
-        { 
-            $resul=mysqli_fetch_array($query);
-            //retornar este array
-            return
-            [ $resul[1],$resul[2],$resul[0],$resul[3]];//fecha cumple, fecha ono, id, validez
+        {   $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1],$resul[2],$resul[0],$resul[3]];//fecha cumple, fecha ono, id, validez
+            }
+            else
+            {
+                return null;
+            }
         }
     
     }
@@ -48,15 +55,22 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-             die("<br>" . "Error, línea 47: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla acceso, verifique con el administrador de sistemas.");
+            die("<br>" . "Error, línea 54: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla acceso, verifique con el administrador de sistemas.");
         }
         else
-        { 
-            $resul=mysqli_fetch_array($query);
-            //retornar este array
-            return
-            [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
-        }
+        {   $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9],$resul[0] ];
+            }
+            else
+            {
+                return "";
+            }
+         }
     }
 
     function consultaTServicio($myid)
@@ -67,14 +81,22 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-            die("<br>" . "Error, línea 66: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tiempo de servicio, verifique con el administrador de sistemas.");
+            die("<br>" . "Error, línea 80: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla tiempo de servicio, verifique con el administrador de sistemas.");
         }
         else
         { 
-            $resul=mysqli_fetch_array($query);
-            //retornar este array
-            return
-            [ $resul[1],$resul[0] ];
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                //retornar este array
+                return
+                [ $resul[1],$resul[0] ];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 
@@ -86,7 +108,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-             die("<br>" . "Error, línea 85: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay genero registrado en la tabla trabajador, verifique con el administrador de sistemas.");
+            die("<br>" . "Error, línea 107: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay genero registrado en la tabla trabajador, verifique con el administrador de sistemas.");
         }
         else
         { 
@@ -106,12 +128,20 @@
         $query= mysqli_query($con, $sql);
         if($query)
         {
-            $fila=mysqli_fetch_array($query);
-            return $fila[0];
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                return $resul[0];
+            }
+            else
+            {
+                return "";
+            }
         }
         else
         {
-            die("<br>" . "Error, línea 105: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
+            die("<br>" . "Error, línea 127: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
         }
     }
 
@@ -123,12 +153,20 @@
         $query= mysqli_query($con, $sql);
         if($query)
         {
-            $fila=mysqli_fetch_array($query);
-            return $fila[0];
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                return $resul[0];
+            }
+            else
+            {
+                return "";
+            }
         }
         else
         {
-            die("<br>" . "Error, línea 122: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
+            die("<br>" . "Error, línea 145: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay descripcion del tipo de trabajador, verifique con el administrador de sistemas.");
         }
     }
 
@@ -140,14 +178,22 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-             die("<br>" . "Error, línea 139: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en tabla especial, verifique con el administrador de sistemas");
+             die("<br>" . "Error, línea 177: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en tabla especial, verifique con el administrador de sistemas");
         }
         else
         { 
-            $resul=mysqli_fetch_array($query);
-            //retornar este array
-            return
-            [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                return
+                [ $resul[0],$resul[1],$resul[2],$resul[3],$resul[4],$resul[5],$resul[6],$resul[7],$resul[8],$resul[9] ];
+    
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 
@@ -286,7 +332,7 @@
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
-            die("<br>" . "Error, línea 283: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
+            die("<br>" . "Error, línea 331: " . mysqli_errno($con) . " : " . mysqli_error($con).", no hay datos en la tabla cumple u onomástico, verifique con el aministrador de sistemas.");
         }
         else
         { 
@@ -301,9 +347,216 @@
             {
                 return false;
             }
-            
         }
-    
     }
 
+    function buscarSiExisteNip($nip)
+    {
+        global $con;
+        $sql="select nip from trabajador where nip=$nip;"; 
+        $query=mysqli_query($con,$sql);
+        if(!$query)
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='356';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+        }
+        else
+        {
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                return true;
+            }
+            else
+            {
+                return null;
+            }
+        } 
+    }
+
+    function consultaTurnoOpcional($myid)
+    {
+        global $con;
+        $sql="select idt_op from t_op where trabajador_trabajador = '".$myid."'";
+        $query= mysqli_query($con, $sql);
+        if(!$query)
+        {
+            die("<br>" . "Error línea 384 al consultar trabajador: " . mysqli_errno($con) . " : " . mysqli_error($con));
+        }
+        else
+        { 
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    function validaTurnoOpcional($numero, $categoria, $t_horas, $acceso)
+    {
+        global $con;
+        $categorias=array();
+        $contador=0;
+        $posibleTurnoOpcional=0;
+        $error='';
+        //Seleccionar las categorias que pueden tener turno opcional
+        if($acceso=="11111000")
+        {
+            $sql="SELECT categoria_categoria FROM t_opcional;"; 
+            $query=mysqli_query($con,$sql);
+            $fila=mysqli_num_rows($query);
+            if($fila>0)
+            {
+                while($resul=mysqli_fetch_array($query))
+                {   
+                    $categorias[$contador]=$resul[0];
+                    $contador++;
+                }
+            }
+            /*
+            $sql="SELECT entrada,salida,t_horas FROM turno where idturno='$turno';"; 
+            $mysql=mysqli_query($con,$sql);
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+               echo $entrada=$resul[0];
+                $salida=$resul[1];
+               echo $t_horas=$resul[2];
+            }
+            */
+            for($i=0;$i<$contador;$i++)
+            {
+                if($categoria==$categorias[$i])
+                {
+                    $posibleTurnoOpcional=1;
+                    $i=$contador;
+                }
+            }
+
+            if($posibleTurnoOpcional==1)
+            {
+                if($t_horas !== '09:00:00') 
+                {
+                    $error.="Para poder tener turno opcional es necesario tener un horario con un total de 09:00:00 horas. No un turno con $t_horas horas. ";
+                }
+            }
+            else
+            {
+                $error.="La categoría $categoria seleccionada no puede tener turno opcional. ";
+            }
+        }
+        else
+        {
+            $error.="Para tener turno opcional los días de trabajo deben ser de lunes a viernes. ";
+        }
+        if (!empty($error))
+        {
+            echo"<script>error('$error'); </script>";
+            exit();
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    function insertaTurnoOpcional($numero)
+    {
+        global $con;
+        $sql="INSERT INTO t_op (trabajador_trabajador) VALUES ('$numero');"; 
+        if(!(mysqli_query($con,$sql)))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='478';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+        }
+        else
+        {
+            return true;
+        } 
+    }
+
+    function insertaEnAF($idacceso)
+    {   /*
+            Se guardar en af (acceso festivo) si el empleado trabaja sabado, domingo y dia festivo y tiene un turno de 12 hrs (nota, aquí no se valida)
+            Si el festivo cae en lunes debe guardarse 0 en domingo, si el festivo cae viernes debe guardarse 0 en sabado 
+        */
+        global $con;
+        $sql="INSERT INTO af (sabado, domingo, idacceso) VALUES ('1', '1', '$idacceso');"; 
+        if(!(mysqli_query($con,$sql)))
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='500';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+        }
+        else
+        {
+            return true;
+        } 
+    }
+    
+    function buscarEnAF($numero)
+    {
+        global $con;
+        $sql="select a.idaf from af a inner join acceso b where b.trabajador_trabajador='$numero';"; 
+        $query=mysqli_query($con,$sql);
+        if(!$query)
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='519';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+        }
+        else
+        {
+            $fila=mysqli_num_rows($query);
+            if($fila==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                return $resul[0];
+            }
+            else
+            {
+                return null;
+            }
+        } 
+    }
+
+    function eliminarEnAF($idaf)
+    {
+        global $con;
+        $sql="DELETE FROM af WHERE (idaf = '$idaf');"; 
+        $query=mysqli_query($con,$sql);
+        if(!$query)
+        {
+            $er1=mysqli_errno($con);
+            $er2=mysqli_error($con);
+            $línea='548';
+            error($er1,$er2,$línea);
+            mysqli_rollback($con);
+            mysqli_autocommit($con, TRUE); 
+        }
+        else
+        {
+          return true;
+        } 
+    }
 ?>

@@ -183,6 +183,7 @@ session_start();
                                 <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
                                 <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
                                 <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="ht/verAsistencias.php">Asistencias de hoy</a></li>
                            </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">

@@ -25,7 +25,7 @@ date_default_timezone_set('America/Mexico_City');
     }
     else
     {
-        $salida="La tabla quincena no posee una quincena válida, verifique con el administrador de sistemas. Error: línea 20. Revise la tarea obtener_quincena y verifique que la tabla quincena posea solo una quincena con valor 1.";
+        $salida="La tabla quincena no posee una quincena con validez 1, verifique con el administrador de sistemas.";
         echo "<script type=\"text/javascript\">alert('$salida'); history.back(); </script>";
     }
 
@@ -994,7 +994,7 @@ date_default_timezone_set('America/Mexico_City');
 
                                                 <div class="form-1-2" >
                                                     <div id=numero-vinieron>
-                                                        <label for="">Ingrese un numéro de empleado: </label>
+                                                        <label for="">Ingrese un número de empleado: </label>
                                                         <input type="text" class="form-control" name="num-v">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="ini-v">
@@ -1048,7 +1048,7 @@ date_default_timezone_set('America/Mexico_City');
                                                     <label for="numero-f"> Por un número de empleado y rango de fechas
                                                     <input type="radio" name="opcion-f" value="numero-f" id="numero-f" onclick="ocultafaltaron(2)"></label>
                                                     <p></p>
-                                                    <label for="numero-f"> Por quincena
+                                                    <label for="quincena-f"> Por quincena
                                                     <input type="radio" name="opcion-f" value="quincena-f" id="quincena-f" onclick="ocultafaltaron(3)"></label>
                                                     <p></p>
                                                 </div>
@@ -1065,7 +1065,7 @@ date_default_timezone_set('America/Mexico_City');
 
                                                 <div class="form-1-2" >
                                                     <div id=numero-faltaron>
-                                                        <label for="">Ingrese un numéro de empleado: </label>
+                                                        <label for="">Ingrese un número de empleado: </label>
                                                         <input type="text" class="form-control" name="num-f">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="ini-f">
@@ -1153,7 +1153,7 @@ date_default_timezone_set('America/Mexico_City');
                                                 </div> 
                                                 <div class="form-1-2" >
                                                     <div id=numero-guardias>
-                                                        <label for="">Ingrese un numéro de empleado: </label>
+                                                        <label for="">Ingrese un número de empleado: </label>
                                                         <input type="text" class="form-control" name="num-g">
                                                         <label for="">Fecha inicio</label>
                                                         <input type="date" class="form-control" name="in-g">

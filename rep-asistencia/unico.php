@@ -77,7 +77,8 @@ ob_start();
                         echo "<td>".$reporte[$i][1]."</td>";
                         echo "<td>".$reporte[$i][2]."</td>";
                         echo "<td>".$reporte[$i][3]."</td>";
-                        echo "<td>1</td>";
+                        $t_dias=count(explode(",",$reporte[$i][3]));
+                        echo "<td>".$t_dias."</td>";
                         echo"</tr>";
                     }
                 ?>

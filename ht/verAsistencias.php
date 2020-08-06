@@ -8,6 +8,7 @@ date_default_timezone_set('America/Mexico_City');
         require("../Acceso/global.php"); 
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
         $dia_actual=date('Y-m-d');
+        $diaHoy=date('d-m-Y');
     }
     else
     {
@@ -22,7 +23,7 @@ date_default_timezone_set('America/Mexico_City');
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Catalogo de Conceptos
+           Asistencias del <?php echo $diaHoy; ?> 
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -151,17 +152,7 @@ date_default_timezone_set('America/Mexico_City');
                 <div class="col-sm-5">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Asistencias del día <?php echo $dia_actual; ?> del personal</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                    <div class="page-header float-right">
-                        <div class="page-title">
-                            <ol class="breadcrumb text-right">
-                                <!-- <li><a href="#">Catálogos</a></li> -->
-                                <!-- <li class="active">Incidencias</li> -->
-                            </ol>
+                            <h1>Asistencias de hoy <?php echo $diaHoy; ?> </h1>
                         </div>
                     </div>
                 </div>
@@ -198,21 +189,27 @@ date_default_timezone_set('America/Mexico_City');
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
-                                <div class="card-header">
+                               <!--<div class="card-header">
                                     <strong class="card-title">Información</strong>
-                                </div>
+                                </div>-->
                                 <div class="card-body">
                                     <span id="MainContent_DataTable">
                                         <table id='' class='table table-striped table-bordered display'>
                                             <thead>
                                                 <th>Trabajador</th>
-                                                <th>Fecha entrada</th>
-                                                <th>Fecha salida</th>
-                                                <th>Quincena</th>
+                                                <th>Nombre</th>
+                                                <th>A Paterno</th>
+                                                <th>A Materno</th>
+                                                <th>Depto</th>
+                                                <th>Categoría</th>
+                                                <th>Entrada</th>
+                                                <th>Salida</th>
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $sql="select * from asistencia where (CAST(fecha_entrada AS DATE)='$dia_actual' or (CAST(fecha_salida AS DATE)='$dia_actual'));";
+                                                    $sql="SELECT a.numero_trabajador,a.nombre,a.apellido_paterno,a.apellido_materno,a.depto_depto,a.categoria_categoria, b.fecha_entrada,b.fecha_salida FROM trabajador a 
+                                                    inner join asistencia b where a.numero_trabajador=b.trabajador_trabajador and (fecha_entrada like '$dia_actual%' or fecha_salida like '$dia_actual%')
+                                                    order by fecha_entrada, fecha_salida,depto_depto;";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
                                                     {
@@ -223,10 +220,14 @@ date_default_timezone_set('America/Mexico_City');
                                                         while($resul=mysqli_fetch_array($query))
                                                         {
                                                             echo "<tr>";
-                                                            echo "<td>" . $resul[3] . "</td>";
+                                                            echo "<td>" . $resul[0] . "</td>";
                                                             echo "<td>" . $resul[1] . "</td>";
                                                             echo "<td>" . $resul[2] . "</td>";
+                                                            echo "<td>" . $resul[3] . "</td>";
                                                             echo "<td>" . $resul[4] . "</td>";
+                                                            echo "<td>" . $resul[5] . "</td>";
+                                                            echo "<td>" . $resul[6] . "</td>";
+                                                            echo "<td>" . $resul[7] . "</td>";
                                                             echo "</tr>";
                                                         }
                                                     }
@@ -298,6 +299,7 @@ date_default_timezone_set('America/Mexico_City');
                     $('body').toggleClass('open');
                 });
             });
-        </script>
+        </script>    
     </body>
+    <?php require("../ht/modalCambiarPass.php"); ?>
 </html>
