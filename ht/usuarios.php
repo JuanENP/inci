@@ -100,7 +100,7 @@ session_start();
                         if (keycode == 13) 
                         {
                             // alert("Enter!");
-                            event.keyCode = 9;
+                              document.getElementById("unico").focus();
                         }
                         else
                         {
@@ -140,6 +140,23 @@ session_start();
                     cambio.type = "password";
                     $("#span_con").text("Ver");//cambiar el texto 
                 }
+            }
+
+            function seguroEliminar(elemento)
+            {
+                var miID=elemento.id;
+
+                alertify.confirm("¿Seguro que desea eliminar este usuario (Esta acción no es reversible).?", function(e)
+                {
+                    if(e)
+                    {
+                        window.location.href="../php/delete/usuario.php?5dF0_sp="+miID+"";
+                    }
+                    else
+                    {    
+                        exit();
+                    }
+                });
             }
         </script>
     </head>
@@ -322,9 +339,10 @@ session_start();
                                                     {
                                                       while($resul=mysqli_fetch_array($query))
                                                       {
+                                                        $encript=generaURL($resul[0]);
                                                         echo "<tr>";
                                                         echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                        echo "<td><a href='../php/delete/usuario.php?5dF0_sp=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
+                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='seguroEliminar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
                                                         echo "</tr>";
                                                       }
                                                     }
