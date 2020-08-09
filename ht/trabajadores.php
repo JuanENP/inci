@@ -519,7 +519,7 @@ session_start();
                         ]
                     });
                 });
-                function preguntar(elemento,ruta,id)
+                function preguntar(elemento)
                 {
                     var miID=elemento.id;
                     eliminar=confirm("¿Deseas eliminar este registro?");

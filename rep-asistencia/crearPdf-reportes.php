@@ -9,7 +9,15 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
         $contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
 		$f_hoy=date("d-m-Y");//guardar la fecha actual
-		$operacion=$_POST['id'];//Para saber que reporte quiero
+		if(!empty($_POST['id']))
+		{
+			$operacion=$_POST['id'];//Para saber que reporte quiero
+		}
+		else
+		{
+			echo "<script language='javascript'> alert('Elija una opción'); history.back();</script>";
+			exit();	
+		}
 		$salida="";//Sirve para almacenar los errores
     }
     else
@@ -17,19 +25,17 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
         header("Location: ../index.php");
         die();
     }
-
 	// Cargamos la librería dompdf que hemos instalado en la carpeta dompdf
 	require_once("../pdf/dompdf/autoload.inc.php");
 	use Dompdf\Dompdf;
+	//Archivo que contiene todas las funciones necesarias
 	require("funcionesNecesarias.php"); 
-
 	$num = date("d", strtotime($f_hoy));
 	$mes = array('ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE');
 	$mes = $mes[(date('m', strtotime($f_hoy))*1)-1];
 	$anio= date("Y", strtotime($f_hoy));
 	$dia_mes=$num.' DE '.$mes;
-	
-	//Enviar informacion del hospital a los reportes//
+	//Enviar informacion del hospital a los reportes
 	$info=informacionHospital();
 	if($info != null)
 	{
@@ -39,41 +45,34 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 	}
 	else
 	{
-		$salida="No hay información del hospital registrado en la base de datos, verifique con el administrador de sistemas.";
+		$salida="No hay información del hospital en la base de datos, verifique con el administrador de sistemas.";
         echo "<script type=\"text/javascript\">alert('$salida'); history.back(); </script>";
 	}
-	
-	//REPORTE DE UNICO QUINCENAL DE INCIDENCIAS 
+	//Reporte único quincenal de incidencias
 	if($operacion=="unico")
 	{  	
 		if(!(empty($_POST['quincena'])))
 		{
 			$todo_quincena=$_POST['quincena'];
 		}
+		//Separar los datos de lo que se recibe en quincena
 		$separa=explode(' ',$todo_quincena);
 		$quincena=$separa[0];//Número de quincena seleccionado
 		$f_ini=$separa[1];//fecha inicio de quincena
 		$f_fin=$separa[2];//fecha fin de quincena
-
 		$fila=array();
 		$reporte=array();
 		$ultimo_r=0;
 		$c=-1;
-		$arreglo=array();
+		$arreglo=array();//arreglo con los datos del reporte
 		$contador=0;
-		
-		retardos();
-		faltas();
+		//incidencias();
+		// cumpleOno_clave14cica();
+		//faltas();
 		justificaciones();
-		especiales();
+		// especiales();
 		pulir();
-	
-		//Calcula la cantidad de filas del arreglo
-		foreach($arreglo as $fila)
-		{
-			$contador++;
-		}
-		
+		$contador=count($arreglo);
 		if($contador>0)
 		{
 			//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
@@ -103,7 +102,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			$datos=array();
 			$contador_d=0;
 			$contador=0;
-
 			if($div=="rango")
 			{
 				//Ver si la fecha de inicio no está vacia
@@ -142,16 +140,10 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				{   
 					$salida.=" Debe escribir una fecha de fin.";
 				}
-				
-				
 				if(empty($salida))
 				{
 					buscarxfecha();
-					//Calcula la cantidad de filas del arreglo
-					foreach($datos as $fila)
-					{
-						$contador++;
-					}
+					$contador=count($datos);
 					//Si el arreglo tiene datos, imprimir el reporte
 					if($contador>0)
 					{
@@ -180,25 +172,17 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			}//fin del div rango
 			if($div=="todos")
 			{
-
 				$todo_quincena=$_POST['quincena2'];
 				$separa=explode(' ',$todo_quincena);
-				$quincena=$separa[0];//Número de quincena
-				
+				$quincena=$separa[0];//Número de quincena	
 				$f_ini=$separa[1];//fecha inicio de quincena
 				$f_fin=$separa[2];//fecha fin de quincena
-
 				buscarxquincena();
 				pulirVacaciones();
-				//Calcula la cantidad de filas del arreglo
-				foreach($datos as $fila)
-				{
-					$contador++;
-				}
+				$contador=count($datos);
 				//Si el arreglo tiene datos, imprimir el reporte
 				if($contador>0)
 				{
-					
 					$tipo="VACACIONES DEL PERSONAL EN LA QUINCENA $quincena DEL $f_ini AL $f_fin";
 					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
 					$_SESSION['fecha'] = $dia_mes;
@@ -206,7 +190,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					$_SESSION['datos'] = $datos;
 					$_SESSION['c_d'] = $contador;
 					$_SESSION['tipo'] = $tipo;
-			
 					$nomArchivo="vacaciones.php";
 					$nomPdf="Reporte-de-vacaciones.pdf";
 					imprimepdf($nomArchivo,$nomPdf);
@@ -240,15 +223,10 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				{   
 					$salida.=" Debe escribir un número de empleado";
 				}
-
 				if(empty($salida))
 				{
 					buscarxnumero();
-					//Calcula la cantidad de filas del arreglo
-					foreach($datos as $fila)
-					{
-						$contador++;
-					}
+					$contador=count($datos);
 					//Si el arreglo tiene datos, imprimir el reporte
 					if($contador>0)
 					{
@@ -259,11 +237,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 						$_SESSION['datos'] = $datos;
 						$_SESSION['c_d'] = $contador;
 						$_SESSION['tipo'] = $tipo;
-                       
 						$nomArchivo="vacaciones.php";
 						$nomPdf="Reporte-de-vacaciones.pdf";
 						imprimepdf($nomArchivo,$nomPdf);
-					
 					}
 					else
 					{
@@ -291,13 +267,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		//Ver si la fecha de inicio no está vacia
 		if (!(empty($_POST['fecha'])))
 		{
-			$fec=$_POST['fecha'];
-			$valor=explode('-',$fec);
-			if(strlen($valor[0])==4)
-			{
-				$fecha=$fec;
-			}
-			else
+			$fecha=$_POST['fecha'];
+			$valor=explode('-',$fecha);
+			if(strlen($valor[0]) !== 4)
 			{
 				$salida.="El año es incorrecto.";
 			}
@@ -313,7 +285,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			$hoy=date("Y-m-d");
 			$fecha_actual=strtotime($hoy);
 			$fecha_elegida = strtotime($fecha); //fecha en yyyy-mm-dd
-
 			if($fecha_elegida !== $fecha_actual)
 			{
 				$dato=array();
@@ -330,12 +301,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				$contar=0;
 				vienen_hoy();
 			}
-
-			//Calcula la cantidad de filas del arreglo
-			foreach($dato as $fila)
-			{
-				$contar++;
-			}
+			$contar=count($dato);
 			//Si el arreglo tiene datos, imprimir el reporte
 			if($contar>0)
 			{	
@@ -344,8 +310,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				$mes2 = $meses[(date('m', strtotime($fecha))*1)-1];
 				$anio2= date("Y", strtotime($fecha));
 				$fecha_buscada=$dia2.' DE '.$mes2.' DEL '.$anio2;
-
-				// $tipo="COMISIONES PRÓXIMAS A VENCER";
 				//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
 				$_SESSION['fecha'] = $fecha_buscada;
 				$_SESSION['dato'] = $dato;
@@ -354,7 +318,6 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				$nomArchivo="asistencia.php";
 				$nomPdf="Reporte-asistencia.pdf";
 				imprimepdf($nomArchivo,$nomPdf);	
-			
 			}
 			else
 			{

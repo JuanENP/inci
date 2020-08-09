@@ -16,88 +16,288 @@
 			return true;
 		}
 	}
-// -------------------Funciones necesarias para el reporte de incidencias------------	
-	function retardos()
-	{
-        global $con;
+	// -------------------Funciones necesarias para el reporte de incidencias------------	
+    function incidencias()
+    {
+		global $con;
 		global $quincena;
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-		
 		//seleccionamos a los empleados que tinen incidencias sin justificar y que sean de base o comisionados foraneos
 		$sql="SELECT a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
-		c.clave_incidencia_clave_incidencia, b.fecha_entrada,b.fecha_salida 
-		FROM trabajador a
+		c.clave_incidencia_clave_incidencia, b.fecha_entrada,b.fecha_salida FROM trabajador a
 		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador
 		inner join incidencia c on b.id=c.asistencia_asistencia
-		where
-		b.quincena_quincena=$quincena 
-		and (a.tipo_tipo=2)
-		and (c.clave_incidencia_clave_incidencia='01' 
-		or c.clave_incidencia_clave_incidencia='02'
-		or c.clave_incidencia_clave_incidencia='03' 
-		or c.clave_incidencia_clave_incidencia='05'
-		or c.clave_incidencia_clave_incidencia='16'
-		or c.clave_incidencia_clave_incidencia='18'
-		or c.clave_incidencia_clave_incidencia='19' 
-		or c.clave_incidencia_clave_incidencia='20'
-		or c.clave_incidencia_clave_incidencia='24'
-		or c.clave_incidencia_clave_incidencia='25'
-		or c.clave_incidencia_clave_incidencia='26'
-		or c.clave_incidencia_clave_incidencia='27' 
-		or c.clave_incidencia_clave_incidencia='28'
-		or c.clave_incidencia_clave_incidencia='30'
-		or c.clave_incidencia_clave_incidencia='31')
-		and NOT EXISTS 
-		(SELECT d.clave_justificacion_clave_justificacion 
-		FROM justificacion d where c.idincidencia=d.incidencia_incidencia)
-		order by 
-		a.numero_trabajador,
-		b.fecha_entrada,
-		b.fecha_salida,
-		c.clave_incidencia_clave_incidencia;";  
+		where b.quincena_quincena=$quincena
+		and a.tipo_tipo=2
+		and (c.clave_incidencia_clave_incidencia='01' or c.clave_incidencia_clave_incidencia='02'or c.clave_incidencia_clave_incidencia='03' or c.clave_incidencia_clave_incidencia='04' 
+		or c.clave_incidencia_clave_incidencia='05' or c.clave_incidencia_clave_incidencia='07' or c.clave_incidencia_clave_incidencia='16' or c.clave_incidencia_clave_incidencia='18'
+		or c.clave_incidencia_clave_incidencia='19' or c.clave_incidencia_clave_incidencia='20' or c.clave_incidencia_clave_incidencia='24'
+		or c.clave_incidencia_clave_incidencia='25' or c.clave_incidencia_clave_incidencia='26' or c.clave_incidencia_clave_incidencia='27' 
+		or c.clave_incidencia_clave_incidencia='28' or c.clave_incidencia_clave_incidencia='30' or c.clave_incidencia_clave_incidencia='31')
+		and NOT EXISTS (SELECT d.clave_justificacion_clave_justificacion FROM justificacion d where c.idincidencia=d.incidencia_incidencia);";
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script language='javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-			// exit();
-		} 
-		else
-		{
-			while($resul=mysqli_fetch_array($query))
-			{
-				$fila[0]=$resul[0];//numero
-				$fila[1]=$resul[1];//nom
-				$fila[2]=$resul[2];//clave 
-				$entrada=$resul[3];//fecha-entrada
-				$separar=explode(' ',$entrada);//Separar la fecha de entrada de la hora de entrada
-				$f_entrada=$separar[0];//obtener solo la fecha de entrada
-				$separar2=explode('-',$f_entrada);//Separar la fecha de entrada para obtener solo el día
-				$dia_entrada=$separar2[2]; 
-				if($dia_entrada=="00")//Si el día de la entrada está en ceros, significa que deberá guardarse el día de salida
+				while($resul=mysqli_fetch_array($query))
 				{
-					$salida=$resul[4];//fecha-entrada
-					$separar=explode(' ',$salida);//Separar la fecha de entrada de la hora de entrada
-					$f_salida=$separar[0];//obtener solo la fecha de entrada
-					$separar2=explode('-',$f_salida);//Separar la fecha de entrada para obtener solo el día
-					$dia_salida=$separar2[2]; 
-					$fila[3]=$dia_salida;//dia-salida
-				}
+					$fila[0]=$resul[0];//numero
+					$fila[1]=$resul[1];//nom
+					$fila[2]=$resul[2];//clave 
+					//resul3 fecha entrada
+					//resul4 fecha salida
+					/*Clave 16 omision de salida de asistencia con jornada discontinua
+					Clave 18, omisión de entrada en turno normal
+					Clave 19 omision de salida en jornada continua
+					Clave 20, omisión de entrada y salida en turno opcional*/
+					if($fila[2] !== '16' && $fila[2] !== '18' && $fila[2] !== '19' && $fila[2] !== '20')
+					{
+						$separar=explode(' ',$resul[3]);//Separar la fecha de entrada de la hora de entrada
+						$fecha=$separar[0];
+						$separar2=explode('-',$fecha);//Separar la fecha de entrada para obtener solo el día          
+						$dia=$separar2[2];
+					}
+					else
+					{	
+						//Omision de entrada y salida al turno opcional
+						if($fila[2] == '20')
+						{
+							if($resul[3]=='')//Si la fecha de entrada está vacia revisar la fecha de salida
+							{
+								$dia=revisarHorario($fila[0],'',$resul[4]);
+							}
+							else //si la fecha de salida está vacía revisar la fecha de entrada
+							{
+								$dia=revisarHorario($fila[0],$resul[3],'');
+							}
+						}
+						else
+						{
+							//Omision de salida
+							if($fila[2] == '16' || $fila[2] == '19')
+							{
+								$dia=revisarHorario($fila[0],$resul[3],'');
+							}
+							//Omision de entrada
+							if($fila[2] == '18')
+							{
+								$dia=revisarHorario($fila[0],'',$resul[4]);
+							}
+						}
+					}
+					//Se guardará el día de la incidencia
+					$fila[3]=$dia;
+					$reporte[$ultimo_r]=$fila;
+					$ultimo_r++;
+			}//Fin while
+		}
+    }
+
+    function revisarHorario($numero,$fechaEntrada,$fechaSalida)
+	{
+		global $con;
+		$sql="select entrada, salida,t_horas from acceso inner join turno where turno_turno=idturno and trabajador_trabajador='$numero';";
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($resul>0)
+		{  
+		  while($resul=mysqli_fetch_array($query))
+			{	
+                $horaEntrada=$resul[0];
+                $horaSalida=$resul[1];
+                $t_horas=$resul[2];
+                if($fechaEntrada=='')
+				{
+                    $dia=obtenerDiaIncidencia($fechaSalida, $horaSalida,$t_horas,'entrada');
+                    return $dia;
+                }
 				else
 				{
-					//Sino debera guardarse el día de entrada 
-					$fila[3]=$dia_entrada;//dia-entrada
+					if($fechaSalida=='')
+					{
+                        $dia=obtenerDiaIncidencia($fechaEntrada,$horaEntrada,$t_horas,'salida');
+                        return $dia;
+					}
 				}
-				
-				$reporte[$ultimo_r]=$fila;
-				$ultimo_r++;
-			}//Fin while
-		}//fin else
-	}
+			}
+		}
+    }
 
+    function obtenerDiaIncidencia($fechaSalidaOEntrada,$horaEntOSal,$t_horas,$TipoOmision)
+    {
+        if($TipoOmision=='salida') //Si tiene una omision de salida es necesaria la fecha de entrada
+        {
+            //Separar la fecha de entrada
+            $separa=explode(' ',$fechaSalidaOEntrada);
+            $fecha=$separa[0];
+            //Agregar la fecha en la que entró el empleado y la hora de entrada del turno
+            $horario=$fecha.' '.$horaEntOSal;
+            //Separar el total de horas
+            $separaHora=explode(':',$t_horas);
+            if($separaHora[0]=='00')
+            {
+                $hora=24;
+            }
+            else
+            {
+                $hora=(int)$separaHora[0];
+            }
+            if($separaHora[1]=='59')
+            {
+                $hora++;
+                $minuto=0;
+            }
+            else
+            {
+                $minuto=(int)$separaHora[1];
+            }
+            $dia=SumarHoraFecha($horario,$hora,$minuto);
+            return $dia;
+        }
+        else //Sino tienen omision de entrada y por lo tanto es necesario su fecha de salida
+        {
+            //Separar la fecha de salida
+            $separa=explode(' ',$fechaSalidaOEntrada);
+            $fecha=$separa[0];
+            //Agregar la fecha en la que salió el empleado y la hora de salida del turno
+            $horario=$fecha.' '.$horaEntOSal;
+            //Revisar si el empleado trabajó horas extra 
+            $t_horas_extra=RestarHoras($fechaSalidaOEntrada,$horario);
+            //Sumar el total de horas del turno y tambien las horas extra en caso de que tenga
+            $totalHoras=SumResMinutosHoras(1,$t_horas, $t_horas_extra);
+            $separaHora=explode(':',$totalHoras);
+            if($separaHora[0]=='00')
+            {
+                $hora=24;
+            }
+            else
+            {
+                $hora=(int)$separaHora[0];
+            }
+            if($separaHora[1]=='59')
+            {
+                $hora++;
+                $minuto=0;
+            }
+            else
+            {
+                $minuto=(int)$separaHora[1];
+            }
+            $dia=RestaHoraFecha($fechaSalidaOEntrada,$hora,$minuto);
+            return $dia;
+        }
+    }
+
+    function RestarHoras($horaini,$horafin)
+    {
+        $f1 = new DateTime($horaini);
+        $f2 = new DateTime($horafin);
+        $d = $f1->diff($f2);
+        return $d->format('%H hour %I minutes %S second');
+    }
+
+    function RestaHoraFecha($fecha,$horas, $minutos)
+    { 
+        $nuevafecha = strtotime($fecha."-$horas hour $minutos minute");
+        // $diaFormateado= date("Y-m-d H:i:s",$nuevafecha);
+        $diaFormateado= date("d",$nuevafecha);
+        return $diaFormateado;
+    }
+
+    function SumarHoraFecha($fecha,$horas, $minutos)
+    { 
+        $nuevafecha = strtotime($fecha."+$horas hour $minutos minute");
+        // $diaFormateado= date("Y-m-d H:i:s",$nuevafecha);
+        $diaFormateado= date("d",$nuevafecha);
+        return $diaFormateado;
+    }
+    
+    function SumResMinutosHoras($operacion,$horario, $minutosASumaroRestar)
+    {
+        /*Operacion=1->Sumar
+            Operacion=2->Restar
+        */
+        if($operacion==1)
+        {
+            $date = new DateTime($horario);
+            $date->modify("+$minutosASumaroRestar");
+            $horaFormateada=$date->format('H:i:s');
+            return $horaFormateada;
+        }
+        else
+        {
+            if($operacion==2)
+            {
+              $date = new DateTime($horario);
+              $date->modify("-$minutosASumaroRestar");
+              $horaFormateada=$date->format('Y-d-m H:i:s');
+              return $horaFormateada;
+            }
+            else
+            {
+                echo "Parametro *operacion=$operacion* de la función SumarMinutosHoras no admitido";
+                exit();
+            }
+        }
+    }
+
+	function cumpleOno_clave14cica()
+    {
+		global $con;
+		global $f_ini;
+		global $f_fin;
+		global $fila;
+		global $ultimo_r;
+		global $reporte;
+		//Separar las fechas de inicio y fin de la quincena actual
+		$separaF_ini=explode('-',$f_ini);
+		$separaF_fin=explode('-',$f_fin);
+		//seleccionamos a los empleados que tomaron su fecha de cumpleaños en esta quincena
+		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, b.fecha_cumple from trabajador a 
+		inner join cumple_ono b on numero_trabajador=trabajador_trabajador
+		and b.validez_tomado=1 and b.validez=0 and (MONTH(fecha_cumple) >= $separaF_ini[1] AND DAY(fecha_cumple) >= $separaF_ini[2])  and (MONTH(fecha_cumple) <= $separaF_fin[1] AND DAY(fecha_cumple) <= $separaF_fin[2]);";
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error al seleccionar a los que tuvieron cumpleaños en esta quincena: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+       	if($resul>0)
+       	{  
+           	while($resul=mysqli_fetch_array($query))
+           	{
+                $fila[0]=$resul[0];//numero
+                $fila[1]=$resul[1];//nom
+                $fila[2]='14';//clave 
+			   	//Se guardará el día de la incidencia
+			   	$separar=explode('-',$resul[2]);//Separar la fecha para obtener solo el día          
+			   	$fila[3]=$separar[2];//día
+               	$reporte[$ultimo_r]=$fila;
+               	$ultimo_r++;
+            }//Fin while
+		}
+		//seleccionamos a los empleados que tomaron su fecha de onomástico en esta quincena
+		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, b.fecha_ono from trabajador a 
+		inner join cumple_ono b on numero_trabajador=trabajador_trabajador
+		and b.validez_tomado=1 and b.validez=1 and (MONTH(fecha_ono) >= $separaF_ini[1] AND DAY(fecha_ono) >= $separaF_ini[2])  and (MONTH(fecha_ono) <= $separaF_fin[1] AND DAY(fecha_ono) <= $separaF_fin[2]);";
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error al seleccionar a los que tuvieron cumpleaños en esta quincena: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+       	if($resul>0)
+       	{  
+           	while($resul=mysqli_fetch_array($query))
+           	{
+                $fila[0]=$resul[0];//numero
+                $fila[1]=$resul[1];//nom
+                $fila[2]='14';//clave 
+			   	//Se guardará el día de la incidencia
+			   	$separar2=explode('-',$resul[2]);//Separar la fecha para obtener solo el día          
+			   	$fila[3]=$separar2[2];//dia
+               	$reporte[$ultimo_r]=$fila;
+               	$ultimo_r++;
+            }//Fin while
+        }//fin else
+	}
+	
 	function faltas()
 	{
 		global $con;
@@ -114,36 +314,22 @@
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave,b.fecha
 		FROM trabajador a 
 		INNER JOIN falta b on a.numero_trabajador=b.trabajador_trabajador 
-		AND quincena=$quincena
-		AND (a.tipo_tipo=2 )
-		AND NOT EXISTS 
-		(SELECT c.idjustificar_falta
-		FROM justificar_falta c where b.idfalta=c.falta_falta)
-		order by 
-		a.numero_trabajador,
-		b.fecha";  
+		AND quincena=$quincena AND a.tipo_tipo=2
+		AND NOT EXISTS (SELECT c.idjustificar_falta FROM justificar_falta c where b.idfalta=c.falta_falta) order by a.numero_trabajador,b.fecha";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
-			$fila[0]=$resul[0];//numero
-			$fila[1]=$resul[1];//nombre
-			$fila[2]=$resul[2];//clave
-			$fecha=$resul[3];
-			$separa=explode('-',$fecha);//Separar la fecha de entrada para obtener solo el día
-			$fila[3]=$separa[2];//dia
-			$reporte[$ultimo_r]=$fila;
-			$ultimo_r++;
-			//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
+				$fila[0]=$resul[0];//numero
+				$fila[1]=$resul[1];//nombre
+				$fila[2]=$resul[2];//clave
+				$fecha=$resul[3];
+				$separa=explode('-',$fecha);//Separar la fecha de entrada para obtener solo el día
+				$fila[3]=$separa[2];//dia
+				$reporte[$ultimo_r]=$fila;
+				$ultimo_r++;
 			}
 		}
 	}
@@ -155,54 +341,46 @@
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-
-		//Seleccionamos a los empleados que tienen justificada una clave  de incidencia 03 con la 04
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
 		d.clave_justificacion_clave_justificacion, b.fecha_entrada,b.fecha_salida 
 		from trabajador a
 		inner join asistencia b on a.numero_trabajador = b.trabajador_trabajador
 		inner join incidencia c on b.id=c.asistencia_asistencia
 		inner join justificacion d on c.idincidencia=d.incidencia_incidencia  
-		where
-		(d.clave_justificacion_clave_justificacion=04
-		or d.clave_justificacion_clave_justificacion=08
-		or d.clave_justificacion_clave_justificacion=09)
-		and (a.tipo_tipo=2);";  
+		where (d.clave_justificacion_clave_justificacion=08 or d.clave_justificacion_clave_justificacion=09) and a.tipo_tipo=2;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
 				$fila[0]=$resul[0];//numero
 				$fila[1]=$resul[1];//nombre
 				$fila[2]=$resul[2];//clave
-				$fecha=$resul[3]; //fecha entrada
-				$separaEspacio=explode(' ',$fecha);//Separar la fecha de entrada para obtener solo la fecha y no la hora
-				$separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha de entrada para obtener solo el día
-				$fila[3]=$separaGuion[2];//dia
+				//$resul[3]; //fecha entrada
+				if($resul[3]=='')//Si la fecha de entrada está vacia revisar la fecha de salida
+				{
+					$dia=revisarHorario($fila[0],'',$resul[4]);
+				}
+				else //si la fecha de salida está vacía revisar la fecha de entrada
+				{
+					$dia=revisarHorario($fila[0],$resul[3],'');
+				}
+				$fila[3]=$dia;//dia
 				$reporte[$ultimo_r]=$fila;
 				$ultimo_r++;
-			//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
 	}
 
 	function especiales()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $quincena;
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-
 		//Seleccionamos a los empleados que tienen justificada una clave  de incidencia 03 con la 04
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
 		b.clave_especial_clave_especial, b.fecha_inicio,b.fecha_fin 
@@ -211,7 +389,10 @@
 		where 
 		(a.tipo_tipo=1 || a.tipo_tipo=2)
 		and 
-		(clave_especial_clave_especial='17'
+		(
+		clave_especial_clave_especial='12' 
+		clave_especial_clave_especial='13' 
+		or clave_especial_clave_especial='17'
 		or clave_especial_clave_especial='29'
 		or clave_especial_clave_especial='40'
 		or clave_especial_clave_especial='41'
@@ -225,15 +406,10 @@
 		or clave_especial_clave_especial='CS'
 		);";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-		$resul=mysqli_num_rows($query);
-
+		$fechaSalida=mysqli_num_rows($query);
 		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($fila>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
 				$fila[0]=$resul[0];//numero
@@ -257,44 +433,27 @@
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-		
 		//Seleccionamos a los empleados que tienen justificada una clave  de incidencia 03 con la 04
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
 		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
 		where c.dia >='$f_ini' and c.dia <='$f_fin'
-		and c.tomado=1
-		order by  a.numero_trabajador,c.dia;";  
+		and c.tomado=1 order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-		$resul=mysqli_num_rows($query);
-
+		$fila=mysqli_num_rows($query);
 		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($fila==0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-				$datos[$contador_d][0]=$resul[0];//numero
-				$datos[$contador_d][1]=$resul[1];//nombre
-				$datos[$contador_d][2]="60";//Clave	
-				$datos[$contador_d][3]=$resul[2];//Periodo
-				$datos[$contador_d][4]=$resul[3];//fecha
-				$datos[$contador_d][5]=1;//t_dias
-				$contador_d++;
-
 				$fila[0]=$resul[0];//numero
 				$fila[1]=$resul[1];//nombre
 				$fila[2]="60";//Clave	
 				$fila[2]=$resul[2]; //periodo
 				$fila[2]=$resul[3]; //fecha
 				$fila[2]=$resul[3]; //fecha
-
 				$ultimo_r++;
-			//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
 	}
@@ -323,9 +482,7 @@
 				{
 					//echo "<br>";
 					$arreglo[$c][2]=$arreglo[$c][2] .','. $reporte[$j][2];
-					//echo "<br>" . $reporte[$c][2];
 					$arreglo[$c][3]=$arreglo[$c][3] .','. $reporte[$j][3];
-					//echo "<br>" . $reporte[$c][3];
 					if($j==($ultimo_r-1))//Para romper el bucle principal en cuanto se alcance la última posición $reporte
 					{
 						$i=$ultimo_r-1;
@@ -340,20 +497,58 @@
 			}
 		}
 	}
-//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	function error($er1,$er2,$accion,$nomTabla,$numLinea,$posibleError)
+	{
+		$error="";
+		$err1="$er1";
+		$err2="$er2";
+		//Hacer UN EXPLODE DE ERR2
+		$divide=explode("'",$err2);
+		$tamDivide=count($divide);//saber el tamaño del array
+		if($tamDivide>0)//si el array posee datos
+		{
+			$err2="";
+			for($i=0;$i<$tamDivide;$i++)
+			{
+				$err2.=$divide[$i];
+			}
+		}
 
-	//vaciones
+		$error="Error al $accion en la tabla $nomTabla. $err1 : $err2. $posibleError. ";
+		echo"<script> alert('$error'); </script>";
+		exit();
+	}
+	
+	function informacionHospital()
+	{
+		global $con;
+		global $datos;
+		global $contador_d;
+		//Seleccionamos a los empleados que tienen pase de salida hoy
+		$sql="SELECT * FROM hospital;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($resul==1)
+		{  
+			$fila=mysqli_fetch_array($query);
+			return [$fila[0],$fila[1],$fila[2]];	
+		} 
+		else
+		{
+			return null;
+		}
+	}
+	//-------------------------------------------------------------------------------------
+	//vacaciones
 	function buscarxfecha()
 	{
-		
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $f_ini;
 		global $f_fin;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
@@ -363,17 +558,10 @@
 		order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]="60";//Clave	
@@ -388,14 +576,11 @@
 
 	function buscarxquincena()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $f_ini;
 		global $f_fin;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
@@ -405,17 +590,10 @@
 		order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]="60";//Clave	
@@ -425,18 +603,14 @@
 				$contador_d++;
 			}
 		}		
-
 	}//fin function xquincena
 
 	function buscarxnumero()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $num;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
@@ -445,60 +619,26 @@
 		and c.tomado=1
 		order by a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql);
-		if(!$query)
-        {
-            $er1=mysqli_errno($con);
-            $er2=mysqli_error($con);
-            $hacer='buscar';
-            $tabla='trabajador';
-			$línea='2242';
-			$Error='No existe el trabajador';
-            error($er1,$er2,$hacer,$tabla,$línea);
-        }  
-		else
+		$filas=mysqli_num_rows($query);
+		if($filas>0)
 		{
-			$filas=mysqli_num_rows($query);
-			if($filas>0)
+			while($resul=mysqli_fetch_array($query))
 			{
-				while($resul=mysqli_fetch_array($query))
-				{
-					$datos[$contador_d][0]=$resul[0];//numero
-					$datos[$contador_d][1]=$resul[1];//nombre
-					$datos[$contador_d][2]="60";//Clave	
-					$datos[$contador_d][3]=$resul[2];//Periodo
-					$datos[$contador_d][4]=$resul[3];//fecha
-					$datos[$contador_d][5]=1;//t_dias
-					$contador_d++;
-				}
-			}
-			else
-			{
-				echo "<script>imprime('No hay datos')</script>"; 
+				$datos[$contador_d][0]=$resul[0];//numero
+				$datos[$contador_d][1]=$resul[1];//nombre
+				$datos[$contador_d][2]="60";//Clave	
+				$datos[$contador_d][3]=$resul[2];//Periodo
+				$datos[$contador_d][4]=$resul[3];//fecha
+				$datos[$contador_d][5]=1;//t_dias
+				$contador_d++;
 			}
 		}
+		else
+		{
+			echo "<script>imprime('No hay datos')</script>"; 
+		}
+		
 	}//fin function xnumero
-
-	function error($er1,$er2,$accion,$nomTabla,$numLinea,$posibleError)
-    {
-        $error="";
-        $err1="$er1";
-        $err2="$er2";
-        //Hacer UN EXPLODE DE ERR2
-        $divide=explode("'",$err2);
-        $tamDivide=count($divide);//saber el tamaño del array
-        if($tamDivide>0)//si el array posee datos
-        {
-            $err2="";
-            for($i=0;$i<$tamDivide;$i++)
-            {
-                $err2.=$divide[$i];
-            }
-        }
-
-        $error="Error al $accion en la tabla $nomTabla. $err1 : $err2. $posibleError. ";
-        echo"<script> alert('$error'); </script>";
-        exit();
-    }
 
 	function pulirVacaciones()
 	{
@@ -539,18 +679,14 @@
 					$j=$contador_d;
 				}
 			}
-			
 		}
 	}
 
 	function vienen_hoy()
 	{					
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $dato;
 		global $conta;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, a.depto_depto,a.categoria_categoria,c.turno_turno,d.entrada, d.salida
 		from trabajador a 
         inner join vienen_hoy b on a.numero_trabajador=b.trabajador_trabajador 
@@ -559,17 +695,10 @@
 		order by a.depto_depto,a.categoria_categoria,d.entrada,d.salida,a.numero_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
-		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
+		if($resul>0)
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$dato[$conta][0]=$resul[0];//numero trabajador
 				$dato[$conta][1]=$resul[1];//nombre
 				$dato[$conta][2]=$resul[2];//depto
@@ -578,21 +707,16 @@
 				$dato[$conta][5]=$resul[5];//hora entrada
 				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
-				
 			}
 		}
 	}
 
 	function vienenxacceso() 
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $diaSemana;
 		global $dato;
 		global $conta;
-
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.turno_turno,c.entrada, c.salida
 		from trabajador a
 		inner join acceso b on a.numero_trabajador=b.trabajador_trabajador
@@ -600,17 +724,10 @@
 		and b.$diaSemana =1 and b.t_dias<=3;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$dato[$conta][0]=$resul[0];//numero trabajador
 				$dato[$conta][1]=$resul[1];//nombre
 				$dato[$conta][2]=$resul[2];//depto
@@ -619,20 +736,16 @@
 				$dato[$conta][5]=$resul[5];//hora entrada
 				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
-				//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
 			}
 		}
 	}
 
 	function vienenxsexta()
 	{				
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $diaSemana;
 		global $dato;
 		global $conta;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, a.depto_depto,a.categoria_categoria,b.turno_turno,c.entrada, c.salida
 		from trabajador a
 		inner join sexta b on a.numero_trabajador=b.trabajador_trabajador
@@ -640,14 +753,8 @@
 		and b.$diaSemana=1 and b.validez=1 and b.t_dias<=2;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
 				$dato[$conta][0]=$resul[0];//numero trabajador
@@ -658,7 +765,6 @@
 				$dato[$conta][5]=$resul[5];//hora entrada
 				$dato[$conta][6]=$resul[6];//hora salida
 				$conta++;
-				
 			}
 		}
 	}
@@ -667,7 +773,6 @@
 	{
 		vienenxacceso();
 		vienenxsexta();
-
 		global $dato;	
         tiene_guardia();
         tiene_comision();
@@ -683,15 +788,11 @@
         global $dato;
 		global $conta;
 		global $fecha;
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
-        
+		global $con;        
         for($j=0;$j<$conta;$j++)
         { //--------Array deben_hoy---------------//
             $num_deben=$dato[$j][0];
             //-------------------------------------//
-            
             $sql="select c.trabajador_suplente, CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) as n from trabajador t 
             inner join guardias c 
 		    on c.fecha_guardia='$fecha'
@@ -714,9 +815,7 @@
 	{
 		global $dato;
 		global $conta;
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		for($j=0;$j<$conta;$j++)
 		{ 	//--------Array deben_hoy---------------//
 			$num_deben=$dato[$j][0];
@@ -733,7 +832,6 @@
 				while($resul=mysqli_fetch_array($query))
 				{ 
 					$empresa=$resul[0];
-					
 					//Obtener la primera letra del nombre de la empresa
 					$primeraletra=substr("$empresa",0, 1);
 					// echo "Tiene comisión" ."$num_deben"." ".$primeraletra ."<br>";
@@ -745,10 +843,9 @@
 						$conta--; //Disminuirá el contador
 						$dato=array_values($dato);//El arreglo deberá reordenarse
 					}
-					 
-				}//FIN DEL WHILE
-			}//FIN DEL IF
-		}//FIN DEL FOR
+				}
+			}
+		}
 	}// FIN DE FUNCION TIENE_COMISION
 
     //QUIEN TIENE COMISION OFICIAL O PARTICIPACION EN CURSO DE CAPACITACION
@@ -758,9 +855,7 @@
         //Si Comisión oficial con o sin viáticos o que comprenda menos de un día (clave 61).
 		global $dato;
 		global $conta;
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
         for($j=0;$j<$conta;$j++)
         {
             //--------Array deben_hoy---------------//
@@ -779,7 +874,6 @@
                 {
 					$hora_entrada_especial=$resul[0];
 					$hora_salida_especial=$resul[0];
-
                     /*Ver si ese empleado tiene hora de entrada = 00:00:00, significa que el empleado no deberá asistir durante el tiempo 
                     de la capacitación o comisión*/
                     if($hora_entrada_especial=="00:00:00" && $hora_entrada_especial=="00:00:00")
@@ -789,9 +883,9 @@
 						$conta--; //Disminuirá el contador
 						$dato=array_values($dato);//El arreglo deberá reordenarse
                     }      
-                }//fin del while
-            } //fin del if  
-        }//fin del for
+                }
+            } 
+        }
     }//FIN QUIEN TIENE COMISION OFICIAL O PARTICIPACION EN CURSO DE CAPACITACION
 
     //QUIEN TIENEN LICENCIAS O PERMISOS
@@ -813,9 +907,7 @@
         */
 		global $dato;
 		global $conta;
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
         for($j=0;$j<$conta;$j++)
         {
             //--------Array deben_hoy---------------//
@@ -825,8 +917,7 @@
             inner join trabajador b 
             on b.numero_trabajador = a.trabajador_trabajador 
             and a.validez = 1 and b.numero_trabajador='$num_deben' 
-            and 
-            (a.clave_especial_clave_especial=13
+            and (a.clave_especial_clave_especial=13
             or a.clave_especial_clave_especial=17 
             or a.clave_especial_clave_especial=40 
             or a.clave_especial_clave_especial=41
@@ -845,8 +936,8 @@
 				unset($dato[$j]);
 				$conta--; //Disminuirá el contador
 				$dato=array_values($dato);//El arreglo deberá reordenarse
-            } //fin del if  
-        }//fin del for
+            }
+        }
     }//FIN QUIEN TIENE LICENCIAS O PERMISOS
 
    //QUIEN TIENE CUMPLEAÑOS U ONOMASTICO
@@ -863,12 +954,9 @@
             //--------Array deben_hoy---------------//
             $num_deben=$dato[$j][0];
             //-------------------------------------//
-
             $sql="select numero_trabajador from trabajador a
-            inner join cumple_ono b
-            on a.numero_trabajador=b.trabajador_trabajador
-            and ((fecha_cumple='$f_hoy' and validez=0) 
-            or (fecha_ono='$f_hoy' and validez=1))
+            inner join cumple_ono b on a.numero_trabajador=b.trabajador_trabajador
+            and ((fecha_cumple='$f_hoy' and validez=0) or (fecha_ono='$f_hoy' and validez=1))
             and numero_trabajador='$num_deben';";
             $query= mysqli_query($con, $sql);
             $filas=mysqli_num_rows($query);
@@ -881,20 +969,17 @@
 					$conta--; //Disminuirá el contador
 					$dato=array_values($dato);//El arreglo deberá reordenarse
 				}
-            } //fin del if  
-        }//fin del for
+            } 
+        }
     }//FIN QUIEN TIENE CUMPLEAÑOS U ONOMASTICO
 	/////////////////////////////////////////////////////
 	
 	//QUIEN TIENE COMISIONES
 	function activasFora()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -905,17 +990,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion; ";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -930,21 +1008,15 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
-
-	}//fin function 
-	
+	}
 
 	function inactivasFora()
 	{	
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -955,17 +1027,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion; ";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -980,20 +1045,15 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
-
-	}//fin function 
+	}
 
 	function activasInt()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -1005,17 +1065,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
-			{
-			
+			{			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -1030,7 +1083,6 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
 	}//fin function 
@@ -1054,17 +1106,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -1079,20 +1124,15 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
-
 	}//fin function 
 
 	function inactivasExt()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -1104,17 +1144,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -1129,19 +1162,15 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
 	}//fin function 
 
 	function activasExt()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -1153,17 +1182,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -1178,18 +1200,14 @@
 				$datos[$contador_d][9]=$resultado;//empresa
 				$datos[$contador_d][10]=$resul[10];//duracion
 				$contador_d++;
-
 			}
 		}
 	}//fin function 
 
 	function comisionesxvencer()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
-
 		global $contador_d;
 		$total=0;
 		comisionesActivas();
@@ -1219,7 +1237,6 @@
 		require("../Acceso/global.php"); 
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -1230,17 +1247,10 @@
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto	
@@ -1257,14 +1267,11 @@
 				$contador_d++;
 			}
 		}
-
-	}//fin function
+	}
 
     function asistenciaXrangoPulida($x)
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		//ordenar el arreglo
@@ -1287,15 +1294,10 @@
                 }
             }
         }
-        
-        $count=0;
-        foreach($datos as $fila)
-        {
-            $count++;
-        }
+		$count=0;
+		$count=conut($datos);
         for($i=0;$i<$count;$i++)
         {
-
             $entrada=$datos[$i][4];
             $salida=$datos[$i][5];	
             $fecha_entrada=$datos[$i][6];
@@ -1304,12 +1306,10 @@
             $entrada=$f_ent[0].' '.$entrada;//fecha de entrada más la hora de entrada
             $f_sal=explode(' ',$fecha_salida);
             $salida=$f_sal[0].' '.$salida;//Fecha de salia más la hora salida
-
             if($fecha_salida>$salida)
             {
                 $tiempo= minutosTranscurridos($salida, $fecha_salida);
                 $datos[$i][8]=$tiempo.' minutos';//tiempo extra
-
             }
             if($fecha_entrada>$entrada)
             {
@@ -1327,14 +1327,11 @@
     //SIRVEN PARA OBTENER A QUIENES VINIERON, ES DECIR LAS ASISTENCIAS 
 	function asistenciaxrangos()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		global $f_ini;
 		global $f_fin;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,d.entrada,d.salida,b.fecha_entrada,b.fecha_salida
 		from trabajador a 
 		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador
@@ -1345,17 +1342,10 @@
 		group by a.numero_trabajador,b.fecha_entrada,b.fecha_salida;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1374,16 +1364,14 @@
 
     function asistenciaXnumYfecha()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
         global $num;
         global $f_ini;
         global $f_fin;
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="		Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,d.entrada,d.salida,b.fecha_entrada,b.fecha_salida
+		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,d.entrada,d.salida,b.fecha_entrada,b.fecha_salida
 		from trabajador a 
 		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador
 		inner join acceso c on a.numero_trabajador=c.trabajador_trabajador
@@ -1394,17 +1382,10 @@
 		group by b.fecha_entrada,b.fecha_salida;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1423,13 +1404,10 @@
 
     function asistenciaXquincena()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
         global $quincena;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,d.entrada,d.salida,b.fecha_entrada,b.fecha_salida
 		from trabajador a 
 		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador
@@ -1439,17 +1417,10 @@
 		group by a.numero_trabajador,b.fecha_entrada,b.fecha_salida;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
-		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
+		if($resul>0)
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1469,9 +1440,7 @@
 	//SIRVEN PARA OBTENER A QUIENES FALTARON
 	function faltasXrangoPulida($x)
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		//ordenar el arreglo
@@ -1498,14 +1467,11 @@
     
 	function faltasxrangos()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		global $f_ini;
 		global $f_fin;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha
 		from trabajador a 
 		inner join falta b on a.numero_trabajador=b.trabajador_trabajador
@@ -1514,17 +1480,10 @@
 		order by b.trabajador_trabajador,b.fecha;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1537,15 +1496,12 @@
 
     function faltasXnumYfecha()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
         global $num;
         global $f_ini;
         global $f_fin;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha
 		from trabajador a 
 		inner join falta b on a.numero_trabajador=b.trabajador_trabajador
@@ -1555,17 +1511,10 @@
 		order by b.fecha;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1578,13 +1527,10 @@
 
     function faltasXquincena()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
         global $quincena;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha
 		from trabajador a 
 		inner join falta b on a.numero_trabajador=b.trabajador_trabajador
@@ -1593,17 +1539,10 @@
 		order by b.trabajador_trabajador,b.fecha,a.depto_depto,a.categoria_categoria;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1617,9 +1556,7 @@
 	//Quienes tienen cumpleaños u onomásticos
 	function cumpleOno()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con; 
 		global $datos;
         global $contador_d;
 		global $f_ini;
@@ -1631,8 +1568,7 @@
 		$separar=explode('-',$f_fin);
 		$mes_fin=$separar[1];
 		$dia_fin=$separar[2];
-		
-		//Seleccionamos a los empleados que tienen cumpleaños
+		//Seleccionamos a los empleados que tienen cumpleaños ene un rango de fechas
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha_cumple
 		from trabajador a 
 		inner join cumple_ono b on a.numero_trabajador=b.trabajador_trabajador
@@ -1640,14 +1576,8 @@
 		and validez=0";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
 				$datos[$contador_d][0]=$resul[0];//numero
@@ -1660,8 +1590,7 @@
 				$contador_d++;
 			}
 		}
-
-		//Seleccionamos a los empleados que tienen onomásticos
+		//Seleccionamos a los empleados que tienen onomástico en un rango de fechas
 		$sql2="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.fecha_ono
 		from trabajador a 
 		inner join cumple_ono b on a.numero_trabajador=b.trabajador_trabajador
@@ -1669,17 +1598,10 @@
 		and validez=1";  
 		$query2= mysqli_query($con, $sql2) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul2=mysqli_num_rows($query2);
-	
-		//si total es igual a cero significa que no hay datos
-		if($resul2==0)
+		if($resul2>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul2=mysqli_fetch_array($query2))
-			{
-			
+			{			
 				$datos[$contador_d][0]=$resul2[0];//numero
 				$datos[$contador_d][1]=$resul2[1];//nombre
 				$datos[$contador_d][2]=$resul2[2];//depto
@@ -1712,21 +1634,16 @@
 					guardiasXquincena();
 				}
 			}
-
 		}
-
 	}
 	
 	function guardiasXrangos()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
 		global $f_ini;
 		global $f_fin;
-		//Seleccionamos a los empleados que tienen guardias en un rango de fechas
 		$sql="Select b.trabajador_solicitante,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.hora_entrada,b.hora_salida,b.fecha_guardia,b.trabajador_suplente
 		from trabajador a 
 		inner join guardias b on a.numero_trabajador=b.trabajador_solicitante
@@ -1734,17 +1651,10 @@
 		order by b.fecha_guardia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
-		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
+		if($resul>0)
 		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//trabajador solicitante
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1757,14 +1667,12 @@
 				$datos[$contador_d][8]=$nom_suplente;//falta el nombre completo del suplente
 				$contador_d++;
 			}
-		}//fin else
+		}
 	}
 
 	function guardiasXnumero()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
 		global $quincena;
@@ -1780,17 +1688,10 @@
 		order by b.fecha_guardia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
-			{
-			
+			{			
 				$datos[$contador_d][0]=$resul[0];//trabajador solicitante
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1808,13 +1709,11 @@
 
 	function guardiasXquincena()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
 		global $quincena;
-		//Seleccionamos a los empleados que tienen guardias en un rango de fechas
+		//Seleccionamos a los empleados que tienen guardias por quincena
 		$sql="Select b.trabajador_solicitante,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.hora_entrada,b.hora_salida,b.fecha_guardia,b.trabajador_suplente
 		from trabajador a 
 		inner join guardias b on a.numero_trabajador=b.trabajador_solicitante
@@ -1822,17 +1721,10 @@
 		order by b.fecha_guardia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//trabajador solicitante
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1854,18 +1746,12 @@
 		$nombre=$_SESSION['name'];
 		$contra=$_SESSION['con'];
 		require("../Acceso/global.php"); 
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql2="select CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n from
 		trabajador a where a.numero_trabajador='$num_suplente';";  
 		$query2= mysqli_query($con, $sql2) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul2=mysqli_num_rows($query2);
-		//si total es igual a cero significa que no hay datos
-		if($resul2==0)
+		if($resul2==1)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			$resul2=mysqli_fetch_array($query2);
 			return $resul2[0];
 		}//fin else
@@ -1874,12 +1760,9 @@
 	//Quienes tienen sextas
 	function todosSexta()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con; 
 		global $datos;
         global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto, a.categoria_categoria,
 		c.lunes,c.martes,c.miercoles,c.jueves,c.viernes,c.sabado,c.domingo,
 		b.lunes,b.martes,b.miercoles,b.jueves,c.viernes,b.sabado,b.domingo
@@ -1889,17 +1772,10 @@
 		order by a.numero_trabajador, categoria_categoria,depto_depto;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -1925,14 +1801,10 @@
 
 	function vienenSexta()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		global $dia;
-
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, a.categoria_categoria,a.depto_depto 
 		from trabajador a
 		inner join sexta b 
@@ -1941,17 +1813,10 @@
 		order by a.numero_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//numero
@@ -1965,19 +1830,15 @@
 	//Quienes tienen licencias
 	function licenciasqueNoempiezan()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
-        
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_inicio,b.fecha_fin,b.hora_entrada,b.hora_salida,b.clave_especial_clave_especial,b.empresa,b.duracion
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  now()<b.fecha_inicio
-		and (
-		b.clave_especial_clave_especial='29'
+		and (b.clave_especial_clave_especial='29'
 		or b.clave_especial_clave_especial='40'
 		or b.clave_especial_clave_especial='41'
 		or b.clave_especial_clave_especial='47'
@@ -1991,22 +1852,14 @@
 		or b.clave_especial_clave_especial='92'
 		or b.clave_especial_clave_especial='93'
 		or b.clave_especial_clave_especial='LSG'
-		or b.clave_especial_clave_especial='LSGSS'
-		)
+		or b.clave_especial_clave_especial='LSGSS')
 		order by b.fecha_inicio,b.trabajador_trabajador,b.clave_especial_clave_especial;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -2027,19 +1880,15 @@
 
 	function licenciasActivas()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
         global $quincena;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_inicio,b.fecha_fin,b.hora_entrada,b.hora_salida,b.clave_especial_clave_especial,b.empresa,b.duracion
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  b.validez=1
-		and (
-		b.clave_especial_clave_especial='29'
+		and (b.clave_especial_clave_especial='29'
 		or b.clave_especial_clave_especial='40'
 		or b.clave_especial_clave_especial='41'
 		or b.clave_especial_clave_especial='47'
@@ -2053,20 +1902,12 @@
 		or b.clave_especial_clave_especial='92'
 		or b.clave_especial_clave_especial='93'
 		or b.clave_especial_clave_especial='LSG'
-		or b.clave_especial_clave_especial='LSGSS'
-		)
-		order by b.fecha_inicio, b.trabajador_trabajador;
-		";  
+		or b.clave_especial_clave_especial='LSGSS')
+		order by b.fecha_inicio, b.trabajador_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
 			
@@ -2087,17 +1928,12 @@
 
 	function licenciasXvencer()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		$total=0;
 		licenciasActivas();
-		foreach($datos as $fila)
-		{
-			$total++;
-		}
+		$total=count($datos);
 		for($i=0;$i<$total;$i++)
 		{
 			$fec=$datos[$i][5];
@@ -2115,19 +1951,14 @@
 
 	function licenciasVencidas()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
         global $contador_d;
-        
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
-		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_inicio,b.fecha_fin,b.hora_entrada,b.hora_salida,b.clave_especial_clave_especial,b.empresa,b.duracion,validez
+ 		$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_inicio,b.fecha_fin,b.hora_entrada,b.hora_salida,b.clave_especial_clave_especial,b.empresa,b.duracion,validez
 		from trabajador a 
 		inner join especial b on a.numero_trabajador=b.trabajador_trabajador
 		and  b.fecha_fin <now() and validez=0
-		and (
-		b.clave_especial_clave_especial='29'
+		and (b.clave_especial_clave_especial='29'
 		or b.clave_especial_clave_especial='40'
 		or b.clave_especial_clave_especial='41'
 		or b.clave_especial_clave_especial='47'
@@ -2141,22 +1972,14 @@
 		or b.clave_especial_clave_especial='92'
 		or b.clave_especial_clave_especial='93'
 		or b.clave_especial_clave_especial='LSG'
-		or b.clave_especial_clave_especial='LSGSS'
-		)
+		or b.clave_especial_clave_especial='LSGSS')
 		order by b.clave_especial_clave_especial,b.fecha_inicio,b.fecha_fin,b.trabajador_trabajador;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
-
-		//si total es igual a cero significa que no hay datos
-		if($resul==0)
+		if($resul>0)
 		{  
-			// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-		} 
-		else
-		{
 			while($resul=mysqli_fetch_array($query))
 			{
-			
 				$datos[$contador_d][0]=$resul[0];//numero
 				$datos[$contador_d][1]=$resul[1];//nombre
 				$datos[$contador_d][2]=$resul[2];//depto
@@ -2174,15 +1997,12 @@
 
 	function pase_salida($x)
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		$dia=date("Y-m-d");//guardar la fecha actual
 		if($x==1)
 		{
-
 			//Seleccionamos a los empleados que tienen pase de salida hoy
 			$sql="Select b.trabajador_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria, b.fecha_uso
 			from trabajador a 
@@ -2191,14 +2011,8 @@
 			order by b.fecha_uso, b.trabajador_trabajador;";  
 			$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 			$resul=mysqli_num_rows($query);
-	
-			//si total es igual a cero significa que no hay datos
-			if($resul==0)
+			if($resul>0)
 			{  
-				// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-			} 
-			else
-			{
 				while($resul=mysqli_fetch_array($query))
 				{
 				
@@ -2207,8 +2021,7 @@
 					$datos[$contador_d][2]=$resul[2];//depto
 					$datos[$contador_d][3]=$resul[3];//categoria
 					$datos[$contador_d][4]=$resul[4];//fecha
-					$contador_d;
-					
+					$contador_d;	
 				}
 			}
 		}
@@ -2222,52 +2035,19 @@
 			order by b.fecha_uso, b.trabajador_trabajador;";  
 			$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 			$resul=mysqli_num_rows($query);
-		
-			//si total es igual a cero significa que no hay datos
-			if($resul==0)
+			if($resul>0)
 			{  
-				// echo "<script type='text/javascript'> alert('No hay incidencias'); location.href='../ht/reportes.php';</script>";
-			} 
-			else
-			{
 				while($resul=mysqli_fetch_array($query))
 				{
-				
 					$datos[$contador_d][0]=$resul[0];//numero
 					$datos[$contador_d][1]=$resul[1];//nombre
 					$datos[$contador_d][2]=$resul[2];//depto
 					$datos[$contador_d][3]=$resul[3];//categoria
 					$datos[$contador_d][4]=$resul[4];//fecha
 					$contador_d;
-					
 				}
 			}
 			
-		}
-	}
-
-	function informacionHospital()
-	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
-		global $datos;
-		global $contador_d;
-
-		//Seleccionamos a los empleados que tienen pase de salida hoy
-		$sql="SELECT * FROM hospital;";  
-		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-		$resul=mysqli_num_rows($query);
-	
-		//si total es igual a cero significa que no hay datos
-		if($resul>0)
-		{  
-			$fila=mysqli_fetch_array($query);
-			return [$fila[0],$fila[1],$fila[2]];	
-		} 
-		else
-		{
-			return null;
 		}
 	}
 

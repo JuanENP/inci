@@ -7,7 +7,6 @@ date_default_timezone_set('America/Mexico_City');
         $contra=$_SESSION['con'];
         require("../Acceso/global.php"); 
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
-        $dia_actual=date('Y-m-d');
     }
     else
     {
@@ -73,26 +72,26 @@ date_default_timezone_set('America/Mexico_City');
                         <li id="Menu_Personal" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-crosshairs"></i><a href="categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="departamentos.php">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="tipoempleado.php">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="trabajadores.php">Personal</a></li>
+                                <li><i class="fa fa-crosshairs"></i><a href="../ht/categoria.php">Categorias</a></li>
+                                <li><i class="fa fa-sitemap"></i><a href="../ht/departamentos.php">Departamentos</a></li>
+                                <li><i class="fa fa-male"></i><a href="../ht/tipoempleado.php">Tipo Empleado</a></li>
+                                <li><i class="fa fa-users"></i><a href="../ht/trabajadores.php">Personal</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
                             <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="dispositivos.php">Dispositivo</a></li>
+                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.php">Dispositivo</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
-                                <li><i class="fa fa-check-square-o"></i><a href="aprobaciones.php">Aprobaciones</a></li>
-                                <li><i class="fa fa-files-o"></i><a href="reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="conceptos.php">Tipo de Incidencias</a></li>
-                                <li><i class="fa fa-shield"></i><a href="ht/verAsistencias.php">Asistencias de hoy</a></li>
+                                <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
+                                <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.php">Tipo de Incidencias</a></li>
+                                <li><i class="fa fa-shield"></i><a href="../ht/verAsistencias.php">Asistencias de hoy</a></li>
                             </ul>
                         </li>
                         <li id="Menu_Sistema" class="menu-item-has-children dropdown">
@@ -129,13 +128,11 @@ date_default_timezone_set('America/Mexico_City');
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
 
                     <div class="col-sm-5">
                         <div class="user-area dropdown float-right">
-
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
@@ -152,7 +149,7 @@ date_default_timezone_set('America/Mexico_City');
                 <div class="col-sm-5">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Asistencias del día <?php echo $dia_actual; ?> del personal</h1>
+                         <h1>Catálogo de conceptos</h1> 
                         </div>
                     </div>
                 </div>
@@ -199,9 +196,6 @@ date_default_timezone_set('America/Mexico_City');
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">Información</strong>
-                                </div>
                                 <div class="card-body">
                                     <span id="MainContent_DataTable">
                                         <table id='' class='table table-striped table-bordered display'>
