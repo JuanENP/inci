@@ -95,13 +95,31 @@ session_start();
 
                 $(function() {
                     $('#noblanco').on('keypress', function(e) {
-                        if (e.which == 32)
+                        var keycode = e.keyCode || e.which;
+
+                        if (keycode == 13) 
                         {
-                            alert("Evite usar espacios en blanco para el usuario.");
-                            return false;
+                            // alert("Enter!");
+                              document.getElementById("unico").focus();
+                        }
+                        else
+                        {
+                            if (keycode == 32)
+                            {
+                                alert("Evite usar espacios en blanco para el usuario.");
+                                return false;
+                            }
                         }
                     });
                 });
+
+                // $("#noblanco").on('keyup', function (e) {
+                // var keycode = e.keyCode || e.which;
+                //     if (keycode == 13) {
+                //         alert("Enter!");
+                //     }
+                // });
+
             });
 
             function imprime(texto)
@@ -122,6 +140,23 @@ session_start();
                     cambio.type = "password";
                     $("#span_con").text("Ver");//cambiar el texto 
                 }
+            }
+
+            function seguroEliminar(elemento)
+            {
+                var miID=elemento.id;
+
+                alertify.confirm("¿Seguro que desea eliminar este usuario (Esta acción no es reversible).?", function(e)
+                {
+                    if(e)
+                    {
+                        window.location.href="../php/delete/usuario.php?5dF0_sp="+miID+"";
+                    }
+                    else
+                    {    
+                        exit();
+                    }
+                });
             }
         </script>
     </head>
@@ -258,19 +293,19 @@ session_start();
 
                                     <div class="card-body card-block">                          
                                        <div class="form-group col-lg-12">
-                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required/>
+                                            <span id="">Nombre de Usuario</span><input name="nom" type="text" id="noblanco" class="form-control" minlength="4" required tabindex = 1/>
                                        </div>
 
                                         <div class="form-group col-lg-12">
                                             <label>Contraseña</label>
                                             <div class="input-group">
-                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required> <button onclick="Vcon();"><span id="span_con">Ver</span></button>
+                                                <input name="contra" type="password" id="unico" Class="form-control" minlength="4" required tabindex = 2> <button onclick="Vcon();" tabindex = 0><span id="span_con">Ver</span></button>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm"/>
+                                            <input type="submit" name="guardar" value="Guardar" id="MainContent_btnAgregar" class="btn btn-primary btn-sm" tabindex = 3/>
                                     </div>
                                 </div>
                             </div> 
@@ -304,9 +339,10 @@ session_start();
                                                     {
                                                       while($resul=mysqli_fetch_array($query))
                                                       {
+                                                        $encript=generaURL($resul[0]);
                                                         echo "<tr>";
                                                         echo utf8_encode("<td>" . $resul[0] . "</td>");
-                                                        echo "<td><a href='../php/delete/usuario.php?5dF0_sp=". generaURL($resul[0])."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
+                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='seguroEliminar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a></td> ";
                                                         echo "</tr>";
                                                       }
                                                     }

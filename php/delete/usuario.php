@@ -32,7 +32,7 @@ session_start();
             {
                 if(e)
                 {
-                    history.back();
+                    window.location.href="../../ht/usuarios.php";
                 }
             });
         }

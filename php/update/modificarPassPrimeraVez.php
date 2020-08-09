@@ -7,9 +7,8 @@ session_start();
         $contra=$_SESSION['con'];
         $opcion=0;
         require("../../Acceso/global.php");
-        require('../insert/mail.php');
-        //Guardar correo y actualizar contraseña
-        if(!empty($_POST['mail'] && !empty($_POST['nuevaContra']) && !empty($_POST['confirmaContra'])))
+        
+        if(!empty($_POST['nuevaContra']) && !empty($_POST['confirmaContra']) && !empty($_POST['mail']))
         {   
             $correo=$_POST['mail'];
             // filter_var regresa los datos filtrados
@@ -47,15 +46,22 @@ session_start();
                 exit();
             }
         }
-        else
+        
+        if(!empty($_POST['nuevaContra']) && !empty($_POST['confirmaContra']) && empty($_POST['mail']))
         {
-            //Actualizar solo la contraseña
-            if(!empty($_POST['nuevaContra']) && !empty($_POST['confirmaContra']) && empty($_POST['mail']))
+            if(is_numeric($_POST['nuevaContra']) && is_numeric($_POST['confirmaContra']))
             {
-                $revisarPass=revisarPass($_POST['nuevaContra'],$_POST['confirmaContra']);
-                $opcion=2;
                 $nuevaContra=$_POST['nuevaContra'];
-                $confirmaContra=$_POST['nuevaContra'];
+                $confirmaContra=$_POST['confirmaContra'];
+                if($nuevaContra==$confirmaContra)
+                {
+                    $opcion=2;
+                }
+                else
+                {
+                    echo"<script language= javascript type= text/javascript> alert('Error, contraseñas diferentes');history.back();</script>";
+                    exit();   
+                }
             }
             else
             {
@@ -81,6 +87,7 @@ session_start();
                 echo"<script language= javascript type= text/javascript> alert(' La dirección de correo electrónico no es válida ');history.back();</script>";
                 exit();
             }
+            
         }
     }
     else
@@ -98,36 +105,59 @@ session_start();
     {
         if($opcion==1)
         {  
-            $guardarMail=guardarMail($mail,$nombre);
-            $actualizarPassword=actualizarPassword($nombre,$nuevaContra);
-            echo"<script language= javascript type= text/javascript> alert('Datos guardados, debe iniciar sesión nuevamente'); location.href='../../index.php';</script>";  
-        }
+            if($mail)
+            {   
+                if($nuevaContra=='9999')//si comprobar si la contraseña ingresada es igual a la que dimos por defecto
+                {
+                    echo"<script language= javascript type= text/javascript> alert('Debe registrar una contraseña diferente a la contraseña por defecto'); history.back();</script>";    
+                    exit();
+                }
+                else
+                {   
+                    require('../insert/mail.php');
+                    $resultado=guardarMail($mail);
+                    $resultado2=actualizarPassword($nombre,$nuevaContra);  
+                    echo"<script language= javascript type= text/javascript> alert('Datos guardados, debe iniciar sesión nuevamente'); location.href='../../index.php';</script>";  
+        
+                }
+
+            }
+    
+        }//fin if==1
         else
         {
             if($opcion==2)
             {
-                $actualizarPassword=actualizarPassword($nombre,$nuevaContra);            
-                echo"<script language= javascript type= text/javascript> alert('Contraseña actualizada correctamente, inicie sesión nuevamente'); location.href='../../index.php';</script>";    
-            }
+
+                if($nuevaContra=='9999')//si comprobar si la contraseña ingresada es igual a la que dimos por defecto
+                {
+                    echo"<script language= javascript type= text/javascript> alert('Debe registrar una contraseña diferente a la contraseña por defecto'); history.back();</script>";    
+                }
+                else
+                {   
+                    $resultado=actualizarPassword($nombre,$nuevaContra);            
+                    echo"<script language= javascript type= text/javascript> alert('Contraseña actualizada correctamente, inicie sesión nuevamente'); location.href='../../index.php';</script>"; 
+                }
+            }// fin if==2
             else
             {
                 if($opcion==3)
                 {  
-                    $guardarMail=guardarMail($mail,$nombre);
+                    require('../insert/mail.php');
+                    $resultado=guardarMail($mail,$nombre);
                     if(is_numeric($nombre))
                     {
                         echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../ht/repositorio.php';</script>";  
                     }
                     else
-                    {   
+                    {
                         echo"<script language= javascript type= text/javascript> alert('Correo electrónico guardado correctamente'); location.href='../../panel_control.php';</script>";  
                     }
+                    
                 }
             }
         }
     }
-     
-
     function actualizarPassword($nuevoUsuario,$newPassword)
     {
         global $con;

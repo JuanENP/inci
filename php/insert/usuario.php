@@ -32,15 +32,30 @@
         function insertaUsuario($nombreUsuario,$contrasenaUsuario)
         {
             global $con;
-            //$sql="create user '$nombreUsuario'@'localhost' identified by '$contrasenaUsuario'"; 
-            $sql="CREATE user '$nombreUsuario'@'localhost' identified by '$contrasenaUsuario';";; 
+            $sql="";
+            $sql.="CREATE user '$nombreUsuario'@'localhost' identified by '$contrasenaUsuario';"; 
             $sql.="GRANT all privileges on checada6.* to '$nombreUsuario'@localhost;"; 
             $sql.="GRANT ALL PRIVILEGES ON mysql.user to '$nombreUsuario'@localhost;"; 
             $sql.="GRANT CREATE USER ON *.* to '$nombreUsuario'@'localhost';"; 
             $sql.="FLUSH privileges;";
 
             //mysqli_autocommit($con, FALSE);//quitar el autocommit hasta que todo haya resultado correcto
-            if(!(mysqli_multi_query($con,$sql)))
+
+            if (mysqli_multi_query($con, $sql)) 
+            {
+                do 
+                {
+                    /* store first result set */
+                    if ($result = mysqli_store_result($con)) 
+                    {
+                        //liberar el resultado, IMPORTANTE PARA QUE NO DE ERROR
+                        mysqli_free_result($result);
+                    }
+                } while (mysqli_next_result($con));
+
+                echo "<script> imprime('Usuario guardado correctamente'); </script>";
+            }
+            else
             {
                 $error="";
                 $er1=mysqli_errno($con);
@@ -61,10 +76,6 @@
 
                 $error="Error in create. $err1 : $err2. Este error suele surgir cuando el usuario que intenta registrar ya existe, verifique. En caso de que no sea ese el problema contacte al administrador. Líneas de error: 16, 41 y 42.";
                 echo "<script> imprime('$error'); </script>";
-            }
-            else
-            {
-                echo "<script> imprime('Usuario guardado correctamente'); </script>";
             }
         }
 ?>
