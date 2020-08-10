@@ -21,7 +21,7 @@ session_start();
         if(!empty($_SESSION['verCampo']))
         {
             $div=$_SESSION['verCampo'];
-            // echo"<script language= javascript type= text/javascript>alert('$div');</script >";
+        //  echo"<script language= javascript type= text/javascript>alert('$div');</script >";
         }
     }
     else

@@ -27,7 +27,6 @@
         global $deben_hoy_ultimo;                   
         global $observar_e;
         global $observar_s;
-        $descando="";
         //Ver si el día de hoy está registrado en la tabla día festivo
         $sql="Select iddia_festivo from dia_festivo where fecha='$f_hoy';";
         $query= mysqli_query($con, $sql);
@@ -47,17 +46,17 @@
                 {
                     $numero=$resul[0];
                     $t_horas=$resul[3];
-
                     $DiasAcceso=verDiasAccesoParaDiaFestivo($numero);
                     if($DiasAcceso !== null)
                     {
                         $sabado=$DiasAcceso[0];
                         $domingo=$DiasAcceso[1];
-
                         /*  Sábados y dias festivos
                             t_horas=23:59:00
                             No trabajarán cuando el día festivo sea viernes o domingo
                         */
+                        //PENDIENTE VALIDAR SI EN LA TABLA AF DEBEN VENIR HOY
+
                         if($sabado==1 && $domingo==0 && ($t_horas=='23:59:00' || $t_horas=='00:00:00') && ($diaactual !== 'viernes' || $diaactual !== 'domingo' ))
                         {
                             $deben_hoy[$deben_hoy_ultimo][0]=$resul[0];    
@@ -67,12 +66,12 @@
                             $deben_hoy[$deben_hoy_ultimo][4]=$observar_s;
                             $deben_hoy_ultimo++;
                         }
-
                         /*
                             Domingos y dias festivos
                             t_horas=23:59:00
                             No trabajarán cuando el día festivo sea sábado o lunes
                         */
+                        //PENDIENTE VALIDAR SI EN LA TABLA AF DEBEN VENIR HOY
                         if($sabado==0 && $domingo==1 && ($t_horas=='23:59:00' || $t_horas=='00:00:00') && ($diaactual !== 'sabado' || $diaactual !== 'lunes' ))
                         {
                             $deben_hoy[$deben_hoy_ultimo][0]=$resul[0];    
