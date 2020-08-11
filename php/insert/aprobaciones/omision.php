@@ -29,7 +29,7 @@
             */
             //contamos cuántas 09 (retardos justificados) posee el empleado en la tabla justificacion
             $sql6="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
-            INNER JOIN asistencia b on a.numero_trabajador = '$num'
+            INNER JOIN asistencia b on a.numero_trabajador=b.trabajador_trabajador and a.numero_trabajador = '$num'
             INNER JOIN incidencia c on b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
             INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and fecha_inicio like '$anio%' 
             and d.clave_justificacion_clave_justificacion= 09";
@@ -37,7 +37,7 @@
 
             //contamos cuántas 08 (omisiones justificadas) posee el empleado en la tabla justificacion
             $sql9="SELECT count(d.clave_justificacion_clave_justificacion) FROM trabajador a
-            INNER JOIN asistencia b on a.numero_trabajador = $num
+            INNER JOIN asistencia b on a.numero_trabajador=b.trabajador_trabajador and a.numero_trabajador = $num
             INNER JOIN incidencia c on b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
             INNER JOIN justificacion d on c.idincidencia = d.incidencia_incidencia and fecha_inicio like '$anio%' 
             and d.clave_justificacion_clave_justificacion= 08";  
@@ -49,7 +49,7 @@
             {
                 /*Ahora revisar si existe la omisión/omisiones en la tabla incidencias; */
                 $sql13="SELECT c.idincidencia  FROM trabajador a
-                INNER JOIN asistencia b on a.numero_trabajador = '$num' and (b.fecha_entrada like '$fecha%' or b.fecha_salida like '$fecha%')
+                INNER JOIN asistencia b on a.numero_trabajador=b.trabajador_trabajador and a.numero_trabajador = '$num' and (b.fecha_entrada like '$fecha%' or b.fecha_salida like '$fecha%')
                 INNER JOIN incidencia c on b.id = c.asistencia_asistencia and b.quincena_quincena = $quincena
                 and (c.clave_incidencia_clave_incidencia=16 or c.clave_incidencia_clave_incidencia=18
                 or c.clave_incidencia_clave_incidencia=19 or c.clave_incidencia_clave_incidencia=20

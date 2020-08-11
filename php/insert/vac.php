@@ -167,10 +167,12 @@ session_start();
         }
 
         global $arrFinal;
-        if(count($errores)>0)
+
+        $cont=count($errores);
+        if($cont>0)
         {
             echo "Ocurrieron los siguiente errores: ";
-            for($i=0;$i<count($errores);$i++)
+            for($i=0;$i<$cont;$i++)
             {
                 echo "<br>".$errores[$i];
             }

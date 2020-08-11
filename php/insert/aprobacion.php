@@ -30,7 +30,7 @@ session_start();
     /*FIN DE OBTENER QUINCENA ACTUAL*/
     if(empty($_POST["opcion"]))
     {
-        echo "Por favor, diríjase a la sección Aprobaciones para que esta página se ejecute normalmente: " . "<a href='/ht/aprobaciones.php'>IR AHORA</a>";
+        echo "Por favor, diríjase a la sección Aprobaciones para que esta página se ejecute normalmente: " . "<a href='../../ht/aprobaciones.php'>IR AHORA</a>";
         exit();//terminar el script
     }
     $operacion=$_POST['opcion'];
@@ -88,6 +88,12 @@ session_start();
     if($operacion=="curso")
     {
         require ("aprobaciones/curso.php");
+        exit();
+    }//FIN DE IF CURSO
+
+    if($operacion=="otros")
+    {
+        require ("aprobaciones/otros.php");
         exit();
     }//FIN DE IF CURSO
 

@@ -55,7 +55,6 @@
     {
         $error="Faltan los siguientes datos:"."<br>";
         if (empty($_POST["num"])){$error.="Número de trabajador que exista."."<br>";}
-        if (empty($_POST["fec"])){$error.="La fecha del pase de salida"."<br>";}
         echo "<script> imprime('$error'); </script>";
     }
 ?>
