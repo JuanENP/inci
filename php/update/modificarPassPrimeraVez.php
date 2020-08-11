@@ -115,7 +115,7 @@ session_start();
                 else
                 {   
                     require('../insert/mail.php');
-                    $resultado=guardarMail($mail);
+                    $resultado=guardarMail($mail,$nombre);
                     $resultado2=actualizarPassword($nombre,$nuevaContra);  
                     echo"<script language= javascript type= text/javascript> alert('Datos guardados, debe iniciar sesión nuevamente'); location.href='../../index.php';</script>";  
         
