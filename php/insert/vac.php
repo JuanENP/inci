@@ -58,8 +58,16 @@ session_start();
         {
             if (!empty($_POST["num"]))
             {
-                echo "<script> imprime('indi' +
-                'vidual'); </script>";
+                $num=$_POST["num"];
+                //Ver en qué periodo estamos  (el 1 o el 2); periodo 1: de 1 enero - 30 junio; periodo 2: de 1 julio - 31 diciembre
+                $periodo=obtenPeriodo();
+                //ver cuantos días de vacaciones ha tomado en este periodo
+                $idVac=obtenerID_Vac($num);
+                $tomados=diasVacaTomados($idVac,$periodo);
+                //ver cuántos días de vacaciones merece este empleado segun su jornada
+                $dias_merecidos=obtenDiasdeVacMerecidos($num);
+                //saber cuantos pt tiene este empleado  y sumárlos a los días merecidos.
+
             }
             else
             {
@@ -69,6 +77,39 @@ session_start();
         }
         //fin opcion individual
     }
+
+    function obtenPeriodo()
+    {
+        $year=date("Y");
+        $hoy=date("Y-m-d");
+        $fecha_hoy=strtotime($hoy);
+        //periodo 1
+        $enero = strtotime("$year-01-01");
+        $junio = strtotime("$year-06-30");
+        //periodo 2
+        $julio = strtotime("$year-07-01");
+        $dicie = strtotime("$year-12-31");
+
+        if($fecha_hoy>=$enero && $fecha_hoy<=$junio)
+        {
+            return 1;//periodo 1
+        }
+        else
+        {
+            return 2;
+        }
+    }
+    //Fin función obtenPeriodo
+
+    function diasVacaTomados($idVacaciones,$periodo)
+    {
+        global $con;
+        $sql="SELECT COUNT(dia) from dias_vacaciones where vacaciones_vacaciones=$idVacaciones and periodo=$periodo and tomado=1";
+        $query=mysqli_query($con, $sql) or die("<br>" . "Error línea 107: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $resultado=mysqli_fetch_array($query);
+        return $resultado;
+    }
+    //fin de diasVacaTomados
 
     function cargaDeExcelABD()
     {
@@ -126,10 +167,12 @@ session_start();
         }
 
         global $arrFinal;
-        if(count($errores)>0)
+
+        $cont=count($errores);
+        if($cont>0)
         {
             echo "Ocurrieron los siguiente errores: ";
-            for($i=0;$i<count($errores);$i++)
+            for($i=0;$i<$cont;$i++)
             {
                 echo "<br>".$errores[$i];
             }
@@ -292,7 +335,7 @@ session_start();
         $t2=count($fechasAInsertar2);
 
         //Obtener la jornada de trabajo de esta persona
-        $dias_merecidos=obtenJornada($numero);
+        $dias_merecidos=obtenDiasdeVacMerecidos($numero);
 
         if($t1==$dias_merecidos && $t2==$dias_merecidos)
         {
@@ -371,7 +414,7 @@ session_start();
     }
     //fin de obtenDiasDeRango
 
-    function obtenJornada($numero)
+    function obtenDiasdeVacMerecidos($numero)
     {
         global $con;
         //ver si posee jornada de sab, dom, dia fest y de 12 H
@@ -406,5 +449,5 @@ session_start();
         //dos periodos de vacaciones de 10 días laborales cada uno, en caso de que los if anteriores no ocurran
         return 10;
     }
-    //fin de obtenJornada
+    //fin de obtenDiasdeVacMerecidos
 ?>

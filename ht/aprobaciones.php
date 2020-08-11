@@ -465,6 +465,23 @@ session_start();
                         }
                     }
                 });
+
+                //
+                $("#radio-otros").mouseover(function()
+                {
+                    $("#radio-otros").css("background-color", "rgb(202, 250, 240)");
+                });
+
+                $("#radio-otros").mouseleave(function()
+                {
+                    $("#radio-otros").css("background-color", "transparent");
+                });
+
+                $("#radio-otros").click(function()
+                {
+                    $("#otr").prop("checked", true);
+                    oculta(10);
+                });
                 //
 
                 $("#cucap").click(function()
@@ -692,6 +709,7 @@ session_start();
                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                     document.getElementById('suplente').style.display = "none";
                     document.getElementById('imagen').style.display = "none";
+                    document.getElementById('div-otro').style.display = "none";
                     document.getElementById('fec').style.display = "block";
                 } 
                 else 
@@ -710,6 +728,7 @@ session_start();
                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
                         document.getElementById('suplente').style.display = "none";
                         document.getElementById('imagen').style.display = "none";
+                        document.getElementById('div-otro').style.display = "none";
                         document.getElementById('tipo-com').style.display = "block";
                         document.getElementById('fecf').style.display = "block";
                         document.getElementById('he').style.display = "block";
@@ -738,6 +757,7 @@ session_start();
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                             document.getElementById('suplente').style.display = "none";
                             document.getElementById('imagen').style.display = "none";
+                            document.getElementById('div-otro').style.display = "none";
                             document.getElementById('clavelicencia').style.display = "block";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('fec').style.display = "block";
@@ -763,6 +783,7 @@ session_start();
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('suplente').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
+                                document.getElementById('div-otro').style.display = "none";
                                 document.getElementById('fec').style.display = "block";
                             }
 
@@ -784,6 +805,7 @@ session_start();
                                     document.getElementById('div-perm-go').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('suplente').style.display = "none";
+                                    document.getElementById('div-otro').style.display = "none";
                                     document.getElementById('imagen').style.display = "block";
                                     document.getElementById('fecf').style.display = "block";
                                     document.getElementById('fec').style.display = "block";
@@ -805,6 +827,7 @@ session_start();
                                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                         document.getElementById('fecf').style.display = "none";
                                         document.getElementById('imagen').style.display = "none";
+                                        document.getElementById('div-otro').style.display = "none";
                                         document.getElementById('suplente').style.display = "block";
                                         document.getElementById('fec').style.display = "block";
 
@@ -833,6 +856,7 @@ session_start();
                                             document.getElementById('suplente').style.display = "none";
                                             document.getElementById('div-curso1').style.display = "none";
                                             document.getElementById('imagen').style.display = "none";
+                                            document.getElementById('div-otro').style.display = "none";
                                         }
                                         else
                                         {
@@ -855,6 +879,7 @@ session_start();
                                                 document.getElementById('suplente').style.display = "none";
                                                 document.getElementById('div-curso1').style.display = "none";
                                                 document.getElementById('fecf').style.display = "none";
+                                                document.getElementById('div-otro').style.display = "none";
                                                 document.getElementById('imagen').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
                                             }
@@ -877,10 +902,37 @@ session_start();
                                                     document.getElementById('div-perm-go').style.display = "none";
                                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                     document.getElementById('suplente').style.display = "none";
+                                                    document.getElementById('div-otro').style.display = "none";
                                                     document.getElementById('imagen').style.display = "block";
                                                     document.getElementById('fecf').style.display = "block";
                                                     document.getElementById('div-curso1').style.display = "block";
                                                     document.getElementById('fec').style.display = "block";
+                                                }
+                                                else
+                                                {
+                                                    if (x == 10) 
+                                                    {
+                                                        document.getElementById("myfile").value = "";
+                                                        $("#MainContent_lbTrabajador").text("Trabajador");//cambiar el texto del span del trabajador
+                                                        $("#spanFechaInicial").text("*La fecha y quincena serán las actuales*");//cambiar el texto del span de la fecha inicial
+                                                        document.getElementById('tipo-com').style.display = "none";
+                                                        document.getElementById('he').style.display = "none";
+                                                        document.getElementById('hs').style.display = "none";
+                                                        document.getElementById('empresa').style.display = "none";
+                                                        document.getElementById('clavelicencia').style.display = "none";
+                                                        document.getElementById('prioridad').style.display = "none";
+                                                        document.getElementById('vacio_').style.display = "none";
+                                                        document.getElementById('div-tol-lac').style.display = "none";
+                                                        document.getElementById('div-tol-est').style.display = "none";
+                                                        document.getElementById('div-perm-go').style.display = "none";
+                                                        document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                                                        document.getElementById('suplente').style.display = "none";
+                                                        document.getElementById('div-curso1').style.display = "none";
+                                                        document.getElementById('imagen').style.display = "none";
+                                                        document.getElementById('fecf').style.display = "none";
+                                                        document.getElementById('fec').style.display = "none";
+                                                        document.getElementById('div-otro').style.display = "block";
+                                                    }
                                                 }
                                             }
                                         }
@@ -1193,6 +1245,11 @@ session_start();
                             }
                         }
                     }
+
+                    if(rad=="otros")
+                    {
+                        oculta(10);
+                    }
                 });
             }
         </script>
@@ -1323,7 +1380,7 @@ session_start();
                                     </div>
                                     <div class="card-body card-block">
                                         <div class="row col-md-12">
-                                            <div class="form-group col-lg-3">
+                                            <div class="form-group col-lg-4">
 
                                                 <div class="form-1-2" id="radio-justificacion">
                                                     <input type="radio" name="opcion" value="justificar" id="jus-ret" onclick="oculta(0)" checked> <label>Justificar retardo</label> 
@@ -1358,6 +1415,10 @@ session_start();
 
                                                 <div class="form-1-2" id="radio-curso">
                                                     <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> <label> </label>Curso capacitación
+                                                </div>
+
+                                                <div class="form-1-2" id="radio-otros">
+                                                    <input type="radio" name="opcion" value="otros" id="otr" onclick="oculta(10)"> <label> </label>Otros (04, 30, 31, suspensiones)
                                                 </div>
                                             </div>
                                         </div>
@@ -1412,7 +1473,7 @@ session_start();
                                                         {
                                                           while($resul2=mysqli_fetch_array($query))
                                                           {
-                                                            echo "<option value='".$resul2[0]."'>".utf8_encode($resul2[0])."-".utf8_encode($resul2[1])."</option>";   
+                                                            echo "<option value='".$resul2[0]."'>".$resul2[0]."-".$resul2[1]."</option>";   
                                                           }
                                                         }
                                                     ?>
@@ -1529,6 +1590,27 @@ session_start();
                                             <div class="form-group col-lg-3" id="imagen">
                                                 <span id="">Escaneo del documento</span>
                                                 <input type="file" name="archivo[]" id="myfile">
+                                            </div>
+
+                                            <div class="form-group col-lg-3" id="div-otro">
+                                                <span id="">Otras incidencias</span>
+                                                <br>
+                                                <select name="select-otro" id="other" class="form-control">
+                                                    <option value="" selected disabled>Elija:</option>
+                                                    <option value="04">Pago de 1/2 jornada laboral (04)</option>
+                                                    <option value="30">Ausentarse en horas de labores sin autorización (30)</option>
+                                                    <option value="31">Ausentarse en horas de labores sin autorización del turno opcional o percepción adicional (31)</option>
+                                                    <option value="80">Suspensión en nómina por renuncia (80)</option>
+                                                    <option value="81">Suspensión en nómina por defunción (81)</option>
+                                                    <option value="82">Suspensión en nómina por cese (82)</option>
+                                                    <option value="83">Suspensión en nómina por licencia médica definitiva (83)</option>
+                                                    <option value="84">Suspensión en nómina por pensión (84)</option>
+                                                    <option value="85">Suspensión en nómina por jubilación (85)</option>
+                                                    <option value="86">Suspensión temporal en nómina por sanción administrativa (86)</option>
+                                                    <option value="87">Suspensión en nómina por abandono de empleo sin justificación (87)</option>
+                                                    <option value="88">Suspensión en nómina por término de interinato (88)</option>
+                                                    <option value="89">Suspensión en nómina por término de comisión (89)</option>
+                                                </select>
                                             </div>
 
                                             <!--

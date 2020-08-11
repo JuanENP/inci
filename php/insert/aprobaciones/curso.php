@@ -51,7 +51,7 @@
         $diasUsados=sumaRegistrosDeConsulta($sql);
         //Fin saber cuantos dias ha usado este permiso
         $diasRestantes=12-$diasUsados;
-        $duracion=calcularDuracionEntreDosFechas(2,$fecha,$fechaf);//la duracion excluyendo los días festivos
+        $duracion=totDiasHabiles($fecha,$fechaf);//la duracion excluyendo los días festivos
         if($duracion<=12)
         {
             if($duracion<=$diasRestantes)

@@ -30,7 +30,7 @@ session_start();
     /*FIN DE OBTENER QUINCENA ACTUAL*/
     if(empty($_POST["opcion"]))
     {
-        echo "Por favor, diríjase a la sección Aprobaciones para que esta página se ejecute normalmente: " . "<a href='/ht/aprobaciones.php'>IR AHORA</a>";
+        echo "Por favor, diríjase a la sección Aprobaciones para que esta página se ejecute normalmente: " . "<a href='../../ht/aprobaciones.php'>IR AHORA</a>";
         exit();//terminar el script
     }
     $operacion=$_POST['opcion'];
@@ -88,6 +88,12 @@ session_start();
     if($operacion=="curso")
     {
         require ("aprobaciones/curso.php");
+        exit();
+    }//FIN DE IF CURSO
+
+    if($operacion=="otros")
+    {
+        require ("aprobaciones/otros.php");
         exit();
     }//FIN DE IF CURSO
 
@@ -531,6 +537,68 @@ session_start();
         }//fin del for i<50
         return $fechaCompleta;
     }//Fin de feriadoConArray
+
+    function totDiasHabiles($fechai,$fechaf)
+    {
+        global $con;
+        $contador=0; //para ir sumando los días hábiles
+        $feriado=false;
+        $fechaParo=$fechaf;
+
+        $dia=$fechai;
+        $mod_dia=$fechai;
+
+        $diasFeriados=array();//para guardar los días feriados de mi BD
+        $pos=0;
+        $sql="SELECT fecha from dia_festivo";
+        $query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $filas = mysqli_num_rows($query);//obtener las filas del query
+        //Si el query no está vacío
+        if($filas>0)
+        {
+            while($resul=mysqli_fetch_array($query))
+            { 
+                $diasFeriados[$pos]=$resul[0];//Guardar el día feriado correspondiente en el array
+                $pos++;//aumentar la posición del array
+            }
+        }
+        /*El tamaño final del array es lo que hay en la variable pos; cabe resaltar que el array debe tener 
+            como mínimo una fecha o esta función dará error
+        */
+
+        for($i=0;$i<50;$i++)
+        {
+            $mod_dia = strtotime($mod_dia."+ 1 days");//sumar 1 día
+
+            $diaIngles= date("l",$mod_dia);//El día en inglés que cae al sumarle 1 día a la fecha de inicio
+            $fechaCompleta= date("Y-m-d",$mod_dia);//El día completo que cae al sumarle 1 día a la fecha de inicio
+
+            $feriado=false;
+            //Buscar si fechaCompleta está en el array o no
+            for($j=0;$j<$pos;$j++)
+            {
+                if($fechaCompleta==$diasFeriados[$j])
+                {
+                    $feriado=true;
+                    $j=$pos-1;//romper y salir el cucle
+                }//fin if for j<pos
+            }//fin del for que evalua el array
+
+            if(($diaIngles=="Monday" || $diaIngles=="Tuesday" || $diaIngles=="Wednesday" || $diaIngles=="Thursday" || $diaIngles=="Friday") && $feriado==false)
+            {
+                $contador++;//aumentamos el contador, lo que indica que sí se sumó un día habil
+                if($fechaCompleta==$fechaParo) //si se llega al día final
+                {
+                    //romper el bucle
+                    $i=49;
+                }
+            }//fin del if
+            $mod_dia=date("Y-m-d",$mod_dia);
+        }//fin del for i<50
+
+        //retornar el total de días hábiles
+        return $contador+1;
+    }//Fin de totDiasHabiles
 
     function retornaAlgoDeBD($tipoDatoADevolver, $elQuery)
     {
