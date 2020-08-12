@@ -5,11 +5,6 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php");
-        if($nombre!="AdministradorGod")
-        {
-            echo "<script> alert('Usted no posee privilegios suficientes para elegir esta opción.'); history.back(); </script>";
-            exit();
-        }
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
@@ -19,28 +14,12 @@ session_start();
     }
 ?>
 <!doctype html>
-
-    <script type="text/javascript">
-        var theForm = document.forms['form1'];
-        if (!theForm) {
-            theForm = document.form1;
-        }
-
-        function __doPostBack(eventTarget, eventArgument) {
-            if (!theForm.onsubmit || (theForm.onsubmit() != false)) 
-            {
-                theForm.__EVENTTARGET.value = eventTarget;
-                theForm.__EVENTARGUMENT.value = eventArgument;
-                theForm.submit();
-            }
-        }
-    </script>
-    <html lang="es" class="no-js">
+    <html class="no-js" lang="es">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Logo index
+        Bajas
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -72,6 +51,8 @@ session_start();
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/jquery.min.js"></script>
+        <script src="../assets/js/main.js"></script>
+        <script src="../assets/js/main2.js"></script>
         <script src="../assets/js/alertify.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -79,7 +60,6 @@ session_start();
         <script src="../assets/js/jquery-ui.js"></script>
 
         <script type="text/javascript">
-
             $(document).ready(function() 
             {
                 setTimeout(function() 
@@ -94,18 +74,14 @@ session_start();
                     }
                 );
             });
-
-            function imprime(texto)
-            {
-                alertify.alert(texto, function(e){});
-            }
-        </script>
+        </script> 
     </head>
 
     <body>
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
+
                 <div class="navbar-header">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
@@ -119,10 +95,9 @@ session_start();
                     $saltos="../";
                     require("../php/insert/moverse.php");
                 ?>
-                <!-- /.navbar-collapse -->
-            </nav>
-        </aside>
-        <!-- FIN DE ASIDE_left-panel -->
+                
+            </nav> <!-- FIN navbar-collapse -->
+        </aside> <!-- FIN DE ASIDE_left-panel -->
 
         <!-- Right Panel -->
         <div id="right-panel" class="right-panel">
@@ -135,7 +110,6 @@ session_start();
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
 
@@ -159,7 +133,7 @@ session_start();
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Cambiar logo de la página principal de inicio de sesión</h1>
+                            <h1>Bajas</h1>
                         </div>
                     </div>
                 </div>
@@ -167,41 +141,50 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Sistema</a></li>
-                                <li class="active">Cambiar logo principal</li>
+                                <li><a href="#">Asistencia</a></li>
+                                <li class="active">Bajas</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="content mt-3">
-                <div class="animated fadeIn">
-                    <div class="row"> 
-                        <form method="post" action="../php/insert/imagenPrincipal.php" enctype="multipart/form-data" id="fu" autocomplete="off">   
-                            <div class="col-lg-12">                        
+            <form id="f1" method="POST" action="<?php echo $_SERVER["PHP_SELF"]?>">
+                <div class="content mt-3">
+                    <div class="animated fadeIn">
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <span id="MainContent_lbtitulo">CAMBIAR LA IMAGEN DE LA PÁGINA DE INICIO DE SESIÓN</span>
-                                    </div>
-
-                                    <div class="card-body card-block">                          
-                                        <div class="form-group col-lg-5" id="imagen">
-                                            <span id="">Seleccione la imagen</span>
-                                            <input type="file" name="archivo[]" id="myfile" required>
-                                        </div>
+                                        <span id="MainContent_lbtitulo">
+                                            Bitácoras de:
+                                        </span>
                                     </div>
                                     
-                                    <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Actualizar logo" class="btn btn-primary btn-sm"/>
-                                    </div>
+                                    <div class="card-body card-block">
+                                        <div class="form-1-2">
+                                            <input type="radio" name="opcion" value="acc" id="bit-acceso" checked> <label for="bit-acceso">Acceso (días y turnos del trabajador)</label> 
+                                        </div> 
+                                    </div> 
+                                        
                                 </div>
-                            </div> 
-                        </form>
-                    </div>  
-                </div>
-            </div><!-- .animated -->
-        </div> <!-- FIN right-panel -->
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                        </div> <!--FIN DIV CLASS ROW_NUEVA APROBACION-->
+
+                        <div class="card-footer">
+                            <div class="dropdown">
+                                <input type="submit" name="ver" value="VER" class="btn btn-primary btn-sm" />
+                            </div>
+                        </div>
+
+                    </div> <!--FIN DIV animated fadeIn-->
+                </div> <!--FIN DIV content mt-3--> 
+            </form>  <!-- FIN DEL FORM -->
+        </div> <!-- FIN right-panel -->       
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>
 </html>
