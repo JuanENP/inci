@@ -51,8 +51,6 @@ session_start();
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
         <script src="../assets/js/jquery.min.js"></script>
-        <script src="../assets/js/main.js"></script>
-        <script src="../assets/js/main2.js"></script>
         <script src="../assets/js/alertify.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -81,7 +79,6 @@ session_start();
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
             <nav class="navbar navbar-expand-sm navbar-default">
-
                 <div class="navbar-header">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
@@ -89,7 +86,6 @@ session_start();
                     <a class="navbar-brand" href="#">Control de Asistencia</a>
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
-
                 <?php
                     /*Barra izquierda de navegación*/
                     $saltos="../";
@@ -101,21 +97,16 @@ session_start();
 
         <!-- Right Panel -->
         <div id="right-panel" class="right-panel">
-
             <!-- Header-->
             <header id="header" class="header">
-
                 <div class="header-menu">
-
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
                         </div>
                     </div>
-
                     <div class="col-sm-5">
                         <div class="user-area dropdown float-right">
-
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
@@ -128,7 +119,6 @@ session_start();
                 </div>
             </header>
             <!-- /header -->
-
             <div class="breadcrumbs">
                 <div class="col-sm-4">
                     <div class="page-header float-left">
@@ -148,43 +138,99 @@ session_start();
                     </div>
                 </div>
             </div>
-
-            <form id="f1" method="POST" action="<?php echo $_SERVER["PHP_SELF"]?>">
-                <div class="content mt-3">
-                    <div class="animated fadeIn">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <span id="MainContent_lbtitulo">
-                                            Bitácoras de:
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="card-body card-block">
-                                        <div class="form-1-2">
-                                            <input type="radio" name="opcion" value="acc" id="bit-acceso" checked> <label for="bit-acceso">Acceso (días y turnos del trabajador)</label> 
-                                        </div> 
-                                    </div> 
-                                        
+        
+            <div class="content mt-3">
+                <div class="animated fadeIn">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span id="MainContent_lbtitulo">
+                                        Mostrando bajas:
+                                    </span>
                                 </div>
+                                
+                                <div class="card-body card-block">
+                                    <div class="form-1-2">
+                                        <?php
+                                            $sql="SELECT * FROM bajas";
+                                            $query=mysqli_query($con, $sql);
+                                            if(!$query)
+                                            {
+                                                echo "Error al recuperar los datos de baja";
+                                            }
+                                            else
+                                            {
+                                                if(mysqli_num_rows($query)>0)
+                                                {
+                                                    $tabla="";
+                                                    $tabla.="<table class='table table-striped table-bordered display' style='text-align: center; font-size:18px; background: white; table-layout:fixed;'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fecha en que se agregó</th>
+                                                            <th>Tot. Días</th>
+                                                            <th>Motivo/Clave</th>
+                                                            <th>Trabajador</th>
+                                                            <th>Quincena</th>
+                                                            <th>Baja definitiva</th>
+                                                            <th>¿Dar de baja de forma definitiva?</th>
+                                                        </tr>
+                                                    </thead>     
+                                                    <tbody>";
+                                            
+                                                    while ($fila = mysqli_fetch_array($query)) 
+                                                    {
+                                                        $id=$fila[0];
+                                                        $tabla.="<tr>
+                                                                    <td>".$fila[1]."</td>
+                                                                    <td>".$fila[2]."</td>
+                                                                    <td>".$fila[3]."</td>
+                                                                    <td>".$fila[4]."</td>
+                                                                    <td>".$fila[5]."</td>
+                                                                    <td>".$fila[7]."</td>";
+                                                                    if($fila[7]=="0")
+                                                                    {
+                                                                        $tabla.="<td><a><button class='btn btn-danger btn-sm' id='$id' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>SI </button> </a> </td>";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $tabla.="<td> </td>";
+                                                                    }
+                                                                $tabla.="</tr>";
+                                                    }
+                                                    $tabla.="</tbody></table>";
+                                                    echo $tabla;
+                                                }
+                                                else
+                                                {
+                                                    echo "No hay datos";
+                                                }
+                                            }
+                                        ?>
+                                    </div> 
+                                </div> 
+                                    
                             </div>
                         </div>
+                    </div>
+                </div> <!--FIN DIV animated fadeIn-->
+            </div> <!--FIN DIV content mt-3--> 
+        </div> <!-- FIN right-panel -->  
 
-                        <div class="row">
-
-                        </div> <!--FIN DIV CLASS ROW_NUEVA APROBACION-->
-
-                        <div class="card-footer">
-                            <div class="dropdown">
-                                <input type="submit" name="ver" value="VER" class="btn btn-primary btn-sm" />
-                            </div>
-                        </div>
-
-                    </div> <!--FIN DIV animated fadeIn-->
-                </div> <!--FIN DIV content mt-3--> 
-            </form>  <!-- FIN DEL FORM -->
-        </div> <!-- FIN right-panel -->       
+        <script type="text/javascript">
+            
+            function preguntar(elemento)
+            {
+                var miID=elemento.id;
+                alertify.confirm("¿Desea dar de baja de forma DEFINITIVA a este empleado?", function(e)
+                {
+                    if(e)
+                    {
+                        window.location.href="../php/update/baja.php?4Plkksd7="+miID+"";
+                    }
+                });
+            }
+        </script>     
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>
 </html>
