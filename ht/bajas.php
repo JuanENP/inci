@@ -5,11 +5,6 @@ session_start();
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../Acceso/global.php");
-        if($nombre!="AdministradorGod")
-        {
-            echo "<script> alert('Usted no posee privilegios suficientes para elegir esta opción.'); history.back(); </script>";
-            exit();
-        }
         $ubicacion='../php/update/modificarPass.php';//sirve para indicar la ruta del form modalCambiarPass
     }
     else
@@ -19,28 +14,12 @@ session_start();
     }
 ?>
 <!doctype html>
-
-    <script type="text/javascript">
-        var theForm = document.forms['form1'];
-        if (!theForm) {
-            theForm = document.form1;
-        }
-
-        function __doPostBack(eventTarget, eventArgument) {
-            if (!theForm.onsubmit || (theForm.onsubmit() != false)) 
-            {
-                theForm.__EVENTTARGET.value = eventTarget;
-                theForm.__EVENTARGUMENT.value = eventArgument;
-                theForm.submit();
-            }
-        }
-    </script>
-    <html lang="es" class="no-js">
+    <html class="no-js" lang="es">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>
-            Logo index
+        Bajas
         </title>
         <meta name="description" content="Sistema de Control de Asistencia" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,7 +58,6 @@ session_start();
         <script src="../assets/js/jquery-ui.js"></script>
 
         <script type="text/javascript">
-
             $(document).ready(function() 
             {
                 setTimeout(function() 
@@ -94,12 +72,7 @@ session_start();
                     }
                 );
             });
-
-            function imprime(texto)
-            {
-                alertify.alert(texto, function(e){});
-            }
-        </script>
+        </script> 
     </head>
 
     <body>
@@ -113,35 +86,27 @@ session_start();
                     <a class="navbar-brand" href="#">Control de Asistencia</a>
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
-
                 <?php
                     /*Barra izquierda de navegación*/
                     $saltos="../";
                     require("../php/insert/moverse.php");
                 ?>
-                <!-- /.navbar-collapse -->
-            </nav>
-        </aside>
-        <!-- FIN DE ASIDE_left-panel -->
+                
+            </nav> <!-- FIN navbar-collapse -->
+        </aside> <!-- FIN DE ASIDE_left-panel -->
 
         <!-- Right Panel -->
         <div id="right-panel" class="right-panel">
-
             <!-- Header-->
             <header id="header" class="header">
-
                 <div class="header-menu">
-
                     <div class="col-sm-7">
                         <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                         <div class="header-left">
-
                         </div>
                     </div>
-
                     <div class="col-sm-5">
                         <div class="user-area dropdown float-right">
-
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="user-avatar rounded-circle" src="../images/admin.png" alt="User">
                             </a>
@@ -154,12 +119,11 @@ session_start();
                 </div>
             </header>
             <!-- /header -->
-
             <div class="breadcrumbs">
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Cambiar logo de la página principal de inicio de sesión</h1>
+                            <h1>Bajas</h1>
                         </div>
                     </div>
                 </div>
@@ -167,41 +131,106 @@ session_start();
                     <div class="page-header float-right">
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
-                                <li><a href="#">Sistema</a></li>
-                                <li class="active">Cambiar logo principal</li>
+                                <li><a href="#">Asistencia</a></li>
+                                <li class="active">Bajas</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
-
+        
             <div class="content mt-3">
                 <div class="animated fadeIn">
-                    <div class="row"> 
-                        <form method="post" action="../php/insert/imagenPrincipal.php" enctype="multipart/form-data" id="fu" autocomplete="off">   
-                            <div class="col-lg-12">                        
-                                <div class="card">
-                                    <div class="card-header">
-                                        <span id="MainContent_lbtitulo">CAMBIAR LA IMAGEN DE LA PÁGINA DE INICIO DE SESIÓN</span>
-                                    </div>
-
-                                    <div class="card-body card-block">                          
-                                        <div class="form-group col-lg-5" id="imagen">
-                                            <span id="">Seleccione la imagen</span>
-                                            <input type="file" name="archivo[]" id="myfile" required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="card-footer">
-                                            <input type="submit" name="guardar" value="Actualizar logo" class="btn btn-primary btn-sm"/>
-                                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span id="MainContent_lbtitulo">
+                                        Mostrando bajas:
+                                    </span>
                                 </div>
-                            </div> 
-                        </form>
-                    </div>  
-                </div>
-            </div><!-- .animated -->
-        </div> <!-- FIN right-panel -->
+                                
+                                <div class="card-body card-block">
+                                    <div class="form-1-2">
+                                        <?php
+                                            $sql="SELECT * FROM bajas";
+                                            $query=mysqli_query($con, $sql);
+                                            if(!$query)
+                                            {
+                                                echo "Error al recuperar los datos de baja";
+                                            }
+                                            else
+                                            {
+                                                if(mysqli_num_rows($query)>0)
+                                                {
+                                                    $tabla="";
+                                                    $tabla.="<table class='table table-striped table-bordered display' style='text-align: center; font-size:18px; background: white; table-layout:fixed;'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fecha en que se agregó</th>
+                                                            <th>Tot. Días</th>
+                                                            <th>Motivo/Clave</th>
+                                                            <th>Trabajador</th>
+                                                            <th>Quincena</th>
+                                                            <th>Baja definitiva</th>
+                                                            <th>¿Dar de baja de forma definitiva?</th>
+                                                        </tr>
+                                                    </thead>     
+                                                    <tbody>";
+                                            
+                                                    while ($fila = mysqli_fetch_array($query)) 
+                                                    {
+                                                        $id=$fila[0];
+                                                        $tabla.="<tr>
+                                                                    <td>".$fila[1]."</td>
+                                                                    <td>".$fila[2]."</td>
+                                                                    <td>".$fila[3]."</td>
+                                                                    <td>".$fila[4]."</td>
+                                                                    <td>".$fila[5]."</td>
+                                                                    <td>".$fila[7]."</td>";
+                                                                    if($fila[7]=="0")
+                                                                    {
+                                                                        $tabla.="<td><a><button class='btn btn-danger btn-sm' id='$id' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>SI </button> </a> </td>";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $tabla.="<td> </td>";
+                                                                    }
+                                                                $tabla.="</tr>";
+                                                    }
+                                                    $tabla.="</tbody></table>";
+                                                    echo $tabla;
+                                                }
+                                                else
+                                                {
+                                                    echo "No hay datos";
+                                                }
+                                            }
+                                        ?>
+                                    </div> 
+                                </div> 
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div> <!--FIN DIV animated fadeIn-->
+            </div> <!--FIN DIV content mt-3--> 
+        </div> <!-- FIN right-panel -->  
+
+        <script type="text/javascript">
+            
+            function preguntar(elemento)
+            {
+                var miID=elemento.id;
+                alertify.confirm("¿Desea dar de baja de forma DEFINITIVA a este empleado?", function(e)
+                {
+                    if(e)
+                    {
+                        window.location.href="../php/update/baja.php?4Plkksd7="+miID+"";
+                    }
+                });
+            }
+        </script>     
     </body>
     <?php require("../ht/modalCambiarPass.php"); ?>
 </html>

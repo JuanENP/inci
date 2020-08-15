@@ -818,7 +818,7 @@
             menor o del menor y que no cuentan con el auxilio de su cónyuge.
             (ya no otorga: puntualidad (79), asistencia (80), desempeño (83), mérito relevante (84), ni el art. 85; 
             cuando en el término de un mes los días otorgados por uno u otro concepto o por ambos sumen solos o individual
-            mente 3 días).  
+            mente 3 días) NO OTORGA ESTÍMULOS SI EXCEDE 3 DÍAS POR SÍ SOLA O COMBINADA CON LA 55.  
         */
         if($ClaveLicencia=="47")
         { 

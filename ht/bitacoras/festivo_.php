@@ -12,15 +12,12 @@
         
         <tr>
             <td>Usuario</td>
-            <td>Host Origen</td>
             <td>Operación</td>
             <td>Id día</td>
             <td>Fecha</td>
             <td>Descripción</td>
-            <td>Id día</td>
             <td>Fecha</td>
             <td>Descripción</td>
-            <td>Nombre máquina</td>
             <td>Fecha</td>
         </tr>
     </thead>     
@@ -36,9 +33,6 @@
                     <td>".$fila[6]."</td>
                     <td>".$fila[7]."</td>
                     <td>".$fila[8]."</td>
-                    <td>".$fila[9]."</td>
-                    <td>".$fila[10]."</td>
-                    <td>".$fila[11]."</td>
                 </tr>";
     }
     $tabla.="</tbody></table>";

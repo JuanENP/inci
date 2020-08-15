@@ -13,14 +13,15 @@ session_start();
         die();
     }
     //obtener el id que se mandó acá
-    $id=$_GET['id'];
+    $obtener=$_GET['id'];
+    $id = base64_decode($obtener); // Decode
     //Función que busca la categoría con el ID
     function consulta($myid)
     {
         $nombre=$_SESSION['name'];
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php");
-        $sql="select * from turno where idturno = '".$myid."'";
+        $sql="select * from turno where idturno = '$myid'";
         $query= mysqli_query($con, $sql);
         if(!$query)
         {
@@ -64,6 +65,8 @@ session_start();
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/jszip-2.5.0/dt-1.10.18/af-2.3.2/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.5.0/r-2.2.2/rg-1.1.0/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.css"
         />
         <link rel="stylesheet" href="../../assets/scss/style.css" />
+        <link rel="stylesheet" href="../assets/css/alertify.core.css" />
+        <link rel="stylesheet" href="../assets/css/alertify.default.css" />
         <link href="../../assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css" />
 
@@ -74,6 +77,7 @@ session_start();
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.full.min.js"></script>
+        <script src="../assets/js/alertify.min.js"></script>
 
     </head>
 
@@ -89,50 +93,11 @@ session_start();
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
 
-                <div id="main-menu" class="main-menu collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="../../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control </a>
-                        </li>
-                        <li id="Menu_Personal" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-crosshairs"></i><a href="../../ht/categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="../../ht/departamentos.php">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="../../ht/tipoempleado.php">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="../../ht/trabajadores.php">Personal</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="../../ht/dispositivos.php">Dispositivo</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-calendar"></i><a href="../../ht/turnos.php">Turnos</a></li>
-                                <li><i class="fa fa-check-square-o"></i><a href="../../ht/aprobaciones.php">Aprobaciones</a></li>
-                                <li><i class="fa fa-files-o"></i><a href="../../ht/reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../../ht/conceptos.php">Tipo de Incidencias</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Sistema" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <?php 
-                                    if($nombre=="AdministradorGod")
-                                    {
-                                        echo "<li><i class='fa fa-users'></i><a href='../ht/usuarios.php'>Usuarios</a></li>";
-                                        
-                                    }
-                                ?>
-                                 <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                <?php
+                    /*Barra izquierda de navegación*/
+                    $saltos="../../";
+                    require("../insert/moverse.php");
+                ?>
                 <!-- /.navbar-collapse -->
             </nav>
         </aside>
@@ -247,6 +212,7 @@ session_start();
                                             <tbody>
                                                 <!--PONER AQUÍ EL CONTENIDO DE LA TABLA-->
                                                 <?php
+                                                    require("../../ht/_encript.php");
                                                     $sql="select * from turno";
                                                     $query= mysqli_query($con, $sql);
                                                     if(!$query)
@@ -257,14 +223,14 @@ session_start();
                                                     {
                                                       while($resul=mysqli_fetch_array($query))
                                                       {
+                                                        $encript=generaURL($resul[0]);
                                                         echo "<tr>";
                                                         echo utf8_encode("<td>" . $resul[0] . "</td>");
                                                         echo utf8_encode("<td>" . $resul[1] . "</td>");
                                                         echo utf8_encode("<td>" . $resul[2] . "</td>");
                                                         echo utf8_encode("<td>" . $resul[3] . "</td>");
-                                                       // echo "<td> <button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'><a href='../delete/turno.php?id=".$resul[0]."'>Eliminar</a></i>  </button> ";
-                                                        echo "<td><a href='../delete/turno.php?id=".$resul[0]."'><button class='btn btn-danger btn-sm'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
-                                                        echo " <a href='../update/turno.php?id=".$resul[0]."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
+                                                        echo "<td><a><button class='btn btn-danger btn-sm' id='$encript' onclick='preguntar(this);'><i class='fa fa-trash-o'></i>Eliminar </button></a> ";
+                                                        echo "<a href='../update/turno.php?id=".generaURL($resul[0])."'><button class='btn btn-success btn-sm'><i class='fa fa-pencil-square-o'></i>Editar </button></a> </td>";
                                                         echo "</tr>";
                                                       }
                                                     }
@@ -320,6 +286,19 @@ session_start();
                         ]
                     });
                 });
+
+                function preguntar(elemento)
+                {
+                    var miID=elemento.id;
+
+                    alertify.confirm("¿Deseas eliminar este registro?", function(e)
+                    {
+                        if(e)
+                        {
+                            window.location.href="../php/delete/turno.php?zuilP0_9="+miID+"";
+                        }
+                    });
+                }
             </script>
         </div>
         <!-- /#right-panel -->

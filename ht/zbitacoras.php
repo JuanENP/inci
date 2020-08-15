@@ -123,52 +123,11 @@ session_start();
                     <a class="navbar-brand hidden" href="#"></a>
                 </div>
 
-                <div id="main-menu" class="main-menu collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="../panel_control.php"> <i class="menu-icon fa fa-dashboard"></i>Panel de Control</a>
-                        </li>
-                        <li id="Menu_Personal" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Personal</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-crosshairs"></i><a href="categoria.php">Categorias</a></li>
-                                <li><i class="fa fa-sitemap"></i><a href="departamentos.html">Departamentos</a></li>
-                                <li><i class="fa fa-male"></i><a href="tipoempleado.html">Tipo Empleado</a></li>
-                                <li><i class="fa fa-users"></i><a href="trabajadores.php">Personal</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Dispositivo" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-desktop"></i>Dispositivo</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-plus-circle"></i><a href="../ht/dispositivos.php">Dispositivo</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Asistencia" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clock-o"></i>Asistencia</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><i class="fa fa-calendar"></i><a href="../ht/turnos.php">Turnos</a></li>
-                                <li><i class="fa fa-check-square-o"></i><a href="../ht/aprobaciones.php">Aprobaciones</a></li>
-                                <li><i class="fa fa-files-o"></i><a href="../ht/reportes.php">Reportes</a></li>
-                                <li><i class="fa fa-shield"></i><a href="../ht/conceptos.html">Tipo de Incidencias</a></li>
-                                <li><i class="fa fa-shield"></i><a href="ht/verAsistencias.php">Asistencias de hoy</a></li>
-                            </ul>
-                        </li>
-                        <li id="Menu_Sistema" class="menu-item-has-children dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Sistema</a>
-                            <ul class="sub-menu children dropdown-menu">
-                                <li><a class="nav-link" href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
-                                <?php 
-                                    if($nombre=="AdministradorGod")
-                                    {
-                                        echo "<li><i class='fa fa-book'></i><a href='ht/zbitacoras.php'>Bitácoras</a></li>"; 
-                                        echo "<li><i class='fa fa-picture-o'></i><a href='ht/cambiar-logo-principal.php'>Logo página principal</a></li>";
-                                        echo "<li><i class='fa fa-users'></i><a href='ht/usuarios.php'>Usuarios</a></li>";                 
-                                    }
-                                ?>
-                            </ul>
-                        </li>
-                    </ul>
-                </div> <!--FIN menu-principal-->
+                <?php
+                    /*Barra izquierda de navegación*/
+                    $saltos="../";
+                    require("../php/insert/moverse.php");
+                ?>
                 
             </nav> <!-- FIN navbar-collapse -->
         </aside> <!-- FIN DE ASIDE_left-panel -->

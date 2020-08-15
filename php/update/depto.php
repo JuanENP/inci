@@ -39,7 +39,7 @@ actualizar($idcat, $nomcat,$old_id);
         $contra=$_SESSION['con'];
         require("../../Acceso/global.php");
         //SIRVE PARA SELECCIONAR EL NOMBRE LA CATEGORIA QUE SE VA A ACTUALIZAR
-        $sql="select * from depto where iddepto='$id'";
+        $sql="select * from depto where iddepto='$id_viejo'";
         $query= mysqli_query($con, $sql) or die();
         while($resul=mysqli_fetch_array($query))
         {

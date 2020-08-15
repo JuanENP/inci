@@ -23,7 +23,8 @@ session_start();
 
 <?php
   //obtener el id que se mandó acá
-  $id=$_GET['id'];
+  $obtener=$_GET['zuilP0_9'];
+  $id = base64_decode($obtener); // Decode
   mysqli_autocommit($con, FALSE);
   $nombre_host= gethostname();
 

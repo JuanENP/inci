@@ -16,10 +16,9 @@
 
     if ($usuario)
     {   
-        $nuevaContra='1111';
-       // $resultado=actualizarPassword($usuario,$nuevaContra);
+        $nuevaContra=generarCodigo(4);
         $mail=revisarMail($usuario,$nuevaContra);
-       if(!empty($mail))
+        if(!empty($mail))
         {
             $from = "ISSSTE";
             $destino=$mail;
@@ -30,16 +29,18 @@
             error_reporting( E_ALL );
             $headers = "From:" . $from;
             $correcto= mail($destino,$asunto,$mensaje, $headers);
-          /*if (!$correcto) 
+            if (!$correcto) 
             {
                 $errorMessage = error_get_last()['message'];
-            }*/
-            echo"<script language= javascript type= text/javascript> alert('Le hemos enviado un correo electrónico para recuperar su cuenta.'); header('Location: ../index.html');</script>";
-
+            }
+            else
+            {
+                echo"<script language= javascript type= text/javascript> alert('Le hemos enviado un correo electrónico para recuperar su cuenta.'); history.go(-2); </script>";
+            }
         }
         else
         {
-            echo"<script language= javascript type= text/javascript> alert('Error, no tiene un correo electrónico registrado.');header('Location: ../index.html');</script>";
+            echo"<script language= javascript type= text/javascript> alert('Error, no tiene un correo electrónico registrado.'); history.go(-2); </script>";
             exit();
         }
     }
@@ -73,6 +74,7 @@
         $query= mysqli_query($con, $sql) or die();
         return 0;
     }
+
     function revisarMail($nomUser,$newPassword)
     {
         $nombre="biometric";
@@ -89,4 +91,13 @@
         }
         
     }
+
+    function generarCodigo($longitud) 
+    {
+        $key = '';
+        $pattern = '1234567890';
+        $max = strlen($pattern)-1;
+        for($i=0;$i < $longitud;$i++) $key .= $pattern{mt_rand(0,$max)};
+        return $key;
+    }  
 ?>
