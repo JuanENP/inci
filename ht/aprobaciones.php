@@ -1374,11 +1374,11 @@ session_start();
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-curso">
-                                                    <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> <label> </label>Curso capacitación
+                                                    <input type="radio" name="opcion" value="curso" id="cur" onclick="oculta(9)"> <label> Curso capacitación </label>
                                                 </div>
 
                                                 <div class="form-1-2" id="radio-otros">
-                                                    <input type="radio" name="opcion" value="otros" id="otr" onclick="oculta(10)"> <label> </label>Otros (04, 30, 31, suspensiones)
+                                                    <input type="radio" name="opcion" value="otros" id="otr" onclick="oculta(10)"> <label> Otros (04, 30, 31, suspensiones) </label>
                                                 </div>
                                             </div>
                                         </div>
