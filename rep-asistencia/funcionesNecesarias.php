@@ -24,13 +24,13 @@
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-		//seleccionamos a los empleados que tinen incidencias sin justificar y que sean de base o comisionados foraneos
+		$anioActual=date('Y');
+		//seleccionamos a los empleados que tinen incidencias sin justificar y que sean de base
 		$sql="SELECT a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
 		c.clave_incidencia_clave_incidencia, b.fecha_entrada,b.fecha_salida FROM trabajador a
-		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador
+		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador and (b.fecha_entrada like '%$anioActual%' or b.fecha_salida like '%$anioActual%')
 		inner join incidencia c on b.id=c.asistencia_asistencia
-		where b.quincena_quincena=$quincena
-		and a.tipo_tipo=2
+		where b.quincena_quincena=$quincena and a.tipo_tipo=2
 		and (c.clave_incidencia_clave_incidencia='01' or c.clave_incidencia_clave_incidencia='02'or c.clave_incidencia_clave_incidencia='03' or c.clave_incidencia_clave_incidencia='04' 
 		or c.clave_incidencia_clave_incidencia='05' or c.clave_incidencia_clave_incidencia='07' or c.clave_incidencia_clave_incidencia='16' or c.clave_incidencia_clave_incidencia='18'
 		or c.clave_incidencia_clave_incidencia='19' or c.clave_incidencia_clave_incidencia='20' or c.clave_incidencia_clave_incidencia='24'
@@ -42,56 +42,56 @@
 		//si total es igual a cero significa que no hay datos
 		if($resul>0)
 		{  
-				while($resul=mysqli_fetch_array($query))
+			while($resul=mysqli_fetch_array($query))
+			{
+				$fila[0]=$resul[0];//numero
+				$fila[1]=$resul[1];//nom
+				$fila[2]=$resul[2];//clave 
+				//resul3 fecha entrada
+				//resul4 fecha salida
+				/*Clave 16 omision de salida de asistencia con jornada discontinua
+				Clave 18, omisión de entrada en turno normal
+				Clave 19 omision de salida en jornada continua
+				Clave 20, omisión de entrada y salida en turno opcional*/
+				if($fila[2] !== '16' && $fila[2] !== '18' && $fila[2] !== '19' && $fila[2] !== '20')
 				{
-					$fila[0]=$resul[0];//numero
-					$fila[1]=$resul[1];//nom
-					$fila[2]=$resul[2];//clave 
-					//resul3 fecha entrada
-					//resul4 fecha salida
-					/*Clave 16 omision de salida de asistencia con jornada discontinua
-					Clave 18, omisión de entrada en turno normal
-					Clave 19 omision de salida en jornada continua
-					Clave 20, omisión de entrada y salida en turno opcional*/
-					if($fila[2] !== '16' && $fila[2] !== '18' && $fila[2] !== '19' && $fila[2] !== '20')
+					$separar=explode(' ',$resul[3]);//Separar la fecha de entrada de la hora de entrada
+					$fecha=$separar[0];
+					$separar2=explode('-',$fecha);//Separar la fecha de entrada para obtener solo el día          
+					$dia=$separar2[2];
+				}
+				else
+				{	
+					//Omision de entrada y salida al turno opcional
+					if($fila[2] == '20')
 					{
-						$separar=explode(' ',$resul[3]);//Separar la fecha de entrada de la hora de entrada
-						$fecha=$separar[0];
-						$separar2=explode('-',$fecha);//Separar la fecha de entrada para obtener solo el día          
-						$dia=$separar2[2];
+						if($resul[3]=='')//Si la fecha de entrada está vacia revisar la fecha de salida
+						{
+							$dia=revisarHorario($fila[0],'',$resul[4]);
+						}
+						else //si la fecha de salida está vacía revisar la fecha de entrada
+						{
+							$dia=revisarHorario($fila[0],$resul[3],'');
+						}
 					}
 					else
-					{	
-						//Omision de entrada y salida al turno opcional
-						if($fila[2] == '20')
+					{
+						//Omision de salida
+						if($fila[2] == '16' || $fila[2] == '19')
 						{
-							if($resul[3]=='')//Si la fecha de entrada está vacia revisar la fecha de salida
-							{
-								$dia=revisarHorario($fila[0],'',$resul[4]);
-							}
-							else //si la fecha de salida está vacía revisar la fecha de entrada
-							{
-								$dia=revisarHorario($fila[0],$resul[3],'');
-							}
+							$dia=revisarHorario($fila[0],$resul[3],'');
 						}
-						else
+						//Omision de entrada
+						if($fila[2] == '18')
 						{
-							//Omision de salida
-							if($fila[2] == '16' || $fila[2] == '19')
-							{
-								$dia=revisarHorario($fila[0],$resul[3],'');
-							}
-							//Omision de entrada
-							if($fila[2] == '18')
-							{
-								$dia=revisarHorario($fila[0],'',$resul[4]);
-							}
+							$dia=revisarHorario($fila[0],'',$resul[4]);
 						}
 					}
-					//Se guardará el día de la incidencia
-					$fila[3]=$dia;
-					$reporte[$ultimo_r]=$fila;
-					$ultimo_r++;
+				}
+				//Se guardará el día de la incidencia
+				$fila[3]=$dia;
+				$reporte[$ultimo_r]=$fila;
+				$ultimo_r++;
 			}//Fin while
 		}
     }
@@ -305,6 +305,7 @@
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
+		$anioActual=date('Y');
 		/*	
 			CLAVES:
 			10 Día no laborado.
@@ -313,7 +314,7 @@
 		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave,b.fecha
 		FROM trabajador a 
-		INNER JOIN falta b on a.numero_trabajador=b.trabajador_trabajador 
+		INNER JOIN falta b on a.numero_trabajador=b.trabajador_trabajador AND b.fecha like '%$anioActual%'
 		AND quincena=$quincena AND a.tipo_tipo=2
 		AND NOT EXISTS (SELECT c.idjustificar_falta FROM justificar_falta c where b.idfalta=c.falta_falta) order by a.numero_trabajador,b.fecha";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
@@ -341,10 +342,11 @@
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
+		$anioActual=date('Y');
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
 		d.clave_justificacion_clave_justificacion, b.fecha_entrada,b.fecha_salida 
 		from trabajador a
-		inner join asistencia b on a.numero_trabajador = b.trabajador_trabajador
+		inner join asistencia b on a.numero_trabajador = b.trabajador_trabajador and (b.fecha_entrada like '%$anioActual%' or b.fecha_salida like '%$anioActual%') and quincena_quincena=$quincena
 		inner join incidencia c on b.id=c.asistencia_asistencia
 		inner join justificacion d on c.idincidencia=d.incidencia_incidencia  
 		where (d.clave_justificacion_clave_justificacion=08 or d.clave_justificacion_clave_justificacion=09) and a.tipo_tipo=2;";  
@@ -377,21 +379,22 @@
 	function especiales()
 	{
 		global $con;
-		global $quincena;
+		global $f_ini;
+		global $f_fin;
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-		//Seleccionamos a los empleados que tienen justificada una clave  de incidencia 03 con la 04
-		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
-		b.clave_especial_clave_especial, b.fecha_inicio,b.fecha_fin 
-		from trabajador a
-		inner join especial b on a.numero_trabajador = b.trabajador_trabajador
-		where 
-		(a.tipo_tipo=1 || a.tipo_tipo=2)
-		and 
-		(
-		clave_especial_clave_especial='12' 
-		clave_especial_clave_especial='13' 
+        $anioActual=date('Y');
+        //Separar las fechas de inicio y fin de la quincena actual
+        $separaF_ini=explode('-',$f_ini);
+        $f_ini=$anioActual.'-'.$separaF_ini[1].'-'.$separaF_ini[2];
+        $separaF_fin=explode('-',$f_fin);
+        $f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
+		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave_especial_clave_especial, b.fecha_inicio,b.fecha_fin 
+		from trabajador a inner join especial b 
+		on a.numero_trabajador = b.trabajador_trabajador and ((b.fecha_inicio >= '$f_ini' or b.fecha_inicio <='$f_ini') and (b.fecha_fin >= '$f_fin' or  b.fecha_inicio <='$f_fin') )
+		where a.tipo_tipo=2 and (clave_especial_clave_especial='12' 
+		or clave_especial_clave_especial='13' 
 		or clave_especial_clave_especial='17'
 		or clave_especial_clave_especial='29'
 		or clave_especial_clave_especial='40'
@@ -402,9 +405,7 @@
 		or clave_especial_clave_especial='55'
 		or clave_especial_clave_especial='61'
 		or clave_especial_clave_especial='92'
-		or clave_especial_clave_especial='93'
-		or clave_especial_clave_especial='CS'
-		);";  
+		or clave_especial_clave_especial='93');";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$fechaSalida=mysqli_num_rows($query);
 		//si total es igual a cero significa que no hay datos
@@ -412,52 +413,265 @@
 		{  
 			while($resul=mysqli_fetch_array($query))
 			{
-				$fila[0]=$resul[0];//numero
-				$fila[1]=$resul[1];//nombre
-				$fila[2]=$resul[2];//clave
-				$fecha=$resul[3]; //fecha entrada
-				$separaEspacio=explode(' ',$fecha);//Separar la fecha de entrada para obtener solo la fecha y no la hora
-				$separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha de entrada para obtener solo el día
-				$fila[3]=$separaGuion[2];//dia
-				$reporte[$ultimo_r]=$fila;
-				$ultimo_r++;
-			//echo "<br>" . "num: " . $resul[0] . "  Nombre: " . $resul[1] . "  Clave: " . $resul[2] . "  Dia: " . $separa[2];
-			}
+                $num=$resul[0];//numero
+                $nom=$resul[1];//nombre
+                $clave=$resul[2];
+                $f_ini_especial=$resul[3];
+                $f_fin_especial=$resul[4];
+                //llamar a la función, $dias es un array con los días del rango
+                $dias=obtenDiasDeRango($f_ini,$f_fin);
+                //ver el array
+                foreach($dias as $fecha)
+                {
+                    if(($fecha >= $f_ini_especial) && ($fecha <= $f_fin_especial))
+                    {
+                        $fila[0]=$num;//numero
+                        $fila[1]=$nom;//nombre
+                        $fila[2]=$clave;//clave
+                        $separaEspacio=explode(' ',$fecha);//Separar la fecha para obtener solo la fecha y no la hora
+                        $separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha para obtener solo el día
+                        $dia=$separaGuion[2];
+                        $fila[3]=$dia;//dia
+                        $reporte[$ultimo_r]=$fila;
+				        $ultimo_r++;
+                    }
+                }
+ 			}
 		}
-	}
+    }
+    
+    function obtenDiasDeRango($rango1, $rango2)
+    {
+        /*
+            Recibe dos parametros tipo string que tengan el formato YYYY-MM-DD y
+            devuelve un array con todos los días entre esas dos fechas (rangos) dadas.
 
+            Ejemplo de llamada: $dias=obtenDiasDeRango("2020-08-01","2020-08-15");
+        */
+
+        //array a retornar
+        $devolverFechas=array();
+        //insertar la primera fecha
+        $devolverFechas[0]=$rango1;
+
+        $mod_dia=$rango1;
+
+        $diaFinaldeRango=strtotime($rango2);
+
+        for($i=1;$i<15;$i++)
+        {
+            $mod_dia = strtotime($mod_dia."+ 1 days");//sumar 1 día
+            if($mod_dia==$diaFinaldeRango)
+            {
+                //guardar el último día del rango
+                $devolverFechas[$i]=$rango2;
+                $i=15;//romper el bucle
+            }
+            else
+            {
+                $devolverFechas[$i]=date("Y-m-d",$mod_dia);
+                //para que se le sume 1 día
+                $mod_dia=date("Y-m-d",$mod_dia);
+            }
+        }
+        return $devolverFechas;
+	}
+	
 	function vacaciones()
 	{
+		/*
+			60 Vacaciones.
+			62 Vacaciones por emanaciones radiactivas.
+			63 Vacaciones extraordinarias por premios, estímulos y recompensas.
+		*/
 		global $con;
-		global $quincena;
+		global $f_ini;
+		global $f_fin;
 		global $fila;
 		global $ultimo_r;
 		global $reporte;
-		//Seleccionamos a los empleados que tienen justificada una clave  de incidencia 03 con la 04
-		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
+        $anioActual=date('Y');
+        //Separar las fechas de inicio y fin de la quincena actual
+        $separaF_ini=explode('-',$f_ini);
+        $f_ini=$anioActual.'-'.$separaF_ini[1].'-'.$separaF_ini[2];
+        $separaF_fin=explode('-',$f_fin);
+		$f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
+		//Vacaciones normales clave 60 cica
+		$sql=" SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
 		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
 		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
 		where c.dia >='$f_ini' and c.dia <='$f_fin'
 		and c.tomado=1 order by  a.numero_trabajador,c.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
-		$fila=mysqli_num_rows($query);
-		//si total es igual a cero significa que no hay datos
-		if($fila==0)
+		$fechaSalida=mysqli_num_rows($query);
+		if($fila>0)
 		{  
 			while($resul=mysqli_fetch_array($query))
 			{
-				$fila[0]=$resul[0];//numero
-				$fila[1]=$resul[1];//nombre
-				$fila[2]="60";//Clave	
-				$fila[2]=$resul[2]; //periodo
-				$fila[2]=$resul[3]; //fecha
-				$fila[2]=$resul[3]; //fecha
+                $num=$resul[0];//numero
+                $nom=$resul[1];//nombre
+				$clave='60';
+				$fecha=$resul[3];
+                $fila[0]=$num;//numero
+                $fila[1]=$nom;//nombre
+                $fila[2]=$clave;//clave
+                $separaEspacio=explode(' ',$fecha);//Separar la fecha para obtener solo la fecha y no la hora
+                $separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha para obtener solo el día
+                $dia=$separaGuion[2];
+                $fila[3]=$dia;//dia
+                $reporte[$ultimo_r]=$fila;
 				$ultimo_r++;
-			}
+ 			}
+		}
+		//Vacaciones emanaciones radioactivas clave 62 cica
+		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
+		FROM trabajador a 
+		INNER JOIN vacaciones_radio b on a.numero_trabajador=b.trabajador_trabajador
+		INNER jOIN dias_vacaciones_radio c on b.idvacaciones_radio=c.vacaciones_vacaciones
+		where c.dia >='$f_ini' and c.dia <='$f_fin'
+		and c.tomado=1 order by  a.numero_trabajador,c.dia;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$fechaSalida=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($fila>0)
+		{  
+			while($resul=mysqli_fetch_array($query))
+			{
+                $num=$resul[0];//numero
+                $nom=$resul[1];//nombre
+				$clave='62';
+				$fecha=$resul[3];
+                $fila[0]=$num;//numero
+                $fila[1]=$nom;//nombre
+                $fila[2]=$clave;//clave
+                $separaEspacio=explode(' ',$fecha);//Separar la fecha para obtener solo la fecha y no la hora
+                $separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha para obtener solo el día
+                $dia=$separaGuion[2];
+                $fila[3]=$dia;//dia
+                $reporte[$ultimo_r]=$fila;
+				$ultimo_r++;
+ 			}
+		}
+		//Vacaciones extraordinarias clave 63 cica
+		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.dia
+		FROM trabajador a 
+		INNER jOIN vacaciones_extraordinarias b on a.numero_trabajador=b.trabajador_trabajador
+		where b.dia >='$f_ini' and b.dia <='$f_fin'
+		and b.tomado=1 order by a.numero_trabajador,b.dia;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$fechaSalida=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($fila>0)
+		{  
+			while($resul=mysqli_fetch_array($query))
+			{
+                $num=$resul[0];//numero
+                $nom=$resul[1];//nombre
+				$clave='63';
+				$fecha=$resul[2];
+                $fila[0]=$num;//numero
+                $fila[1]=$nom;//nombre
+                $fila[2]=$clave;//clave
+                $separaEspacio=explode(' ',$fecha);//Separar la fecha para obtener solo la fecha y no la hora
+                $separaGuion=explode('-',$separaEspacio[0]);//Separar la fecha para obtener solo el día
+                $dia=$separaGuion[2];
+                $fila[3]=$dia;//dia
+                $reporte[$ultimo_r]=$fila;
+				$ultimo_r++;
+ 			}
 		}
 	}
 
+	function suspensiones_y_bajas()
+	{
+		/*
+			80 Suspensión en nómina por renuncia.
+			81 Suspensión en nómina por defunción.
+			82 Suspensión en nómina por cese.
+			83 Suspensión en nómina por licencia médica definitiva.
+			84 Suspensión en nómina por pensión.
+			85 Suspensión en nómina por jubilación.
+			86 Suspensión temporal en nómina por sanción administrativa.
+			87 Suspensión en nómina por abandono de empleo sin justificación.
+			88 Suspensión en nómina por término de interinato.
+			89 Suspensión en nómina por término de comisión.
+		*/
+		global $con;
+		global $f_ini;
+		global $f_fin;
+		global $fila;
+		global $ultimo_r;
+		global $reporte;
+        $anioActual=date('Y');
+        //Separar las fechas de inicio y fin de la quincena actual
+        $separaF_ini=explode('-',$f_ini);
+        $f_ini=$anioActual.'-'.$separaF_ini[1].'-'.$separaF_ini[2];
+        $separaF_fin=explode('-',$f_fin);
+        $f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
+		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave, b.fecha
+		from trabajador a inner join estimulos b 
+		on a.numero_trabajador = b.trabajador_trabajador and (fecha>='$f_ini' AND fecha<='$f_fin');";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$fechaSalida=mysqli_num_rows($query);
+		if($fila>0)
+		{  
+			while($resul=mysqli_fetch_array($query))
+			{
+                $fila[0]=$resul[0];//numero
+                $fila[1]=$resul[1];//nombre
+                $fila[2]=$resul[2];//clave
+                $fecha=$resul[3];
+                $separaGuion=explode('-',$fecha);//Separar la fecha para obtener solo el día
+                $dia=$separaGuion[2];
+                $fila[3]=$dia;//dia
+                $reporte[$ultimo_r]=$fila;
+				$ultimo_r++;                
+ 			}
+		}
+	}
+
+	function sin_der_estimulo_desempeño_cica78()
+	{
+		/*
+			Clave 78, sin derecho a estímulo de desempeño.
+		*/
+		global $con;
+		global $f_ini;
+		global $f_fin;
+		global $fila;
+		global $ultimo_r;
+		global $reporte;
+        $anioActual=date('Y');
+        //Separar las fechas de inicio y fin de la quincena actual
+        $separaF_ini=explode('-',$f_ini);
+        $f_ini=$anioActual.'-'.$separaF_ini[1].'-'.$separaF_ini[2];
+        $separaF_fin=explode('-',$f_fin);
+        $f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
+		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave, b.fecha
+		from trabajador a inner join estimulos b 
+		on a.numero_trabajador = b.trabajador_trabajador and (fecha>='$f_ini' AND fecha<='$f_fin')
+        and (clave='75' or clave='78');";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$fechaSalida=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($fila>0)
+		{  
+			while($resul=mysqli_fetch_array($query))
+			{
+                $fila[0]=$resul[0];//numero
+                $fila[1]=$resul[1];//nombre
+                $fila[2]=$resul[2];//clave
+                $fecha=$resul[3];
+                $separaGuion=explode('-',$fecha);//Separar la fecha para obtener solo el día
+                $dia=$separaGuion[2];
+                $fila[3]=$dia;//dia
+                $reporte[$ultimo_r]=$fila;
+				$ultimo_r++;                
+ 			}
+		}
+	}
+	
 	function pulir()
 	{
 		global $reporte;
@@ -541,7 +755,7 @@
 		}
 	}
 	//-------------------------------------------------------------------------------------
-	//vacaciones
+	//Reporte de vacaciones
 	function buscarxfecha()
 	{
 		global $con;
@@ -572,7 +786,7 @@
 			}
 		}
 
-	}//fin function xfecha
+	}
 
 	function buscarxquincena()
 	{
@@ -711,6 +925,37 @@
 		}
 	}
 
+	
+
+	function vienenxfestivo() 
+	{
+		global $con;
+		global $diaSemana;
+		global $dato;
+		global $conta;
+		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,b.turno_turno,c.entrada, c.salida
+		from trabajador a
+		inner join acceso b on a.numero_trabajador=b.trabajador_trabajador
+        inner join turno c on b.turno_turno=c.idturno
+		and b.$diaSemana =1 and b.t_dias<=3;";  
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+		if($resul>0)
+		{  
+			while($resul=mysqli_fetch_array($query))
+			{
+				$dato[$conta][0]=$resul[0];//numero trabajador
+				$dato[$conta][1]=$resul[1];//nombre
+				$dato[$conta][2]=$resul[2];//depto
+				$dato[$conta][3]=$resul[3];//categoria
+				$dato[$conta][4]=$resul[4];//turno
+				$dato[$conta][5]=$resul[5];//hora entrada
+				$dato[$conta][6]=$resul[6];//hora salida
+				$conta++;
+			}
+		}
+	}
+
 	function vienenxacceso() 
 	{
 		global $con;
@@ -750,7 +995,7 @@
 		from trabajador a
 		inner join sexta b on a.numero_trabajador=b.trabajador_trabajador
 		inner join turno c on b.turno_turno=c.idturno
-		and b.$diaSemana=1 and b.validez=1 and b.t_dias<=2;";  
+		and b.$diaSemana=1 and b.validez=1 and b.t_dias<=3;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
 		if($resul>0)
@@ -771,6 +1016,20 @@
 
 	function asistenciaxfecha()
 	{
+		global $con;
+		global $fecha_elegida;
+		global $diaSemana;
+		$sql="Select iddia_festivo from dia_festivo where fecha='$fecha_elegida';";
+        $query= mysqli_query($con, $sql);
+        $fila=mysqli_num_rows($query);
+        if($fila==1) //Si hoy es día festivo, tienen que venir los de día festivo
+        {
+
+		}
+		else
+		{
+
+		}
 		vienenxacceso();
 		vienenxsexta();
 		global $dato;	
@@ -1094,7 +1353,6 @@
 		require("../Acceso/global.php"); 
 		global $datos;
 		global $contador_d;
-		//Seleccionamos a los empleados que tienen faltas sin justificar en tal quincena 
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
 		b.hora_entrada,b.hora_salida,b.empresa,b.duracion 
 		from trabajador a inner join especial b
@@ -1232,9 +1490,7 @@
 	
 	function comisionesActivas()
 	{
-		$nombre=$_SESSION['name'];
-		$contra=$_SESSION['con'];
-		require("../Acceso/global.php"); 
+		global $con;
 		global $datos;
 		global $contador_d;
 		$sql="Select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria,a.genero,b.fecha_inicio,b.fecha_fin,
@@ -1295,7 +1551,7 @@
             }
         }
 		$count=0;
-		$count=conut($datos);
+		$count=count($datos);
         for($i=0;$i<$count;$i++)
         {
             $entrada=$datos[$i][4];
