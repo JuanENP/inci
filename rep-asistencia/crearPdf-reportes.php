@@ -66,11 +66,14 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		$c=-1;
 		$arreglo=array();//arreglo con los datos del reporte
 		$contador=0;
-		//incidencias();
-		// cumpleOno_clave14cica();
-		//faltas();
+		incidencias();
+		cumpleOno_clave14cica();
+		faltas();
 		justificaciones();
-		// especiales();
+		especiales();
+		vacaciones();
+		suspensiones_y_bajas();
+		sin_der_estimulo_desempeño_cica78();
 		pulir();
 		$contador=count($arreglo);
 		if($contador>0)
@@ -260,7 +263,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	} 
 
 	if($operacion=="asistencia")
 	{
@@ -545,7 +548,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 				exit();
 			}//Fin del else que revisa si el arreglo tiene datos
 		}//fin del div 
-	} //fin if
+	}  
 
 	if($operacion=="vinieron")
 	{
@@ -795,7 +798,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 
 	if($operacion=="faltaron")
 	{
@@ -1049,7 +1052,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 
 	if($operacion=="cumpleOno")
 	{
@@ -1134,7 +1137,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		}//fin del else que revisa si hubo algun error en los input
 	
 
-	} //fin if
+	}  
 
 	if($operacion=="guardias")
 	{
@@ -1387,7 +1390,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 	
 	if($operacion=="sextas")
 	{
@@ -1474,7 +1477,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 
 	if($operacion=="licencias")
 	{
@@ -1618,7 +1621,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 
 	if($operacion=="pases")
 	{
@@ -1697,7 +1700,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 			exit();
 		}	
 	
-	} //fin if
+	}  
 
 	function imprimepdf($nomArchivo,$nomPdf)
 	{
