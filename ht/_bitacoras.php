@@ -133,4 +133,62 @@ session_start();
             require("bitacoras/vacacionesN.php");
         }
     }
+
+    function retornaAlgoDeBD($tipoDatoADevolver, $elQuery)
+    {
+        global $con;
+        /* 
+            $elQuery             : es la consulta que se desea ejecutar 
+            $tipoDatoADevolver=0 : Devolverá 1 solo dato de la consulta dada
+            $tipoDatoADevolver=1 : Devolverá 1 array de la consulta dada
+
+            Ejemplo de uso
+            $devuelve=retornaAlgoDeBD(0, $sql)
+        */
+        $sql=$elQuery;
+        if($tipoDatoADevolver==0)
+        {
+            $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+            $filas=mysqli_num_rows($query);
+            if($filas==1)
+            {
+                $resul=mysqli_fetch_array($query);
+                return $resul[0];//Devolver un solo dato
+            }
+            else
+            {
+                echo "Esta consulta arrojó un conjunto vacío o un array. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                exit();
+            }  
+        }
+        else//fin if devolver ==0
+        {
+            if($tipoDatoADevolver==1)
+            {
+                $datos=array();//para guardar los datos
+                $pos=0;//para controlar las posiciones del array
+                $query=mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+                $filas=mysqli_num_rows($query);
+                if($filas>0)
+                {
+                    while($resul=mysqli_fetch_array($query))
+                    { 
+                        $datos[$pos]=$resul[0];//Guardar el día feriado correspondiente en el array
+                        $pos++;//aumentar la posición del array
+                    }
+                    return $datos;//devolver un array con los datos
+                }  
+                else
+                {
+                    echo "Esta consulta arrojó un conjunto vacío. Verifique con el administrador del sistema para obtener más información. No es posible proceder.";
+                    exit();
+                }
+            }
+            else//fin if devolver==1
+            {
+                echo "Parametro *tipoDatoADevolver=$tipoDatoADevolver* de la función retornaAlgoDeBD no admitido";
+                exit();
+            }
+        } 
+    }//fin de retornaAlgoBD
 ?>

@@ -40,7 +40,7 @@
         //guardar el nombre de la imagen, que se encuentra en la posición 20 del array fila
         $img=$fila[20];
         require("_existeIMG.php");
-        //meter la opción de ver la imagen
+        //meter la opción de ver la imagen, fila[8] es la clave especial
         $tabla.="<tr>
                     <td>".$fila[1]."</td>
                     <td>".$fila[2]."</td>
@@ -63,7 +63,16 @@
                     <td>".$fila[19]."</td>";
                     if($existe==1)
                     {
-                        $tabla.="<td><a href='../../documents/".$fila[20].$extension."' target='_blank'>ver</a></td>";
+                        if($fila[8]=="55")
+                        {
+                            $idClave55=$fila[20];
+                            $doctor=retornaAlgoDeBD(0, "SELECT empresa from especial where idespecial=$idClave55");
+                            $tabla.="<td><a href='../documents/".$fila[20].$extension."' target='_blank'>ver Doctor: [$doctor]</a></td>";
+                        }
+                        else
+                        {
+                            $tabla.="<td><a href='../documents/".$fila[20].$extension."' target='_blank'>ver</a></td>";
+                        }
                     }
                     else
                     {

@@ -968,39 +968,125 @@
         */
         if($ClaveLicencia=="55")
         {
-            /*
-                Todo tipo de empleado
-                ¿?
-            */ 
-            echo "Licencia 55";
-            $antiguedad=calculaAntiguedad($num);
-            $diasPermitidos;
-            if($antiguedad<1)
+            if((!empty($_POST["fec"])) && (!empty($_POST["fecf"])) && (!empty($_POST["doctor"])) && (!empty($_FILES["archivo"]) && $_FILES["archivo"]["name"][0]))
             {
-                $diasPermitidos=15;
-            }
-            else
-            {
-                if($antiguedad>1 && $antiguedad<5)
+                $fecha=$_POST["fec"];
+                $fechaf=$_POST["fecf"];
+                $doctor=$_POST["doctor"];
+                $antiguedad=calculaAntiguedad($num);
+                $diasPermitidos;
+                if($antiguedad<1)
                 {
-                    $diasPermitidos=30;
+                    $diasPermitidos=15*2;
                 }
                 else
                 {
-                    if($antiguedad>5 && $antiguedad<10)
+                    if($antiguedad>1 && $antiguedad<5)
                     {
-                        $diasPermitidos=45;
+                        $diasPermitidos=30*2;
                     }
                     else
                     {
-                        if($antiguedad>10)
+                        if($antiguedad>5 && $antiguedad<10)
                         {
-                            $diasPermitidos=60;
+                            $diasPermitidos=45*2;
+                        }
+                        else
+                        {
+                            if($antiguedad>10)
+                            {
+                                $diasPermitidos=60*2;
+                            }
                         }
                     }
+                }//fin ifs antiguedad
+
+                //Ver cuántos días ha usado esta persona en la tabla especial con la clave 55
+                $sql="SELECT duracion from especial where (trabajador_trabajador='$num' and clave_especial_clave_especial='$ClaveLicencia' and fecha_inicio like '$anio%')";
+                $diasUsados=sumaRegistrosDeConsulta($sql);
+                $diasRestantes=$diasPermitidos-$diasUsados;
+
+                $totDias=calcularDuracionEntreDosFechas(0, $fecha, $fechaf);
+                
+                //Ver que las fechas de inicio y final no sean menores a hoy
+                $today=date("Y-m-d");
+                $fecha_hoy=strtotime($today);
+                $fecha_in = strtotime($fecha);
+                $fecha_fi = strtotime($fechaf);
+                $ok=1;
+
+                if($fecha_in<=$fecha_hoy && $fecha_fi<$fecha_hoy)
+                {
+                    $ok=0;
                 }
-            }//fin ifs antiguedad
-        }//Fin CICA 62 Radio
+
+                if($ok==1)
+                {
+                    if($totDias<=$diasRestantes)
+                    {
+                        //le quedan días, ver cuántos días han pasado hasta hoy desde el inicio de esta licencia
+                        $diasAhoy= obtenDiasDeRango($fecha, $today);
+
+                        //Ver si tiene faltas en cada día desde la fecha de inicio de la licencia hasta hoy, si es así, quitarlas.
+                        $tot=count($diasAhoy);
+                        for($i=0;$i<$tot;$i++)
+                        {
+                            $diaIndiv=$diasAhoy[$i];
+                            $sql="SELECT idfalta from falta where (trabajador_trabajador='$num' and fecha='$diaIndiv')";
+                            $obtenIdFalta=retornaAlgoSiExiste($sql);
+                            if($obtenIdFalta!=0)
+                            {
+                                $borrar="DELETE from falta where idfalta='$obtenIdFalta'";
+                                hazAlgoEnBDSinRetornarAlgo($borrar);
+                            }
+                        }
+
+                        //Insertar la licencia
+                        //para que se evalue la imagen
+                        $laImagen=$_FILES["archivo"]["name"][0];
+                        $extension=$_FILES["archivo"]["type"][0];
+                        $origen=$_FILES["archivo"]["tmp_name"][0];
+                        $destino=$carpetaDestino.$laImagen;
+                        //insertar la licencia
+                        $validez=0;
+                        if($fecha_in<=$fecha_hoy && $fecha_fi>=$fecha_hoy)
+                        {
+                            $validez=1;
+                        }
+                        $sql="INSERT INTO especial VALUES (null, '$fecha', '$fechaf', '00:00:00', '00:00:00', '$validez', '$num', '$ClaveLicencia','$doctor','$totDias')";
+                        $ok= "<script> imprime('Licencia por incapacidad médica no profesional agregada correctamente.'); </script>";
+                        $error= "<script> imprime('Algo salió Mal. Reintente...'); </script>";
+                        $correcto=insertaEnBD($sql,$ok,$error,0);
+                        //correcto obtiene el último ID que se insertó
+                        $SubeImagen=analizaYCargaImagen($origen,$destino,$laImagen,$correcto,$extension,$ok,1);
+                        insertaEnBitacoraEspecial($ok,"Guardado",$fecha,$fechaf,"-","-",
+                        $ClaveLicencia,"-","$totDias","-","-","-","-",
+                        "-","-","-",$num,$correcto);
+
+                    }//fin if totdias<diasrestantes
+                    else
+                    {
+                        echo "<script> imprime('El trabajador con número $num solicita una licencia por $totDias días' +
+                        ', sin embargo, a este empleado solo le quedan $diasRestantes días de licencia este año. No es' +
+                        ' posible guardar esta licencia debido a lo anterior. Sustento: CICA 55. Observaciones.'); </script>";
+                    }
+                }
+                else
+                {
+                    echo "<script> imprime('Las fechas de inicio y de fin ya pasaron. No es posible guardar esta licencia.'); </script>";
+                }
+            }
+            else//fin if empty fechaf
+            {
+                $error="Faltan los siguientes datos:"."<br>";
+                if (empty($_POST["fec"])){$error.="La fecha de inicio de lo que está solicitando."."<br>";}
+                if (empty($_POST["fecf"])){$error.="La fecha de fin de lo que está solicitando."."<br>";} 
+                if (empty($_FILES["archivo"]["name"][0])){$error.="El archivo escaneado"."<br>";}
+                if (empty($_POST["doctor"])){$error.="El doctor que aprobó esta licencia."."<br>";}
+                echo "<script> imprime('$error'); </script>";
+            }
+
+        }//Fin CICA 55
         
         /*incapacidad médica
             revisar la incapacidad registrada en (el sistema que el ISSSTE tiene para licencias médicas, la emite cualquier doctor)
