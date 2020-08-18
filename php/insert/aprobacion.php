@@ -460,7 +460,7 @@ session_start();
                 }
                 else
                 {
-                    if($antiguedad>=15 && $antiguedad<=20)
+                    if($antiguedad>=15 && $antiguedad<20)
                     {
                         $diasPermitidos=36;
                     }
@@ -468,7 +468,7 @@ session_start();
                     {
                         if($antiguedad>20)
                         {
-                            $diasPermitidos=36;
+                            $diasPermitidos=41;
                         }
                     }
                 }
@@ -730,6 +730,59 @@ session_start();
             exit();
         }
     }//Fin de función analizaYCargaImagen
+
+    function obtenDiasDeRango($rango1, $rango2)
+    {
+        //array a retornar
+        $devolverFechas=array();
+        //insertar la primera fecha
+        $devolverFechas[0]=$rango1;
+
+        $mod_dia=$rango1;
+
+        $diaFinaldeRango=strtotime($rango2);
+
+        for($i=1;$i<100;$i++)
+        {
+            $mod_dia = strtotime($mod_dia."+ 1 days");//sumar 1 día
+            if($mod_dia==$diaFinaldeRango)
+            {
+                //guardar el último día del rango
+                $devolverFechas[$i]=$rango2;
+                $i=101;//romper el bucle
+            }
+            else
+            {
+                $devolverFechas[$i]=date("Y-m-d",$mod_dia);
+                //para que se le sume 1 día
+                $mod_dia=date("Y-m-d",$mod_dia);
+            }
+        }
+        return $devolverFechas;
+    }
+    //Fin de función obtenDiasDeRango
+
+    function retornaAlgoSiExiste($elQuery)
+    {
+        global $con;
+        /* 
+            $elQuery             : es la consulta que se desea ejecutar 
+            la función Devolverá 1 solo dato de la consulta dada, si es que existe ese datos
+            Ejemplo de uso
+            $devuelve=retornaAlgoSiExiste($sql)
+        */
+        $sql=$elQuery; $query=mysqli_query($con, $sql) or die("<br>" . "Error en función retornaAlgoSiExiste: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+        $filas=mysqli_num_rows($query);
+        if($filas==1)
+        {
+            $resul=mysqli_fetch_array($query);
+            return $resul[0];//Devolver un solo dato
+        }
+        else
+        {
+            return 0;
+        } 
+    }
 
     function insertaEnBitacoraEspecial($ok,$operacion,$f_inicio_new,$f_fin_new,$he_new,$hs_new,$clave_especial_new,$empresa_new,
     $duracion_new,$f_inicio_old,$f_fin_old,$he_old,$hs_old,$clave_especial_old,$empresa_old,$duracion_old,$num,$id)

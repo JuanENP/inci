@@ -243,6 +243,7 @@ session_start();
                         document.getElementById('div-tol-est').style.display = "none";
                         document.getElementById('div-perm-go').style.display = "none";
                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                        document.getElementById('doct').style.display = "none";
                         document.getElementById('div-tol-lac').style.display = "block";
                     }
                     else
@@ -255,6 +256,7 @@ session_start();
                             document.getElementById('div-perm-go').style.display = "none";
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                             document.getElementById('imagen').style.display = "none";
+                            document.getElementById('doct').style.display = "none";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('fec').style.display = "block";
                             document.getElementById('div-tol-est').style.display = "block";
@@ -270,6 +272,7 @@ session_start();
                                 document.getElementById('fecf').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
+                                document.getElementById('doct').style.display = "none";
                                 document.getElementById('fec').style.display = "block";
                                 document.getElementById('div-perm-go').style.display = "block";
 
@@ -300,6 +303,7 @@ session_start();
                                     document.getElementById('div-perm-go').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('imagen').style.display = "none";
+                                    document.getElementById('doct').style.display = "none";
                                     document.getElementById('fec').style.display = "block";
                                 }
                                 else
@@ -310,6 +314,7 @@ session_start();
                                         document.getElementById('div-tol-lac').style.display = "none";
                                         document.getElementById('div-tol-est').style.display = "none";
                                         document.getElementById('div-perm-go').style.display = "none";
+                                        document.getElementById('doct').style.display = "none";
                                         document.getElementById('vacio_').style.display = "none";
                                         document.getElementById('fecf').style.display = "block";
                                         document.getElementById('fec').style.display = "block";
@@ -326,6 +331,7 @@ session_start();
                                             document.getElementById('div-perm-go').style.display = "none";
                                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                             document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('doct').style.display = "none";
                                             document.getElementById('fecf').style.display = "block";
                                             document.getElementById('fec').style.display = "block";
                                             document.getElementById('imagen').style.display = "block";
@@ -340,6 +346,7 @@ session_start();
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                 document.getElementById('vacio_').style.display = "none";
+                                                document.getElementById('doct').style.display = "none";
                                                 document.getElementById('imagen').style.display = "block";
                                                 document.getElementById('fecf').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
@@ -353,10 +360,11 @@ session_start();
                                                     document.getElementById('div-tol-est').style.display = "none";
                                                     document.getElementById('div-perm-go').style.display = "none";
                                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                                    document.getElementById('imagen').style.display = "none";
-                                                    document.getElementById('vacio_').style.display = "block";
+                                                    document.getElementById('vacio_').style.display = "none";
                                                     document.getElementById('fecf').style.display = "block";
                                                     document.getElementById('fec').style.display = "block";
+                                                    document.getElementById('doct').style.display = "block";
+                                                    document.getElementById('imagen').style.display = "block";
                                                 }
                                             }
                                         }
@@ -543,6 +551,7 @@ session_start();
                         document.getElementById('vacio_').style.display = "none";
                         document.getElementById('div-tol-est').style.display = "none";
                         document.getElementById('div-perm-go').style.display = "none";
+                        document.getElementById('doct').style.display = "none";
                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
                         document.getElementById('div-tol-lac').style.display = "block";
                     }
@@ -556,6 +565,7 @@ session_start();
                             document.getElementById('div-perm-go').style.display = "none";
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                             document.getElementById('imagen').style.display = "none";
+                            document.getElementById('doct').style.display = "none";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('fec').style.display = "block";
                             document.getElementById('div-tol-est').style.display = "block";
@@ -571,6 +581,7 @@ session_start();
                                 document.getElementById('fecf').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
+                                document.getElementById('doct').style.display = "none";
                                 document.getElementById('fec').style.display = "block";
                                 document.getElementById('div-perm-go').style.display = "block";
 
@@ -601,6 +612,7 @@ session_start();
                                     document.getElementById('div-perm-go').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('imagen').style.display = "none";
+                                    document.getElementById('doct').style.display = "none";
                                     document.getElementById('fec').style.display = "block";
                                 }
                                 else
@@ -612,6 +624,7 @@ session_start();
                                         document.getElementById('div-tol-est').style.display = "none";
                                         document.getElementById('div-perm-go').style.display = "none";
                                         document.getElementById('vacio_').style.display = "none";
+                                        document.getElementById('doct').style.display = "none";
                                         document.getElementById('fecf').style.display = "block";
                                         document.getElementById('fec').style.display = "block";
                                         document.getElementById('licenciaHastaUnAnio').style.display = "block";
@@ -627,6 +640,7 @@ session_start();
                                             document.getElementById('div-perm-go').style.display = "none";
                                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                             document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('doct').style.display = "none";
                                             document.getElementById('fecf').style.display = "block";
                                             document.getElementById('fec').style.display = "block";
                                             document.getElementById('imagen').style.display = "block";
@@ -641,6 +655,7 @@ session_start();
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                 document.getElementById('vacio_').style.display = "none";
+                                                document.getElementById('doct').style.display = "none";
                                                 document.getElementById('imagen').style.display = "block";
                                                 document.getElementById('fecf').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
@@ -654,10 +669,11 @@ session_start();
                                                     document.getElementById('div-tol-est').style.display = "none";
                                                     document.getElementById('div-perm-go').style.display = "none";
                                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                                    document.getElementById('imagen').style.display = "none";
-                                                    document.getElementById('vacio_').style.display = "block";
+                                                    document.getElementById('vacio_').style.display = "none";
                                                     document.getElementById('fecf').style.display = "block";
                                                     document.getElementById('fec').style.display = "block";
+                                                    document.getElementById('doct').style.display = "block";
+                                                    document.getElementById('imagen').style.display = "block";
                                                 }
                                             }
                                         }
@@ -710,6 +726,7 @@ session_start();
                     document.getElementById('suplente').style.display = "none";
                     document.getElementById('imagen').style.display = "none";
                     document.getElementById('div-otro').style.display = "none";
+                    document.getElementById('doct').style.display = "none";
                     document.getElementById('fec').style.display = "block";
                 } 
                 else 
@@ -729,6 +746,7 @@ session_start();
                         document.getElementById('suplente').style.display = "none";
                         document.getElementById('imagen').style.display = "none";
                         document.getElementById('div-otro').style.display = "none";
+                        document.getElementById('doct').style.display = "none";
                         document.getElementById('tipo-com').style.display = "block";
                         document.getElementById('fecf').style.display = "block";
                         document.getElementById('he').style.display = "block";
@@ -758,6 +776,7 @@ session_start();
                             document.getElementById('suplente').style.display = "none";
                             document.getElementById('imagen').style.display = "none";
                             document.getElementById('div-otro').style.display = "none";
+                            document.getElementById('doct').style.display = "none";
                             document.getElementById('clavelicencia').style.display = "block";
                             document.getElementById('fecf').style.display = "block";
                             document.getElementById('fec').style.display = "block";
@@ -784,6 +803,7 @@ session_start();
                                 document.getElementById('suplente').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
                                 document.getElementById('div-otro').style.display = "none";
+                                document.getElementById('doct').style.display = "none";
                                 document.getElementById('fec').style.display = "block";
                             }
 
@@ -806,6 +826,7 @@ session_start();
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('suplente').style.display = "none";
                                     document.getElementById('div-otro').style.display = "none";
+                                    document.getElementById('doct').style.display = "none";
                                     document.getElementById('imagen').style.display = "block";
                                     document.getElementById('fecf').style.display = "block";
                                     document.getElementById('fec').style.display = "block";
@@ -828,6 +849,7 @@ session_start();
                                         document.getElementById('fecf').style.display = "none";
                                         document.getElementById('imagen').style.display = "none";
                                         document.getElementById('div-otro').style.display = "none";
+                                        document.getElementById('doct').style.display = "none";
                                         document.getElementById('suplente').style.display = "block";
                                         document.getElementById('fec').style.display = "block";
 
@@ -857,6 +879,7 @@ session_start();
                                             document.getElementById('div-curso1').style.display = "none";
                                             document.getElementById('imagen').style.display = "none";
                                             document.getElementById('div-otro').style.display = "none";
+                                            document.getElementById('doct').style.display = "none";
                                         }
                                         else
                                         {
@@ -880,6 +903,7 @@ session_start();
                                                 document.getElementById('div-curso1').style.display = "none";
                                                 document.getElementById('fecf').style.display = "none";
                                                 document.getElementById('div-otro').style.display = "none";
+                                                document.getElementById('doct').style.display = "none";
                                                 document.getElementById('imagen').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
                                             }
@@ -903,6 +927,7 @@ session_start();
                                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                     document.getElementById('suplente').style.display = "none";
                                                     document.getElementById('div-otro').style.display = "none";
+                                                    document.getElementById('doct').style.display = "none";
                                                     document.getElementById('imagen').style.display = "block";
                                                     document.getElementById('fecf').style.display = "block";
                                                     document.getElementById('div-curso1').style.display = "block";
@@ -931,6 +956,7 @@ session_start();
                                                         document.getElementById('imagen').style.display = "none";
                                                         document.getElementById('fecf').style.display = "none";
                                                         document.getElementById('fec').style.display = "none";
+                                                        document.getElementById('doct').style.display = "none";
                                                         document.getElementById('div-otro').style.display = "block";
                                                     }
                                                 }
@@ -1069,6 +1095,7 @@ session_start();
                             document.getElementById('div-tol-est').style.display = "none";
                             document.getElementById('div-perm-go').style.display = "none";
                             document.getElementById('licenciaHastaUnAnio').style.display = "none";
+                            document.getElementById('doct').style.display = "none";
                             document.getElementById('div-tol-lac').style.display = "block";
                         }
                         else
@@ -1081,6 +1108,7 @@ session_start();
                                 document.getElementById('div-perm-go').style.display = "none";
                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                 document.getElementById('imagen').style.display = "none";
+                                document.getElementById('doct').style.display = "none";
                                 document.getElementById('fecf').style.display = "block";
                                 document.getElementById('fec').style.display = "block";
                                 document.getElementById('div-tol-est').style.display = "block";
@@ -1096,6 +1124,7 @@ session_start();
                                     document.getElementById('fecf').style.display = "none";
                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                     document.getElementById('imagen').style.display = "none";
+                                    document.getElementById('doct').style.display = "none";
                                     document.getElementById('fec').style.display = "block";
                                     document.getElementById('div-perm-go').style.display = "block";
 
@@ -1126,6 +1155,7 @@ session_start();
                                         document.getElementById('div-perm-go').style.display = "none";
                                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                         document.getElementById('imagen').style.display = "none";
+                                        document.getElementById('doct').style.display = "none";
                                         document.getElementById('fec').style.display = "block";
                                     }
                                     else
@@ -1137,6 +1167,7 @@ session_start();
                                             document.getElementById('div-tol-est').style.display = "none";
                                             document.getElementById('div-perm-go').style.display = "none";
                                             document.getElementById('vacio_').style.display = "none";
+                                            document.getElementById('doct').style.display = "none";
                                             document.getElementById('fecf').style.display = "block";
                                             document.getElementById('fec').style.display = "block";
                                             document.getElementById('licenciaHastaUnAnio').style.display = "block";
@@ -1152,6 +1183,7 @@ session_start();
                                                 document.getElementById('div-perm-go').style.display = "none";
                                                 document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                 document.getElementById('vacio_').style.display = "none";
+                                                document.getElementById('doct').style.display = "none";
                                                 document.getElementById('fecf').style.display = "block";
                                                 document.getElementById('fec').style.display = "block";
                                                 document.getElementById('imagen').style.display = "block";
@@ -1166,6 +1198,7 @@ session_start();
                                                     document.getElementById('div-perm-go').style.display = "none";
                                                     document.getElementById('licenciaHastaUnAnio').style.display = "none";
                                                     document.getElementById('vacio_').style.display = "none";
+                                                    document.getElementById('doct').style.display = "none";
                                                     document.getElementById('imagen').style.display = "block";
                                                     document.getElementById('fecf').style.display = "block";
                                                     document.getElementById('fec').style.display = "block";
@@ -1179,10 +1212,11 @@ session_start();
                                                         document.getElementById('div-tol-est').style.display = "none";
                                                         document.getElementById('div-perm-go').style.display = "none";
                                                         document.getElementById('licenciaHastaUnAnio').style.display = "none";
-                                                        document.getElementById('imagen').style.display = "none";
-                                                        document.getElementById('vacio_').style.display = "block";
+                                                        document.getElementById('vacio_').style.display = "none";
                                                         document.getElementById('fecf').style.display = "block";
                                                         document.getElementById('fec').style.display = "block";
+                                                        document.getElementById('doct').style.display = "block";
+                                                        document.getElementById('imagen').style.display = "block";
                                                     }
                                                 }
                                             }
@@ -1417,8 +1451,7 @@ session_start();
                                                     <option value="" disabled selected>Elija:</option>
                                                     <?php 
                                                         $sql="SELECT * from clave_especial where 
-                                                        (descripcion like 'LICENCIA%' and idclave_especial!='50') 
-                                                        or descripcion like 'VACACIONES POR EM%'
+                                                        (descripcion like 'LICENCIA%' and idclave_especial!='50')
                                                         or idclave_especial='54' 
                                                         or idclave_especial='55'
                                                         or descripcion like 'PERMISOS CON GOCE DE SUELDO POR ANTI%'
@@ -1573,6 +1606,10 @@ session_start();
                                                 </select>
                                             </div>
 
+                                            <div class="form-group col-lg-3" id="doct">
+                                                <span id="">Doctor:</span>
+                                                <input type="text" name="doctor" id="" class="form-control" autocomplete="off" placeholder="El que otorgó la licencia">
+                                            </div>
                                             <!--
                                             <div class="form-group col-lg-3" id="div-lic-sg">
                                                 <span id="">Opción</span> <br>
