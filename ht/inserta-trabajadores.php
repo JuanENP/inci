@@ -149,7 +149,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
     //Validar el tiempo de antiguedad del trabajador si es menor de 6 meses y 1 día no pude ser de base, comisionado foraneo o confianza
     if($tipo == 1 || $tipo == 2 || $tipo == 4 )
     {
-        $f_alta= new DateTime($fecha_alta);
+        $f_alta=new DateTime($fecha_alta);
         $fHoy= new DateTime( $fecha_hoy);
         $antiguedad= $f_alta->diff($fHoy);
         $totDiasTrabajando=$antiguedad->format('%a');
@@ -213,6 +213,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
     {
         $diasSexta=$_POST['diaS'];
         $existeSexta=1;
+        $t_dias_acceso=0;//Si tiene sexta debará guardarse 0 en el total de dias de acceso
         $semana2 = array(0,0,0,0,0,0,0,0);
         $num2=count($diasSexta);
         for($n=0;$n<$num2;$n++)
@@ -227,7 +228,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
             if($diasSexta[$n]=="dias_festivos"){$semana2[7]=1;}
         }
     }
-
+    $t_dias_acceso=-1; //Si no tiene sexta deberá guardarse -1 en total de dias de acceso
     //Aqui consulto si existe ese numero de trabajador 
     $ejecu="select * from trabajador where numero_trabajador = '$numero'";
     $codigo=mysqli_query($con,$ejecu);
@@ -339,57 +340,57 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
             if($tipo==4)//Si el trabajador es comisionado foráneo
             { 
                 mysqli_autocommit($con, FALSE);  
-                if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero',$nip)")))
+                if(!(mysqli_query($con,"INSERT INTO trabajador (numero_trabajador, nombre, apellido_paterno, apellido_materno, depto_depto, categoria_categoria, tipo_tipo, genero, nip) VALUES ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero',$nip);")))
                 {
                     $er1=mysqli_errno($con);
                     $er2=mysqli_error($con);
-                    $línea='331';
+                    $línea='342';
                     error($er1,$er2,$línea);
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
                 }
                 else
                 { 
-                    if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero',-1)")))
+                    if(!(mysqli_query($con,"INSERT INTO acceso (lunes, martes, miercoles, jueves, viernes, sabado, domingo, dia_festivo, turno_turno, trabajador_trabajador, t_dias) VALUES($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],'$turno','$numero',$t_dias_acceso);")))
                     {
                         $er1=mysqli_errno($con);
                         $er2=mysqli_error($con);
-                        $línea='342';
+                        $línea='353';
                         error($er1,$er2,$línea);
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE); 
                     }
                     else
-                    {   $idacceso=mysqli_insert_id($con);//Sirve para saber el ultimo id guardado en la tabla acceso
-                        //Nota: la validez de cumple_ono será siempre 0 porque siempre está valido el cumpleaños del empleado
+                    {  
+                        $idacceso=mysqli_insert_id($con);//Sirve para saber el ultimo id guardado en la tabla acceso
                         //El 0 indica que el cumpleaños u onomástico no ha sido tomado
-                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',$validezCumpleOno,'$numero','0')")))
+                        if(!(mysqli_query($con,"INSERT INTO cumple_ono (fecha_cumple, fecha_ono, validez, trabajador_trabajador, validez_tomado) VALUES ('$cumple','$ono',$validezCumpleOno,'$numero',0);")))
                         { 
                             $er1=mysqli_errno($con);
                             $er2=mysqli_error($con);
-                            $línea='354';
+                            $línea='366';
                             error($er1,$er2,$línea);
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE); 
                         }
                         else
                         {
-                            if(!(mysqli_query($con,"Insert into tiempo_servicio values ('','$fecha_alta','$numero')")))
+                            if(!(mysqli_query($con,"INSERT INTO tiempo_servicio (fecha_alta, trabajador_trabajador) VALUES ('$fecha_alta','$numero');")))
                             {
                                 $er1=mysqli_errno($con);
                                 $er2=mysqli_error($con);
-                                $línea='365';
+                                $línea='377';
                                 error($er1,$er2,$línea);
                                 mysqli_rollback($con);
                                 mysqli_autocommit($con, TRUE); 
                             }
                             else
-                            {
-                                if(!(mysqli_query($con,"Insert into especial values ('','$f_ini','$f_fin','','',0,'$numero','CS','$empresa',$totDias)")))
+                            {   
+                                if(!(mysqli_query($con,"INSERT INTO especial (fecha_inicio, fecha_fin, validez, trabajador_trabajador, clave_especial_clave_especial, empresa, duracion) VALUES ('$f_ini','$f_fin',0,'$numero','CS','$empresa',$totDias);")))
                                 {
                                     $er1=mysqli_errno($con);
                                     $er2=mysqli_error($con);
-                                    $línea='376';
+                                    $línea='388';
                                     error($er1,$er2,$línea);
                                     mysqli_rollback($con);
                                     mysqli_autocommit($con, TRUE); 
@@ -397,10 +398,9 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                 else
                                 {
                                     // OBTENER LA DESCRIPCION DEL TIPO DE EMPLEADO PARA VERLO EN LA BITACORA
-                                    $descripcion=describeTipoTrabajador($numero,$tipo);
-                                    $descripcion_tipo=$descripcion;
+                                    $descripcion_tipo=describeTipoTrabajador($numero,$tipo);
                                     //Nombre del equipo
-                                    $nombre_host= gethostname();
+                                    $nombre_host=gethostname();
                                     //GUARDAR EN LA BITACORA DE TRABAJADOR
                                     $guardadoBitacoraTrabajador=bitacoraTrabajador($numero, $nombre, $a_pat, $a_mat, $depto, $cat, $descripcion_tipo, $genero, $nombre_host);
                                     if($guardadoBitacoraTrabajador == true)
@@ -410,7 +410,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                         {
                                             $er1=mysqli_errno($con);
                                             $er2=mysqli_error($con);
-                                            $línea='399';
+                                            $línea='408';
                                             error($er1,$er2,$línea);
                                             mysqli_rollback($con);
                                             mysqli_autocommit($con, TRUE); 
@@ -421,7 +421,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                             {
                                                 $er1=mysqli_errno($con);
                                                 $er2=mysqli_error($con);
-                                                $línea='410';
+                                                $línea='419';
                                                 error($er1,$er2,$línea);
                                                 mysqli_rollback($con);
                                                 mysqli_autocommit($con, TRUE); 
@@ -429,13 +429,13 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                             else
                                             { 
                                                 if($existeSexta==1)
-                                                {
+                                                {  
                                                     //GUARDAR LA SEXTA
-                                                    if(!(mysqli_query($con,"Insert into sexta values ('',$semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],$semana2[7],0,0,'$turno','$numero')")))
+                                                    if(!(mysqli_query($con,"INSERT INTO sexta (lunes, martes, miercoles, jueves, viernes, sabado, domingo, dia_festivo, validez, t_dias, turno_turno, trabajador_trabajador) VALUES ($semana2[0],$semana2[1],$semana2[2],$semana2[3],$semana2[4],$semana2[5],$semana2[6],0,0,0,'$turno','$numero');")))
                                                     {
                                                         $er1=mysqli_errno($con);
                                                         $er2=mysqli_error($con);
-                                                        $línea='424';
+                                                        $línea='433';
                                                         error($er1,$er2,$línea);
                                                         mysqli_rollback($con);
                                                         mysqli_autocommit($con, TRUE); 
@@ -447,7 +447,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                         {
                                                             $er1=mysqli_errno($con);
                                                             $er2=mysqli_error($con);
-                                                            $línea='436';
+                                                            $línea='445';
                                                             error($er1,$er2,$línea);
                                                             mysqli_rollback($con);
                                                             mysqli_autocommit($con, TRUE); 
@@ -459,7 +459,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                             {
                                                                 $er1=mysqli_errno($con);
                                                                 $er2=mysqli_error($con);
-                                                                $línea='448';
+                                                                $línea='457';
                                                                 error($er1,$er2,$línea);
                                                                 mysqli_rollback($con);
                                                                 mysqli_autocommit($con, TRUE); 
@@ -470,7 +470,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                                 {
                                                                     $er1=mysqli_errno($con);
                                                                     $er2=mysqli_error($con);
-                                                                    $línea='459';
+                                                                    $línea='468';
                                                                     error($er1,$er2,$línea);
                                                                     mysqli_rollback($con);
                                                                     mysqli_autocommit($con, TRUE); 
@@ -480,7 +480,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                                     $res=insertaUsuario($numero);
                                                                     if($res==true)
                                                                     {
-                                                                        $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                                        $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                                         mysqli_commit($con);
                                                                         mysqli_autocommit($con, TRUE);
                                                                         $tipo='comisionado foráneo';
@@ -523,7 +523,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                                 if($t_opc=="si" && $siguardar=="si")
                                                                 {
                                                                     $guardado=insertaTurnoOpcional($numero);
-                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                                     mysqli_commit($con);
                                                                     mysqli_autocommit($con, TRUE);
                                                                     $tipo='comisionado foráneo';
@@ -531,7 +531,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                                 }
                                                                 else
                                                                 {
-                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                                     if( $siguardarEnAF=="si")
                                                                     {   $guardado=insertaEnAF($idacceso);
                                                                         mysqli_commit($con);
@@ -561,24 +561,25 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                 }
             }//fin-if comisionado foráneo
             else
-            {   mysqli_autocommit($con, FALSE);
+            {   
+                mysqli_autocommit($con, FALSE);
                 //Si el empleado es de base, confianza o eventual, guardar los siguientes datos:
-                if(!(mysqli_query($con,"Insert into trabajador values ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero',$nip)")))
+                if(!(mysqli_query($con,"INSERT INTO trabajador (numero_trabajador, nombre, apellido_paterno, apellido_materno, depto_depto, categoria_categoria, tipo_tipo, genero, nip) VALUES ('$numero','$nombre','$a_pat','$a_mat','$depto','$cat',$tipo,'$genero',$nip)")))
                 {
                     $er1=mysqli_errno($con);
                     $er2=mysqli_error($con);
-                    $línea='530';
+                    $línea='567';
                     error($er1,$er2,$línea);
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE);
                 }
                 else
                 { 
-                    if(!(mysqli_query($con,"Insert into acceso values ('','$semana[0]','$semana[1]','$semana[2]','$semana[3]','$semana[4]','$semana[5]',$semana[6],$semana[7],'$turno','$numero',-1)")))
+                    if(!(mysqli_query($con,"INSERT INTO acceso (lunes, martes, miercoles, jueves, viernes, sabado, domingo, dia_festivo, turno_turno, trabajador_trabajador, t_dias) VALUES($semana[0],$semana[1],$semana[2],$semana[3],$semana[4],$semana[5],$semana[6],$semana[7],'$turno','$numero',$t_dias_acceso);")))
                     {
                         $er1=mysqli_errno($con);
                         $er2=mysqli_error($con);
-                        $línea='541';
+                        $línea='578';
                         error($er1,$er2,$línea);
                         mysqli_rollback($con);
                         mysqli_autocommit($con, TRUE);
@@ -586,18 +587,18 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                     else
                     {
                         $idacceso=mysqli_insert_id($con);
-                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',1,'$numero')")))
+                        if(!(mysqli_query($con,"INSERT INTO cumple_ono (fecha_cumple, fecha_ono, validez, trabajador_trabajador, validez_tomado) VALUES ('$cumple','$ono',$validezCumpleOno,'$numero',0);")))
                         {
                             $er1=mysqli_errno($con);
                             $er2=mysqli_error($con);
-                            $línea='552';
+                            $línea='590';
                             error($er1,$er2,$línea);
                             mysqli_rollback($con);
                             mysqli_autocommit($con, TRUE);
                         }
                         else
                         {
-                            if(!(mysqli_query($con,"Insert into tiempo_servicio values ('','$fecha_alta','$numero')")))
+                            if(!(mysqli_query($con,"INSERT INTO tiempo_servicio (fecha_alta, trabajador_trabajador) VALUES ('$fecha_alta','$numero');")))
                             {
                                 $er1=mysqli_errno($con);
                                 $er2=mysqli_error($con);
@@ -684,7 +685,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                                 $res=insertaUsuario($numero);
                                                                 if($res==true)
                                                                 {
-                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                                    $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                                     mysqli_commit($con);
                                                                     mysqli_autocommit($con, TRUE);
                                                                     $tipo='';
@@ -722,7 +723,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                         if($t_opc=="si" && $siguardar=="si")
                                                         {
                                                             $guardado=insertaTurnoOpcional($numero);
-                                                            $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                            $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                             mysqli_commit($con);
                                                             mysqli_autocommit($con, TRUE);
                                                             $tipo='';
@@ -730,7 +731,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                                                         }
                                                         else
                                                         {
-                                                            $correcto=insertaPeriodoVacaciones($numero,$depto);
+                                                            $correcto=insertaPeriodoVacaciones($numero,$depto,$cat);
                                                             if( $siguardarEnAF=="si")
                                                             {   
                                                                 $guardado=insertaEnAF($idacceso);
@@ -785,7 +786,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
         } 
     }
 
-    function insertaPeriodoVacaciones($numero,$depto)
+    function insertaPeriodoVacaciones($numero,$depto,$categoria)
     {
         global $con;
         $p1=0;
@@ -810,19 +811,21 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
             $p2=1; 
         }
                 
-        if($depto=="09211" || $depto=="09200" || $depto=="51521")
+        if($depto=="09211" || $depto=="09200" || $depto=="51521" || $categoria=="M02006")
         {
             /*  Departamentos de radio
                 '09200', 'RADIOLOGIA'
                 '51521', 'RADIOLOGIA E IMAGEN'
                 '09211', 'RADIOTERAPIA'
+                Categorias de radio
+                'M02006', 'TECNICO RADIOLOGO O EN RADIOTERAPIA'
             */
             $sql="INSERT INTO vacaciones_radio (val_p1, val_p2, val_p3, val_p4, trabajador_trabajador) VALUES ($p1, $p2, '0', '0', '$numero');"; 
             if(!(mysqli_query($con,$sql)))
             {
                 $er1=mysqli_errno($con);
                 $er2=mysqli_error($con);
-                $línea='838';
+                $línea='823';
                 error($er1,$er2,$línea);
                 mysqli_rollback($con);
                 mysqli_autocommit($con, TRUE); 

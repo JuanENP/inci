@@ -126,11 +126,11 @@ session_start();
                         </a>
                     </div>
                     <div class="login-form">
-                        <form name="formulario" method="post" action="../php/update/modificarPassPrimeraVez.php">
+                        <form name="formulario" method="post" novalidate action="../php/update/modificarPassPrimeraVez.php">
                             <div id="mail"> 
                                 <div class="form-group">
                                     <label>Ingrese su dirección de correo electrónico </label>
-                                    <input name="mail"  type="email" class="form-control" autofocus/>
+                                    <input name="mail"  type="email" class="form-control"/>
                                 
                                 </div>
                             </div>

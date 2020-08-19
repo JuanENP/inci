@@ -229,17 +229,20 @@
             return false;
         }
     }
-
+    
     function insertaUsuario($nombreUsuario)
-    {
+    {   
+        //Sirve para registar un usuario trabajador
         global $con;
         $contrasenaUsuario='9999';
-        $sql="CREATE USER '$nombreUsuario'@'localhost' IDENTIFIED BY '$contrasenaUsuario';"; 
-        $sql2="GRANT ALL PRIVILEGES ON *.* TO '$nombreUsuario'@'localhost' WITH GRANT OPTION;"; 
-        //$sqlFlush="FLUSH PRIVILEGES;";//despues del 2 
-
-        mysqli_autocommit($con, FALSE);//quitar el autocommit hasta que todo haya resultado correcto
-        if(!(mysqli_query($con,$sql)))
+        $sql1="CREATE USER '$nombreUsuario'@'localhost' IDENTIFIED BY '$contrasenaUsuario';"; 
+        $sql2="GRANT INSERT, UPDATE ON checada6.mail TO '$nombreUsuario'@'localhost';"; 
+        $sql3="GRANT SELECT ON checada6.* TO '$nombreUsuario'@'localhost';"; 
+        $sql4="GRANT CREATE USER ON *.* TO  '$nombreUsuario'@'localhost';"; 
+        $sql5="GRANT ALL PRIVILEGES ON mysql.user TO '$nombreUsuario'@'localhost';"; 
+        $sqlFlush="FLUSH PRIVILEGES;";
+        // mysqli_autocommit($con, FALSE);//quitar el autocommit hasta que todo haya resultado correcto
+        if(!(mysqli_query($con,$sql1)))
         {
             $error="";
             $er1=mysqli_errno($con);
@@ -265,38 +268,56 @@
         }
         else
         {
-           /* if(!(mysqli_query($con,$sqlFlush)))
+            if(!(mysqli_query($con,$sql2)))
             {
-                $error="error in flush 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                $error="error in grant 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
                 echo "<script> error('$error'); </script>";
                 mysqli_rollback($con);
-                mysqli_autocommit($con, TRUE);
-                return false;
+                mysqli_autocommit($con, TRUE); 
             }
             else
-            */
             {
-                if(!(mysqli_query($con,$sql2)))
+                if(!(mysqli_query($con,$sql3)))
                 {
-                    $error="error in grant 1 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                    $error="error in grant 2 ".mysqli_errno($con) . ": " . mysqli_error($con);
                     echo "<script> error('$error'); </script>";
                     mysqli_rollback($con);
                     mysqli_autocommit($con, TRUE); 
                 }
                 else
                 {
-                   /* if(!(mysqli_query($con,$sqlFlush)))
+                    if(!(mysqli_query($con,$sql3)))
                     {
-                        $error="error in flush 2 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                        $error="error in grant 3 ".mysqli_errno($con) . ": " . mysqli_error($con);
                         echo "<script> error('$error'); </script>";
                         mysqli_rollback($con);
-                        mysqli_autocommit($con, TRUE);
+                        mysqli_autocommit($con, TRUE); 
                     }
-                    else*/
-                    {
-                        //mysqli_commit($con);
-                        //mysqli_autocommit($con, TRUE);
-                        return true;
+                    else
+                    {  
+                        if(!(mysqli_query($con,$sql4)))
+                        {
+                            $error="error in grant 4 ".mysqli_errno($con) . ": " . mysqli_error($con);
+                            echo "<script> error('$error'); </script>";
+                            mysqli_rollback($con);
+                            mysqli_autocommit($con, TRUE); 
+                        }
+                        else
+                        { 
+                            if(!(mysqli_query($con,$sqlFlush)))
+                            {
+                                $error="error in flush".mysqli_errno($con) . ": " . mysqli_error($con);
+                                echo "<script> error('$error'); </script>";
+                                mysqli_rollback($con);
+                                mysqli_autocommit($con, TRUE);
+                            }
+                            else
+                            {
+                               /* mysqli_commit($con);
+                                mysqli_autocommit($con, TRUE);*/
+                                return true;
+                            }
+                        }
                     }
                 }
             }
