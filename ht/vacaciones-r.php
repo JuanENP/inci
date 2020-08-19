@@ -185,7 +185,7 @@ session_start();
                 <div class="col-sm-4">
                     <div class="page-header float-left">
                         <div class="page-title">
-                            <h1>Vacacaciones normales</h1>
+                            <h1>Vacacaciones por Radio</h1>
                         </div>
                     </div>
                 </div>
@@ -194,14 +194,14 @@ session_start();
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a href="#">Vacaciones</a></li>
-                                <li class="active">Normales</li>
+                                <li class="active">Radio</li>
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <form id="f1" method="POST" action="../php/insert/vac.php" enctype="multipart/form-data">
+            <form id="f1" method="POST" action="../php/insert/vacr.php" enctype="multipart/form-data">
                 <div class="content mt-3">
                     <div class="animated fadeIn">
 
@@ -216,13 +216,12 @@ session_start();
                                     
                                     <div class="card-body card-block">
                                         <div class="form-1-2">
-                                            <input type="radio" name="opcion" value="lote" id="lot" onclick="oculta(0)"> <label for="lot">Insertar por lote a través de excel (Solo 1 vez por año)</label>
+                                            <input type="radio" name="opcion" value="lote" id="lot" onclick="oculta(0)"> <label for="lot">Insertar por lote a través de excel</label>
                                         </div> 
                                         <div class="form-1-2">
                                             <input type="radio" name="opcion" value="indiv" id="ind" checked onclick="oculta(1)"> <label for="ind">Insertar días de vacaciones a un trabajador en específico</label>  
                                         </div> 
                                     </div> 
-                                        
                                 </div>
                             </div>
                         </div>
