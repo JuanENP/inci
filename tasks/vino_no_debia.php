@@ -8,15 +8,9 @@
    $diaactual=$dias[date("w")];//guardar el día actual para su posterior uso
    $f_hoy=date("Y-m-d");//guardar la fecha actual
 
-
-   //Pendiente saber si se guardará la posicion
    $nombre="biometric";
    $contra="5_w**/pQxcmk.";
    require("../Acceso/global.php");
-   $sql="SELECT Valor FROM _posicion where idposicion=4;";
-   $query= mysqli_query($con, $sql);
-   $resul=mysqli_fetch_array($query);
-   $pos=$resul[0]; 
 
   //Consultar si vino algún trabajador diferente que no esté registrado en la tabla vienen hoy
    function vino_no_debia()
@@ -45,7 +39,7 @@
                 {   $periodo=$resultadoVacaciones[1];
                     if($periodo==2)
                     {
-                        //mandar una alerta de que será necesario cambiar las fechas pendientes de las vacaciones de los trabajadores
+                        //Mandar una alerta de que será necesario cambiar las fechas pendientes de las vacaciones de los trabajadores
                     }
                 }
                 //Si el trabajador vino porque en acceso o sexta debía venir pero hoy su cumpleaños u onomastico
@@ -87,7 +81,7 @@
         global $f_hoy;
         global $con;
         $sql1="select * from cumple_ono
-        where (fecha_cumple='$f_hoy' and validez=0 ) or (fecha_ono= '$f_hoy'and validez=1)
+        where (fecha_cumple='$f_hoy' and validez=0) or (fecha_ono= '$f_hoy'and validez=1)
         and trabajador_trabajador='$numEmpleado';";
         $query1= mysqli_query($con, $sql1);
         $filas=mysqli_num_rows($query1);
@@ -100,6 +94,7 @@
             return null;
         }
     }
+    
     function debiaVenirEnAcceso($numEmpleado)
     {
         // Seleccionar si el trabajador debe tener vacaciones el día de hoy y tomado = 0, y de que periodo es 

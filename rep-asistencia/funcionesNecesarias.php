@@ -923,9 +923,7 @@
 				$conta++;
 			}
 		}
-	}
-
-	
+	}	
 
 	function vienenxfestivo() 
 	{
