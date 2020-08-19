@@ -15,13 +15,15 @@ date_default_timezone_set('America/Mexico_City');
         header("Location: ../index.php");
         die();
     }
-    $sql="select idquincena from quincena where (validez=1);";
+    $sql="select * from quincena where validez=1;";
     $query= mysqli_query($con, $sql);
     $filas=mysqli_num_rows($query);
     if($filas==1)
     {
         $resul=mysqli_fetch_array($query);
         $idactual= $resul[0];
+        $f_inicio= $resul[1];
+        $f_final= $resul[2];
     }
     else
     {
@@ -86,8 +88,26 @@ date_default_timezone_set('America/Mexico_City');
                         } 
                     }
                 }
-            }//Fin function
+            }
 
+            //REPORTE UNICO DE COMISIONADOS FORANEOS
+            function ocultaRepComi(x) 
+            {
+                if (x == 1) 
+                {
+                    document.getElementById('quincena-comisionados').style.display = "block";
+                    document.getElementById('numero-comisionados').style.display = "none";
+                } 
+                else 
+                { 
+                    if (x == 2) 
+                    {   
+                        document.getElementById('quincena-comisionados').style.display = "none";//no ver
+                        document.getElementById('numero-comisionados').style.display = "block";
+                    } 
+                }
+            }
+            
             //COMISIONES
             function ocultacomision(x)
             {
@@ -147,7 +167,7 @@ date_default_timezone_set('America/Mexico_City');
                     document.getElementById('boton-descargar').style.display = "block";//ver        
                 }
             }
-            //COMISIONES
+            //FIN COMISIONES
 
             function ocultavinieron(x)
             {
@@ -235,6 +255,9 @@ date_default_timezone_set('America/Mexico_City');
 
             function ocultaSubElementos()
             {
+                //Reporte único de comisionados foráneos
+                document.getElementById('quincena-comisionados').style.display = "none";
+                document.getElementById('numero-comisionados').style.display = "none";
                 //Quienes tienen cumpleaños u onomasticos
                 document.getElementById('rangos-guardias').style.display = "none";// no ver 
                 document.getElementById('numero-guardias').style.display = "none";//    
@@ -264,6 +287,8 @@ date_default_timezone_set('America/Mexico_City');
                 {
                     $('input:hidden[name=id]').val("unico");
                     ocultaSubElementos();
+                    document.getElementById('estimulos').style.display = "none";
+                    document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                     document.getElementById('asistencia').style.display = "none";/*no ver div*/
                     document.getElementById('vacaciones').style.display = "none";/*no ver div*/
                     document.getElementById('comisionados').style.display = "none";/*No ver div*/
@@ -284,6 +309,8 @@ date_default_timezone_set('America/Mexico_City');
                     {   
                         $('input:hidden[name=id]').val("vacaciones");
                         ocultaSubElementos();
+                        document.getElementById('estimulos').style.display = "none";
+                        document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                         document.getElementById('unico').style.display = "none";/*No ver div*/   
                         document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
                         document.getElementById('comisionados').style.display = "none";/*No ver div*/     
@@ -323,6 +350,8 @@ date_default_timezone_set('America/Mexico_City');
                         if(valor=="ASISTENCIA")
                         {   $('input:hidden[name=id]').val("asistencia");
                                 ocultaSubElementos();
+                                document.getElementById('estimulos').style.display = "none";
+                                document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                 document.getElementById('unico').style.display = "none";/*No ver div*/  
                                 document.getElementById('vacaciones').style.display = "none";/*No ver div*/
                                 document.getElementById('comisionados').style.display = "none";/*No ver div*/ 
@@ -342,30 +371,42 @@ date_default_timezone_set('America/Mexico_City');
                         }
                         else
                         {
-                                if(valor=="COMISIONADOS")
-                                {   $('input:hidden[name=id]').val("comisionados");
-                                    ocultaSubElementos();
-                                    document.getElementById('unico').style.display = "none";/*No ver div*/  
-                                    document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
-                                    document.getElementById('asistencia').style.display = "none";  
-                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
-                                    document.getElementById('boton-descargar').style.display = "none";/*No ver div*/
-                                    document.getElementById('vinieron').style.display = "none";
-                                    document.getElementById('faltaron').style.display = "none";
-                                    document.getElementById('cumpleOno').style.display = "none";
-                                    document.getElementById('guardias').style.display = "none"; 
-                                    document.getElementById('sextas').style.display = "none";
-                                    document.getElementById('licencias').style.display = "none";
-                                    document.getElementById('pases').style.display = "none";
-                                    document.getElementById('comisionados').style.display = "block";/*Ver div*/ 
-                                    
-                                    var rad = $("input[name='opc']:checked").val();
-                                    //Sirve para que las subopciones muestren  el boton de descargar
-                                    var subrad = $("input[name='sub-opc']:checked").val();
-                                    
-                                    if(rad=="fora")
+                            if(valor=="COMISIONADOS")
+                            {   $('input:hidden[name=id]').val("comisionados");
+                                ocultaSubElementos();
+                                document.getElementById('estimulos').style.display = "none";
+                                document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
+                                document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                document.getElementById('asistencia').style.display = "none";  
+                                document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                document.getElementById('boton-descargar').style.display = "none";/*No ver div*/
+                                document.getElementById('vinieron').style.display = "none";
+                                document.getElementById('faltaron').style.display = "none";
+                                document.getElementById('cumpleOno').style.display = "none";
+                                document.getElementById('guardias').style.display = "none"; 
+                                document.getElementById('sextas').style.display = "none";
+                                document.getElementById('licencias').style.display = "none";
+                                document.getElementById('pases').style.display = "none";
+                                document.getElementById('comisionados').style.display = "block";/*Ver div*/ 
+                                
+                                var rad = $("input[name='opc']:checked").val();
+                                //Sirve para que las subopciones muestren  el boton de descargar
+                                var subrad = $("input[name='sub-opc']:checked").val();
+                                
+                                if(rad=="fora")
+                                {
+                                    ocultacomision(1);
+                                    if(subrad=="activas" || subrad=="inactivas")
                                     {
-                                        ocultacomision(1);
+                                        ocultadescargar(1);
+                                    }
+                                }
+                                else
+                                {
+                                    if(rad=="int")
+                                    {
+                                        ocultacomision(2);
                                         if(subrad=="activas" || subrad=="inactivas")
                                         {
                                             ocultadescargar(1);
@@ -373,9 +414,9 @@ date_default_timezone_set('America/Mexico_City');
                                     }
                                     else
                                     {
-                                        if(rad=="int")
+                                        if(rad=="ext")
                                         {
-                                            ocultacomision(2);
+                                            ocultacomision(3);
                                             if(subrad=="activas" || subrad=="inactivas")
                                             {
                                                 ocultadescargar(1);
@@ -383,60 +424,92 @@ date_default_timezone_set('America/Mexico_City');
                                         }
                                         else
                                         {
-                                            if(rad=="ext")
+                                            if(rad=="vence")
                                             {
-                                                ocultacomision(3);
-                                                if(subrad=="activas" || subrad=="inactivas")
-                                                {
-                                                    ocultadescargar(1);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if(rad=="vence")
-                                                {
-                                                    ocultacomision(4);
-                                                }
+                                                ocultacomision(4);
                                             }
                                         }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                
+                                if(valor=="VINIERON")
+                                {   $('input:hidden[name=id]').val("vinieron");//id
+                                    ocultaSubElementos();
+                                    document.getElementById('estimulos').style.display = "none";
+                                    document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
+                                    document.getElementById('unico').style.display = "none";/*No ver div*/  
+                                    document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                    document.getElementById('asistencia').style.display = "none";  
+                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
+                                    document.getElementById('comisionados').style.display = "none";
+                                    document.getElementById('faltaron').style.display = "none";
+                                    document.getElementById('cumpleOno').style.display = "none";
+                                    document.getElementById('guardias').style.display = "none"; 
+                                    document.getElementById('sextas').style.display = "none";
+                                    document.getElementById('licencias').style.display = "none";
+                                    document.getElementById('pases').style.display = "none";
+                                    document.getElementById('vinieron').style.display = "block";
+                                    document.getElementById('boton-descargar').style.display = "block";/*ver div*/
+                                    
+                                    var rad = $("input[name='opcion-v']:checked").val();
+                                    if(rad=="rango-v")
+                                    {
+                                        ocultavinieron(1);
+                                    }
+                                    else
+                                    {
+                                        if(rad=="numero-v")
+                                        {
+                                            ocultavinieron(2);
+                                        }
+                                        else
+                                        {    if(rad=="quincena-v")
+                                            {
+                                                ocultavinieron(3);
+                                            }
+                                            
+                                        }
+                                    }
+                                }//fin if
                                 else
                                 {
-                                    
-                                    if(valor=="VINIERON")
-                                    {   $('input:hidden[name=id]').val("vinieron");//id
+                                    if(valor=="FALTARON")
+                                    {  
+                                        $('input:hidden[name=id]').val("faltaron");//id
                                         ocultaSubElementos();
-                                    
+                                        document.getElementById('estimulos').style.display = "none";
+                                        document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                         document.getElementById('unico').style.display = "none";/*No ver div*/  
                                         document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
                                         document.getElementById('asistencia').style.display = "none";  
                                         document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
                                         document.getElementById('comisionados').style.display = "none";
-                                        document.getElementById('faltaron').style.display = "none";
-                                        document.getElementById('cumpleOno').style.display = "none";
-                                        document.getElementById('guardias').style.display = "none"; 
+                                        document.getElementById('vinieron').style.display = "none";
+                                        document.getElementById('cumpleOno').style.display = "none"; 
+                                        document.getElementById('guardias').style.display = "none";
                                         document.getElementById('sextas').style.display = "none";
                                         document.getElementById('licencias').style.display = "none";
                                         document.getElementById('pases').style.display = "none";
-                                        document.getElementById('vinieron').style.display = "block";
+                                        document.getElementById('faltaron').style.display = "block";/*ver div*/
                                         document.getElementById('boton-descargar').style.display = "block";/*ver div*/
-                                        
-                                        var rad = $("input[name='opcion-v']:checked").val();
-                                        if(rad=="rango-v")
+                                        var rad = $("input[name='opcion-f']:checked").val();
+                                        if(rad=="rango-f")
                                         {
-                                            ocultavinieron(1);
+                                            ocultafaltaron(1);
                                         }
                                         else
                                         {
-                                            if(rad=="numero-v")
+                                            if(rad=="numero-f")
                                             {
-                                                ocultavinieron(2);
+                                                ocultafaltaron(2);
                                             }
                                             else
-                                            {    if(rad=="quincena-v")
+                                            {   if(rad=="quincena-f")
                                                 {
-                                                    ocultavinieron(3);
+                                                    ocultafaltaron(3);
                                                 }
                                                 
                                             }
@@ -444,113 +517,100 @@ date_default_timezone_set('America/Mexico_City');
                                     }//fin if
                                     else
                                     {
-                                        if(valor=="FALTARON")
-                                        {  
-                                            $('input:hidden[name=id]').val("faltaron");//id
+                                        if(valor=="CUMPLEONO")
+                                        {   
+                                            $('input:hidden[name=id]').val("cumpleOno");
                                             ocultaSubElementos();
-                                        
+                                            document.getElementById('estimulos').style.display = "none";
+                                            document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                             document.getElementById('unico').style.display = "none";/*No ver div*/  
-                                            document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
-                                            document.getElementById('asistencia').style.display = "none";  
+                                            document.getElementById('vacaciones').style.display = "none";/*No ver div*/
+                                            document.getElementById('comisionados').style.display = "none";/*No ver div*/ 
                                             document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
-                                            document.getElementById('comisionados').style.display = "none";
-                                            document.getElementById('vinieron').style.display = "none";
-                                            document.getElementById('cumpleOno').style.display = "none"; 
+                                            document.getElementById('vinieron').style.display = "none";  
+                                            document.getElementById('faltaron').style.display = "none";
+                                            // document.getElementById('rangos2').style.display = "none";/*No ver div*/  
+                                            // document.getElementById('fecha').style.display = "none";/*No ver div*/ 
+                                            document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
                                             document.getElementById('guardias').style.display = "none";
                                             document.getElementById('sextas').style.display = "none";
                                             document.getElementById('licencias').style.display = "none";
                                             document.getElementById('pases').style.display = "none";
-                                            document.getElementById('faltaron').style.display = "block";/*ver div*/
-                                            document.getElementById('boton-descargar').style.display = "block";/*ver div*/
-                                            var rad = $("input[name='opcion-f']:checked").val();
-                                            if(rad=="rango-f")
-                                            {
-                                                ocultafaltaron(1);
-                                            }
-                                            else
-                                            {
-                                                if(rad=="numero-f")
-                                                {
-                                                    ocultafaltaron(2);
-                                                }
-                                                else
-                                                {   if(rad=="quincena-f")
-                                                    {
-                                                        ocultafaltaron(3);
-                                                    }
-                                                    
-                                                }
-                                            }
+                                            document.getElementById('cumpleOno').style.display = "block"; 
+                                            document.getElementById('boton-descargar').style.display = "block"; 
+                                            
                                         }//fin if
                                         else
                                         {
-                                            if(valor=="CUMPLEONO")
-                                            {   
-                                                $('input:hidden[name=id]').val("cumpleOno");
+                                            if(valor=="GUARDIAS")
+                                            {   $('input:hidden[name=id]').val("guardias");//id
                                                 ocultaSubElementos();
+                                                document.getElementById('estimulos').style.display = "none";
+                                                document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                                 document.getElementById('unico').style.display = "none";/*No ver div*/  
-                                                document.getElementById('vacaciones').style.display = "none";/*No ver div*/
-                                                document.getElementById('comisionados').style.display = "none";/*No ver div*/ 
+                                                document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
+                                                document.getElementById('asistencia').style.display = "none";  
                                                 document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
-                                                document.getElementById('vinieron').style.display = "none";  
+                                                document.getElementById('comisionados').style.display = "none";
                                                 document.getElementById('faltaron').style.display = "none";
-                                                // document.getElementById('rangos2').style.display = "none";/*No ver div*/  
-                                                // document.getElementById('fecha').style.display = "none";/*No ver div*/ 
-                                                document.getElementById('asistencia').style.display = "none";/*No ver div*/ 
-                                                document.getElementById('guardias').style.display = "none";
+                                                document.getElementById('cumpleOno').style.display = "none"; 
+                                                document.getElementById('vinieron').style.display = "none";
                                                 document.getElementById('sextas').style.display = "none";
                                                 document.getElementById('licencias').style.display = "none";
                                                 document.getElementById('pases').style.display = "none";
-                                                document.getElementById('cumpleOno').style.display = "block"; 
-                                                document.getElementById('boton-descargar').style.display = "block"; 
+                                                document.getElementById('guardias').style.display = "block";/*ver div*/
+                                                document.getElementById('boton-descargar').style.display = "block";/*ver div*/
                                                 
+                                                var rad = $("input[name='opcion-g']:checked").val();
+                                                if(rad=="rango-g")
+                                                {
+                                                    ocultaguardias(1);
+                                                }
+                                                else
+                                                {
+                                                    if(rad=="numero-g")
+                                                    {
+                                                        ocultaguardias(2);
+                                                    }
+                                                    else
+                                                    {    if(rad=="quincena-g")
+                                                        {
+                                                            ocultaguardias(3);
+                                                        }
+                                                        
+                                                    }
+                                                }//fin else
                                             }//fin if
                                             else
                                             {
-                                                if(valor=="GUARDIAS")
-                                                {   $('input:hidden[name=id]').val("guardias");//id
+                                                if(valor=="SEXTAS")
+                                                {
+                                                    $('input:hidden[name=id]').val("sextas");
                                                     ocultaSubElementos();
-                                                
-                                                    document.getElementById('unico').style.display = "none";/*No ver div*/  
-                                                    document.getElementById('vacaciones').style.display = "none";/*No ver div*/ 
-                                                    document.getElementById('asistencia').style.display = "none";  
-                                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/
-                                                    document.getElementById('comisionados').style.display = "none";
+                                                    document.getElementById('estimulos').style.display = "none";
+                                                    document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
+                                                    document.getElementById('unico').style.display = "none";
+                                                    document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                                                    document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                                                    document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                                                    document.getElementById('vinieron').style.display = "none";  
                                                     document.getElementById('faltaron').style.display = "none";
                                                     document.getElementById('cumpleOno').style.display = "none"; 
-                                                    document.getElementById('vinieron').style.display = "none";
-                                                    document.getElementById('sextas').style.display = "none";
+                                                    document.getElementById('guardias').style.display = "none"; 
                                                     document.getElementById('licencias').style.display = "none";
                                                     document.getElementById('pases').style.display = "none";
-                                                    document.getElementById('guardias').style.display = "block";/*ver div*/
-                                                    document.getElementById('boton-descargar').style.display = "block";/*ver div*/
-                                                    
-                                                    var rad = $("input[name='opcion-g']:checked").val();
-                                                    if(rad=="rango-g")
-                                                    {
-                                                        ocultaguardias(1);
-                                                    }
-                                                    else
-                                                    {
-                                                        if(rad=="numero-g")
-                                                        {
-                                                            ocultaguardias(2);
-                                                        }
-                                                        else
-                                                        {    if(rad=="quincena-g")
-                                                            {
-                                                                ocultaguardias(3);
-                                                            }
-                                                            
-                                                        }
-                                                    }//fin else
-                                                }//fin if
+                                                    document.getElementById('sextas').style.display = "block";/*Ver div*/
+                                                    document.getElementById('boton-descargar').style.display = "block"; 
+                                                }
                                                 else
                                                 {
-                                                    if(valor=="SEXTAS")
+                                                    if(valor=="LICENCIAS")
                                                     {
-                                                        $('input:hidden[name=id]').val("sextas");
+                                                        $('input:hidden[name=id]').val("licencias");
                                                         ocultaSubElementos();
+                                                        document.getElementById('estimulos').style.display = "none";
+                                                        document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                                         document.getElementById('unico').style.display = "none";
                                                         document.getElementById('asistencia').style.display = "none";/*no ver div*/
                                                         document.getElementById('vacaciones').style.display = "none";/*no ver div*/
@@ -560,17 +620,19 @@ date_default_timezone_set('America/Mexico_City');
                                                         document.getElementById('faltaron').style.display = "none";
                                                         document.getElementById('cumpleOno').style.display = "none"; 
                                                         document.getElementById('guardias').style.display = "none"; 
-                                                        document.getElementById('licencias').style.display = "none";
+                                                        document.getElementById('sextas').style.display = "none";
                                                         document.getElementById('pases').style.display = "none";
-                                                        document.getElementById('sextas').style.display = "block";/*Ver div*/
+                                                        document.getElementById('licencias').style.display = "block";/*Ver div*/
                                                         document.getElementById('boton-descargar').style.display = "block"; 
                                                     }
                                                     else
                                                     {
-                                                        if(valor=="LICENCIAS")
+                                                        if(valor=="PASES")
                                                         {
-                                                            $('input:hidden[name=id]').val("licencias");
+                                                            $('input:hidden[name=id]').val("pases");
                                                             ocultaSubElementos();
+                                                            document.getElementById('estimulos').style.display = "none";
+                                                            document.getElementById('unico-comisionados').style.display = "none";/*no ver div*/
                                                             document.getElementById('unico').style.display = "none";
                                                             document.getElementById('asistencia').style.display = "none";/*no ver div*/
                                                             document.getElementById('vacaciones').style.display = "none";/*no ver div*/
@@ -581,16 +643,18 @@ date_default_timezone_set('America/Mexico_City');
                                                             document.getElementById('cumpleOno').style.display = "none"; 
                                                             document.getElementById('guardias').style.display = "none"; 
                                                             document.getElementById('sextas').style.display = "none";
-                                                            document.getElementById('pases').style.display = "none";
-                                                            document.getElementById('licencias').style.display = "block";/*Ver div*/
+                                                            document.getElementById('licencias').style.display = "none";
+                                                            document.getElementById('pases').style.display = "block";
                                                             document.getElementById('boton-descargar').style.display = "block"; 
                                                         }
                                                         else
                                                         {
-                                                            if(valor=="PASES")
+                                                            if(valor=="UNICO_COMISIONADOS")
                                                             {
-                                                                $('input:hidden[name=id]').val("pases");
+                                                                $('input:hidden[name=id]').val("unico-comisionados");
                                                                 ocultaSubElementos();
+                                                                document.getElementById('unico-comisionados').style.display = "block";/* ver div*/
+                                                                document.getElementById('boton-descargar').style.display = "block";
                                                                 document.getElementById('unico').style.display = "none";
                                                                 document.getElementById('asistencia').style.display = "none";/*no ver div*/
                                                                 document.getElementById('vacaciones').style.display = "none";/*no ver div*/
@@ -602,18 +666,53 @@ date_default_timezone_set('America/Mexico_City');
                                                                 document.getElementById('guardias').style.display = "none"; 
                                                                 document.getElementById('sextas').style.display = "none";
                                                                 document.getElementById('licencias').style.display = "none";
-                                                                document.getElementById('pases').style.display = "block";
-                                                                document.getElementById('boton-descargar').style.display = "block"; 
+                                                                document.getElementById('pases').style.display = "none"; 
+                                                                document.getElementById('estimulos').style.display = "none";
+                                                                var rad = $("input[name='opcion']:checked").val();
+                                                                if(rad=="quincena-c")
+                                                                {
+                                                                    ocultaRepComi(1);
+                                                                }
+                                                                else
+                                                                {
+                                                                    if(rad=="numero-c")
+                                                                    {
+                                                                        ocultaRepComi(2);
+                                                                    }
+                                                                   
+                                                                }//fin else
+                                                            }//fin-if
+                                                            else
+                                                            {
+                                                                if(valor=="ESTIMULOS")
+                                                                {
+                                                                    $('input:hidden[name=id]').val("estimulos");
+                                                                    ocultaSubElementos();
+                                                                    document.getElementById('estimulos').style.display = "block";
+                                                                    document.getElementById('unico-comisionados').style.display = "none";/* ver div*/
+                                                                    document.getElementById('boton-descargar').style.display = "block";
+                                                                    document.getElementById('unico').style.display = "none";
+                                                                    document.getElementById('asistencia').style.display = "none";/*no ver div*/
+                                                                    document.getElementById('vacaciones').style.display = "none";/*no ver div*/
+                                                                    document.getElementById('comisionados').style.display = "none";/*No ver div*/
+                                                                    document.getElementById('buscar-comision').style.display = "none";/*No ver div*/    
+                                                                    document.getElementById('vinieron').style.display = "none";  
+                                                                    document.getElementById('faltaron').style.display = "none";
+                                                                    document.getElementById('cumpleOno').style.display = "none"; 
+                                                                    document.getElementById('guardias').style.display = "none"; 
+                                                                    document.getElementById('sextas').style.display = "none";
+                                                                    document.getElementById('licencias').style.display = "none";
+                                                                    document.getElementById('pases').style.display = "none"; 
+                                                                }//fin-if   
                                                             }
-
-                                                        }
-
-                                                    }//fin else sextas
-                                                }//fin else guardias
-                                            }//fin else cumpleono
-                                        }//fin else faltaron
-                                    }
+                                                        }//fin-else
+                                                    }
+                                                }//fin else sextas
+                                            }//fin else guardias
+                                        }//fin else cumpleono
+                                    }//fin else faltaron
                                 }
+                            }
                         }
                     } 
                 }
@@ -621,7 +720,6 @@ date_default_timezone_set('America/Mexico_City');
             // <!--Funcion que sirve para mostrar u ocultar los divs del modal  -->
         </script> 
     </head>
-
     <body>
         <!-- Left Panel -->
         <aside id="left-panel" class="left-panel">
@@ -731,6 +829,14 @@ date_default_timezone_set('America/Mexico_City');
                             <div class="col-xl-5">
                                 <button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton" id="11" value="PASES" onclick="recibir(11);"><i class="fa fa-file-pdf-o"></i>PASES DE SALIDA</button>
                             </div>
+
+                            <div class="col-xl-5">
+                                <button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"id="12"   value="UNICO_COMISIONADOS" onclick="recibir(12);"><i class="fa fa-file-pdf-o"></i> REPORTE ÚNICO DE INCIDENCIAS DE COMISIONADOS FORÁNEOS </button>
+                            </div>
+
+                            <div class="col-xl-5">
+                                <button class="btn-primary btn-sm bt-report" data-toggle="modal" data-target="#mimodalejemplo"  name="boton"id="13"   value="ESTIMULOS" onclick="recibir(13);"><i class="fa fa-file-pdf-o"></i> EMPLEADOS CON DERECHO A ESTÍMULOS</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -775,24 +881,96 @@ date_default_timezone_set('America/Mexico_City');
                                                         echo "</select>";
                                                     }
                                                 ?> <!--FIN PHP -->
-                                            </div> <!--fin col-md5 bn-3 label -->
+                                            </div> 
                                             <!--Sirve para enviar que reporte queremos-->
                                             <input type="hidden" name="id" value="unico" >                                                    
                                         </div><!--fin div unico-->
+                                        
+                                        <div id="unico-comisionados">
+                                            <div class="col-md-12 label">
+                                                <div class="radios">
+                                                <label>REPORTE ÚNICO DE INCIDENCIAS DE COMISIONADOS FORÁNEOS</label><br><br>
+                                                    <span>Seleccione cómo desea que busquemos:</span><p></p>
+                                                    <label for="quincena-c"><input type="radio" name="opcion" value="quincena-c" id="quincena-c" onclick="ocultaRepComi(1)"> Por quincena</label><p></p>
+                                                    <label for="numero-c"><input type="radio" name="opcion" value="numero-c" id="numero-c" onclick="ocultaRepComi(2)"> Por número de empleado y quincena actual</label><p></p>
+                                                </div>
+                                                <div class="form-1-2">
+                                                    <div id=quincena-comisionados> 
+                                                    <span>Seleccione la quincena: </span>
+                                                    <?php 
+                                                        $sql2="select idquincena,fecha_inicio,fecha_fin from quincena where idquincena<=$idactual";
+                                                        $query2= mysqli_query($con, $sql2);
+                                                        if(!$query2)
+                                                        {
+                                                            die("<br>" . "Error no hay datos en la tabla quincena, verifique con el administrador de sistemas. Error: " . mysqli_errno($con) . " : " . mysqli_error($con));
+                                                        }
+                                                        else
+                                                        {   
+                                                            echo "<select name='quincena' class='form-control'>";
+                                                            while($fila=mysqli_fetch_array($query2))
+                                                            {   ///Divido la fecha de inicio y fin de la quincena
+                                                                $f_ini=explode('-',$fila[1]);
+                                                                $f_fin=explode('-',$fila[2]);
+                                                                // Concateno el año actual a las fechas
+                                                                $fila[1]=$anio_actual.'-'.$f_ini[1].'-'.$f_ini[2];
+                                                                $fila[2]=$anio_actual.'-'.$f_fin[1].'-'.$f_fin[2];
+
+                                                                echo "<option value='". $fila[0] . " " .$fila[1]. " " .$fila[2]."'>Quincena ". $fila[0] . " " .$fila[1]. " al  " .$fila[2]."</option>";
+                                                            }
+                                                            echo "</select>";
+                                                        }
+                                                    ?>
+                                                    </div>
+                                                </div>
+                                                <div class="form-1-2" >
+                                                    <div id=numero-comisionados>
+                                                        <span for="">Ingrese un número de empleado: </span>
+                                                        <input type="text" class="form-control" name="numero">
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            <!--Sirve para enviar que reporte queremos-->
+                                            <input type="hidden" name="id" value="unico-comisionados" >   
+                                        </div>
+
+                                        <div id="estimulos">
+                                            <div class="col-md-12 label ">
+                                                <div class="radios">
+                                                    <label for="">REPORTE DE EMPLEADOS CON DERECHO A ESTÍMULOS EN LA QUINCENA ACTUAL</label><br><br>
+                                                    <!-- <span>Estímulos:</span> -->
+                                                    <p></p>
+                                                    <label for="mot-asis"><input type="radio" name="opcion" value="mot-asis" id="mot-asis"> Asistencia</label>
+                                                    <p></p>
+                                                    <label for="mot-punt"><input type="radio" name="opcion" value="mot-punt" id="mot-punt"> Puntualidad</label>
+                                                    <p></p>
+                                                    <label for="mot-des"><input type="radio" name="opcion" value="mot-des" id="mot-des"> Desempeño</label>
+                                                    <p></p>
+                                                    <label for="mot-mer"><input type="radio" name="opcion" value="mot-mer" id="mot-mer" > Mérito relevante</label>
+                                                    <p></p>
+                                                    <label for="mot-trab"><input type="radio" name="opcion" value="mot-trab" id="mot-trab"> Trabajador del mes</label>
+                                                    <p></p>
+                                                </div>
+                                            </div>  
+                                            <!--Sirve para enviar que reporte queremos-->
+                                            <input type="hidden" name="id" value="estimulos" >      
+                                            <input type="hidden" name="todoQuincena" value="<?php$quincena.' '.$f_inicio.' '.$f_fin ?>">                                                 
+                                        </div><!--fin div-->
+
+
 
                                         <div id="vacaciones">
                                             <div class="col-md-12 label ">
                                                 <div class="radios">
-                                                <label for="">REPORTE DE VACACIONES</label><br><br>
-                                                <span>Seleccione cómo desea que busquemos:</span>
-                                                <p></p>
-                                                <label for="rango"><input type="radio" name="opcion" value="rango" id="rango" onclick="oculta(1)"> Por rango de fechas
-                                               </label>
-                                                <p></p>
-                                                <label for="todos"><input type="radio" name="opcion" value="todos" id="todos" onclick="oculta(2)"> Por quincena</label>
-                                                <p></p>
-                                                <label for="numero"><input type="radio" name="opcion" value="numero" id="numero" onclick="oculta(3)"> Por número de empleado</label>
-                                                <p></p>
+                                                    <label for="">REPORTE DE VACACIONES</label><br><br>
+                                                    <span>Seleccione cómo desea que busquemos:</span>
+                                                    <p></p>
+                                                    <label for="rango"><input type="radio" name="opcion" value="rango" id="rango" onclick="oculta(1)"> Por rango de fechas
+                                                    </label>
+                                                    <p></p>
+                                                    <label for="todos"><input type="radio" name="opcion" value="todos" id="todos" onclick="oculta(2)"> Por quincena</label>
+                                                    <p></p>
+                                                    <label for="numero"><input type="radio" name="opcion" value="numero" id="numero" onclick="oculta(3)"> Por número de empleado</label>
+                                                    <p></p>
                                                 </div>
                                                 <div class="form-1-2">
                                                     <div id=rangos> 
@@ -847,7 +1025,7 @@ date_default_timezone_set('America/Mexico_City');
                                             </div>  
                                             <!--Sirve para enviar que reporte queremos-->
                                             <input type="hidden" name="id" value="vacaciones" >                                                    
-                                        </div><!--fin div-->
+                                        </div>
 
                                         <div id="asistencia">
 

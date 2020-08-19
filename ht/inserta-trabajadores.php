@@ -362,7 +362,8 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
                     else
                     {   $idacceso=mysqli_insert_id($con);//Sirve para saber el ultimo id guardado en la tabla acceso
                         //Nota: la validez de cumple_ono será siempre 0 porque siempre está valido el cumpleaños del empleado
-                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',$validezCumpleOno,'$numero')")))
+                        //El 0 indica que el cumpleaños u onomástico no ha sido tomado
+                        if(!(mysqli_query($con,"Insert into cumple_ono values ('','$cumple','$ono',$validezCumpleOno,'$numero','0')")))
                         { 
                             $er1=mysqli_errno($con);
                             $er2=mysqli_error($con);

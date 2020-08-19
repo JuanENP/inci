@@ -36,7 +36,7 @@ ob_start();
         <link rel="stylesheet" href="../assets/css/formato-reportes.css">
         <link rel="stylesheet" href="../assets/css/reportes.css">
         <link rel="stylesheet" href="../assets/css/normalize.css" />
-        <title>Reporte de incidencias</title>
+        <title>Reporte Unico de incidencias</title>
     </head>
     <body>
         <div class="borde_superior">
@@ -50,7 +50,7 @@ ob_start();
             </div> 
         </div>
         <div id="p2">
-            <p>REPORTE ÚNICO QUINCENAL DE INCIDENCIAS</p>
+            <p>REPORTE ÚNICO QUINCENAL DE INCIDENCIAS COMISIONADOS FORÁNEOS</p>
         </div>
         <div id="p3">
             <p>CLAVE DE ADSCRIPCIÓN: <u> <?php echo$clave?> </u>   DESCRIPCIÓN: <u> <?php echo$descripcion ?> </u></p>    

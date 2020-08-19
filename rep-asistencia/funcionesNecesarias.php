@@ -258,7 +258,7 @@
 		$separaF_fin=explode('-',$f_fin);
 		//seleccionamos a los empleados que tomaron su fecha de cumpleaños en esta quincena
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, b.fecha_cumple from trabajador a 
-		inner join cumple_ono b on numero_trabajador=trabajador_trabajador
+		inner join cumple_ono b on numero_trabajador=trabajador_trabajador and a.tipo_tipo=2
 		and b.validez_tomado=1 and b.validez=0 and (MONTH(fecha_cumple) >= $separaF_ini[1] AND DAY(fecha_cumple) >= $separaF_ini[2])  and (MONTH(fecha_cumple) <= $separaF_fin[1] AND DAY(fecha_cumple) <= $separaF_fin[2]);";
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error al seleccionar a los que tuvieron cumpleaños en esta quincena: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
@@ -278,7 +278,7 @@
 		}
 		//seleccionamos a los empleados que tomaron su fecha de onomástico en esta quincena
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n, b.fecha_ono from trabajador a 
-		inner join cumple_ono b on numero_trabajador=trabajador_trabajador
+		inner join cumple_ono b on numero_trabajador=trabajador_trabajador and a.tipo_tipo=2
 		and b.validez_tomado=1 and b.validez=1 and (MONTH(fecha_ono) >= $separaF_ini[1] AND DAY(fecha_ono) >= $separaF_ini[2])  and (MONTH(fecha_ono) <= $separaF_fin[1] AND DAY(fecha_ono) <= $separaF_fin[2]);";
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error al seleccionar a los que tuvieron cumpleaños en esta quincena: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$resul=mysqli_num_rows($query);
@@ -499,7 +499,7 @@
 		//Vacaciones normales clave 60 cica
 		$sql=" SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
-		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador
+		INNER JOIN vacaciones b on a.numero_trabajador=b.trabajador_trabajador and a.tipo_tipo=2
 		INNER jOIN dias_vacaciones c on b.idvacaciones=c.vacaciones_vacaciones
 		where c.dia >='$f_ini' and c.dia <='$f_fin'
 		and c.tomado=1 order by  a.numero_trabajador,c.dia;";  
@@ -527,7 +527,7 @@
 		//Vacaciones emanaciones radioactivas clave 62 cica
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,c.periodo,c.dia
 		FROM trabajador a 
-		INNER JOIN vacaciones_radio b on a.numero_trabajador=b.trabajador_trabajador
+		INNER JOIN vacaciones_radio b on a.numero_trabajador=b.trabajador_trabajador and a.tipo_tipo=2
 		INNER jOIN dias_vacaciones_radio c on b.idvacaciones_radio=c.vacaciones_vacaciones
 		where c.dia >='$f_ini' and c.dia <='$f_fin'
 		and c.tomado=1 order by  a.numero_trabajador,c.dia;";  
@@ -556,8 +556,8 @@
 		//Vacaciones extraordinarias clave 63 cica
 		$sql="SELECT a.numero_trabajador,CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.dia
 		FROM trabajador a 
-		INNER jOIN vacaciones_extraordinarias b on a.numero_trabajador=b.trabajador_trabajador
-		where b.dia >='$f_ini' and b.dia <='$f_fin'
+		INNER jOIN vacaciones_extraordinarias b on a.numero_trabajador=b.trabajador_trabajador and a.tipo_tipo=2
+		and b.dia >='$f_ini' and b.dia <='$f_fin'
 		and b.tomado=1 order by a.numero_trabajador,b.dia;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$fechaSalida=mysqli_num_rows($query);
@@ -611,7 +611,7 @@
         $f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave, b.fecha
 		from trabajador a inner join estimulos b 
-		on a.numero_trabajador = b.trabajador_trabajador and (fecha>='$f_ini' AND fecha<='$f_fin');";  
+		on a.numero_trabajador = b.trabajador_trabajador and (fecha>='$f_ini' AND fecha<='$f_fin') and a.tipo_tipo=2;";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$fechaSalida=mysqli_num_rows($query);
 		if($fila>0)
@@ -650,7 +650,7 @@
         $f_fin=$anioActual.'-'.$separaF_fin[1].'-'.$separaF_fin[2];
 		$sql="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,b.clave, b.fecha
 		from trabajador a inner join estimulos b 
-		on a.numero_trabajador = b.trabajador_trabajador and (fecha>='$f_ini' AND fecha<='$f_fin')
+		on a.numero_trabajador = b.trabajador_trabajador and and a.tipo_tipo=2 and (fecha>='$f_ini' AND fecha<='$f_fin')
         and (clave='75' or clave='78');";  
 		$query= mysqli_query($con, $sql) or die("<br>" . "Error: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
 		$fechaSalida=mysqli_num_rows($query);

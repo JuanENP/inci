@@ -95,7 +95,295 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		   	echo "<script language='javascript'> alert('No hay incidencias'); history.back();</script>";
 			exit();
 		}
-	} //fin if
+	}
+
+	if($operacion=="unico-comisionados")
+	{
+		if(!(empty($_POST['opcion'])))
+		{
+			$div=$_POST['opcion'];
+			$datos=array();
+			$contador_d=0;
+			$contador=0;
+			require('funcionesNecesariasRepForaneos.php');
+			if($div=="quincena-c")
+			{
+				if(!(empty($_POST['quincena'])))
+				{
+					$todo_quincena=$_POST['quincena'];
+				}
+				//Separar los datos de lo que se recibe en quincena
+				$separa=explode(' ',$todo_quincena);
+				$quincena=$separa[0];//Número de quincena seleccionado
+				$f_ini=$separa[1];//fecha inicio de quincena
+				$f_fin=$separa[2];//fecha fin de quincena
+				$fila=array();//Sirve para guardar a los que tienen incidnecias
+				$reporte=array();
+				$ultimo_r=0;
+				$c=-1;
+				$arreglo=array();//arreglo con los datos del reporte
+				$contador=0;
+				
+				incidencias_f();
+				cumpleOno_clave14cica_f();
+				faltas_f();
+				justificaciones_f();
+				especiales_f();
+				vacaciones_f();
+				suspensiones_y_bajas_f();
+				sin_der_estimulo_desempeño_cica78_f();
+				pulir_f();
+				$contador=count($arreglo);
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
+				{
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['quincena'] = $quincena;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['rep'] = $arreglo;
+					$_SESSION['c'] = $contador;
+					$_SESSION['f_ini'] = $f_ini;
+					$_SESSION['f_fin'] = $f_fin;
+					$nomArchivo="unico-foraneos.php";
+					$nomPdf="Reporte-unico-foraneos.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+			}
+
+			if($div=="numero-c")
+			{
+				//ver si el número de empleado no está vacio
+				if (!(empty($_POST['numero'])))
+				{
+					$num=$_POST['numero'];
+					//Ver si el empleado existe en la base de datos
+					$respuesta=consultaNumEmpleado($num);
+					if($respuesta==true)
+					{
+						$numero=$num;
+					}
+					else
+					{
+						$salida.=" Debe escribir un número de empleado que exista";
+					}
+				}
+				else
+				{   
+					$salida.=" Debe escribir un número de empleado";
+				}
+
+				if(empty($salida))
+				{
+					if(!(empty($_POST['quincena'])))
+					{
+						$todo_quincena=$_POST['quincena'];
+					}
+					//Separar los datos de lo que se recibe en quincena
+					$separa=explode(' ',$todo_quincena);
+					$quincena=$separa[0];//Número de quincena seleccionado
+					$f_ini=$separa[1];//fecha inicio de quincena
+					$f_fin=$separa[2];//fecha fin de quincena
+					$fila=array();//Sirve para guardar a los que tienen incidnecias
+					$reporte=array();
+					$ultimo_r=0;
+					$c=-1;
+					$arreglo=array();//arreglo con los datos del reporte
+					$contador=0;
+					incidencias_trabajador();
+					cumpleOno_clave14cica_trabajador();
+					faltas_trabajador();
+					justificaciones_trabajador();
+					especiales_trabajador();
+					vacaciones_trabajador();
+					suspensiones_y_bajas_trabajador();
+					sin_der_estimulo_desempeño_cica78_trabajador();
+					pulir_trabajador();
+					$contador=count($arreglo);
+					//Si el arreglo tiene datos, imprimir el reporte
+					if($contador>0)
+					{
+						//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+						$_SESSION['fecha'] = $dia_mes;
+						$_SESSION['quincena'] = $quincena;
+						$_SESSION['anio'] = $anio;
+						$_SESSION['rep'] = $arreglo;
+						$_SESSION['c'] = $contador;
+						$_SESSION['f_ini'] = $f_ini;
+						$_SESSION['f_fin'] = $f_fin;
+						$nomArchivo="unico-foraneos.php";
+						$nomPdf="Reporte-unico-trabajador-foraneo.pdf";
+						imprimepdf($nomArchivo,$nomPdf);
+					}
+					else
+					{
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+						exit();
+					}//Fin del else que revisa si el arreglo tiene datos
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
+					exit();
+				}//fin del else que revisa si hubo algun error en los input
+			}
+			
+		}
+		else
+		{
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
+			exit();
+		}	
+	} 
+
+	if($operacion=="estimulos")
+	{
+		if(!(empty($_POST['opcion'])))
+		{
+			$div=$_POST['opcion'];
+			$datos=array();
+			$contador_d=0;
+			$contador=0;
+			require('funcionesNecesariasRepEstimulos.php');
+			if($div=="mot-asis")
+			{
+				if(!(empty($_POST['todoQuincena'])))
+				{
+					$todo_quincena=$_POST['todoQuincena'];
+				}
+				//Separar los datos de lo que se recibe en quincena
+				$separa=explode(' ',$todo_quincena);
+				$quincena=$separa[0];//Número de quincena seleccionado
+				$f_ini=$separa[1];//fecha inicio de quincena
+				$f_fin=$separa[2];//fecha fin de quincena
+				$fila=array();//Sirve para guardar a los que tienen incidnecias
+				$reporte=array();
+				$ultimo_r=0;
+				$c=-1;
+				$arreglo=array();//arreglo con los datos del reporte
+				$contador=0;
+				
+				incidencias_f();
+				cumpleOno_clave14cica_f();
+				faltas_f();
+				justificaciones_f();
+				especiales_f();
+				vacaciones_f();
+				suspensiones_y_bajas_f();
+				sin_der_estimulo_desempeño_cica78_f();
+				pulir_f();
+				$contador=count($arreglo);
+				//Si el arreglo tiene datos, imprimir el reporte
+				if($contador>0)
+				{
+					//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+					$_SESSION['fecha'] = $dia_mes;
+					$_SESSION['quincena'] = $quincena;
+					$_SESSION['anio'] = $anio;
+					$_SESSION['rep'] = $arreglo;
+					$_SESSION['c'] = $contador;
+					$_SESSION['f_ini'] = $f_ini;
+					$_SESSION['f_fin'] = $f_fin;
+					$nomArchivo="unico-foraneos.php";
+					$nomPdf="Reporte-unico-foraneos.pdf";
+					imprimepdf($nomArchivo,$nomPdf);
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+					exit();
+				}//Fin del else que revisa si el arreglo tiene datos
+			}
+
+			if($div=="numero-c")
+			{
+				//ver si el número de empleado no está vacio
+				if (!(empty($_POST['numero'])))
+				{
+					$num=$_POST['numero'];
+					//Ver si el empleado existe en la base de datos
+					$respuesta=consultaNumEmpleado($num);
+					if($respuesta==true)
+					{
+						$numero=$num;
+					}
+					else
+					{
+						$salida.=" Debe escribir un número de empleado que exista";
+					}
+				}
+				else
+				{   
+					$salida.=" Debe escribir un número de empleado";
+				}
+
+				if(empty($salida))
+				{
+					if(!(empty($_POST['quincena'])))
+					{
+						$todo_quincena=$_POST['quincena'];
+					}
+					//Separar los datos de lo que se recibe en quincena
+					$separa=explode(' ',$todo_quincena);
+					$quincena=$separa[0];//Número de quincena seleccionado
+					$f_ini=$separa[1];//fecha inicio de quincena
+					$f_fin=$separa[2];//fecha fin de quincena
+					$fila=array();//Sirve para guardar a los que tienen incidnecias
+					$reporte=array();
+					$ultimo_r=0;
+					$c=-1;
+					$arreglo=array();//arreglo con los datos del reporte
+					$contador=0;
+					incidencias_trabajador();
+					cumpleOno_clave14cica_trabajador();
+					faltas_trabajador();
+					justificaciones_trabajador();
+					especiales_trabajador();
+					vacaciones_trabajador();
+					suspensiones_y_bajas_trabajador();
+					sin_der_estimulo_desempeño_cica78_trabajador();
+					pulir_trabajador();
+					$contador=count($arreglo);
+					//Si el arreglo tiene datos, imprimir el reporte
+					if($contador>0)
+					{
+						//VARIABLES QUE SE ENVIARÁN AL HTML DEL PDF
+						$_SESSION['fecha'] = $dia_mes;
+						$_SESSION['quincena'] = $quincena;
+						$_SESSION['anio'] = $anio;
+						$_SESSION['rep'] = $arreglo;
+						$_SESSION['c'] = $contador;
+						$_SESSION['f_ini'] = $f_ini;
+						$_SESSION['f_fin'] = $f_fin;
+						$nomArchivo="unico-foraneos.php";
+						$nomPdf="Reporte-unico-trabajador-foraneo.pdf";
+						imprimepdf($nomArchivo,$nomPdf);
+					}
+					else
+					{
+						echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
+						exit();
+					}//Fin del else que revisa si el arreglo tiene datos
+				}
+				else
+				{
+					echo "<script language='javascript'> alert('$salida'); history.back();</script>";
+					exit();
+				}//fin del else que revisa si hubo algun error en los input
+			}
+			
+		}
+		else
+		{
+			echo "<script language='javascript'> alert('Seleccione una opción'); history.back();</script>";
+			exit();
+		}	
+	} 
 
 	if($operacion=="vacaciones")
 	{
