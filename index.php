@@ -40,14 +40,6 @@
 </head>
 
 <body class="bg-dark">
-
-    <?php
-        if(isset($_POST["txtusuario"]) && $_POST["txtpassword"])
-        {
-            require ("php/login.php");
-        }
-    ?>
-
     <div class="sufee-login d-flex align-content-center flex-wrap">
         <div class="container">
             <div class="login-content">
@@ -58,7 +50,7 @@
                     </a>
                 </div>
                 <div class="login-form">
-                    <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>" id="form1" autocomplete="off">
+                    <form method="post" action="php/login.php" id="form1" autocomplete="off">
                         <div class="form-group">
                             <label>Usuario</label>
                             <input name="txtusuario" id="txtusuario" type="text" class="form-control" required autofocus/>

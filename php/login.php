@@ -3,7 +3,7 @@ session_start();
   error_reporting(0);//desactivar advertencias que solo aparecen cuando el usuario intenta abrir este archivo sin antes loguearse
   $nombre= $_POST['txtusuario'];
   $contra= $_POST['txtpassword'];
-  include("Acceso/global.php");
+  include("../Acceso/global.php");
   $verCampo='';//Ver el campo de correo y/o contraseña
   $ejecu=mysqli_query($con,"SELECT user FROM mysql.user WHERE User = '$nombre' AND password = PASSWORD('$contra')") or die();
   $resul=mysqli_num_rows($ejecu);
@@ -39,12 +39,12 @@ session_start();
       
       if(empty($verCampo))
       {
-        header("Location: ht/repositorio.php");  
+        header("Location: ../ht/repositorio.php");  
       }
       else
       {
         $_SESSION['verCampo']=$verCampo;
-        header("Location: mail/primer_acceso.php"); 
+        header("Location: ../mail/primer_acceso.php"); 
       }
        
     }
@@ -66,12 +66,12 @@ session_start();
 
       if(empty($verCampo))
       {
-        header("Location: panel_control.php"); 
+        header("Location: ../panel_control.php"); 
       }
       else
       {
         $_SESSION['verCampo']=$verCampo;
-        header("Location: mail/primer_acceso.php");  
+        header("Location: ../mail/primer_acceso.php");  
       }
       
     }
@@ -80,6 +80,6 @@ session_start();
   {
     //echo $us;
     mysqli_close($con);
-    header("Location: index.php");
+    header("Location: ../index.php");
   }
 ?>
