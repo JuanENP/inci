@@ -1,18 +1,88 @@
 <?php
 	// -------------------Funciones necesarias para el reporte de empleados con derecho a estimulos-----------	
-   
-	function derecho_asistencia()
+	function RevisarAtodosLosTrabajadores()
 	{
-		/*
-			Claves que no otorgan estimulo de asistencia:
-			10, 15, 16, 24, 26, 30, 41, 47 si se excede de 3 días o combinada con la clave 55, 53, 54, 79, 86
-		*/
+		global $f_hoy;
+		global $con;
+		$arreglo=array();
+		$c=0;
+        $sql1="select a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,a.depto_depto,a.categoria_categoria from trabajador a;";
+        $query1= mysqli_query($con, $sql1);
+        $filas=mysqli_num_rows($query1);
+        if($filas>0)
+        {
+            while($resul=mysqli_fetch_array($query1))
+            {
+				$arreglo[$c][0]=$resul[0];
+				$arreglo[$c][1]=$resul[1];
+				$arreglo[$c][2]=$resul[2];
+				$arreglo[$c][3]=$resul[3];
+				$c++;
+			}
+			return $arreglo;
+		}
 	}
+
 	function derecho_puntualidad()
 	{
 		/*
 			Claves que no otorgan estímulo de puntualidad:
 			01, 02, 03, 04, 08, 09, 10, 15, 16, 18, 19, 24, 25, 26, 30, 41, 47 si se excede de 3 días o combinada con la clave 55, 53, 54, 79, 86
+		
+			FALTAN:  08, 09, 10, 15, 41, 47 si se excede de 3 días o combinada con la clave 55, 53, 54, 79, 86
+		*/
+		global $arregloEmpleados;
+		global $contador;
+		$datos=RevisarAtodosLosTrabajadores();
+		$total=count($datos);
+		foreach($datos as $dato)
+		{
+			$numero=$dato[0];
+			echo $numero.' ';
+			$tieneIncidencia=revisaIncidencias($numero);
+			if($tieneIncidencia == false)
+			{
+				$arregloEmpleados[$contador][0]=$numero;
+				$arregloEmpleados[$contador][1]=$dato[1];
+				$arregloEmpleados[$contador][2]=$dato[2];
+				$arregloEmpleados[$contador][3]=$dato[3];
+				$contador++;
+			}
+		}
+	}
+	function revisaIncidencias($numero)
+	{
+		global $quincena;
+		global $con;
+		$anioActual=date('Y');
+		//Revisar claves 01, 02, 03, 04, 16, 18, 19, 24, 25, 26, 30
+		$sql="SELECT a.numero_trabajador, CONCAT(a.nombre, ' ', a.apellido_paterno, ' ', a.apellido_materno) as n,
+		c.clave_incidencia_clave_incidencia, b.fecha_entrada,b.fecha_salida FROM trabajador a
+		inner join asistencia b on a.numero_trabajador=b.trabajador_trabajador and (b.fecha_entrada like '%2020%' or b.fecha_salida like '%2020%')
+		inner join incidencia c on b.id=c.asistencia_asistencia
+		where b.quincena_quincena=15 and a.tipo_tipo=2 and a.numero_trabajador='$numero'
+		and (c.clave_incidencia_clave_incidencia='01' or c.clave_incidencia_clave_incidencia='02'or c.clave_incidencia_clave_incidencia='03' or c.clave_incidencia_clave_incidencia='04' 
+	    or c.clave_incidencia_clave_incidencia='16' or c.clave_incidencia_clave_incidencia='18'
+		or c.clave_incidencia_clave_incidencia='19' or c.clave_incidencia_clave_incidencia='24'
+		or c.clave_incidencia_clave_incidencia='25' or c.clave_incidencia_clave_incidencia='26'
+	    or c.clave_incidencia_clave_incidencia='30');";
+		$query= mysqli_query($con, $sql) or die("<br>" . "Error línea 60: " . utf8_encode(mysqli_errno($con)) . " : " . utf8_encode(mysqli_error($con)));
+		$resul=mysqli_num_rows($query);
+		//si total es igual a cero significa que no hay datos
+		if($resul>0)
+		{  
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	function derecho_asistencia()
+	{
+		/*
+			Claves que no otorgan estimulo de asistencia:
+			10, 15, 16, 24, 26, 30, 41, 47 si se excede de 3 días o combinada con la clave 55, 53, 54, 79, 86
 		*/
 	}
 	function derecho_desempeño()
@@ -544,4 +614,4 @@
 			}
 		}
 	}
-?>
+?>	

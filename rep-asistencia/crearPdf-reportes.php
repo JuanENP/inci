@@ -246,38 +246,24 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 		if(!(empty($_POST['opcion'])))
 		{
 			$div=$_POST['opcion'];
-			$datos=array();
-			$contador_d=0;
+			$arregloEmpleados=array();
 			$contador=0;
-			require('funcionesNecesariasRepEstimulos.php');
-			if($div=="mot-asis")
+			if(!(empty($_POST['todoQuincena'])))
 			{
-				if(!(empty($_POST['todoQuincena'])))
-				{
-					$todo_quincena=$_POST['todoQuincena'];
-				}
-				//Separar los datos de lo que se recibe en quincena
-				$separa=explode(' ',$todo_quincena);
-				$quincena=$separa[0];//Número de quincena seleccionado
-				$f_ini=$separa[1];//fecha inicio de quincena
-				$f_fin=$separa[2];//fecha fin de quincena
-				$fila=array();//Sirve para guardar a los que tienen incidnecias
-				$reporte=array();
-				$ultimo_r=0;
-				$c=-1;
-				$arreglo=array();//arreglo con los datos del reporte
-				$contador=0;
+				$todo_quincena=$_POST['todoQuincena'];
+			}
+			//Separar los datos de lo que se recibe en quincena
+			$separa=explode(' ',$todo_quincena);
+			$quincena=$separa[0];//Número de quincena seleccionado
+			$f_ini=$separa[1];//fecha inicio de quincena
+			$f_fin=$separa[2];//fecha fin de quincena
+			
+			require('funcionesNecesariasRepEstimulos.php');
+			if($div=="mot-punt")
+			{
+				derecho_puntualidad();
 				
-				incidencias_f();
-				cumpleOno_clave14cica_f();
-				faltas_f();
-				justificaciones_f();
-				especiales_f();
-				vacaciones_f();
-				suspensiones_y_bajas_f();
-				sin_der_estimulo_desempeño_cica78_f();
-				pulir_f();
-				$contador=count($arreglo);
+				$contador=count($arregloEmpleados);
 				//Si el arreglo tiene datos, imprimir el reporte
 				if($contador>0)
 				{
@@ -285,12 +271,12 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					$_SESSION['fecha'] = $dia_mes;
 					$_SESSION['quincena'] = $quincena;
 					$_SESSION['anio'] = $anio;
-					$_SESSION['rep'] = $arreglo;
-					$_SESSION['c'] = $contador;
+					$_SESSION['rep'] = $arregloEmpleados;
+					$_SESSION['contador'] = $contador;
 					$_SESSION['f_ini'] = $f_ini;
 					$_SESSION['f_fin'] = $f_fin;
-					$nomArchivo="unico-foraneos.php";
-					$nomPdf="Reporte-unico-foraneos.pdf";
+					$nomArchivo="estimulos.php";
+					$nomPdf="Reporte-empleados-con-derecho-estimulos.pdf";
 					imprimepdf($nomArchivo,$nomPdf);
 				}
 				else
@@ -298,6 +284,7 @@ set_time_limit(600);//Indica que son 600 segundos, es decir 10 minutos máximo p
 					echo "<script language='javascript'> alert('No hay datos'); history.back();</script>";
 					exit();
 				}//Fin del else que revisa si el arreglo tiene datos
+				
 			}
 
 			if($div=="numero-c")
